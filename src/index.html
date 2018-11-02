@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<!--suppress JSUnresolvedVariable, JSUnresolvedVariable, JSUnresolvedFunction, JSUnresolvedFunction, JSUnresolvedFunction -->
+<html >
+<head>
+
+<!--
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+-->
+
+  <title>ShoreZone</title>
+
+<!--  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>-->
+
+  <!--  Stylesheets -->
+<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">-->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.9/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.9/dojox/layout/resources/ExpandoPane.css"/>
+  <link rel="stylesheet" href="SZ_wLayout.css"/>
+
+  <script type="text/javascript">
+    dojoConfig = {
+      has: { "esri-promise-compatibility": 1 },
+      parseOnLoad: true,    /*false,*/
+      paths: { noaa: location.pathname.replace(/\/[^/]+$/, '') + '/modules' }     /*defines path "noaa" to "modules" folder*/
+    }
+  </script>
+
+  <!--  <script type="text/javascript" src="jquery.js"></script> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://js.arcgis.com/4.9/"></script>
+  <script src="JS/GlobalVars.js" ></script>
+  <script src="JS/OfflineAppLink.js"></script>
+  <script src="JS/youtube.js"></script>
+
+  <script>
+
+
+    require([
+      "dojo/on",
+      "dojo/dom",
+      "dijit/registry",
+      "dijit/layout/BorderContainer",
+      "dijit/layout/ContentPane",
+      "dijit/layout/TabContainer",
+      "dojox/layout/ExpandoPane",
+      "noaa/MapStuffWidget",
+      "dojo/domReady!"
+    ], function(on, dom, registry, BorderContainer, ContentPane, TabContainer, ExpandoPane, MapStuffWidget){
+
+
+      var regions = {
+        l: {name: "left", dim: "width"},
+        r: {name: "right", dim: "width"},
+        t: {name: "top", dim: "height"},
+        b: {name: "bottom", dim: "height"}
+      };
+
+      var containers = {
+        BC: BorderContainer,
+        CP: ContentPane,
+        TC: TabContainer,
+        EP: ExpandoPane
+      };
+
+      var layouts = {};     //new Object();     // Define the layout options
+      layouts["v2"] = {
+        id: "layoutV2",
+        //buildOrder: ["root", "mvp", "m", "vp", "v", "p", "qt", "q", "t"],
+        // In the following:
+        //   1st item is name of parent container
+        //   2nd is position and width/height of panel (w/h not required if position is "c" [center])
+        //   3rd is type of container, and layout where required
+        root:  [null,   "c",       "BC:v"],
+          mvp:   ["root", "c",  "BC:h"],      // set width of map and media panels in pixels, query/table panels get remainder    min. 600px to display map correctly
+            m:     ["mvp",  "c",  "CP", {id: "mapDiv"}],
+            vp:    ["mvp",  "b:30%",  "BC:v", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
+              v:      ["vp",  "l:50%",  "CP", {id: "videoDiv", class: "mediaPanelDiv"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+              p:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+          qtEP:    ["root", "r:50%",  "EP:Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
+            qt:    ["qtEP", "c",        "BC:h"],
+              q:  ["qt",  "t:200px",    "CP"],        // set query panel height
+              t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
+                szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
+      };
+      layouts["h2"] = {
+        id: "layoutH2",
+        root:  [null,   "c",       "BC:h"],
+            mvp:   ["root", "c",  "BC:v", {id: "mapMediaBC"}],      // set width of map and media panels in pixels, query/table panels get remainder
+              m:     ["mvp",  "c",  "CP", {id: "mapDiv"}],
+              vp:    ["mvp",  "r:500px",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
+                v:      ["vp",  "c",     "CP", {id: "videoDiv", class: "mediaPanelDiv"}],  // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+                p:      ["vp",  "b:50%", "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+            qtEP:    ["root", "b:300px",  "EP:", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
+              qt:       ["qtEP", "c",   "BC:v"],
+                //q:  ["qt",  "l:200px",    "CP"],        // set query panel height
+                t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
+                  szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                  fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
+      };
+      layouts["v3"] = {
+        id: "layoutV3",
+        //buildOrder: ["root", "m", "vp", "v", "p", "qt", "q", "t"],
+        root:  [null,   "c",       "BC:v"],
+          m:     ["root",  "l:800px",  "CP", {id: "mapDiv"}],
+          vp:    ["root",  "c",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
+              v:      ["vp",  "t:45%",  "CP", {id: "videoDiv", class: "mediaPanelDiv"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+              p:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+          qtEP:    ["root", "r:300px",  "EP", "Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
+            qt:    ["qtEP", "c",        "BC:h"],
+              //q:  ["qt",  "t:200px",    "CP"],        // set query panel height
+              t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
+                szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
+      };
+
+
+      function makeContainer(layoutInfo, info, id) {
+        var regionVal = "center",
+          dimStr = "padding :0px; ";
+        var parentId = info[0];
+        var locInfo = info[1];
+        var typeInfo = info[2];
+        var addlProps = {};
+        if (info.length > 3)
+          addlProps = info[3];
+        if (locInfo !== "c") {
+          var a = locInfo.split(":");
+          if (a.length > 1) {
+            regionVal = regions[a[0]].name;
+            dimStr += regions[a[0]].dim + ":" + a[1] + ";";
+          }
+        }
+        var bcArgs = {
+          region: regionVal,
+          splitter: true,
+          style: dimStr,
+          id: addlProps.id,
+          class: addlProps.class
+        };
+        var b = typeInfo.split(":");
+        var contCode = b[0];
+        var container = containers[contCode];
+        if (contCode === "CP") {
+          //bcArgs.baseClass = "dijitContentPaneNoPadding";
+          //bcArgs.content = addlProps;
+        }
+        else if (contCode === "EP") {
+          console.log("ExpandoPane: " + id);
+        }
+        else if (contCode === "BC") {
+          var orient = b[1];
+          var designVal = "headline";
+          if (orient === "v")
+            designVal = "sidebar";
+          bcArgs.liveSplitters = true;
+          bcArgs.design = designVal;
+        }
+        info.layoutElement = new container(bcArgs);
+        customizeContainerHtml(info, b[1]);
+        if (parentId) {
+          layoutInfo[parentId].layoutElement.addChild(info.layoutElement);
+        }
+
+      }
+
+      function buildLayout(layoutInfo) {
+        // If these are not built in the correct order, then will have to add buildOrder to object, and use that
+        for (var el in layoutInfo)
+          if (el !== "id") {
+            var id = el;
+            var info = layoutInfo[id];
+            makeContainer(layoutInfo, info, id);
+          }
+        return layoutInfo.root.layoutElement;
+      }
+
+      function customizeContainerHtml(info, header) {
+        var container = info.layoutElement;
+        if (container.baseClass === "dijitExpandoPane") {
+          if (!header)
+            return;
+          var iconNode = container.domNode.getElementsByClassName("dojoxExpandoIcon")[0];
+          var customClassName = "noaaExpandoTitle";
+          var region = container.region;
+          if (region==="left" || region==="right") {
+            var regionClassName = "noaaExpandoIcon" + region.charAt(0).toUpperCase() + region.slice(1);
+            iconNode.className = "noaaExpandoIconVertical " + regionClassName;
+            customClassName = "noaaExpandoTitleVertical";
+          }
+          iconNode.innerHTML += '<div class="' + customClassName + '">' + header + '</div>';
+        }
+      }
+
+      function addContent(contentPaneId, content) {
+        dom.byId(contentPaneId).innerHTML += content;
+      }
+
+
+      function buildOuterBC(layoutCode) {
+        outerBC.addChild(bannerBC);
+        currLayout = buildLayout(layouts[layoutCode]);
+        outerBC.addChild(currLayout);
+      }
+
+      function changeLayout(parentBC, layoutCode) {
+        // TODO:  Figure out how to do this and preserve current content
+        //var tempBC = new BorderContainer();
+        //var mapDivCP = dom.byId("mapDiv");
+        //mapDivCP.placeAt(tempBC);
+        parentBC.removeChild(currLayout);
+        currLayout.destroyDescendants();
+        currLayout = buildLayout(layouts[layoutCode]);
+        parentBC.addChild(currLayout);
+        //setPanelsContent();
+        //document.getElementById("mapDiv").outerHTML = mapDivHtml;
+      }
+
+      function setPanelsContent() {
+        addContent('mapDiv', '<span id="coordinates" ></span>');
+/*
+        addPanelHtml('videoDiv', 'video', 'media');
+        addPanelHtml('photoDiv', 'photo', 'media');
+        addPanelHtml('unitsDiv', 'units', 'table');
+        addPanelHtml('faDiv', 'fa', 'table', [
+          {id: 'faTabRegions', title: 'FishAtlas Regions'},
+          {id: 'faTabLocales', title: 'FishAtlas Locales'},
+          {id: 'faTabSites', title: 'FishAtlas Sites'},
+          {id: 'faTabTemperature', title: 'Temperature Data'},
+          {id: 'faTabEelgrass', title: 'Eelgrass'}
+        ]);
+*/
+      }
+
+      function adjustDojoLayoutDivs() {
+        // HACK to adjust positioning of Dojo layout elements
+        // Call after outerBC.startup()
+        document.getElementById("panelTabs_fa").style.top = "0px";
+        //document.getElementById("unitsHeaderDiv").style.height = "20px";
+      }
+
+      var linksContent = '';
+/*
+      linksContent += '<img src="assets/images/layoutH2.png" id="btn_h2" class="layoutImg" >';
+      linksContent += '<img src="assets/images/layoutV2.png" id="btn_v2" class="layoutImg" style="left: 40px;" >';
+      linksContent += '<img src="assets/images/layoutV3.png" id="btn_v3" class="layoutImg" style="left: 80px;">';
+*/
+
+      linksContent += '<a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab(\'http://www.noaa.gov/disclaimer.html\')" >Disclaimer</a> &nbsp;&nbsp;\n' +
+        '<a id="testLabel" style="color:Black"  href="#" onclick="test()" >TEST</a>  &nbsp;&nbsp;' +
+        '<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab(\'http://www.nmfs.noaa.gov/privacy.htm\')" >Privacy Policy</a>  &nbsp;&nbsp;' +
+        '<a id="shoreZonePageLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/shorezone/\')" >ShoreZone Page</a>  &nbsp;&nbsp;' +
+        '<a id="metadataLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/habitat/shorezone/metadata.zip\')" >Metadata</a>  &nbsp;&nbsp;' +
+        '<a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab(\'mailto:Steve.Lewis@noaa.gov\')" >Contact</a>  &nbsp;&nbsp;' +
+        '<a id="dicitonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;' +
+        '<a id="adminLinksLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/ShoreZoneMvcServices/Admin/Links\')" >Admin Links</a>  &nbsp;&nbsp;';
+
+
+      // Tabs for ShoreZone/FishAtlas/ShoreStation
+      var szTab = new ContentPane({id: "szTab", title: "ShoreZone"}),
+          faTab = new ContentPane({id: "faTab", title: "Fish Atlas"}),
+          ssTab = new ContentPane({id: "ssTab", title: "Shore Station"}),
+          szUnitsTab = new ContentPane({id: "szUnitsTab", title: "ShoreZone 3D Units demo"});
+
+      var stateNavigator = new TabContainer({id: "stateNavigator", region: "left", style: "width: 500px"});
+        stateNavigator.addChild( szTab );
+        stateNavigator.addChild( faTab );
+        stateNavigator.addChild( ssTab );
+        stateNavigator.addChild( szUnitsTab );
+      var linksCP = new ContentPane({id: "linksPane", region: "center", content: linksContent});
+
+      var bannerBC = new BorderContainer({id: "bannerDiv", region: "top", style: "height: 30px"});
+      bannerBC.addChild(stateNavigator);
+      bannerBC.addChild(linksCP);
+
+      var outerBC = new BorderContainer({id: "outerBC", style: "border-style: solid;", design: "headline"});
+      var currLayout = null;
+      buildOuterBC(layoutCode);
+      document.body.appendChild(outerBC.domNode);
+      setPanelsContent();
+
+      outerBC.startup();
+      //adjustDojoLayoutDivs();     // Make some positioning adjustments that can't be done via CSS or Dojo props.  NOTE:  This has to happen after outerBC.startup()
+
+/*
+      function layoutBtnHandlerH2(evt) { changeLayout(this, "h2"); }
+      function layoutBtnHandlerV2(evt) { changeLayout(this, "v2"); }
+      function layoutBtnHandlerV3(evt) { changeLayout(this, "v3"); }
+
+      on(dom.byId("btn_h2"), "click", layoutBtnHandlerH2.bind(outerBC));
+      on(dom.byId("btn_v2"), "click", layoutBtnHandlerV2.bind(outerBC));
+      on(dom.byId("btn_v3"), "click", layoutBtnHandlerV3.bind(outerBC));
+*/
+
+/* TODO:  Generalize this to handle all splitters
+          Note that the argument for "getSplitter" will vary dependent on layout.
+          "splitterDragHandler" will call function to change YouTube and IMG dimensions.
+          This function will also be used by PhotoPlaybackWidget.processPicasaData to determine requested image width
+            (Move some of the code used in processPicasaData for this purpose to the new function.)
+*/
+      var lSplitter = dijit.registry.byId("mapMediaBC").getSplitter("right");
+      lSplitter.on("mouseover", splitterDragHandler);
+      //var handle = on(lSplitter.domNode, "mouseover", splitterDragHandler);
+
+      function splitterDragHandler(e) {
+        if (e.buttons !== 1)
+          return;
+        var vDiv = dijit.registry.byId("videoDiv")
+        console.log("videoDiv:  " + vDiv.w + "x" + vDiv.h);
+        //alert("dragging!");
+      }
+
+
+
+      var mapStuff = new MapStuffWidget();
+
+      var FaSsMsg = "Sorry, @ has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.";
+      siteTabs.visManager = makeClassArrayVisibilityObject( {classNames: siteTabs.tabs, currClassName: siteTabs.currTab} );
+      var flexSiteURL = "https://alaskafisheries.noaa.gov/mapping/szflex/index.html?L=B";
+      var SZ3dUnitsSiteURL = "https://alaskafisheries.noaa.gov/mapping/jstest/szunits3d.html";
+
+      changeState(initTab);     // TODO:  This doesn't work yet, faWidget/ssWidget need to be instantiated at this point
+
+      stateNavigator.watch("selectedChildWidget", function(name, oval, nval){
+        changeState(nval.id, oval.id);
+      });
+
+      // Switch between ShoreZone/FishAtlas/ShoreStation states
+      // setExpandoState(tableQueryExpando, false);     // Was using this to hide table/query panel for SZ video-only mode (set tu TRUE for FA and SS)
+      function changeState(tabID, oldTabID) {
+        if (tabID === "szTab") {
+          siteTabs.visManager.promoteClass("sz");
+        }
+        else if (tabID === "faTab") {
+          /*    USE THIS SECTION TO FORWARD TO FLEX SITE
+          if (confirm(FaSsMsg.replace(/@/g,"Fish Atlas")))
+            window.open(flexSiteURL + "@T=FA");
+          stateNavigator.selectChild(szTab);
+          */
+          /*    USE THIS SECTION TO USE FISH ATLAS ON THIS SITE   */
+          siteTabs.visManager.promoteClass("fa");
+          if (faWidget)
+            faWidget.setActiveTab(0);
+        }
+        else if (tabID === "ssTab") {
+          if (confirm(FaSsMsg.replace(/@/g,"Shore Station")))
+            window.open(flexSiteURL + "@T=SS");
+        }
+        else if (tabID === "szUnitsTab") {
+          if (confirm("Open the ShoreZone 3D Units demo site?"))
+            window.open(SZ3dUnitsSiteURL);
+        }
+
+      }
+
+
+
+
+    });
+
+  </script>
+</head>
+<body class="claro"></body>
+</html>

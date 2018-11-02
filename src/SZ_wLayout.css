@@ -1,0 +1,241 @@
+:root {
+  --NoaaBgColor: #6884B3;
+  --panelBgColor: #ccc;
+  --tableHeaderBgColor: navajowhite;
+  --tableHeaderTabsColor: cornsilk;
+}
+
+html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margin: 0; background-color: var(--NoaaBgColor) }
+
+.claro .dijitAccordionTitle {min-height:10px; font-size: 80%; font-weight: bold}
+
+/*.claro .dijitContentPane { padding: 0px; }*/
+
+/*  DOJOX Expando settings  */
+
+  .claro .dojoxExpandoClosed .dojoxExpandoTitle{background-color:#cde8ff; background-repeat: no-repeat; }
+  .claro .dojoxExpandoTitle {height: 10px; min-height: 10px; font-size: small; }
+  /*.claro .dojoxExpandoTitle {min-height:10px; font-size: 80%; font-weight: bold}*/
+  .claro .dojoxExpandoIcon {width: 30px; height: 15px; position: absolute; top: 1px; left: 50%; background-image: url('assets/images/expandoDownUp.png');}
+
+  .claro .dojoxExpandoBottom .dojoxExpandoIcon, .dojoxExpandoTop .dojoxExpandoIcon, .dojoxExpandoLeft .dojoxExpandoIcon {
+    float:right;
+    margin-right:2px;
+  }
+
+  .claro .dojoxExpandoRight .dojoxExpandoIcon {
+    float:left;
+    margin-left:2px;
+  }
+
+  /*      NOAA custom (horizontal     */
+  .noaaExpandoTitle {position: absolute; top: 0px; left: 50px; }
+
+  /*      NOAA custom (vertical)     */
+  .noaaExpandoTitleVertical {position: absolute; top: 50px; left: 0px; writing-mode: vertical-lr }
+  .noaaExpandoIconVertical {width: 15px; height: 30px; position: absolute; top: 1px; left: 0%; background-image: url('assets/images/expandoLeftRight.png');}
+  .noaaExpandoIconVertical .a11yNode {display:none; visibility:hidden;}
+
+  .noaaExpandoIconLeft {background-position: 0 0;}
+  .noaaExpandoClosed .noaaExpandoIconLeft {background-position: -30px 0; margin-right: 4px;}
+  .noaaExpandoIconRight {background-position: -30px 0;}
+  .dojoxExpandoClosed .noaaExpandoIconRight {background-position: 0 0; margin-left: 4px;}
+
+  /*@import url("dojo-release-1.10.4/dojox/layout/resources/ExpandoPane.css");*/        /* local Dojo version of ExpandoPane.css */
+
+
+/*  end of DOJOX Expando settings  */
+
+
+#bannerDiv  { height: 30px; background-color:var(--NoaaBgColor) }
+#stateNavigator  {width: 100%; height: 0%; }
+#linksPane  {background-color: var(--NoaaBgColor); padding: 5px; border: none; }      /*Q: Why need to repeat BGcolor? */
+#mapAndImageryBC  { }
+#mapWToolsBC  { border: double}
+#mapDiv  {}
+  #coordinates  { position:absolute; left:60px; bottom:15px; color:#000; z-index:50; }
+#mapToolsExpando  { width: 350px}
+#mapToolsAccordion  {}
+/*
+#layerListPane  {}
+  #layerListTab  {}
+    #layerListDom  {max-height: 100%}
+  #legendTab  {}
+    #legendDom  {}
+*/
+#locationsPane  {}
+#downloadPane  {}
+#mediaBC  { width: 500px }
+/*#videoGraphDiv  {}*/
+/*#graphDiv  {visibility: hidden}*/
+#tableQueryExpando  { height: 250px }
+#tableQueryBC  {}
+#tableDiv  {}
+#queryDiv  { width: 40%}
+
+
+/*#v_video_message  {display: none; position:absolute; right: 10px; bottom: 5px; background-color: rgba(255,255,255,0.5)}*/
+/*#photoImage_message  {display: none; position:absolute; right: 10px; top: 50%; font-weight: bold; background-color: rgba(255,255,255,0.5)}*/
+/*#photoImage_container  {position:absolute; width:100%; height:0px; top:0px; overflow:hidden; background-color:rgb(208,215,225)}*/
+
+/* .button-short  {font-size: 30px; height: 50px;} */
+
+/*.bottom  {position: absolute; bottom: 30px; width: 100%}*/
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #ffffff;
+}
+
+.tableHeaderTabs  {padding: 0px; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 40px;}
+
+/* Style the buttons inside the tab */
+.tableHeaderTabs button {
+  background-color: var(--tableHeaderTabsColor);
+  /*float: left;*/
+  border: none;
+  outline: none;
+  cursor: pointer;
+  /*
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  */
+}
+
+/* Change background color of buttons on hover */
+.tableHeaderTabs button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tableHeaderTabs button.active {
+  background-color: var(--tableHeaderBgColor);
+}
+
+
+.fbVertical  {display: flex; flex-flow: column;}
+
+.fbVertical .fbHeader  {position:absolute; top: 0px; flex: 0 1 30px}     /* no growth, height=30px */
+.fbVertical .fbFooter  {position:absolute; top: 0px; flex: 0 1 30px}     /* no growth, height=30px */
+
+.fbVertical .fbStatic30  {flex: 0 1 30px}     /* no growth, height=30px */
+.fbVertical .fbStaticFit  {flex: 0 1 auto}    /* no growth, fit to content*/
+.fbVertical .fbGrow30  {flex: 1 1 30px}       /* grow, initial height=30px */
+.fbVertical .fbGrowFit  {flex: 1 1 auto}      /* grow, fit to content */
+
+
+.mediaPanelDiv  {overflow: hidden;}   /*from layoutStyle.css */
+/*.mediaPanelDiv  {height: 50%; padding: 0px}*/
+
+.tablePanelDiv  {height: 100%; padding: 0px;}
+
+.PanelDisabled  {position:absolute; width:100%; height:100%; padding: 0px; background-color: #d4d4d4; visibility: hidden}
+  .MsgDisabled   {color:red; position: absolute; top:50%; left: 30%}
+
+  .mediaPanelEnabled  {position:absolute; width:100%; height:100%; padding: 0px; background-color: #d4d4d4; visibility: visible; }
+    .mediaHeaderDiv  {position:absolute; width:100%; height:20px; left: 10px; overflow:hidden; padding: 0px; z-index: 50; color: white; /*background-color: #cde8ff; opacity: 0.8*/}
+    .mediaContainerDiv  {position:absolute; width:100%; height:100%; top:0px; overflow:hidden; background-color:var(--panelBgColor); }
+    .mediaToolsContainer  {position:absolute; width:100%; bottom:5px; }
+    /*.mediaToolsContainer  {position:absolute; width:100%; height:20px; bottom:0px; overflow:hidden; background-color:rgb(238,245,255); flex: 0 1 auto}*/
+
+  .tablePanelEnabled  {position:absolute; width:100%; height:100%; padding: 0px; background-color: #d4d4d4; visibility: visible; display: flex; flex-flow: column;}
+    .tableHeaderDiv  {padding: 0px; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 50px;}
+    .tableContainerDiv  {padding: 0px; overflow:hidden; background-color:rgb(208,215,225); flex: 1 1 auto;}
+    .tableFooterDiv  {padding: 0px; overflow:hidden; background-color: lightgreen; flex: 0 1 50px;}
+
+
+
+/*  .mediaHeaderDiv  {position:absolute; width:100%; height:30px; overflow:hidden; background-color:rgb(238,245,255); padding: 0px;}*/
+
+    .mediaMessageDiv  {position: absolute; top:50%; left: 40%}
+/*    .imageContainer  {width: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; vertical-align: middle; margin: auto; display: block}    */
+    .imageContainer  {position: absolute; top: 0; left: 0; right: 0; bottom: 0; vertical-align: middle; margin: auto; display: block}
+      .photoImage  {width: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; vertical-align: middle; margin: auto; display: block}
+    .playbackControlContainer  {position:absolute; left:35%; width:150px; height:24px; border-radius: 7px; background-color: #76766e;}
+      .playbackControl  {padding: 2px}
+
+
+
+      .panelTabContainer  {position: absolute; top: 0px; height: 20px; background-color: var(--NoaaBgColor);}
+/*      .tableHeaderCP  {position:absolute; width:100%; height:100%; padding: 5px; overflow:hidden; background-color:#EEF5FF;}*/
+      /* header tabs? */
+      /* header content pane?*/
+    /* panel footer? */
+
+#offlineAppPanel  {width: 400px; height: 250px; background-color: #dff8ff; opacity: 0.8; }
+
+.esri-view-width-xlarge .esri-popup__main-container,
+.esri-view-width-large .esri-popup__main-container,
+.esri-view-width-medium .esri-popup__main-container
+{
+  width: 320px !important;
+}
+
+
+.esri-widget  {opacity: 1.0; background-color: white; font-weight: bold}
+/*.esri-widget  {opacity: 1.0; background-color: white}*/
+.esri-layer-list__item-container {background-color: transparent}
+
+.esri-popup__content {
+  overflow-x: auto;
+/*  padding: 2px;     /* does this do anything?  */
+}
+
+
+/* this line hide layers when out of scale for the inline TOC */
+.agsjsTOCOutOfScale {
+  display: none;
+}
+
+/* .tableContainer .dgrid-cell { width: 200px } */
+
+/* Default all cells to 80px width */
+.dataTable .dgrid-cell .dgrid-column-0 {
+    width: 180px;
+}
+
+/*
+.dataTable .dgrid-cell:hover {
+  background-color: #de0;
+}
+*/
+
+.dataTable .dgrid-row {
+background-color: #fff;
+border-bottom: 1px solid #ccc;
+cursor: pointer;
+}
+.dataTable .dgrid-row:hover {
+  background-color: #def;
+}
+.dataTable .field-name {
+  width: 20em;
+}
+
+
+/*     For the video playback speed indicator */
+.slider {
+  float: right;
+}
+
+.linkInPopup  {text-decoration: underline; font-weight: bold}
+
+
+.layoutImg  {position: absolute; top: 2px;}
+
+/*  The following hides the visibility checkbox for group layers, and disables turning them off via mouse-click  */
+/*  NOTE:  All group layers MUST have the "visible" property set to true  */
+.esri-layer-list__item--has-children > .esri-layer-list__item-container > .esri-layer-list__item-label  {pointer-events: none;}
+.esri-layer-list__item--has-children > .esri-layer-list__item-container > .esri-layer-list__item-label > .esri-layer-list__item-toggle {visibility: hidden; display: none  }
+
+.esri-legend__message {visibility: hidden; display: none}
+/*.esri-legend {visibility: hidden; display: none}*/
+/*.esri-layer-list-panel__content--legend {visibility: hidden; display: none}*/
+
+/* .esri-layer-list-panel */
+
+
+.boldLabel, .tableHeaderTitle {font-weight: bold}
