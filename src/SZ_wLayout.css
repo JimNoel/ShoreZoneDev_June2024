@@ -5,7 +5,7 @@
   --tableHeaderTabsColor: cornsilk;
 }
 
-html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margin: 0; background-color: var(--NoaaBgColor) }
+html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: var(--NoaaBgColor) }
 
 .claro .dijitAccordionTitle {min-height:10px; font-size: 80%; font-weight: bold}
 
@@ -13,7 +13,9 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margi
 
 /*  DOJOX Expando settings  */
 
-  .claro .dojoxExpandoClosed .dojoxExpandoTitle{background-color:#cde8ff; background-repeat: no-repeat; }
+  .claro .dojoxExpandoClosed .dojoxExpandoTitle{
+    background: #cde8ff no-repeat;
+  }
   .claro .dojoxExpandoTitle {height: 10px; min-height: 10px; font-size: small; }
   /*.claro .dojoxExpandoTitle {min-height:10px; font-size: 80%; font-weight: bold}*/
   .claro .dojoxExpandoIcon {width: 30px; height: 15px; position: absolute; top: 1px; left: 50%; background-image: url('assets/images/expandoDownUp.png');}
@@ -29,11 +31,11 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margi
   }
 
   /*      NOAA custom (horizontal     */
-  .noaaExpandoTitle {position: absolute; top: 0px; left: 50px; }
+  .noaaExpandoTitle {position: absolute; top: 0; left: 50px; }
 
   /*      NOAA custom (vertical)     */
-  .noaaExpandoTitleVertical {position: absolute; top: 50px; left: 0px; writing-mode: vertical-lr }
-  .noaaExpandoIconVertical {width: 15px; height: 30px; position: absolute; top: 1px; left: 0%; background-image: url('assets/images/expandoLeftRight.png');}
+  .noaaExpandoTitleVertical {position: absolute; top: 50px; left: 0; writing-mode: vertical-lr }
+  .noaaExpandoIconVertical {width: 15px; height: 30px; position: absolute; top: 1px; left: 0; background-image: url('assets/images/expandoLeftRight.png');}
   .noaaExpandoIconVertical .a11yNode {display:none; visibility:hidden;}
 
   .noaaExpandoIconLeft {background-position: 0 0;}
@@ -48,7 +50,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margi
 
 
 #bannerDiv  { height: 30px; background-color:var(--NoaaBgColor) }
-#stateNavigator  {width: 100%; height: 0%; }
+#stateNavigator  {width: 100%; height: 0; }
 #linksPane  {background-color: var(--NoaaBgColor); padding: 5px; border: none; }      /*Q: Why need to repeat BGcolor? */
 #mapAndImageryBC  { }
 #mapWToolsBC  { border: double}
@@ -89,7 +91,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margi
   background-color: #ffffff;
 }
 
-.tableHeaderTabs  {padding: 0px; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 40px;}
+.tableHeaderTabs  {padding: 0; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 40px;}
 
 /* Style the buttons inside the tab */
 .tableHeaderTabs button {
@@ -118,8 +120,8 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margi
 
 .fbVertical  {display: flex; flex-flow: column;}
 
-.fbVertical .fbHeader  {position:absolute; top: 0px; flex: 0 1 30px}     /* no growth, height=30px */
-.fbVertical .fbFooter  {position:absolute; top: 0px; flex: 0 1 30px}     /* no growth, height=30px */
+.fbVertical .fbHeader  {position:absolute; top: 0; flex: 0 1 30px}     /* no growth, height=30px */
+.fbVertical .fbFooter  {position:absolute; top: 0; flex: 0 1 30px}     /* no growth, height=30px */
 
 .fbVertical .fbStatic30  {flex: 0 1 30px}     /* no growth, height=30px */
 .fbVertical .fbStaticFit  {flex: 0 1 auto}    /* no growth, fit to content*/
@@ -130,21 +132,21 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margi
 .mediaPanelDiv  {overflow: hidden;}   /*from layoutStyle.css */
 /*.mediaPanelDiv  {height: 50%; padding: 0px}*/
 
-.tablePanelDiv  {height: 100%; padding: 0px;}
+.tablePanelDiv  {height: 100%; padding: 0;}
 
-.PanelDisabled  {position:absolute; width:100%; height:100%; padding: 0px; background-color: #d4d4d4; visibility: hidden}
+.PanelDisabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4; visibility: hidden}
   .MsgDisabled   {color:red; position: absolute; top:50%; left: 30%}
 
-  .mediaPanelEnabled  {position:absolute; width:100%; height:100%; padding: 0px; background-color: #d4d4d4; visibility: visible; }
-    .mediaHeaderDiv  {position:absolute; width:100%; height:20px; left: 10px; overflow:hidden; padding: 0px; z-index: 50; color: white; /*background-color: #cde8ff; opacity: 0.8*/}
-    .mediaContainerDiv  {position:absolute; width:100%; height:100%; top:0px; overflow:hidden; background-color:var(--panelBgColor); }
+  .mediaPanelEnabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4; visibility: visible; }
+    .mediaHeaderDiv  {position:absolute; width:100%; height:20px; left: 10px; overflow:hidden; padding: 0; z-index: 50; color: white; /*background-color: #cde8ff; opacity: 0.8*/}
+    .mediaContainerDiv  {position:absolute; width:100%; height:100%; top:0; overflow:hidden; background-color:var(--panelBgColor); }
     .mediaToolsContainer  {position:absolute; width:100%; bottom:5px; }
     /*.mediaToolsContainer  {position:absolute; width:100%; height:20px; bottom:0px; overflow:hidden; background-color:rgb(238,245,255); flex: 0 1 auto}*/
 
-  .tablePanelEnabled  {position:absolute; width:100%; height:100%; padding: 0px; background-color: #d4d4d4; visibility: visible; display: flex; flex-flow: column;}
-    .tableHeaderDiv  {padding: 0px; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 50px;}
-    .tableContainerDiv  {padding: 0px; overflow:hidden; background-color:rgb(208,215,225); flex: 1 1 auto;}
-    .tableFooterDiv  {padding: 0px; overflow:hidden; background-color: lightgreen; flex: 0 1 50px;}
+  .tablePanelEnabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4; visibility: visible; display: flex; flex-flow: column;}
+    .tableHeaderDiv  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 50px;}
+    .tableContainerDiv  {padding: 0; overflow:hidden; background-color:rgb(208,215,225); flex: 1 1 auto;}
+    .tableFooterDiv  {padding: 0; overflow:hidden; background-color: lightgreen; flex: 0 1 50px;}
 
 
 
@@ -159,7 +161,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0px; margi
 
 
 
-      .panelTabContainer  {position: absolute; top: 0px; height: 20px; background-color: var(--NoaaBgColor);}
+      .panelTabContainer  {position: absolute; top: 0; height: 20px; background-color: var(--NoaaBgColor);}
 /*      .tableHeaderCP  {position:absolute; width:100%; height:100%; padding: 5px; overflow:hidden; background-color:#EEF5FF;}*/
       /* header tabs? */
       /* header content pane?*/
