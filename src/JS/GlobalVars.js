@@ -490,11 +490,11 @@ function queryServer(url, returnJson, responseHandler/*, pars*/) {
 function makeSublayerIdTable(serviceUrl, idTable) {
   queryServer(serviceUrl, true, function(R) {
     for (l in R.layers) {
-      var o = R.layers[l];
+      let o = R.layers[l];
       idTable[o.name] = o.id.toString();
     }
     for (t in R.tables) {
-      var o = R.tables[t];
+      let o = R.tables[t];
       idTable[o.name] = o.id.toString();
     }
   });

@@ -87,7 +87,7 @@
       };
       layouts["h2"] = {
         id: "layoutH2",
-        root:  [null,   "c",       "BC:h"],
+        root:  [null,   "c",       "BC:h", {id: "rootBC"}],
             mvp:   ["root", "c",  "BC:v", {id: "mapMediaBC"}],      // set width of map and media panels in pixels, query/table panels get remainder
               m:     ["mvp",  "c",  "CP", {id: "mapDiv"}],
               vp:    ["mvp",  "r:500px",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
@@ -116,6 +116,7 @@
                 fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
 
+      var splitterInfo = [];    // To hold info used in accessing splitters, to handle drag events
 
       function makeContainer(layoutInfo, info, id) {
         var regionVal = "center",
@@ -161,12 +162,16 @@
         info.layoutElement = new container(bcArgs);
         customizeContainerHtml(info, b[1]);
         if (parentId) {
-          layoutInfo[parentId].layoutElement.addChild(info.layoutElement);
+          let parentEl = layoutInfo[parentId].layoutElement;
+          parentEl.addChild(info.layoutElement);
+          if (bcArgs.region !== "center")
+            splitterInfo.push({id: parentEl.id, region: bcArgs.region})
         }
 
       }
 
       function buildLayout(layoutInfo) {
+        splitterInfo = [];
         // If these are not built in the correct order, then will have to add buildOrder to object, and use that
         for (var el in layoutInfo)
           if (el !== "id") {
@@ -300,18 +305,22 @@
           This function will also be used by PhotoPlaybackWidget.processPicasaData to determine requested image width
             (Move some of the code used in processPicasaData for this purpose to the new function.)
 */
-      var lSplitter = dijit.registry.byId("mapMediaBC").getSplitter("right");
-      lSplitter.on("mouseover", splitterDragHandler);
-      //var handle = on(lSplitter.domNode, "mouseover", splitterDragHandler);
+      splitterInfo.forEach(function(item) {
+        let lSplitter = dijit.registry.byId(item.id).getSplitter(item.region);
+        lSplitter.on("mouseover", splitterDragHandler);
+      })
 
       function splitterDragHandler(e) {
-        if (e.buttons !== 1)
-          return;
-        var vDiv = dijit.registry.byId("videoDiv")
-        console.log("videoDiv:  " + vDiv.w + "x" + vDiv.h);
-        //alert("dragging!");
+        if (e.buttons === 1)
+          resizeMedia();
       }
 
+      function resizeMedia() {
+        var vDiv = dijit.registry.byId("videoDiv");
+        var pDiv = dijit.registry.byId("photoDiv");
+        console.log("videoDiv:  " + vDiv.w + "x" + vDiv.h + "     photoDiv:  " + pDiv.w + "x" + pDiv.h);
+
+      }
 
 
       var mapStuff = new MapStuffWidget();

@@ -48,7 +48,7 @@ define([
         var nonNullCount = new Object();
         var columnStyleHTML = "";
 
-        for (var i=0; i<fields.length; i++) {
+        for (let i=0; i<fields.length; i++) {
           unitColumns.push({
             field: fields[i].name,
             label: fields[i].alias
@@ -64,7 +64,7 @@ define([
         document.body.appendChild(sheet);
 
         var unitData = [];
-        for (var i=0; i<features.length; i++) {
+        for (let i=0; i<features.length; i++) {
           //*JN*/ features[i].attributes["item"] = i;
           unitData.push(features[i].attributes);
           for (a in features[i].attributes) {
@@ -272,7 +272,7 @@ define([
             ddItem.domId = this.baseName + "Dropdown_" + ddItem.ddName;
             var ddSpanId = ddItem.domId.replace("_","Span_");
             var ddHtml = '&emsp;<LABEL class="boldLabel">' + ddItem.ddName + ': </LABEL>';
-            var args = this.objName + ',' + d + ',' + ddItem.domId;
+            let args = this.objName + ',' + d + ',' + ddItem.domId;
             ddHtml += '<select id="' + ddItem.domId + '" onchange="dropdownSelectHandler(' + args + ')" ></select>&emsp;';
             headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';
             if (ddItem.subLayerName) {
@@ -292,7 +292,7 @@ define([
 
         var cbID = this.baseName + 'Checkbox_showFeatures';
         var cbSpanId = cbID.replace("_","Span_");
-        var args = this.objName + '.clickableLayer,' + cbID;
+        let args = this.objName + '.clickableLayer,' + cbID;
         var cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
         headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
         getEl(cbID).checked = this.clickableLayer.visible;

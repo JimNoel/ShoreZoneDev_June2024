@@ -15,9 +15,9 @@ var ssMapServiceLayer;
 var sslMapServiceLayer;
 
 var siteTabs = new Object({tabs: ["sz", "fa", "ss"], currTab: "sz"});
-siteTabs.sz = new Object();
-siteTabs.fa = new Object();
-siteTabs.ss = new Object();
+siteTabs.sz = {};
+siteTabs.fa = {};
+siteTabs.ss = {};
 
 var layerListWidget;
 
@@ -51,9 +51,7 @@ define([
   "esri/tasks/Geoprocessor",
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
-
 //  "esri/widgets/Print",
-//  "noaa/widgets/OffLineLink",     // Something in this widget messes up iOS
   "noaa/VideoPanelWidget",
   "noaa/PhotoPlaybackWidget",
   "noaa/UnitsPanelWidget",
@@ -65,22 +63,18 @@ define([
   "esri/layers/GraphicsLayer",
   "esri/renderers/SimpleRenderer",
   "esri/symbols/SimpleMarkerSymbol",
-  "esri/symbols/SimpleFillSymbol",
   "esri/Graphic",
   "dojo/dom",
   "esri/core/Collection",
   "dojo/domReady!"
 ], function(declare, watchUtils, Map, View, MapImageLayer, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, Geoprocessor, Query, QueryTask,
               //Print,
-              //OffLineLink,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget,
-            Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, /**/SimpleFillSymbol, /**/Graphic, dom, Collection
-
-) {
+            Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom) {
 
     function addServiceLayers() {
     szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {"opacity" : 0.5});
-    szMapServiceLayer.when(function(resolvedVal) {
+    szMapServiceLayer.when(function() {
 
       szPhotoWidget = new PhotoPlaybackWidget({
         panelName: "szPhotosPanel",
@@ -238,7 +232,7 @@ define([
     */
 
     faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {"opacity" : 0.5});
-    faMapServiceLayer.when(function(resolvedVal) {
+    faMapServiceLayer.when(function() {
       console.log("Fish Atlas MapServiceLayer loaded.");
       faMapServiceLayer.visible = false;
       faWidget = new QueryBasedTablePanelWidget({
@@ -425,6 +419,9 @@ define([
     // *** end Map layer definitions ***
   }
 
+
+/*
+//Might eventually use this function, if 3D option is added
   function sceneViewExtent(view, m) {
     // Calculate true extent of tilted 3D view
     // view is the SceneView being used
@@ -437,7 +434,6 @@ define([
     var maxY = view.container.offsetHeight;
     var screenPoints = [[m,m], [maxX-m,m], [maxX-m,maxY-m], [m,maxY-m]];
     var mapPoints = [];
-    /*JN*///    var r = mapCursorLayer.graphics.items[0].geometry.rings[0];
     for (var p=0; p<screenPoints.length; p++) {
       var screenPoint = new Point({x: screenPoints[p][0], y: screenPoints[p][1]});
       var mapPoint = view.toMap(screenPoint);     // These are the points I want to use to get true extent
@@ -445,29 +441,18 @@ define([
         return null;
       var geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);
       mapPoints.push([mapPoint.x, mapPoint.y, mapPoint.z]);
-      /*JN*
-      r[p][0] = geogPoint.x;
-      r[p][1] = geogPoint.y;
-      r[p][2] = 10000;
-      if (p==0) {
-        r[4][0] = geogPoint.x;
-        r[4][1] = geogPoint.y;
-        r[4][2] = 10000;
-      }
-      /*JN*/
     }
     mapPoints.push(mapPoints[0]);
     var newPolygon = new Polygon(mapPoints);
-
-
     return newPolygon;
   }
+*/
 
   function handleExtentChange(newExtent) {
     //layerList_ExpandAll(true);
 
     // For 3D, change newExtent to Polygon of tilted view extent
-    // If using MapView (2D), comment out this line
+    // If using MapView (2D), comment out these lines
     //var extent3d = sceneViewExtent(view, 200);
     //var extent3d_geog = webMercatorUtils.webMercatorToGeographic(extent3d);
 
@@ -509,21 +494,20 @@ define([
     //bookmark.thumbnail = "assets/images/noaa_wb.png";
     savedExtentsWidget.bookmarks.add(bookmark);
     currentBookmarkNumber = savedExtentsWidget.bookmarks.length -1;
-  };
+  }
 
   function addMapWatchers() {
-    view.when(function(resolvedVal) {
+    view.when(function() {
       var moveButtonAction = {title: "Move the camera", id: "move-camera"};
       var p = view.popup;     // new Popup();
       if (popupsDocked) {
         p.dockEnabled = true;
         p.dockOptions = {position: "bottom-right" };
       }
-      //console.log("Popups are docked.")
       p.actions.removeAll();      // not working
       p.actions.push(moveButtonAction);
       p.on("trigger-action", function(event){
-        if (event.action.id == "move-camera") {
+        if (event.action.id === "move-camera") {
           if (currentWidgetController)
             currentWidgetController.moveButtonPressHandler(currentHoveredGraphic.attributes);
         }
