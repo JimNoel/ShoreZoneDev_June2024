@@ -22,7 +22,7 @@
   <script type="text/javascript">
     dojoConfig = {
       has: { "esri-promise-compatibility": 1 },
-      parseOnLoad: true,    /*false,*/
+      parseOnLoad: true,
       paths: { noaa: location.pathname.replace(/\/[^/]+$/, '') + '/modules' }     /*defines path "noaa" to "modules" folder*/
     }
   </script>
@@ -50,21 +50,21 @@
     ], function(on, dom, registry, BorderContainer, ContentPane, TabContainer, ExpandoPane, MapStuffWidget){
 
 
-      var regions = {
+      const regions = {
         l: {name: "left", dim: "width"},
         r: {name: "right", dim: "width"},
         t: {name: "top", dim: "height"},
         b: {name: "bottom", dim: "height"}
       };
 
-      var containers = {
+      const containers = {
         BC: BorderContainer,
         CP: ContentPane,
         TC: TabContainer,
         EP: ExpandoPane
       };
 
-      var layouts = {};     //new Object();     // Define the layout options
+      let layouts = {};     //new Object();     // Define the layout options
       layouts["v2"] = {
         id: "layoutV2",
         //buildOrder: ["root", "mvp", "m", "vp", "v", "p", "qt", "q", "t"],
@@ -116,44 +116,42 @@
                 fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
 
-      var splitterInfo = [];    // To hold info used in accessing splitters, to handle drag events
+      let splitterInfo = [];    // To hold info used in accessing splitters, to handle drag events
 
       function makeContainer(layoutInfo, info, id) {
-        var regionVal = "center",
-          dimStr = "padding :0px; ";
-        var parentId = info[0];
-        var locInfo = info[1];
-        var typeInfo = info[2];
-        var addlProps = {};
+        let regionVal = "center";
+        let dimStr = "padding :0px; ";
+        const parentId = info[0];
+        const locInfo = info[1];
+        const typeInfo = info[2];
+        let addlProps = {};
         if (info.length > 3)
           addlProps = info[3];
         if (locInfo !== "c") {
-          var a = locInfo.split(":");
+          const a = locInfo.split(":");
           if (a.length > 1) {
             regionVal = regions[a[0]].name;
             dimStr += regions[a[0]].dim + ":" + a[1] + ";";
           }
         }
-        var bcArgs = {
+        let bcArgs = {
           region: regionVal,
           splitter: true,
           style: dimStr,
           id: addlProps.id,
           class: addlProps.class
         };
-        var b = typeInfo.split(":");
-        var contCode = b[0];
-        var container = containers[contCode];
+        const b = typeInfo.split(":");
+        const contCode = b[0];
+        const container = containers[contCode];
         if (contCode === "CP") {
-          //bcArgs.baseClass = "dijitContentPaneNoPadding";
-          //bcArgs.content = addlProps;
         }
         else if (contCode === "EP") {
           console.log("ExpandoPane: " + id);
         }
         else if (contCode === "BC") {
-          var orient = b[1];
-          var designVal = "headline";
+          const orient = b[1];
+          let designVal = "headline";
           if (orient === "v")
             designVal = "sidebar";
           bcArgs.liveSplitters = true;
@@ -225,26 +223,15 @@
 
       function setPanelsContent() {
         addContent('mapDiv', '<span id="coordinates" ></span>');
-/*
-        addPanelHtml('videoDiv', 'video', 'media');
-        addPanelHtml('photoDiv', 'photo', 'media');
-        addPanelHtml('unitsDiv', 'units', 'table');
-        addPanelHtml('faDiv', 'fa', 'table', [
-          {id: 'faTabRegions', title: 'FishAtlas Regions'},
-          {id: 'faTabLocales', title: 'FishAtlas Locales'},
-          {id: 'faTabSites', title: 'FishAtlas Sites'},
-          {id: 'faTabTemperature', title: 'Temperature Data'},
-          {id: 'faTabEelgrass', title: 'Eelgrass'}
-        ]);
-*/
       }
 
+/*
       function adjustDojoLayoutDivs() {
         // HACK to adjust positioning of Dojo layout elements
         // Call after outerBC.startup()
         document.getElementById("panelTabs_fa").style.top = "0px";
-        //document.getElementById("unitsHeaderDiv").style.height = "20px";
       }
+*/
 
       var linksContent = '';
 /*
@@ -254,7 +241,7 @@
 */
 
       linksContent += '<a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab(\'http://www.noaa.gov/disclaimer.html\')" >Disclaimer</a> &nbsp;&nbsp;\n' +
-        '<a id="testLabel" style="color:Black"  href="#" onclick="test()" >TEST</a>  &nbsp;&nbsp;' +
+        // '<a id="testLabel" style="color:Black"  href="#" onclick="test()" >TEST</a>  &nbsp;&nbsp;' +
         '<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab(\'http://www.nmfs.noaa.gov/privacy.htm\')" >Privacy Policy</a>  &nbsp;&nbsp;' +
         '<a id="shoreZonePageLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/shorezone/\')" >ShoreZone Page</a>  &nbsp;&nbsp;' +
         '<a id="metadataLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/habitat/shorezone/metadata.zip\')" >Metadata</a>  &nbsp;&nbsp;' +
@@ -299,7 +286,7 @@
       on(dom.byId("btn_v3"), "click", layoutBtnHandlerV3.bind(outerBC));
 */
 
-/* TODO:  Generalize this to handle all splitters
+/*
           Note that the argument for "getSplitter" will vary dependent on layout.
           "splitterDragHandler" will call function to change YouTube and IMG dimensions.
           This function will also be used by PhotoPlaybackWidget.processPicasaData to determine requested image width
@@ -308,7 +295,7 @@
       splitterInfo.forEach(function(item) {
         let lSplitter = dijit.registry.byId(item.id).getSplitter(item.region);
         lSplitter.on("mouseover", splitterDragHandler);
-      })
+      });
 
       function splitterDragHandler(e) {
         if (e.buttons === 1)
@@ -337,18 +324,11 @@
       });
 
       // Switch between ShoreZone/FishAtlas/ShoreStation states
-      // setExpandoState(tableQueryExpando, false);     // Was using this to hide table/query panel for SZ video-only mode (set tu TRUE for FA and SS)
       function changeState(tabID, oldTabID) {
         if (tabID === "szTab") {
           siteTabs.visManager.promoteClass("sz");
         }
         else if (tabID === "faTab") {
-          /*    USE THIS SECTION TO FORWARD TO FLEX SITE
-          if (confirm(FaSsMsg.replace(/@/g,"Fish Atlas")))
-            window.open(flexSiteURL + "@T=FA");
-          stateNavigator.selectChild(szTab);
-          */
-          /*    USE THIS SECTION TO USE FISH ATLAS ON THIS SITE   */
           siteTabs.visManager.promoteClass("fa");
           if (faWidget)
             faWidget.setActiveTab(0);
