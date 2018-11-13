@@ -147,28 +147,6 @@ function getDeviceType() {
 var deviceType = getDeviceType();
 //debug("Device: " + deviceType);
 
-/*
-var isMobile = {
-  Android: function() {
-    return navigator.userAgent.match(/Android/i);
-  },
-  BlackBerry: function() {
-    return navigator.userAgent.match(/BlackBerry/i);
-  },
-  iOS: function() {
-    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-  },
-  Opera: function() {
-    return navigator.userAgent.match(/Opera Mini/i);
-  },
-  Windows: function() {
-    return navigator.userAgent.match(/IEMobile/i);
-  },
-  any: function() {
-    return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-  }
-};
-*/
 
 /* General utilities */
 
@@ -394,11 +372,9 @@ function checkbox_showFeatures_clickHandler(clickableLayer, cb) {
   clickableLayer.visible = cb.checked;
 }
 
-/*TS*/
 function findAndChangePlaybackSpeed() {
   changePlaybackSpeed(document.getElementById('playback_speed_range').value);
 }
-/*TS*/
 
 
 
@@ -428,26 +404,6 @@ function resetCurrentFeatures() {
     w.clearGraphics();
   });
   //locateIconLayer.removeAll();
-/*
-  if (szVideoWidget) {
-    setMessage(szVideoWidget.disabledMsgDivName, szVideoWidget.dfltCaptionHTML);
-    szVideoWidget.clickableLayer.removeAll();
-    szVideoWidget.trackingLayer.removeAll();
-    szVideoWidget.highlightLayer.removeAll();
-  }
-  if (szPhotoWidget) {
-    setMessage(szPhotoWidget.disabledMsgDivName, szPhotoWidget.dfltCaptionHTML);
-    szPhotoWidget.clickableLayer.removeAll();
-    szPhotoWidget.trackingLayer.removeAll();
-    szPhotoWidget.highlightLayer.removeAll();
-  }
-  if (szUnitsWidget) {
-    setMessage(szUnitsWidget.disabledMsgDivName, szUnitsWidget.dfltCaptionHTML);
-    szUnitsWidget.clickableLayer.removeAll();
-    szUnitsWidget.highlightLayer.removeAll();
-  }
-  view.popup.close();     // If popup window is open, close it
-*/
   setContent("offlineAppPanel", download_notZoomedInEnoughContent);
   //getEl("offlineAppPanel").innerHTML = download_notZoomedInEnoughContent;
 }
@@ -597,22 +553,11 @@ function gotoSavedExtent(offset) {
 /* For extent history and prev/next extent navigation*/
 
 
+// For debug purposes
 function test() {
-  //document.getElementById("videoContainer").style.height = "100%";
-  //document.getElementById("videoContainer").style.padding = "0px";
-/*
-  var s = getEl("mediaBC_splitter");
-  //s.ondrag = function(){
-  s.addEventListener("drag", function(){
-    console.log("dragging...");
-  });
-*/
   //youtube_player.setSize(400,200);
   alert("This is a test.");
 }
-
-
-//*JN*/ debug("Made it through GlobalVars.js");
 
 
 /* Unused functions

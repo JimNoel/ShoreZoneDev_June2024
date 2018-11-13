@@ -133,52 +133,36 @@ define([
 
   function photoPlayer() {
     // Manage timed playback of photos
-
     var wait_for_current_photo = false;
-
     debug(photo_load_times_sort[photo_load_times_sort.length-1]);
-
     if (!latest_photo_loaded()) {
       debug("photoPlayer: last photo did not load in time. Waiting.");
       wait_for_current_photo = true;
     }
-
     var current_photo_load_delay = photo_play_delay;
-
     debug("photoPlayer: photo_play_delay=" + photo_play_delay + ", photo_load_average=" + photo_load_average + ", current_photo_load_delay="+current_photo_load_delay);
-
     return setTimeout(function() {
-
       if (sync_photos) return;
-
       if (this.counter == null) {
-
         if (next_photo_point != null) {
-
             this.counter = next_photo_point["item"]
         } else {
             this.counter = 0;
         }
       }
-
       if (!wait_for_current_photo) {
           this.counter = this.counter + photo_play_direction;
-
 //          if (this.counter < 0 || this.counter >= szPhotoWidget.points_photos[last_photo_video_name].length) {
         if (this.counter < 0 || this.counter >= this.getClickableGraphicsCount()) {
           clearTimeout(photo_play_timer);
           photo_play_timer = false;
             this.counter = this.counter - photo_play_direction;
         }
-
         update_photo(this.getClickableGraphicAttributes(this.counter));
       }
-
       if (photo_play_timer)
         photo_play_timer = photoPlayer();
-
     }, current_photo_load_delay);
-
   }
 
 
@@ -218,7 +202,6 @@ define([
       }
     },
 
-    //constructor: function(/*MapImageLayer*/ mapServiceLayer, /*String*/ layerName, /*String*/ symbolURL){
     constructor: function(/*Object*/ kwArgs){
 
       lang.mixin(this, kwArgs);
@@ -239,13 +222,10 @@ define([
         ['photo_resetForwardButton', 'Reset to End', 'w_collapse.png', 'szPhotoWidget', 'toEnd']
       ];
 
-      //photoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, controlData_photo);
-/* TS */
       var linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>"
       photoToolsDiv.innerHTML = linkHTML + makeMediaPlaybackHtml(playbackControlTemplate, controlData_photo, 'photoTools', 'position: relative; float: left');
       //getEl('photoTools').style.position = "relative";
       //getEl('photoTools').style.float = "left";
-/**/
 
       setVisible("photo_pauseButton", false);
 

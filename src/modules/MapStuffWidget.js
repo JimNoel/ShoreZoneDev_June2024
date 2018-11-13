@@ -23,13 +23,6 @@ var layerListWidget;
 
 var mapLoading = false;
 
-//OBS?    var lastExtent = null;
-
-/* for DEBUG
-var mapCursorLayer;
-var mapCursorSymbol;
-*/
-
 define([
   "dojo/_base/declare",
   "esri/core/watchUtils",
@@ -409,7 +402,6 @@ define([
         map: map,
         view: view
       });
-
       siteTabs.fa.widgets = [faWidget];
     }, function(error){
       debug("Fish Atlas MapServiceLayer failed to load:  " + error);
