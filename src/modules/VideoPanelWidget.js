@@ -398,11 +398,6 @@ define([
         if (youtube_id) {
           youtube_player.setPlaybackRate(playbackRate);
         }
-/*JN*
-        getEl("playbackRateLabel").innerText = playbackRate + "X";
-        getEl("decrSpeedIcon").innerText = (lowest?" ":"-   ");
-        getEl("incrSpeedIcon").innerText = (highest?" ":"   +");
-/**/
       };
 
       this.setLockPoints = function(locked) {

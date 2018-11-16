@@ -12,7 +12,7 @@ var popupsDocked = false;
 var minVideoLOD = 12;
 var maxSZFeatures = 1000;    // get from query?     see UnitsPanelWidget, line 107, for an example.  Get value from  A.maxRecordCount
 var maxExtentWidth = 100;     // maximal extent in kilometers for video
-var photoGap = 5;             // minimum gap is seconds between displayed photo marks
+var photoGap = 20;             // minimum gap is seconds between displayed photo marks
 
 //var gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/SZFlexWebSiteTools/GPServer/GroupDataExtract";     // URL for GroupDataExtract GP service
 var gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service

@@ -108,7 +108,8 @@ define([
         tableFields:  [],
         trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,64], "size":4},
+        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,0], "size":4,
+          "outline": {color: [ 128, 128, 128, 0 ] }},
         popupTitle: "Video Point",
         clickableMsg: "Move camera to this location",
         map: map,
@@ -906,8 +907,8 @@ define([
     addServiceLayers();
 
     map = new Map({
-      basemap: "topo",
-      ground: "world-elevation",
+      basemap: "hybrid",
+      //ground: "world-elevation",      // Used only with SceneView
       layers:  [sslMapServiceLayer, /*ssMapServiceLayer,*/ faMapServiceLayer, szMapServiceLayer]
     });
 
