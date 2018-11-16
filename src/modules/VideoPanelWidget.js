@@ -28,7 +28,7 @@ define([
   var nxt_vid_pt = null;
   var videos = false;
   var video_message_timeout = false;
-  var lastPhotoSec = -100;    // Used in filter function photoTimeGap to limit photo graphic objects
+  //OBS var lastPhotoSec = -100;    // Used in filter function photoTimeGap to limit photo graphic objects
 
 
   function measurePhotoDownloadTime() {
@@ -210,6 +210,7 @@ define([
     return totalSeconds + ";" + theUrls;
   }
 
+/*OBS
   function photoTimeGap(f) {
     var mp4Secs = f.attributes.MP4_Seconds;
     if (mp4Secs < lastPhotoSec + photoGap)
@@ -217,6 +218,7 @@ define([
     lastPhotoSec = mp4Secs;
     return true;
   }
+*/
 
   return declare(QueryBasedPanelWidget, {
 
@@ -281,10 +283,10 @@ define([
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
         //offLineLink.featureCount = features.length;
         this.makeClickableGraphics(features);
-        lastPhotoSec = -100;      // Reset photo filter counter
+        //OBS lastPhotoSec = -100;      // Reset photo filter counter
         var photoFeatures = features.filter(function(f){
           return f.attributes.StillPhoto_FileName
-        }).filter(photoTimeGap);
+        });       //.filter(photoTimeGap);
         szPhotoWidget.makeClickableGraphics(photoFeatures);
 
         updateDownloadDialog(features.length, photoFeatures.length);

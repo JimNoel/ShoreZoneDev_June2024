@@ -506,40 +506,53 @@ define([
 
         var geom = g.geometry
         var centroid = g.geometry;
+        var skipFeature = false;
       // If feature is not a point, use center of feature extent for "x" and "y" attributes
         if (g.geometry.type != "point") {
           geom = g.geometry.extent;
           centroid = geom.center;
+        } else if (this.clickableSymbolGap) {
+          let gArray = this.clickableLayer.graphics.items;
+          let l = gArray.length;
+          if (l > 0) {
+            let sp1 = view.toScreen(gArray[l-1].geometry);
+            let sp2 = view.toScreen(geom);
+            let dist_pixels = Math.sqrt(Math.pow(sp2.x-sp1.x,2) + Math.pow(sp2.y-sp1.y,2));
+            if (dist_pixels < this.clickableSymbolGap)
+              skipFeature = true;
+          }
         }
         a.x = centroid.x;    // g.geometry.x;
         a.y = centroid.y;    // g.geometry.y;
 
-        var mapFeature = webMercatorUtils.webMercatorToGeographic(geom);      //projPoint);   //this._webMercatorToGeographic(projPoint);
-        var mapFeatureCenter = webMercatorUtils.webMercatorToGeographic(centroid);
-        a.Caption = decDegCoords_to_DegMinSec(mapFeatureCenter.x, mapFeatureCenter.y);
+        if (!skipFeature) {
+          var mapFeature = webMercatorUtils.webMercatorToGeographic(geom);      //projPoint);   //this._webMercatorToGeographic(projPoint);
+          var mapFeatureCenter = webMercatorUtils.webMercatorToGeographic(centroid);
+          a.Caption = decDegCoords_to_DegMinSec(mapFeatureCenter.x, mapFeatureCenter.y);
 
-        var currSymbol = this.clickableSymbol.clone();
-        if (this.renderingInfo) {
-          var v = a[this.renderingInfo.field];
-          currSymbol.color = this.renderingInfo.uniqueColors[v];
-        }
-        var graphic = new Graphic({
-          geometry: mapFeature,
-          symbol: currSymbol,   // this.clickableSymbol,
-          attributes: a,
-          highlightGeometry: g.geometry
-        });
-        this.clickableLayer.add(graphic);
-
-        // add text?
-        if (this.textOverlayPars) {
-          var overlayPars = this.textOverlayPars;
-          overlayPars.text = a[this.textOverlayField];
-          var textGraphic = new Graphic({
+          var currSymbol = this.clickableSymbol.clone();
+          if (this.renderingInfo) {
+            var v = a[this.renderingInfo.field];
+            currSymbol.color = this.renderingInfo.uniqueColors[v];
+          }
+          var graphic = new Graphic({
             geometry: mapFeature,
-            symbol: overlayPars,
+            symbol: currSymbol,   // this.clickableSymbol,
+            attributes: a,
+            highlightGeometry: g.geometry
           });
-          this.clickableLayer.add(textGraphic);
+          this.clickableLayer.add(graphic);
+
+          // add text?
+          if (this.textOverlayPars) {
+            var overlayPars = this.textOverlayPars;
+            overlayPars.text = a[this.textOverlayField];
+            var textGraphic = new Graphic({
+              geometry: mapFeature,
+              symbol: overlayPars,
+            });
+            this.clickableLayer.add(textGraphic);
+          }
         }
 
       }
