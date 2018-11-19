@@ -16,6 +16,7 @@ define([
   "dojo/_base/lang",
   "dojo/on",
   "dojo/dom",
+  "dijit/registry",
 /*
   "dijit/layout/BorderContainer",
   "dijit/layout/ContentPane",

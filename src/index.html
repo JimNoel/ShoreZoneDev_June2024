@@ -303,10 +303,28 @@
       }
 
       function resizeMedia() {
+        let vDims = mediaDimensions("videoDiv", youtubeAspectRatio);
+        youtube_player.setSize(vDims.width, vDims.height);
+        let pDims = mediaDimensions("photoDiv", photoAspectRatio);
+        const photoEl = $("#photoImage")[0];
+        photoEl.width = pDims.width;
+        photoEl.height = pDims.height;
         var vDiv = dijit.registry.byId("videoDiv");
         var pDiv = dijit.registry.byId("photoDiv");
         console.log("videoDiv:  " + vDiv.w + "x" + vDiv.h + "     photoDiv:  " + pDiv.w + "x" + pDiv.h);
 
+      }
+
+      // TODO:  Move this to QueryBasedPanelWidget
+      function mediaDimensions(panelName, aspect) {
+        const mediaDiv = dijit.registry.byId(panelName);
+        let d = {width: mediaDiv.w, height: mediaDiv.h} ;
+        const divAspect = d.width/d.height;
+        if (aspect < divAspect)
+          d.width = parseInt(d.height*aspect);
+        else
+          d.height = parseInt(d.width/aspect);
+        return d;
       }
 
 

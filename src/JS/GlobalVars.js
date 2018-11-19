@@ -98,6 +98,7 @@ var current_video_path_prefix = "midres_";
 
 var videoSnippetDownloadFolder = altMediaServer + VIDEO_FOLDER + "midres_mp4";
 var youtubeAspectRatio = 16/9;
+var photoAspectRatio = 4/3;
 
 var extentDependentWidgets = [];
 var szVideoWidget = null;

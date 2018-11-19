@@ -97,11 +97,12 @@ define([
     origHeight = data.feed.gphoto$height.$t;      // Original height in pixels of image stored in Picasa
     origWidth = data.feed.gphoto$width.$t;        // Original width in pixels of image stored in Picasa
 
-    var aspect = origWidth / origHeight;
+    photoAspectRatio = origWidth / origHeight;
+    //let pDims = mediaDimensions("photoDiv", photoAspectRatio);
     var photoPanel = getEl("photoContainer");
     var requestWidth = $(photoPanel).width();   // This will be the requested width in pixels of the photo, for the panel
     var panelHeight = $(photoPanel).height();
-    var widthFromAspect = parseInt(panelHeight*aspect);
+    var widthFromAspect = parseInt(panelHeight*photoAspectRatio);
     if(requestWidth > widthFromAspect) {      // Given the panel height, widthFromAspect is the maximum allowable width
       requestWidth = widthFromAspect;         //   so reset requestWidth to widthFromAspect if it is greater
     }
