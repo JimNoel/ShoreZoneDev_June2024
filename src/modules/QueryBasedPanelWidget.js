@@ -36,7 +36,7 @@ define([
   "esri/geometry/Point",
   "esri/geometry/support/webMercatorUtils",
   "esri/Graphic"
-], function(declare, lang, on, dom, /*BorderContainer, ContentPane, TabContainer, */Query, QueryTask, GraphicsLayer, SimpleRenderer, UniqueValueRenderer,
+], function(declare, lang, on, dom, registry, /*BorderContainer, ContentPane, TabContainer, */Query, QueryTask, GraphicsLayer, SimpleRenderer, UniqueValueRenderer,
               PictureMarkerSymbol, SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, TextSymbol, Extent, Point, webMercatorUtils, Graphic){
 
   var queryComplete = true;

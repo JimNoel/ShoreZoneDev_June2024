@@ -159,7 +159,6 @@ define([
 
   function pausePlayback(/*String*/ player) {
     // Pause playback of specified player.  If arg is null, both players will be paused.
-    // TODO: Move to QueryBasedPanelWidget?
     if (!player || player=="video") {
       //debug("Pause video");
       szVideoWidget.setPlaybackOn(false);

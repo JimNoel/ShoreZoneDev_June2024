@@ -488,7 +488,7 @@ define([
     var km = Math.round(newExtent.width/1000) + " km";
     var bookmark = new Bookmark({name: savedExtentsWidget.bookmarks.items.length + ":" + km, extent: newExtent});
     //bookmark.thumbnail = "assets/images/noaa_wb.png";
-    savedExtentsWidget.bookmarks.add(bookmark);
+    savedExtentsWidget.bookmarks.add(bookmark);       // TODO: Successfully initializes with initial extent, but this is lost because bookmarks array is subsequently reset
     currentBookmarkNumber = savedExtentsWidget.bookmarks.length -1;
   }
 
@@ -934,8 +934,6 @@ define([
     locateIconLayer.listMode = "hide";
     map.add(locateIconLayer);
   };
-
-  //window.setTimeout(initMap, 1000);   /* TODO:  Find a way to do this using watcher */
 
 
   return declare(null, {
