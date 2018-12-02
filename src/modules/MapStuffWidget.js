@@ -470,11 +470,12 @@ define([
 
 
     //OBS?  lastExtent = newExtent;
+    featureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
     if (lock_points)      // If point set is locked,
       return;             //    then don't reset or query new points
     resetCurrentFeatures();
     mapLoading = true;
-    if (newExtent.width/1000 < maxExtentWidth) {    // (e.lod.level >= minVideoLOD)
+    if (featureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
       if (szVideoWidget)
         szVideoWidget.runQuery(newExtent);         // 3D: use extent3d?
       if (szUnitsWidget)
@@ -843,17 +844,8 @@ define([
     });
     view.ui.add(bgExpand, "bottom-left");
 
-//*DEBUG*/  alert("OffLineLink widget removed for iOS debugging");
-//*DEBUG:  Removed for iOS debugging
 
-    /* NOAA offlineLink widget
-    offLineLink = new OffLineLink({
-      view: view,
-      container: document.createElement("div")
-      //featureCount: szVideoWidget.clickableLayer.features.length
-    });
-    /**/
-
+    // NOAA offline app link
     var olExpand = new Expand({
       view: view,
       content: makeWidgetDiv("offlineAppPanel", "right")   ,
@@ -862,9 +854,20 @@ define([
       collapseTooltip: "Hide the offline app widget"
     });
     olExpand.content.innerHTML = download_notZoomedInEnoughContent;
-    //olExpand.visible = false;
     view.ui.add(olExpand, "top-right");
-    /**/
+
+
+    // Settings widget
+    var settingsExpand = new Expand({
+      view: view,
+      content: makeWidgetDiv("settingsPanel", "right")   ,
+      expandIconClass: "esri-icon-settings",
+      expandTooltip: "Click here to go to website settings.",
+      collapseTooltip: "Hide settings widget"
+    });
+    settingsExpand.content.innerHTML = settingsHtml;
+    view.ui.add(settingsExpand, "top-right");
+
 
     var homeWidget = new Home({
       view: view
@@ -900,6 +903,10 @@ define([
     var panZoomDiv = document.createElement("DIV");
     panZoomDiv.innerHTML = panZoomHtml;
     view.ui.add(panZoomDiv, "top-left");
+
+    var refreshFeaturesDiv = document.createElement("DIV");
+    refreshFeaturesDiv.innerHTML = refreshFeaturesHtml;
+    view.ui.add(refreshFeaturesDiv, "top-right");
 
 
   };

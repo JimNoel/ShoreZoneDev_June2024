@@ -125,6 +125,21 @@ var lock_points = false;
 // width was 20, trying larger values for iPad Mini
 var playbackControlTemplate = '<img id="{0}" class="playbackControl" title="{1}" src="assets/images/{2} " width="24" onclick="mediaControl_clickHandler({3},\'{4}\')" />';
 
+var settings = {
+  autoRefresh: true
+};
+var settingsHtml = '<h3>Settings</h3>';
+settingsHtml += '<h4><input type="checkbox" id="input_autoRefresh" onchange="autoRefreshInputHandler()" checked> Reset video/photo/unit markers whenever the extent changes</h4>';
+settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_clickableSymbolGap" style="width: 6ch" onchange="photoGapInputHandler()" value="20"></h4>';
+
+function autoRefreshInputHandler() {
+  settings.autoRefresh = getEl("input_autoRefresh").checked;
+}
+
+function photoGapInputHandler() {
+  szPhotoWidget.clickableSymbolGap = parseInt(getEl("input_clickableSymbolGap").value);
+}
+
 // Returns string identifying the device type
 function getDeviceType() {
   var agent = navigator.userAgent;
@@ -412,7 +427,6 @@ function resetCurrentFeatures() {
 function showCurrentFeatures() {
   setDisabled("offlineAppButton", false);   // This is directly setting the "disabled" attribute of the button in the OfflineAppLink widget
   showPanelContents("video,photo,units", true);
-  // TODO: show graphic features on map
 }
 
 
@@ -499,6 +513,9 @@ function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
     el.innerHTML = theContent;
   return el;
 }
+
+var featureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
+var refreshFeaturesHtml = "<img id='btn_refresh' src='assets/images/refresh24x24.png' onclick='refreshFeatures()' height='32px' width='32px' title='Click to refresh features' style='background-color:red;'/>";
 
 
 /* For pan/zoom-to-rectangle toggle */
