@@ -12,7 +12,6 @@ var popupsDocked = false;
 var minVideoLOD = 12;
 var maxSZFeatures = 1000;    // get from query?     see UnitsPanelWidget, line 107, for an example.  Get value from  A.maxRecordCount
 var maxExtentWidth = 100;     // maximal extent in kilometers for video
-//OBS var photoGap = 2;             // minimum gap is seconds between displayed photo marks
 
 //var gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/SZFlexWebSiteTools/GPServer/GroupDataExtract";     // URL for GroupDataExtract GP service
 var gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
@@ -126,18 +125,30 @@ var lock_points = false;
 var playbackControlTemplate = '<img id="{0}" class="playbackControl" title="{1}" src="assets/images/{2} " width="24" onclick="mediaControl_clickHandler({3},\'{4}\')" />';
 
 var settings = {
-  autoRefresh: true
+  autoRefresh: true,
+  photoGap: 100
 };
 var settingsHtml = '<h3>Settings</h3>';
-settingsHtml += '<h4><input type="checkbox" id="input_autoRefresh" onchange="autoRefreshInputHandler()" checked> Reset video/photo/unit markers whenever the extent changes</h4>';
-settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_clickableSymbolGap" style="width: 6ch" onchange="photoGapInputHandler()" value="20"></h4>';
+settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
+settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
+settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
+settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
 
-function autoRefreshInputHandler() {
-  settings.autoRefresh = getEl("input_autoRefresh").checked;
+function autoRefreshInputHandler(isAutoRefresh) {
+  settings.autoRefresh = isAutoRefresh;
+  let btnClass = "btn_refresh_inactive";
+  if (!isAutoRefresh)
+    btnClass = "btn_refresh_active";
+  getEl("btn_refresh").setAttribute("class", btnClass)
+}
+
+function setRefreshButton() {
+
 }
 
 function photoGapInputHandler() {
-  szPhotoWidget.clickableSymbolGap = parseInt(getEl("input_clickableSymbolGap").value);
+  settings.photoGap = parseInt(getEl("input_photoGap").value);
+  szPhotoWidget.clickableSymbolGap = settings.photoGap;
 }
 
 // Returns string identifying the device type
@@ -515,7 +526,7 @@ function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
 }
 
 var featureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
-var refreshFeaturesHtml = "<img id='btn_refresh' src='assets/images/refresh24x24.png' onclick='refreshFeatures()' height='32px' width='32px' title='Click to refresh features' style='background-color:red;'/>";
+var refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' src='assets/images/refresh24x24.png' onclick='refreshFeatures()' height='32px' width='32px' title='Click to refresh features' />";
 
 
 /* For pan/zoom-to-rectangle toggle */

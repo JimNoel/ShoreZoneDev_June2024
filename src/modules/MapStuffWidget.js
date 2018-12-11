@@ -83,7 +83,6 @@ define([
         clickableSymbolType: "point",
         clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":8},
         //  "outline": {color: [ 0, 0, 255, 1.0 ] }},
-        clickableSymbolGap:  20,
         popupTitle: "Photo Point",
         clickableMsg: "Move camera to this location",
         map: map,
@@ -112,7 +111,6 @@ define([
         clickableSymbolType: "point",
         clickableSymbolInfo: {"style":"circle", "color":[255,255,0,0], "size":4,
           "outline": {color: [ 128, 128, 128, 0 ] }},
-        //clickableSymbolGap:  1,
         popupTitle: "Video Point",
         clickableMsg: "Move camera to this location",
         map: map,
@@ -473,13 +471,17 @@ define([
     featureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
     if (lock_points)      // If point set is locked,
       return;             //    then don't reset or query new points
-    resetCurrentFeatures();
-    mapLoading = true;
-    if (featureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
-      if (szVideoWidget)
-        szVideoWidget.runQuery(newExtent);         // 3D: use extent3d?
-      if (szUnitsWidget)
-        szUnitsWidget.runQuery(newExtent);         // 3D: use extent3d?
+    if (settings.autoRefresh) {
+      resetCurrentFeatures();
+      mapLoading = true;
+      if (featureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
+        if (szVideoWidget)
+          szVideoWidget.runQuery(newExtent);         // 3D: use extent3d?
+        if (szUnitsWidget)
+          szUnitsWidget.runQuery(newExtent);         // 3D: use extent3d?
+      }
+    } else {
+
     }
 
     if (bookmarkSelected) {

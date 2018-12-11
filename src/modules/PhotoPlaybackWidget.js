@@ -206,6 +206,8 @@ define([
     constructor: function(/*Object*/ kwArgs){
 
       lang.mixin(this, kwArgs);
+
+      this.clickableSymbolGap = settings.photoGap;
       
       //debug("PhotoPlaybackWidget created");
 
