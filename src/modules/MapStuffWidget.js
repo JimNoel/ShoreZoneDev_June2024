@@ -109,7 +109,7 @@ define([
         tableFields:  [],
         trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,0], "size":4,
+        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,
           "outline": {color: [ 128, 128, 128, 0 ] }},
         popupTitle: "Video Point",
         clickableMsg: "Move camera to this location",
@@ -472,6 +472,8 @@ define([
     if (lock_points)      // If point set is locked,
       return;             //    then don't reset or query new points
     if (settings.autoRefresh) {
+      refreshFeatures();
+/*
       resetCurrentFeatures();
       mapLoading = true;
       if (featureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
@@ -480,8 +482,9 @@ define([
         if (szUnitsWidget)
           szUnitsWidget.runQuery(newExtent);         // 3D: use extent3d?
       }
+*/
     } else {
-
+        setRefreshButtonVisibility(featureRefreshDue);
     }
 
     if (bookmarkSelected) {
@@ -497,6 +500,7 @@ define([
 
   function addMapWatchers() {
     view.when(function() {
+      map.basemap = startBasemap;   //HACK:  Because inital basemap setting of "oceans" messes up initial extent and zooming
       var moveButtonAction = {title: "Move the camera", id: "move-camera"};
       var p = view.popup;     // new Popup();
       if (popupsDocked) {
@@ -604,8 +608,7 @@ define([
       var geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);    //szVideoWidget._webMercatorToGeographic(mapPoint);
       dom.byId("coordinates").innerHTML = decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y);
 
-      noaaHitTest(screenPoint);
-      //view.hitTest(screenPoint).when(handleGraphicHits);      // Use noaaHitTest until ESRI fixes inaccuracy
+      view.hitTest(screenPoint).then(handleGraphicHits);      // Use noaaHitTest until ESRI fixes inaccuracy
 
       /* DEBUG:  Show position of returned ESRI toMap method
       mapCursorLayer.removeAll();
@@ -615,15 +618,6 @@ define([
     });
   }
 
-  // HACK to handle inaccurate ESRI hitTest method
-  function noaaHitTest(screenPoint) {
-    screenPoint.x += 8;
-    screenPoint.y += 8;
-    view.hitTest(screenPoint).then(function(response) {
-      handleGraphicHits(response);
-    });
-//    view.hitTest(screenPoint).when(handleGraphicHits);
-  }
 
   // If mouse if over a video/photo graphic, open popup allowing moving the "camera" to this point
   function handleGraphicHits(response) {

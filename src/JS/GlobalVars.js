@@ -7,8 +7,13 @@ var justAK = false;
 
 var popupsDocked = false;
 
-// SZ video parameters
+/* Initial basemap.  Can be one of:
+      streets, satellite, hybrid, topo, gray, dark-gray, oceans, national-geographic, terrain, osm,
+      dark-gray-vector, gray-vector, streets-vector, topo-vector, streets-night-vector, streets-relief-vector, streets-navigation-vector     */
+var startBasemap = "oceans";
 
+
+// SZ video parameters
 var minVideoLOD = 12;
 var maxSZFeatures = 1000;    // get from query?     see UnitsPanelWidget, line 107, for an example.  Get value from  A.maxRecordCount
 var maxExtentWidth = 100;     // maximal extent in kilometers for video
@@ -136,19 +141,21 @@ settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input ty
 
 function autoRefreshInputHandler(isAutoRefresh) {
   settings.autoRefresh = isAutoRefresh;
-  let btnClass = "btn_refresh_inactive";
-  if (!isAutoRefresh)
-    btnClass = "btn_refresh_active";
-  getEl("btn_refresh").setAttribute("class", btnClass)
+  if (isAutoRefresh)
+    setRefreshButtonVisibility(false);
 }
 
-function setRefreshButton() {
-
+function setRefreshButtonVisibility(isVisible) {
+  let btnClass = "btn_refresh_inactive";
+  if (isVisible)
+    btnClass = "btn_refresh_active";
+  getEl("btn_refresh").setAttribute("class", btnClass)
 }
 
 function photoGapInputHandler() {
   settings.photoGap = parseInt(getEl("input_photoGap").value);
   szPhotoWidget.clickableSymbolGap = settings.photoGap;
+  //refreshFeatures();
 }
 
 // Returns string identifying the device type
@@ -421,6 +428,18 @@ function makeMediaPlaybackHtml(controlsTemplate, controlsParameters, id, style) 
 }
 
 function clearGraphicFeatures() {
+}
+
+function refreshFeatures() {
+  resetCurrentFeatures();
+  mapLoading = true;
+  if (featureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
+    if (szVideoWidget)
+      szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
+    if (szUnitsWidget)
+      szUnitsWidget.runQuery(view.extent);         // 3D: use extent3d?
+  }
+  setRefreshButtonVisibility(false);
 }
 
 function resetCurrentFeatures() {
