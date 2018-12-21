@@ -168,16 +168,6 @@ define([
     }
   }
 
-/*
-  function noVideoPoints(f) {
-    if (f.length==0) {
-      var infoText = "Video is not available in the current extent.";
-      setMessage("disabledMsg_video", infoText);
-      return true;
-    }
-    return false;
-  }
-*/
 
   function getDownloadVideoUrls(FS) {
     var maxSecondsOutside = 300;
@@ -258,13 +248,18 @@ define([
       this.query.orderByFields = ["Date_Time"];
       this.query.where = "(MP4_Seconds IS NOT NULL) AND (MP4_Seconds >= -1)";
       this.playbackRate = 1.0;
+      this.noFeaturesPanels.push(szPhotoWidget);
 
 
       this.processData = function(results) {
+        //this.processData.inherited(results);
+        //QueryBasedPanelWidget.processData(results);
+        //super.printInfo(this);
+        //this.inherited(arguments);
         var features = results.features;
         //debug(features.length + " features to process");
         pausePlayback("video");
-        if (this.noVideoPoints(features))
+        if (this.noFeatures(features))
           return;
 
         //showPanelContents("video,photo", true);
@@ -297,16 +292,6 @@ define([
         }
 
     };
-
-      this.noVideoPoints = function(f) {
-        if (f.length==0) {
-          //var infoText = "Video is not available in the current extent.";
-          setMessage("disabledMsg_video", this.noFeaturesInViewHTML);
-          setMessage("disabledMsg_photo", szPhotoWidget.noFeaturesInViewHTML);
-          return true;
-        }
-        return false;
-      };
 
       this.setVideoPosition = function(progress) {
         //debug("setVideoPosition:progress " + progress);

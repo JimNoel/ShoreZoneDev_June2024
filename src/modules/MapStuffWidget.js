@@ -75,9 +75,9 @@ define([
         contentPaneId: "photoDiv",
         baseName: "photo",
         headerDivName:  "photoHeaderDiv",
+        disabledMsgInfix: "photo points",
         disabledMsgDivName: "disabledMsg_photo",
-        dfltCaptionHTML: "<label style='color:red'>Zoom in further to see photos</label>",
-        noFeaturesInViewHTML: "<label style='color:red'>No photo points in this view.<br><br>Zoom out or pan to see photo points.</label>",
+        //dfltCaptionHTML: "<label style='color:red'>Zoom in further to see photos</label>",
         noQuery: true,
         trackingSymbolInfo: "assets/images/Camera24X24.png:24:24",
         clickableSymbolType: "point",
@@ -97,9 +97,9 @@ define([
         contentPaneId: "videoDiv",
         baseName: "video",
         headerDivName:  "videoHeaderDiv",
+        disabledMsgInfix: "video points",
         disabledMsgDivName: "disabledMsg_video",
-        dfltCaptionHTML: "<label style='color:red'>Zoom in further to see video</label>",
-        noFeaturesInViewHTML: "<label style='color:red'>No video points in this view.<br><br>Zoom out or pan to see video points.</label>",
+        //dfltCaptionHTML: "<label style='color:red'>Zoom in further to see video</label>",
         //displayDivName: "#videoImageContainer",
         mapServiceLayer: szMapServiceLayer,
         layerName: "1s",
@@ -129,9 +129,9 @@ define([
         baseName: "units",
         headerDivName:  "unitsHeaderDiv",
         displayDivName: "unitsContainer",
+        disabledMsgInfix: "units",
         disabledMsgDivName: "disabledMsg_units",
-        dfltCaptionHTML: "<label style='color:red'>Zoom in further to see units</label>",
-        noFeaturesInViewHTML: "<label style='color:red'>No units in this view.<br><br>Zoom out or pan to see units.</label>",
+        //dfltCaptionHTML: "<label style='color:red'>Zoom in further to see units</label>",
         mapServiceLayer: szMapServiceLayer,
         layerName: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
         layerPath: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
@@ -158,6 +158,8 @@ define([
         view: view
       });
       extentDependentWidgets.push(szUnitsWidget);
+
+      showPanelContents("video,photo,units", false);
 
       siteTabs.sz.widgets = [szPhotoWidget, szVideoWidget, szUnitsWidget];
 
@@ -201,7 +203,6 @@ define([
             displayDivName: "ssContainer",
             disabledMsgDivName: "disabledMsg_ss",
             dfltCaptionHTML: "<label style='color:red'>Zoom in further to see Shore Station features</label>",
-            noFeaturesInViewHTML: "<label style='color:red'>No features in this view.<br><br>Zoom out or pan to see features.</label>",
             mapServiceLayer: ssMapServiceLayer,
             layerName: "Regions",
             layerPath: "Regions",
@@ -244,8 +245,7 @@ define([
         tableHeaderTitle: "All Regions",
         displayDivName: "faContainer",
         disabledMsgDivName: "disabledMsg_fa",
-        dfltCaptionHTML: "<label style='color:red'>Zoom in further to see Fish Atlas features</label>",
-        noFeaturesInViewHTML: "<label style='color:red'>No features in this view.<br><br>Zoom out or pan to see features.</label>",
+        //dfltCaptionHTML: "<label style='color:red'>Zoom in further to see Fish Atlas features</label>",
         mapServiceLayer: faMapServiceLayer,
         dropDownInfo: [
           { ddName: "Region",

@@ -181,6 +181,9 @@ define([
         //console.log("processData: Table");
         var fields = results.fields;
         var features = results.features;
+        if (this.noFeatures(features))
+          return;
+
         this.makeClickableGraphics(features);
         this.makeTable(fields, features);
         getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;

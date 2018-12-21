@@ -430,14 +430,31 @@ function makeMediaPlaybackHtml(controlsTemplate, controlsParameters, id, style) 
 function clearGraphicFeatures() {
 }
 
+function updateNoFeaturesMsg(widgets, status) {
+  // Sets messages to display in panels when no content is available to display.  Messages will be visible whenever zoomed out or zoomed in too far, or when waiting on query results
+  let template = "";
+  if (status === "zoomin")
+    template = "Zoom in further to see {1}";
+  else if (status === "querying")
+    template = "Looking for {1} ...";
+  else if (status === "zoomout")
+    template = "No {1} in this view.<br><br>Zoom out or pan to see {1}.";
+  widgets.forEach(function(w, index, array) {
+    setMessage(w.disabledMsgDivName, template.replace(/\{1\}/g, w.disabledMsgInfix));
+  });
+}
+
 function refreshFeatures() {
   resetCurrentFeatures();
   mapLoading = true;
   if (featureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
+    updateNoFeaturesMsg(extentDependentWidgets, "querying");
     if (szVideoWidget)
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
     if (szUnitsWidget)
       szUnitsWidget.runQuery(view.extent);         // 3D: use extent3d?
+  } else {
+    updateNoFeaturesMsg(extentDependentWidgets, "zoomin");
   }
   setRefreshButtonVisibility(false);
 }

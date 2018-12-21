@@ -48,6 +48,8 @@ define([
 
       //this.addPanelHtml();
 
+      this.noFeaturesPanels = [this];
+
       if (this.clickableSymbolInfo) {
         // Add (transparent) Graphics Layer for selecting feature
         this.clickableLayer = new GraphicsLayer();
@@ -123,10 +125,6 @@ define([
         this.playDir = 1;     // playback direction
       }
 
-      if (this.disabledMsgDivName)
-        setMessage(this.disabledMsgDivName, this.dfltCaptionHTML);
-        //getEl(this.headerDivName).innerHTML = this.dfltCaptionHTML;
-
       // Skip if the widget doesn't get its data directly from a query
       // e.g. PhotoPlaybackWidget, which uses a subset of the data from VideoPanelWidget
       if (!this.noQuery) {
@@ -146,9 +144,18 @@ define([
 
       this.addPanelHtml();
 
+      this.noFeatures = function(f) {
+        if (f.length==0) {
+          updateNoFeaturesMsg(this.noFeaturesPanels , "zoomout");
+          return true;
+        }
+        return false;
+      };
+
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
       this.processData = function(results) {
+        console.log("QueryBasedPanelWidget processData function");
       };
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
@@ -382,7 +389,6 @@ define([
       if (this.trackingLayer)
         this.trackingLayer.removeAll();
       view.popup.close();
-      setMessage(this.disabledMsgDivName, this.dfltCaptionHTML);
     },
 
     runQuery: function(extent) {
@@ -462,7 +468,7 @@ define([
         if (attrs.Caption)
           headerDiv.innerHTML = attrs.Caption;
         else
-          headerDiv.innerHTML = this.dfltCaptionHTML;
+          headerDiv.innerHTML = getEl(this.disabledMsgDivName).innerHTML;    //this.dfltCaptionHTML;
       }
     },
 
