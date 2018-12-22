@@ -46,26 +46,29 @@ define([
 
         var unitColumns = [];
         var nonNullCount = new Object();
-        var columnStyleHTML = "";
+        var columnStyleCSS = "";
 
         for (let i=0; i<fields.length; i++) {
           unitColumns.push({
             field: fields[i].name,
-            label: fields[i].alias
+            label: fields[i].alias,
+            formatter: function(value){
+              return value       // "<strong>" + value + "</strong>";
+            },
           });
           var colWidth = (fields[i].alias.length + 1) * 12;
-          columnStyleHTML += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
+          columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
           nonNullCount[fields[i].name] = 0;
         }
 
         // Create style-sheet for columns
         var sheet = document.createElement('style');
-        sheet.innerHTML = columnStyleHTML;
+        sheet.innerHTML = columnStyleCSS;
         document.body.appendChild(sheet);
 
         var unitData = [];
         for (let i=0; i<features.length; i++) {
-          //*JN*/ features[i].attributes["item"] = i;
+          /*JN*/ features[i].attributes.PHY_IDENT = "<span gObjIndex='" + features[i].attributes.PHY_IDENT + "@" + i + "@'>" + features[i].attributes.PHY_IDENT + "</span>";
           unitData.push(features[i].attributes);
           for (a in features[i].attributes) {
             if (features[i].attributes[a]) {
@@ -101,6 +104,8 @@ define([
         });
 
         this.grid.on('dgrid-refresh-complete', function(event) {
+          //let testRow = event.grid._rows[3];
+          //testRow.setAttribute("id", "testRow");
           this.repositionTotalLabels(event.grid.columns);
         }.bind(this));
 
@@ -121,7 +126,9 @@ define([
         this.grid.on('.dgrid-content .dgrid-row:mouseover', function (event) {
           var row = this.grid.row(event);
           var rowIndex = event.selectorTarget.rowIndex;
-          var associatedGraphic = this.clickableLayer.graphics.items[rowIndex];
+          const gObjFieldHtml = this.store.data[rowIndex].PHY_IDENT;
+          const gObjIndex = event.selectorTarget.innerHTML.split("@")[1];
+          var associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
           this.showGridTooltip(event, rowIndex, associatedGraphic);
           if (this.clickableLayer.visible) {
             this.displayPlayButton(associatedGraphic);
