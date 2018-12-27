@@ -53,7 +53,7 @@ define([
             field: fields[i].name,
             label: fields[i].alias,
             formatter: function(value){
-              return value       // "<strong>" + value + "</strong>";
+              return value       // This causes dGrid to treat values as HTML code
             },
           });
           var colWidth = (fields[i].alias.length + 1) * 12;
