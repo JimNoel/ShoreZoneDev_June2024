@@ -44,12 +44,12 @@ define([
         // Create a dGrid table from returned data
         getEl(this.displayDivName).innerHTML = "";      // clear the DIV
 
-        var unitColumns = [];
+        var tableColumns = [];
         var nonNullCount = new Object();
         var columnStyleCSS = "";
 
         for (var i=0; i<fields.length; i++) {
-          unitColumns.push({
+          tableColumns.push({
             field: fields[i].name,
             label: fields[i].alias,
             formatter: function(value){
@@ -66,10 +66,10 @@ define([
         sheet.innerHTML = columnStyleCSS;
         document.body.appendChild(sheet);
 
-        var unitData = [];
+        var tableData = [];
         for (var i=0; i<features.length; i++) {
           /*JN*/ features[i].attributes.PHY_IDENT = "<span gObjIndex='" + features[i].attributes.PHY_IDENT + "@" + i + "@'>" + features[i].attributes.PHY_IDENT + "</span>";
-          unitData.push(features[i].attributes);
+          tableData.push(features[i].attributes);
           for (a in features[i].attributes) {
             if (features[i].attributes[a]) {
               nonNullCount[a] += 1;
@@ -79,11 +79,11 @@ define([
         }
         //this.store = null;
         this.store = new (declare([Memory, Trackable]))({
-          data: unitData
+          data: tableData
         });
 /*
-        for (var c=0; c<unitColumns.length; c++) {
-          var col = unitColumns[c];
+        for (var c=0; c<tableColumns.length; c++) {
+          var col = tableColumns[c];
           col.hidden = (nonNullCount[col.field]===0);
         }
 /**/
@@ -94,7 +94,7 @@ define([
           loadingMessage: 'Loading data...',
           noDataMessage: 'No results found.',
           collection: this.store,
-          columns: unitColumns
+          columns: tableColumns
         }, this.displayDivName);
         this.grid.startup();
 
@@ -157,7 +157,7 @@ define([
 
         this.showHeaderTooltip = function(event){
           var fieldName = event.selectorTarget.field;
-          var description = this.attrName(fieldName,this.UnitAttrsInfo);
+          var description = this.attrName(fieldName);
           if (description !== fieldName) {
             var toolTipText = description;
             var cell=this.grid.cell(event);

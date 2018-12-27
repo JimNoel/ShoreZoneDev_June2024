@@ -591,8 +591,7 @@ define([
       // Handle click events:  Check for mouse over graphic features
     view.on('click', [], function(e){
       var screenPoint = {x: e.x, y: e.y};
-      noaaHitTest(screenPoint);
-      //view.hitTest(screenPoint).when(handleGraphicHits);      // Use noaaHitTest until ESRI fixes inaccuracy
+      view.hitTest(screenPoint).when(handleGraphicHits);
     });
 
 
@@ -608,7 +607,7 @@ define([
       var geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);    //szVideoWidget._webMercatorToGeographic(mapPoint);
       dom.byId("coordinates").innerHTML = decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y);
 
-      view.hitTest(screenPoint).then(handleGraphicHits);      // Use noaaHitTest until ESRI fixes inaccuracy
+      view.hitTest(screenPoint).then(handleGraphicHits);
 
       /* DEBUG:  Show position of returned ESRI toMap method
       mapCursorLayer.removeAll();

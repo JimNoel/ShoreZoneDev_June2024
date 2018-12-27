@@ -43,7 +43,7 @@ define([
       
       //console.log("UnitsPanelWidget created");
 
-      this.UnitAttrsInfo = new Array();
+      this.UnitAttrsInfo = [];
 
       this.queryOutFields = ["PHY_IDENT"];
 
@@ -71,6 +71,7 @@ define([
         return null;
       };
 
+      // This method overrides the original method in QueryBasedPanelWidget.js
       this.attrName = function(a) {
         var o = this.findAttrInfoObj(a);
         if (o) {
@@ -80,6 +81,7 @@ define([
         }
       };
 
+      // This method overrides the original method in QueryBasedPanelWidget.js
       this.attrValDescription = function(a, attrs) {
         var o = this.findAttrInfoObj(a);
         if (o) {
