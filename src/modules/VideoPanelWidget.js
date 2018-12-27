@@ -88,7 +88,7 @@ define([
           nxt_vid_pt = szVideoWidget.getClickableGraphicAttributes(szVideoWidget.counter);
           //debug("video widget counter = " + szVideoWidget.counter);
           szVideoWidget.moveToFeature(nxt_vid_pt);
-          if (nxt_vid_pt.VIDEOTAPE != last_video_name) {
+          if (nxt_vid_pt.VIDEOTAPE !== last_video_name) {
             setVideoSource(nxt_vid_pt);
             currentTime = 0;      // new video defaults to time 0
           }
@@ -105,7 +105,7 @@ define([
       time_now = new Date()
 
       // Interpolation betwenn waypoints
-      if (typeof last_LatLongSend == "undefined" || time_now-last_LatLongSend >= LatLongSendRate) {
+      if (typeof last_LatLongSend === "undefined" || time_now-last_LatLongSend >= LatLongSendRate) {
 
         t = 1000*(szVideoWidget.getVideoPosition() - cur_vid_pt["MP4_Seconds"]) / (nxt_vid_pt["DATE_TIME"]-cur_vid_pt["DATE_TIME"])
 
@@ -142,7 +142,7 @@ define([
         youtube_id = startPointData["YouTubeID"];
         asyncLoader("https://www.youtube.com/iframe_api");
       } else {
-        if (youtube_id && youtube_player && startPointData["YouTubeID"] != youtube_id) {
+        if (youtube_id && youtube_player && startPointData["YouTubeID"] !== youtube_id) {
           youtube_playback_memory = youtube_player.getPlayerState()
           youtube_id = startPointData["YouTubeID"];
           //debug("before YT.loadVideoById");
@@ -158,12 +158,12 @@ define([
 
   function pausePlayback(/*String*/ player) {
     // Pause playback of specified player.  If arg is null, both players will be paused.
-    if (!player || player=="video") {
+    if (!player || player==="video") {
       //debug("Pause video");
       szVideoWidget.setPlaybackOn(false);
       szPhotoWidget.next_photo_point = null;
     }
-    if (!player || player=="photo") {
+    if (!player || player==="photo") {
       debug("Pause photo");
     }
   }
@@ -172,7 +172,7 @@ define([
   function getDownloadVideoUrls(FS) {
     var maxSecondsOutside = 300;
     var theUrls = "";
-    if (FS.length == 0)
+    if (FS.length === 0)
       return "";
     var Videotape = "";
     var firstSeconds = 0;
@@ -182,8 +182,8 @@ define([
     for (var i=0; i<FS.length; i++) {
       f = FS[i].attributes;
       secondsOut = f.MP4_Seconds - lastSeconds;
-      if ((f.VIDEOTAPE!=Videotape) || (secondsOut>maxSecondsOutside)) {
-        if (theUrls != "") {
+      if ((f.VIDEOTAPE!==Videotape) || (secondsOut>maxSecondsOutside)) {
+        if (theUrls !== "") {
           theUrls += lastSeconds + ";";
           totalSeconds += (lastSeconds - firstSeconds);
         }
@@ -279,7 +279,7 @@ define([
 
         this.counter = this.firstVideoAvail();
 
-        if (this.counter == -1) {
+        if (this.counter === -1) {
           this.counter = 0;
         } else {
           showCurrentFeatures();
@@ -339,7 +339,7 @@ define([
           youtube_id = false;
         }
 
-        if (last_video_name != startPointData.VIDEOTAPE) {
+        if (last_video_name !== startPointData.VIDEOTAPE) {
           last_video_name = setVideoSource(latest_startPointData);
           cur_vid_pt = null;
           nxt_vid_pt = null;
@@ -424,7 +424,7 @@ define([
             }
             while ((p>=0) && (p<L) && (!this.getClickableGraphicAttributes(p)["hasVideo"]))
                 p = p + incr;
-            if  ((p==-1) || (p==L))
+            if  ((p===-1) || (p===L))
                 return -1;
             else
                 return p;

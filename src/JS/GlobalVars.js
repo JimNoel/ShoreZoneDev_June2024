@@ -57,21 +57,21 @@ var initTab = "szTab";
 
 //* process site parameters
 var siteParsJSON = location.search.slice(1);
-if (siteParsJSON != "") {
+if (siteParsJSON !== "") {
   siteParsJSON = siteParsJSON.toLowerCase().replace(/&/g,'","').replace(/=/g,'":"');
   siteParsJSON = '{"' + siteParsJSON + '"}';
   var sitePars = JSON.parse(siteParsJSON);
 
   // for comparing performance of old and new SZ map services
-  if (sitePars["db"] == "sql") {
+  if (sitePars["db"] === "sql") {
     szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
     alert("Switching to SqlServer-based map service");
   }
-  else if (sitePars["db"] == "sde") {
+  else if (sitePars["db"] === "sde") {
     szMapServiceLayerURL = szMapServiceLayerURLnoaa;
     alert("Switching to old map service");
   }
-  else if (sitePars["db"] == "ps") {
+  else if (sitePars["db"] === "ps") {
     szMapServiceLayerURL = szMapServiceLayerURLps;
     alert("Switching to PSMFC map service");
   }
@@ -193,27 +193,27 @@ function debug(txt, append, br, key_counter) {
    */
   if (!debug_mode) return;      // No debug message if null
 
-  if (typeof append == "undefined") append = true;
-  if (typeof br == "undefined") br = true;
-  if (typeof key_counter == "undefined") key_counter = 0;
+  if (typeof append === "undefined") append = true;
+  if (typeof br === "undefined") br = true;
+  if (typeof key_counter === "undefined") key_counter = 0;
 
-  if (debug_mode=="alert")
+  if (debug_mode==="alert")
     alert(txt);
   else if (window.console) {
     console.log(txt)
   } else { // emulate debug console on older browsers
-    if ($("#debug").size() == 0) {
+    if ($("#debug").size() === 0) {
       $("body").append("<div id='debug' style='position:absolute; bottom: 5px; right: 5px; background-color: #FFF; opacity: 0.7; padding: 5px; max-height: 250px; overflow: auto; width: 300px; text-align: left;'></div>");
     }
 
     if (!append) $("#debug").html("");
 
-    if (typeof txt == "object") {
+    if (typeof txt === "object") {
       $.each(txt, function( key, value ) {
         debug(key + ": ", true, true, key_counter+1); debug(value, true, true, key_counter+1);
       });
 
-      if (key_counter == 0) $("#debug").append("<br>");
+      if (key_counter === 0) $("#debug").append("<br>");
     } else {
       $("#debug").append(txt + (br ? "<br>":" "));
     }
@@ -301,9 +301,9 @@ function setMessage_Mario(elName, params) {
 
   if (image_message_timeout) clearTimeout(image_message_timeout);
 
-  if (params["visible"] == true)
+  if (params["visible"] === true)
     $("#"+elName).show()
-  else if (params["visible"] == false)
+  else if (params["visible"] === false)
     $("#"+elName).hide();
 
   if (params["text"])
@@ -341,7 +341,7 @@ function isVisible(id) {
   el = getEl(id);
   if (!el)
     return false;
-  if (el.style.visibility == "visible")
+  if (el.style.visibility === "visible")
     return true;
   else
     return false;
@@ -479,7 +479,7 @@ function showCurrentFeatures() {
 
 // Recursive function that determines the highest ancestor of the given sublayer (modified from TS)
 function layerFirstAncestorName(mapService, layer ) {
-  if ( layer.parent.title == mapService.title ) {
+  if ( layer.parent.title === mapService.title ) {
     return layer.title;
   }
   else {
@@ -528,7 +528,7 @@ function makeClassArrayVisibilityObject(/*Object*/ obj) {  // Initialize obj wit
       var s = "";
       for (c in classNames) {
         s += "." + classNames[c] + " {display: ";
-        if (classNames[c]==newClassName)
+        if (classNames[c]===newClassName)
           s += "block";
         else s += "none";
         s += "}  ";
@@ -631,10 +631,10 @@ function test() {
  var L = "/";
  for (var i=0; i<theArray.length; i++) {
  var S = theArray[i];
- if (L.indexOf("/" + S + "/") == -1)
+ if (L.indexOf("/" + S + "/") === -1)
  L += S + "/";
  }
- if (L == "/")
+ if (L === "/")
  L = "";
  else
  L = L.slice(1,L.length-1);
@@ -645,10 +645,10 @@ function test() {
  // "mode" can be "left", "right" or "both"
  var outstr = str;
  var leftSide = false;
- if (mode=="left")
+ if (mode==="left")
  leftSide = true;
  while (outstr.length < len) {
- if (mode=="both")
+ if (mode==="both")
  leftSide = !leftSide;
  if (leftSide)
  outstr = " " + outstr;
@@ -661,8 +661,8 @@ function test() {
 function getSubLayerID(mapImageLayer, subLayerName) {
   var li = mapImageLayer.allSublayers;
   for (var i=0; i<li.length; i++) {
-    //if (li.items[i].title.indexOf(subLayerName) != -1)      // option to find when layer has DB prefixes
-    if (li.items[i].title == subLayerName)
+    //if (li.items[i].title.indexOf(subLayerName) !== -1)      // option to find when layer has DB prefixes
+    if (li.items[i].title === subLayerName)
       return li.items[i].id;
   }
   return -1;

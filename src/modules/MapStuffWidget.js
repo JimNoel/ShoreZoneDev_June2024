@@ -456,7 +456,7 @@ define([
     if (!this.prequeryTask)
       return;
     this.prequeryTask.executeForCount({ where: "1=1"}).when(function(results){
-      if (results.features.length==maxSZFeatures) {
+      if (results.features.length===maxSZFeatures) {
         console.log(this.baseName + ":  maxSZFeatures (" + maxSZFeatures + ") returned.");
       } else {
         console.log("< maxSZFeatures returned");
@@ -528,7 +528,7 @@ define([
     view.watch("extent", function(newExtent, oldExtent, property, theView) {
       if (theView.interacting)    // Bypass if panning or using mouse wheel.  In this case, the watch on "interacting" (below) will kick in when the interaction is complete
         return;
-      if (theView.animation && theView.animation.state=="running")      // Wait until extent change is complete
+      if (theView.animation && theView.animation.state==="running")      // Wait until extent change is complete
         return;
       handleExtentChange(newExtent);
     });
@@ -621,7 +621,7 @@ define([
 
   // If mouse if over a video/photo graphic, open popup allowing moving the "camera" to this point
   function handleGraphicHits(response) {
-    if (response.results.length == 0) {
+    if (response.results.length === 0) {
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
       return;
@@ -632,15 +632,15 @@ define([
     // };
 
     var i=0;      // Respond only to hits on "_Clickable" layers
-    while (i<response.results.length && response.results[i].graphic.layer.id.slice(-10)!="_Clickable")
+    while (i<response.results.length && response.results[i].graphic.layer.id.slice(-10)!=="_Clickable")
       i++;
-    if (i == response.results.length) {
+    if (i === response.results.length) {
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
       return;
     }
 
-    if (response.results[i].graphic != currentHoveredGraphic) {
+    if (response.results[i].graphic !== currentHoveredGraphic) {
       currentHoveredGraphic = response.results[i].graphic;
       currentWidgetController = currentHoveredGraphic.layer.widgetController;
       if (hoverTimeout)
@@ -723,9 +723,9 @@ define([
 */
       //event.item.open = true;
       /*  NOT SURE WHAT THIS WAS FOR?
-      if (event.item.layer.title == "Derived ShoreZone Attributes")
+      if (event.item.layer.title === "Derived ShoreZone Attributes")
         event.item.layer.visible = false;     // turn off layer display
-      if (event.item.layer.title == "Video Flightline")
+      if (event.item.layer.title === "Video Flightline")
         event.item.visible = false;
       */
     };

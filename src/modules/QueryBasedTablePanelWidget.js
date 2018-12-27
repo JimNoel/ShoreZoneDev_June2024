@@ -84,7 +84,7 @@ define([
 /*
         for (var c=0; c<unitColumns.length; c++) {
           var col = unitColumns[c];
-          col.hidden = (nonNullCount[col.field]==0);
+          col.hidden = (nonNullCount[col.field]===0);
         }
 /**/
         // Instantiate grid
@@ -133,9 +133,9 @@ define([
           if (this.clickableLayer.visible) {
             this.displayPlayButton(associatedGraphic);
           }
-          // row.element == the element with the dgrid-row class
-          // row.id == the identity of the item represented by the row
-          // row.data == the item represented by the row
+          // row.element === the element with the dgrid-row class
+          // row.id === the identity of the item represented by the row
+          // row.data === the item represented by the row
         }.bind(this));
 
         this.grid.on('.dgrid-content .dgrid-row:mouseout', function (event) {
@@ -158,7 +158,7 @@ define([
         this.showHeaderTooltip = function(event){
           var fieldName = event.selectorTarget.field;
           var description = this.attrName(fieldName,this.UnitAttrsInfo);
-          if (description != fieldName) {
+          if (description !== fieldName) {
             var toolTipText = description;
             var cell=this.grid.cell(event);
             dijit.showTooltip(toolTipText, cell.element);
@@ -170,7 +170,7 @@ define([
           if (cell.column) {
             var fieldName = cell.column.field;
             var fieldValueDescr = this.attrValDescription(fieldName, associatedGraphic.attributes);
-            if (fieldValueDescr != associatedGraphic.attributes[fieldName]) {
+            if (fieldValueDescr !== associatedGraphic.attributes[fieldName]) {
               var toolTipText = fieldValueDescr;
               dijit.showTooltip(toolTipText, cell.element);
             }

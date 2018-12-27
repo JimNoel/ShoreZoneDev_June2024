@@ -86,13 +86,13 @@ define([
           this.highlightSymbol.outline.width = "2px";
           this.highlightSymbol.size += 5;
         } else {
-          if (this.highlightSymbolType == "polyline")
+          if (this.highlightSymbolType === "polyline")
             this.highlightSymbol = new SimpleLineSymbol(this.highlightSymbolInfo);
         }
 
         /*
         this.highlightSymbol = this.clickableSymbol.clone();
-        if (this.highlightSymbolType == "polyline") {
+        if (this.highlightSymbolType === "polyline") {
           //this.highlightSymbol.color.a = 0;
           this.highlightSymbol.color = "red";
           this.highlightSymbol.width = "2px";
@@ -145,7 +145,7 @@ define([
       this.addPanelHtml();
 
       this.noFeatures = function(f) {
-        if (f.length==0) {
+        if (f.length===0) {
           updateNoFeaturesMsg(this.noFeaturesPanels , "zoomout");
           return true;
         }
@@ -209,7 +209,7 @@ define([
         }
 
         //    Positions the popup.  Disabled for now, as it can cause panning of display.
-        if (e.geometry.type == "point")
+        if (e.geometry.type === "point")
           infoWin.location = e.geometry;
         else
           infoWin.location = e.geometry.center;
@@ -252,13 +252,13 @@ define([
 
 
   setClickableSybolType: function() {
-      if (this.clickableSymbolType == "text")
+      if (this.clickableSymbolType === "text")
         this.clickableSymbol = new TextSymbol(this.clickableSymbolInfo);
-      if (this.clickableSymbolType == "point")
+      if (this.clickableSymbolType === "point")
         this.clickableSymbol = new SimpleMarkerSymbol(this.clickableSymbolInfo);
-      else if (this.clickableSymbolType == "polyline")
+      else if (this.clickableSymbolType === "polyline")
         this.clickableSymbol = new SimpleLineSymbol(this.clickableSymbolInfo);
-      else if (this.clickableSymbolType == "polygon" || this.clickableSymbolType == "extent")
+      else if (this.clickableSymbolType === "polygon" || this.clickableSymbolType === "extent")
         this.clickableSymbol = new SimpleFillSymbol(this.clickableSymbolInfo);
     },
 
@@ -415,15 +415,16 @@ define([
         this.ddTotalsLayerNameAddOn = "";
         var ddInfo = this.dropDownInfo;
         for (d in ddInfo)
-          if (ddInfo[d].SelectedOption !== "All") {
-            var selOption = ddInfo[d].SelectedOption;
-            if (ddInfo[d].isAlpha)
+          var item = ddInfo[d];
+          if (item.SelectedOption !== "All") {
+            var selOption = item.SelectedOption;
+            if (item.isAlpha)
               selOption = "'" + selOption + "'";
-            this.ddLayerNameAddOn += ddInfo[d].LayerNameAddOn;
-            this.ddTotalsLayerNameAddOn += ddInfo[d].totalsLayerNameAddOn;
+            this.ddLayerNameAddOn += item.LayerNameAddOn;
+            this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
             if (theWhere !== "")
               theWhere += " AND ";
-            theWhere += ddInfo[d].whereField + "=" + selOption;
+            theWhere += item.whereField + "=" + selOption;
           }
         this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
@@ -433,7 +434,7 @@ define([
 
       this.queryTask.execute(this.query).then(function(results){
           //var theFeatures = results.features;
-          if (results.features.length==maxSZFeatures) {
+          if (results.features.length===maxSZFeatures) {
               console.log(this.baseName + ":  maxSZFeatures (" + maxSZFeatures + ") returned.");
               //alert("Too many features for " + this.layerName + ".  Zoom in further.");
           } else {
@@ -511,11 +512,11 @@ define([
         }
         a.item = n;
 
-        var geom = g.geometry
+        var geom = g.geometry;
         var centroid = g.geometry;
         var skipFeature = false;
       // If feature is not a point, use center of feature extent for "x" and "y" attributes
-        if (g.geometry.type != "point") {
+        if (g.geometry.type !== "point") {
           geom = g.geometry.extent;
           centroid = geom.center;
         } else if (this.clickableSymbolGap) {

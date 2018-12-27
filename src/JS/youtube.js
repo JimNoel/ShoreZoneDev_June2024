@@ -24,7 +24,7 @@ function youtube_ready() {
 function onPlayerReady(event) {
   youtube_player_ready = true;
   youtube_player.mute();
-  if (deviceType=="iOS" && !iOS_playedOnce) {
+  if (deviceType==="iOS" && !iOS_playedOnce) {
     iOS_playedOnce = true;
     alert("Dear iPad/iPod/iPhone users:  Due to a security restriction in iOS, video playback will not be enabled until you manually touch the red YouTube play icon in the video panel.  Please do so, after closing this dialog.");
   }
@@ -45,7 +45,7 @@ function onPlayerStateChange(event) {
 
   var state = youtube_player.getPlayerState();
 
-  if (state == 1 && !youtube_timer) {
+  if (state === 1 && !youtube_timer) {
 
     if (youtube_progress_memory) {
       szVideoWidget.setPlaybackOn(false);
@@ -53,22 +53,22 @@ function onPlayerStateChange(event) {
       youtube_progress_memory = false;
     }
 
-    if (youtube_playback_memory != 1) {
+    if (youtube_playback_memory !== 1) {
       szVideoWidget.setPlaybackOn(false);
     }
 
     youtube_timer = setInterval(CheckVideoProgress, 500/szVideoWidget.playbackRate);
 
-  } else if (state == 0) {      // YT.PlayerState.ENDED
-  } else if (state == 2) {      // YT.PlayerState.PAUSED
+  } else if (state === 0) {      // YT.PlayerState.ENDED
+  } else if (state === 2) {      // YT.PlayerState.PAUSED
       //debug("Video paused")
-  } else if (state == 3) {      // YT.PlayerState.BUFFERING
+  } else if (state === 3) {      // YT.PlayerState.BUFFERING
       //debug("Video buffering");
-  } else if (state == 5) {      // YT.PlayerState.CUED
+  } else if (state === 5) {      // YT.PlayerState.CUED
       //debug("Video cued");
   }
 
-  if (state != 1 && youtube_timer) {
+  if (state !== 1 && youtube_timer) {
     window.clearInterval(youtube_timer);
     youtube_timer = false;
   }
@@ -89,7 +89,7 @@ function changePlaybackSpeed(p) {
   // Ensure that the produced value is within possible bounds.
   console.assert(index>=0 && index<Math.max(avail_rates.length), {'index': index, 'min-index': 0, 'max-index': avail_rates.length - 1,'msg': 'Index is outside of the acceptable range.'});
   // Set the playback rate to the appropriate rate
-  szVideoWidget.setPlaybackRate(new_rate, index==0, index==(avail_rates.length-1))
+  szVideoWidget.setPlaybackRate(new_rate, index===0, index===(avail_rates.length-1))
 }
 
 function getProportionalInt(p, min, max) {

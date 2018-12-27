@@ -107,7 +107,7 @@ define([
     getObjectIdField: function(fields) {
       for(f in fields) {
         var field = fields[f];
-        if (field.type == "esriFieldTypeOID")
+        if (field.type === "esriFieldTypeOID")
           return field.name;
       }
       return null;

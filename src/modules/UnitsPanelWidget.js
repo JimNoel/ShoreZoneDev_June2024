@@ -15,7 +15,7 @@
 function getFieldInfo(id) {
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+    if (this.readyState === 4 && this.status === 200) {
       var A = JSON.parse(this.responseText);
       //window.open(offlineAppURL + "?" + A.jobId, "Shorezone Offline");
     }
@@ -53,8 +53,8 @@ define([
       for (var i=subLayers.length-1; i>0; i--) {
         if (!subLayers[i].sublayers) {
           var pTitle = layerFirstAncestorName(szMapServiceLayer, subLayers[i]);      // subLayers[i].parent.title;
-          if (pTitle=="Derived ShoreZone Attributes" || pTitle=="Response Attributes" || pTitle=="Biological Attributes") {
-            if (subLayers[i].title !="Salt Marsh (all regions)") {     // This sublayer is created in the map file, hence not available in AK_Unit_Lines_wAttrs
+          if (pTitle==="Derived ShoreZone Attributes" || pTitle==="Response Attributes" || pTitle==="Biological Attributes") {
+            if (subLayers[i].title !=="Salt Marsh (all regions)") {     // This sublayer is created in the map file, hence not available in AK_Unit_Lines_wAttrs
               this.getUnitAttrInfo(subLayers[i].id, this, colPos);
               colPos += 1;
             }
@@ -65,7 +65,7 @@ define([
 
       this.findAttrInfoObj = function(a) {
         for (var i=0; i<this.UnitAttrsInfo.length; i++) {
-          if (this.UnitAttrsInfo[i] && this.UnitAttrsInfo[i].field1 == a)
+          if (this.UnitAttrsInfo[i] && this.UnitAttrsInfo[i].field1 === a)
             return this.UnitAttrsInfo[i];
         }
         return null;

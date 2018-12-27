@@ -42,7 +42,7 @@ define([
 
   function on_image_error(e) {
     // Called on image load error   param object e Event object
-    if ( $("#photoImage").attr("src") == '')
+    if ( $("#photoImage").attr("src") === '')
       return;
     debug("on_image_error");
     //PHOTO_SERVER = alternateImageBaseDir;
@@ -57,7 +57,7 @@ define([
 
     //debug("on_image_load");
 
-    if (typeof photo_load_times[this.src] != "undefined") {
+    if (typeof photo_load_times[this.src] !== "undefined") {
 
       photoLoadCompleteHandler(orig_img_src);
 
@@ -114,7 +114,7 @@ define([
   }
 
   function load_Picasa_Photo(userID, albumID, photoID, NOAA_img_src) {
-    if ((albumID==null) || (photoID==null)) {
+    if ((albumID===null) || (photoID===null)) {
       load_NOAA_Photo(NOAA_img_src);
       return;
     }
@@ -122,10 +122,10 @@ define([
     var picasaURL = "https://picasaweb.google.com/data/feed/api/user/" + userID + "/albumid/" + albumID + "/photoid/" + photoID + "?alt=json";
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange=function() {
-      if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         processPicasaData(xmlhttp.responseText);
       }
-      else if (xmlhttp.readyState == 4 && xmlhttp.status != 200)
+      else if (xmlhttp.readyState === 4 && xmlhttp.status !== 200)
         load_NOAA_Photo(NOAA_img_src);
     }
     xmlhttp.open("GET", picasaURL, true);
@@ -144,8 +144,8 @@ define([
     debug("photoPlayer: photo_play_delay=" + photo_play_delay + ", photo_load_average=" + photo_load_average + ", current_photo_load_delay="+current_photo_load_delay);
     return setTimeout(function() {
       if (sync_photos) return;
-      if (this.counter == null) {
-        if (next_photo_point != null) {
+      if (this.counter === null) {
+        if (next_photo_point !== null) {
             this.counter = next_photo_point["item"]
         } else {
             this.counter = 0;
@@ -182,7 +182,7 @@ define([
 
     // Check if latest images was loaded successfully   return bool success
     latest_photo_loaded: function() {
-    return typeof photo_load_times[latest_img_src] != "undefined" && typeof photo_load_times[latest_img_src]["load_end"] != "undefined"
+    return typeof photo_load_times[latest_img_src] !== "undefined" && typeof photo_load_times[latest_img_src]["load_end"] !== "undefined"
   },
 
   // Update photo from data point   param object next_photo_point Data point
@@ -193,7 +193,7 @@ define([
       var new_img_src = PHOTO_SERVER + next_photo_point["RelPath"] + "/" + current_photo_sub + "/" + current_photo_prefix + next_photo_point["StillPhoto_FileName"];
       if (new_img_src.indexOf(".jpeg")<0 && new_img_src.indexOf(".jpg")<0)
         new_img_src += ".jpg";
-      if (!latest_img_src || latest_img_src != new_img_src) {
+      if (!latest_img_src || latest_img_src !== new_img_src) {
         next_photo_DT = next_photo_point["DATE_TIME"]/1000;
         //secs_to_next_photo = next_photo_DT - prev_photo_DT;
         prev_photo_DT = next_photo_DT;
