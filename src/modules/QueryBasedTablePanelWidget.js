@@ -262,7 +262,7 @@ define([
 
       this.makeTableFooterHtml = function() {
         var footerDivNode = getEl(this.footerDivName);
-        this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0px; left: 0px");
+        this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
         footerDivNode.appendChild(this.footerWrapper);
       };
 

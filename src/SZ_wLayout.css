@@ -9,7 +9,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 
 .claro .dijitAccordionTitle {min-height:10px; font-size: 80%; font-weight: bold}
 
-/*.claro .dijitContentPane { padding: 0px; }*/
+/*.claro .dijitContentPane { padding: 0; }*/
 
 /*  DOJOX Expando settings  */
 
@@ -78,7 +78,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 
 /*#v_video_message  {display: none; position:absolute; right: 10px; bottom: 5px; background-color: rgba(255,255,255,0.5)}*/
 /*#photoImage_message  {display: none; position:absolute; right: 10px; top: 50%; font-weight: bold; background-color: rgba(255,255,255,0.5)}*/
-/*#photoImage_container  {position:absolute; width:100%; height:0px; top:0px; overflow:hidden; background-color:rgb(208,215,225)}*/
+/*#photoImage_container  {position:absolute; width:100%; height:0; top:0; overflow:hidden; background-color:rgb(208,215,225)}*/
 
 /* .button-short  {font-size: 30px; height: 50px;} */
 
@@ -130,7 +130,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 
 
 .mediaPanelDiv  {overflow: hidden;}   /*from layoutStyle.css */
-/*.mediaPanelDiv  {height: 50%; padding: 0px}*/
+/*.mediaPanelDiv  {height: 50%; padding: 0}*/
 
 .tablePanelDiv  {height: 100%; padding: 0;}
 
@@ -141,7 +141,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
     .mediaHeaderDiv  {position:absolute; width:100%; height:20px; left: 10px; overflow:hidden; padding: 0; z-index: 50; color: white; /*background-color: #cde8ff; opacity: 0.8*/}
     .mediaContainerDiv  {position:absolute; width:100%; height:100%; top:0; overflow:hidden; background-color:var(--panelBgColor); }
     .mediaToolsContainer  {position:absolute; width:100%; bottom:5px; }
-    /*.mediaToolsContainer  {position:absolute; width:100%; height:20px; bottom:0px; overflow:hidden; background-color:rgb(238,245,255); flex: 0 1 auto}*/
+    /*.mediaToolsContainer  {position:absolute; width:100%; height:20px; bottom:0; overflow:hidden; background-color:rgb(238,245,255); flex: 0 1 auto}*/
 
   .tablePanelEnabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4; visibility: visible; display: flex; flex-flow: column;}
     .tableHeaderDiv  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 50px;}
@@ -150,7 +150,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 
 
 
-/*  .mediaHeaderDiv  {position:absolute; width:100%; height:30px; overflow:hidden; background-color:rgb(238,245,255); padding: 0px;}*/
+/*  .mediaHeaderDiv  {position:absolute; width:100%; height:30px; overflow:hidden; background-color:rgb(238,245,255); padding: 0;}*/
 
     .mediaMessageDiv  {position: absolute; top:50%; left: 40%}
 /*    .imageContainer  {width: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; vertical-align: middle; margin: auto; display: block}    */

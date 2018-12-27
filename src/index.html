@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--suppress JSUnresolvedVariable, JSUnresolvedVariable, JSUnresolvedFunction, JSUnresolvedFunction, JSUnresolvedFunction -->
-<html >
+<html  lang="en">
 <head>
 
 <!--
@@ -121,7 +121,7 @@
 
       function makeContainer(layoutInfo, info, id) {
         var regionVal = "center";
-        var dimStr = "padding :0px; ";
+        var dimStr = "padding :0; ";
         var parentId = info[0];
         var locInfo = info[1];
         var typeInfo = info[2];
@@ -230,7 +230,7 @@
       function adjustDojoLayoutDivs() {
         // HACK to adjust positioning of Dojo layout elements
         // Call after outerBC.startup()
-        document.getElementById("panelTabs_fa").style.top = "0px";
+        document.getElementById("panelTabs_fa").style.top = "0";
       }
 */
 

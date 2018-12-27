@@ -303,7 +303,7 @@ define([
           else {
             this.totalLabels[fieldName] = {
               colNum: colNum,
-              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0px; left: 100px", "Total")
+              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0; left: 100px", "Total")
             }
             this.footerWrapper.appendChild(this.totalLabels[fieldName].node);
           }
@@ -337,9 +337,10 @@ define([
       // Header panel.  Optionally includes tabs if tabInfo is specified
       if (tabInfo) {
         panelTabs = makeHtmlElement("div", "panelTabs_" + name, "tableHeaderTabs");
-        for (t in tabInfo) {
-          tabInfo[t].tabId = this.baseName + "Tab" + tabInfo[t].tabName;
-          var buttonHtml = '<button id="' + tabInfo[t].tabId + '">' + tabInfo[t].tabTitle + '</button>';
+        for (var t in tabInfo) {
+          var item = tabInfo[t];
+          item.tabId = this.baseName + "Tab" + item.tabName;
+          var buttonHtml = '<button id="' + item.tabId + '">' + item.tabTitle + '</button>';
           panelTabs.innerHTML += buttonHtml + "&emsp;";
         }
         theContainer.appendChild(panelTabs);
@@ -350,12 +351,12 @@ define([
 
       // Main panel content
       var midContent = '';
-      var footerPanel = null
+      var footerPanel = null;
       if (classType === 'media') {
-        var imgHtml = '    <img id="photoImage" class="imageContainer" src="">\n';
+        var imgHtml = '    <img id="photoImage" class="imageContainer" src="" alt="">\n';
         if (name === 'video')
           imgHtml = '    <div id="videoImageContainer" class="imageContainer"></div>\n';
-        midContent = '<div id="' + name + 'NoImageMessage" class="mediaMessageDiv" style="padding: 0px" ><b>No ' + name + '</b></div>' + imgHtml;
+        midContent = '<div id="' + name + 'NoImageMessage" class="mediaMessageDiv" style="padding: 0" ><b>No ' + name + '</b></div>' + imgHtml;
         footerPanel = makeHtmlElement("div", name + "ToolsDiv", "mediaToolsContainer");
       } else {
         if (this.footerDivName)
@@ -395,8 +396,13 @@ define([
       var pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
       this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
       if (this.query.spatialRelationship) {
-        var queryExtent = new Extent({spatialReference: extent.spatialReference, xmin: extent.xmin+pad, xmax: extent.xmax-pad, ymin: extent.ymin+pad, ymax: extent.ymax-pad});
-        this.query.geometry = queryExtent;
+        this.query.geometry = new Extent({
+          spatialReference: extent.spatialReference,
+          xmin: extent.xmin + pad,
+          xmax: extent.xmax - pad,
+          ymin: extent.ymin + pad,
+          ymax: extent.ymax - pad
+        });
       }
       this.query.outFields = this.queryOutFields.concat(this.tableFields);       // ["*"];     //TODO: change back to
       queryComplete = false;
