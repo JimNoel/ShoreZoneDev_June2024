@@ -146,7 +146,7 @@ function autoRefreshInputHandler(isAutoRefresh) {
 }
 
 function setRefreshButtonVisibility(isVisible) {
-  let btnClass = "btn_refresh_inactive";
+  var btnClass = "btn_refresh_inactive";
   if (isVisible)
     btnClass = "btn_refresh_active";
   getEl("btn_refresh").setAttribute("class", btnClass)
@@ -432,7 +432,7 @@ function clearGraphicFeatures() {
 
 function updateNoFeaturesMsg(widgets, status) {
   // Sets messages to display in panels when no content is available to display.  Messages will be visible whenever zoomed out or zoomed in too far, or when waiting on query results
-  let template = "";
+  var template = "";
   if (status === "zoomin")
     template = "Zoom in further to see {1}";
   else if (status === "querying")
@@ -508,11 +508,11 @@ function queryServer(url, returnJson, responseHandler/*, pars*/) {
 function makeSublayerIdTable(serviceUrl, idTable) {
   queryServer(serviceUrl, true, function(R) {
     for (l in R.layers) {
-      let o = R.layers[l];
+      var o = R.layers[l];
       idTable[o.name] = o.id.toString();
     }
     for (t in R.tables) {
-      let o = R.tables[t];
+      var o = R.tables[t];
       idTable[o.name] = o.id.toString();
     }
   });

@@ -519,12 +519,12 @@ define([
           geom = g.geometry.extent;
           centroid = geom.center;
         } else if (this.clickableSymbolGap) {
-          let gArray = this.clickableLayer.graphics.items;
-          let l = gArray.length;
+          var gArray = this.clickableLayer.graphics.items;
+          var l = gArray.length;
           if (l > 0) {
-            let sp1 = view.toScreen(gArray[l-1].geometry);
-            let sp2 = view.toScreen(geom);
-            let dist_pixels = Math.sqrt(Math.pow(sp2.x-sp1.x,2) + Math.pow(sp2.y-sp1.y,2));
+            var sp1 = view.toScreen(gArray[l-1].geometry);
+            var sp2 = view.toScreen(geom);
+            var dist_pixels = Math.sqrt(Math.pow(sp2.x-sp1.x,2) + Math.pow(sp2.y-sp1.y,2));
             if (dist_pixels < this.clickableSymbolGap)
               skipFeature = true;
           }

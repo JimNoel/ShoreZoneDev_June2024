@@ -51,21 +51,21 @@
     ], function(on, dom, registry, BorderContainer, ContentPane, TabContainer, ExpandoPane, MapStuffWidget){
 
 
-      const regions = {
+      var regions = {
         l: {name: "left", dim: "width"},
         r: {name: "right", dim: "width"},
         t: {name: "top", dim: "height"},
         b: {name: "bottom", dim: "height"}
       };
 
-      const containers = {
+      var containers = {
         BC: BorderContainer,
         CP: ContentPane,
         TC: TabContainer,
         EP: ExpandoPane
       };
 
-      let layouts = {};     //new Object();     // Define the layout options
+      var layouts = {};     //new Object();     // Define the layout options
       layouts["v2"] = {
         id: "layoutV2",
         //buildOrder: ["root", "mvp", "m", "vp", "v", "p", "qt", "q", "t"],
@@ -117,42 +117,42 @@
                 fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
 
-      let splitterInfo = [];    // To hold info used in accessing splitters, to handle drag events
+      var splitterInfo = [];    // To hold info used in accessing splitters, to handle drag events
 
       function makeContainer(layoutInfo, info, id) {
-        let regionVal = "center";
-        let dimStr = "padding :0px; ";
-        const parentId = info[0];
-        const locInfo = info[1];
-        const typeInfo = info[2];
-        let addlProps = {};
+        var regionVal = "center";
+        var dimStr = "padding :0px; ";
+        var parentId = info[0];
+        var locInfo = info[1];
+        var typeInfo = info[2];
+        var addlProps = {};
         if (info.length > 3)
           addlProps = info[3];
         if (locInfo !== "c") {
-          const a = locInfo.split(":");
+          var a = locInfo.split(":");
           if (a.length > 1) {
             regionVal = regions[a[0]].name;
             dimStr += regions[a[0]].dim + ":" + a[1] + ";";
           }
         }
-        let bcArgs = {
+        var bcArgs = {
           region: regionVal,
           splitter: true,
           style: dimStr,
           id: addlProps.id,
           class: addlProps.class
         };
-        const b = typeInfo.split(":");
-        const contCode = b[0];
-        const container = containers[contCode];
+        var b = typeInfo.split(":");
+        var contCode = b[0];
+        var container = containers[contCode];
         if (contCode === "CP") {
         }
         else if (contCode === "EP") {
           console.log("ExpandoPane: " + id);
         }
         else if (contCode === "BC") {
-          const orient = b[1];
-          let designVal = "headline";
+          var orient = b[1];
+          var designVal = "headline";
           if (orient === "v")
             designVal = "sidebar";
           bcArgs.liveSplitters = true;
@@ -161,7 +161,7 @@
         info.layoutElement = new container(bcArgs);
         customizeContainerHtml(info, b[1]);
         if (parentId) {
-          let parentEl = layoutInfo[parentId].layoutElement;
+          var parentEl = layoutInfo[parentId].layoutElement;
           parentEl.addChild(info.layoutElement);
           if (bcArgs.region !== "center")
             splitterInfo.push({id: parentEl.id, region: bcArgs.region})
@@ -294,7 +294,7 @@
             (Move some of the code used in processPicasaData for this purpose to the new function.)
 */
       splitterInfo.forEach(function(item) {
-        let lSplitter = dijit.registry.byId(item.id).getSplitter(item.region);
+        var lSplitter = dijit.registry.byId(item.id).getSplitter(item.region);
         lSplitter.on("mouseover", splitterDragHandler);
       });
 
@@ -304,10 +304,10 @@
       }
 
       function resizeMedia() {
-        let vDims = mediaDimensions("videoDiv", youtubeAspectRatio);
+        var vDims = mediaDimensions("videoDiv", youtubeAspectRatio);
         youtube_player.setSize(vDims.width, vDims.height);
-        let pDims = mediaDimensions("photoDiv", photoAspectRatio);
-        const photoEl = $("#photoImage")[0];
+        var pDims = mediaDimensions("photoDiv", photoAspectRatio);
+        var photoEl = $("#photoImage")[0];
         photoEl.width = pDims.width;
         photoEl.height = pDims.height;
         var vDiv = dijit.registry.byId("videoDiv");
@@ -318,9 +318,9 @@
 
       // TODO:  Move this to QueryBasedPanelWidget
       function mediaDimensions(panelName, aspect) {
-        const mediaDiv = dijit.registry.byId(panelName);
-        let d = {width: mediaDiv.w, height: mediaDiv.h} ;
-        const divAspect = d.width/d.height;
+        var mediaDiv = dijit.registry.byId(panelName);
+        var d = {width: mediaDiv.w, height: mediaDiv.h} ;
+        var divAspect = d.width/d.height;
         if (aspect < divAspect)
           d.width = parseInt(d.height*aspect);
         else

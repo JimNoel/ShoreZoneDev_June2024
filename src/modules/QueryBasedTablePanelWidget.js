@@ -48,7 +48,7 @@ define([
         var nonNullCount = new Object();
         var columnStyleCSS = "";
 
-        for (let i=0; i<fields.length; i++) {
+        for (var i=0; i<fields.length; i++) {
           unitColumns.push({
             field: fields[i].name,
             label: fields[i].alias,
@@ -67,7 +67,7 @@ define([
         document.body.appendChild(sheet);
 
         var unitData = [];
-        for (let i=0; i<features.length; i++) {
+        for (var i=0; i<features.length; i++) {
           /*JN*/ features[i].attributes.PHY_IDENT = "<span gObjIndex='" + features[i].attributes.PHY_IDENT + "@" + i + "@'>" + features[i].attributes.PHY_IDENT + "</span>";
           unitData.push(features[i].attributes);
           for (a in features[i].attributes) {
@@ -104,7 +104,7 @@ define([
         });
 
         this.grid.on('dgrid-refresh-complete', function(event) {
-          //let testRow = event.grid._rows[3];
+          //var testRow = event.grid._rows[3];
           //testRow.setAttribute("id", "testRow");
           this.repositionTotalLabels(event.grid.columns);
         }.bind(this));
@@ -126,8 +126,8 @@ define([
         this.grid.on('.dgrid-content .dgrid-row:mouseover', function (event) {
           var row = this.grid.row(event);
           var rowIndex = event.selectorTarget.rowIndex;
-          const gObjFieldHtml = this.store.data[rowIndex].PHY_IDENT;
-          const gObjIndex = event.selectorTarget.innerHTML.split("@")[1];
+          var gObjFieldHtml = this.store.data[rowIndex].PHY_IDENT;
+          var gObjIndex = event.selectorTarget.innerHTML.split("@")[1];
           var associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
           this.showGridTooltip(event, rowIndex, associatedGraphic);
           if (this.clickableLayer.visible) {
@@ -282,7 +282,7 @@ define([
             ddItem.domId = this.baseName + "Dropdown_" + ddItem.ddName;
             var ddSpanId = ddItem.domId.replace("_","Span_");
             var ddHtml = '&emsp;<LABEL class="boldLabel">' + ddItem.ddName + ': </LABEL>';
-            let args = this.objName + ',' + d + ',' + ddItem.domId;
+            var args = this.objName + ',' + d + ',' + ddItem.domId;
             ddHtml += '<select id="' + ddItem.domId + '" onchange="dropdownSelectHandler(' + args + ')" ></select>&emsp;';
             headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';
             if (ddItem.subLayerName) {
@@ -302,7 +302,7 @@ define([
 
         var cbID = this.baseName + 'Checkbox_showFeatures';
         var cbSpanId = cbID.replace("_","Span_");
-        let args = this.objName + '.clickableLayer,' + cbID;
+        var args = this.objName + '.clickableLayer,' + cbID;
         var cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
         headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
         getEl(cbID).checked = this.clickableLayer.visible;

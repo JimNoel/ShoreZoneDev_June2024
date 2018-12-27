@@ -98,7 +98,7 @@ define([
     origWidth = data.feed.gphoto$width.$t;        // Original width in pixels of image stored in Picasa
 
     photoAspectRatio = origWidth / origHeight;
-    //let pDims = mediaDimensions("photoDiv", photoAspectRatio);
+    //var pDims = mediaDimensions("photoDiv", photoAspectRatio);
     var photoPanel = getEl("photoContainer");
     var requestWidth = $(photoPanel).width();   // This will be the requested width in pixels of the photo, for the panel
     var panelHeight = $(photoPanel).height();
