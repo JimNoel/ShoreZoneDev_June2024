@@ -136,6 +136,7 @@ define([
         layerName: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
         layerPath: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
         spatialRelationship: "contains",
+        idField: "PHY_IDENT",
         queryOutFields:  ["PHY_IDENT","HabClass"],      //["*"],
         tableFields:  ["CMECS_1", "CMECS_2", "CMECS_3", "Length_M", "Slope_calc", "SHORE_PROB", "LOST_SHORE", "Fetch_max", "Wave_Dissipation", "Orient_dir", "Tidal_height", "CVI_Rank"],
         showFieldsInPopup: "*",
@@ -304,7 +305,7 @@ define([
             parentAreaType: '',
             visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             queryOutFields: ["Region", "Hauls", "Species", "Catch", "Envelope"],
-            //idField: 'Region',
+            idField: 'Region',
             clickableSymbolType: "extent",
             clickableSymbolInfo: {
               color: [ 51,51, 204, 0.1 ],
@@ -321,6 +322,7 @@ define([
             parentAreaType: 'Regions',
             visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             queryOutFields: ["Region", "MapID", "Locale", "Hauls", "Species", "Catch"],
+            idField: 'Locale',
             clickableSymbolType: "point",
             clickableSymbolInfo: {
               "style":"square",
@@ -351,6 +353,7 @@ define([
             parentAreaType: 'Locales',
             visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             queryOutFields: ["Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch"],
+            idField: 'Site',
             clickableSymbolType: "point",
             clickableSymbolInfo: {
               "style":"circle",
@@ -377,14 +380,16 @@ define([
             tabTitle: 'Temperature Data',
             popupTitle: "Thermograph",
             LayerNameAddOn: 'Temperature',
-            queryOutFields: ["Region", "Hauls", "Species", "Catch"]
+            queryOutFields: ["Region", "Hauls", "Species", "Catch"],
+            idField: 'Region'
           },
           {
             tabName: 'Eelgrass',
             tabTitle: 'Eelgrass Data',
             popupTitle: "Eelgrass Bed",
             LayerNameAddOn: 'Eelgrass',
-            queryOutFields: ["Region", "Hauls", "Species", "Catch"]
+            queryOutFields: ["Region", "Hauls", "Species", "Catch"],
+            idField: 'Region'
           }
         ],
         layerName: "vw_CatchStats_Regions",
@@ -591,7 +596,7 @@ define([
       // Handle click events:  Check for mouse over graphic features
     view.on('click', [], function(e){
       var screenPoint = {x: e.x, y: e.y};
-      view.hitTest(screenPoint).when(handleGraphicHits);
+      view.hitTest(screenPoint).then(handleGraphicHits);
     });
 
 

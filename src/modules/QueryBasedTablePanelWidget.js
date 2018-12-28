@@ -68,7 +68,10 @@ define([
 
         var tableData = [];
         for (var i=0; i<features.length; i++) {
-          /*JN*/ features[i].attributes.PHY_IDENT = "<span gObjIndex='" + features[i].attributes.PHY_IDENT + "@" + i + "@'>" + features[i].attributes.PHY_IDENT + "</span>";
+          if (this.idField) {
+            var idFieldValue = features[i].attributes[this.idField];
+            features[i].attributes[this.idField] = "<span gObjIndex='@" + i + "@'>" + idFieldValue + "</span>";
+          }
           tableData.push(features[i].attributes);
           for (a in features[i].attributes) {
             if (features[i].attributes[a]) {

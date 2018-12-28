@@ -230,6 +230,7 @@ define([
         
       lang.mixin(this, kwArgs);
 
+/*
       this.query.outFields = [
       "VidCap_FileName_LowRes",
       "VidCap_FileName_HighRes",
@@ -245,6 +246,7 @@ define([
       "Picasa_AlbumID",
       "Picasa_PhotoID"
       ];
+*/
       this.query.orderByFields = ["Date_Time"];
       this.query.where = "(MP4_Seconds IS NOT NULL) AND (MP4_Seconds >= -1)";
       this.playbackRate = 1.0;
