@@ -147,7 +147,7 @@ define([
 
 
         this.repositionTotalLabels = function(columns) {
-          if (!this.totalFields)
+          if (!this.totalOutFields)
             return;
           var posTop = $(this.footerWrapper).position().top + 2;
           for (f in this.totalLabels) {
@@ -197,7 +197,7 @@ define([
         this.makeClickableGraphics(features);
         this.makeTable(fields, features);
         getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
-        if (this.totalFields) {
+        if (this.totalOutFields) {
           if (features.length === 0) {
             for (l in this.totalLabels)
               this.totalLabels[l].node.innerHTML = "0";
@@ -205,7 +205,7 @@ define([
           }
           var totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
           this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[totalsLayerName].toString();
-          this.query.outFields = this.totalFields;
+          this.query.outFields = this.totalOutFields;
           this.queryTask.execute(this.query).then(function(results){
             var totalValues = results.features[0].attributes;
             for (a in totalValues)
@@ -233,19 +233,19 @@ define([
         var queryTask = new QueryTask(subLayerURL);
         var query = new Query();
         with (query) {
-          outFields = ddItem.outFields;
+          outFields = ddItem.ddOutFields;
           orderByFields = ddItem.orderByFields;
           where = "";
         }
         queryTask.query = query;
         queryTask.execute(query).then(function(results){
           var options = ddItem.options;
-          var outFields = ddItem.outFields;
+          var ddFields = ddItem.ddOutFields;
           for (var i=0;  i<results.features.length; i++) {
             var a = results.features[i].attributes;
             options.push({
-              label: a[outFields[0]],
-              value: a[outFields[1]]        // a[outFields[1]]
+              label: a[ddFields[0]],
+              value: a[ddFields[1]]
             });
           }
           this.w.makeDropdownOptionsHtml(ddNum, this.headerContent)

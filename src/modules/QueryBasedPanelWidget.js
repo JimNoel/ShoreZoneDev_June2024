@@ -134,7 +134,6 @@ define([
         with (this.query) {
           returnGeometry = true;
           spatialRelationship = this.spatialRelationship;      //"contains";
-          outFields = this.queryOutFields;      // [];
           orderByFields = [];
           where = "";
           //returnCountOnly = true;
@@ -283,7 +282,6 @@ define([
       }
       if (!this.tabInfo[index].textOverlayPars)
         this.textOverlayPars = null;              // Reset main textOverlayPars to null if textOverlayPars is not specified in new tab info
-      //this.queryOutFields = this.tabInfo[index].queryOutFields;
 
       this.setClickableSybolType();
       //this.setRenderer();
@@ -292,12 +290,12 @@ define([
 
       // make LABEL elements for totals
       this.footerWrapper.innerHTML = "";
-      if (this.totalFields) {
-        var fields = this.totalFields;
+      if (this.totalOutFields) {
+        var fields = this.totalOutFields;
         this.totalLabels = {};
         for (f in fields) {
           var fieldName = fields[f];
-          var colNum = this.queryOutFields.indexOf(fields[f]);
+          var colNum = this.query.outFields.indexOf(fields[f]);
           if (colNum === -1)
             this.totalLabels[fieldName] = null;
           else {
@@ -404,7 +402,9 @@ define([
           ymax: extent.ymax - pad
         });
       }
-      this.query.outFields = this.queryOutFields.concat(this.tableFields);       // ["*"];     //TODO: change back to
+      this.query.outFields = this.featureOutFields;
+      if (this.extraOutFields)                                                       // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
+        this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
       queryComplete = false;
 
       /* test count

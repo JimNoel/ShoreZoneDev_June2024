@@ -45,8 +45,6 @@ define([
 
       this.UnitAttrsInfo = [];
 
-      this.queryOutFields = ["PHY_IDENT"];
-
       this.tableColumns = [];
       var colPos = 1;     // Used to place columns in proper order.  Starts with 1, because PHY_IDENT is already in the array at position 0
       var subLayers = szMapServiceLayer.allSublayers.items;
@@ -117,8 +115,7 @@ define([
 
           w.UnitAttrsInfo[id] = o;
           if (o.field1)
-            w.queryOutFields[colPos] = o.field1;
-            //w.queryOutFields.push(o.field1);
+            w.featureOutFields[colPos] = o.field1;
           else
             console.log("Bad rendering definition for layer '" + o.name + "' in map service.")
           //unitAttrsInfo[id] = o;
