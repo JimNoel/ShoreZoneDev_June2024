@@ -420,7 +420,7 @@ define([
         this.ddLayerNameAddOn = "";
         this.ddTotalsLayerNameAddOn = "";
         var ddInfo = this.dropDownInfo;
-        for (d in ddInfo)
+        for (d in ddInfo) {
           var item = ddInfo[d];
           if (item.SelectedOption !== "All") {
             var selOption = item.SelectedOption;
@@ -432,6 +432,7 @@ define([
               theWhere += " AND ";
             theWhere += item.whereField + "=" + selOption;
           }
+        }
         this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
       }

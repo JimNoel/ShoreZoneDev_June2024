@@ -55,6 +55,8 @@ var locateIconLayer;
 var layoutCode = "h2";     // default layout
 var initTab = "szTab";
 
+//var mapStuff;
+
 //* process site parameters
 var siteParsJSON = location.search.slice(1);
 if (siteParsJSON !== "") {
@@ -617,6 +619,7 @@ function gotoSavedExtent(offset) {
 }
 /* For extent history and prev/next extent navigation*/
 
+var mapStuff;
 
 // For debug purposes
 function test() {

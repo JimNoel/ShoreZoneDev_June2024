@@ -303,6 +303,9 @@ define([
             parentAreaType: '',
             visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Region", "Hauls", "Species", "Catch", "Envelope"],
+            specialFormatting: {      // Special HTML formatting for field values
+              Envelope: "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@\")' height='15' width='15' alt=''>"
+            },
             idField: 'Region',
             clickableSymbolType: "extent",
             clickableSymbolInfo: {
@@ -941,7 +944,24 @@ define([
 
   return declare(null, {
 
-    constructor: function (kwArgs) {
+    moreStuff: "moreStuff",
+
+    gotoExtent: function(extText) {
+      var a = extText.split(",");
+      var newExtent = new Extent({
+        xmin: a[0],
+        xmax: a[2],
+        ymin: a[1],
+        ymax: a[3],
+        spatialReference: { wkid: 102100 }
+      });
+      //view.constraints.snapToZoom = false;    // Makes no difference?
+      view.goTo(newExtent);
+    },
+
+
+
+  constructor: function (kwArgs) {
       //lang.mixin(this, kwArgs);
       initMap();
       console.log("MapStuff object created.");

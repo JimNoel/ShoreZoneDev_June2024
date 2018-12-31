@@ -72,13 +72,17 @@ define([
             var idFieldValue = features[i].attributes[this.idField];
             features[i].attributes[this.idField] = "<span gObjIndex='@" + i + "@'>" + idFieldValue + "</span>";
           }
-          tableData.push(features[i].attributes);
           for (a in features[i].attributes) {
+            if (this.specialFormatting && this.specialFormatting[a]) {
+              var v = features[i].attributes[a];
+              features[i].attributes[a] = this.specialFormatting[a].replace(/@/g, v);
+            }
             if (features[i].attributes[a]) {
               nonNullCount[a] += 1;
               //features[i].attributes[a] = "<i>" + features[i].attributes[a] + "</i>";
             }
           }
+          tableData.push(features[i].attributes);
         }
         //this.store = null;
         this.store = new (declare([Memory, Trackable]))({
