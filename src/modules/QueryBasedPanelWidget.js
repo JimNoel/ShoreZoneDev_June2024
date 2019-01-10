@@ -283,6 +283,23 @@ define([
       if (!this.tabInfo[index].textOverlayPars)
         this.textOverlayPars = null;              // Reset main textOverlayPars to null if textOverlayPars is not specified in new tab info
 
+/*
+      if (this.resetDDs) {
+        for (d in this.dropDownInfo) {
+          var ddInfo = this.dropDownInfo[d];
+          for (n in this.resetDDs) {
+            if (ddInfo.ddName === this.resetDDs[n]) {
+              // TODO: Get this to work
+              //ddInfo.SelectedOption = "All";
+              //getEl(ddInfo.domId).value = ddInfo.SelectedOption;
+            }
+
+          }
+          //alert("YO!");
+        }
+      }
+*/
+
       this.setClickableSybolType();
       //this.setRenderer();
       this.setHeaderItemVisibility();
@@ -422,7 +439,8 @@ define([
         var ddInfo = this.dropDownInfo;
         for (d in ddInfo) {
           var item = ddInfo[d];
-          if (item.SelectedOption !== "All") {
+          // TODO: Check this
+          if ((item.SelectedOption !== "All") /*&& (getEl(item.domId).parentNode.style.display !== "none")*/) {     // Do only if something selected, and (parent span of) dropdown is visible
             var selOption = item.SelectedOption;
             if (item.isAlpha)
               selOption = "'" + selOption + "'";

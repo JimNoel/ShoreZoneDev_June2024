@@ -413,6 +413,23 @@ function findAndChangePlaybackSpeed() {
 }
 
 
+// If parentObject has property indicated in propertyChain, returns the value of that property.  Otherwise, returns null
+function getIfExists(parentObject, propertyChain) {
+  var props = propertyChain.split(".");
+  var lastIndex = props.length-1;
+  var obj = parentObject;
+  for (var p=0; p<lastIndex; p++) {
+    obj = obj[props[p]];
+    if (typeof(obj) !== "object")
+      return null;
+  }
+  obj = obj[props[lastIndex]];
+  if (typeof(obj) === "undefined")
+    return null;
+  else
+    return obj;
+}
+
 
 /* Global SZ functions */
 

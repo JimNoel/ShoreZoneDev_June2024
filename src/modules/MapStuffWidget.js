@@ -230,6 +230,8 @@ define([
     faMapServiceLayer.when(function() {
       console.log("Fish Atlas MapServiceLayer loaded.");
       faMapServiceLayer.visible = false;
+      // noinspection SyntaxError
+      // noinspection SyntaxError
       faWidget = new QueryBasedTablePanelWidget({
         objName: "faWidget",
         title: "Fish Atlas",
@@ -293,6 +295,59 @@ define([
             isAlpha: true
           }
         ],
+/*
+        dropDownInfo: {
+          Region:
+          { ddName: "Region",
+            LayerNameAddOn: "",
+            totalsLayerNameAddOn: "Regions",
+            subLayerName: "Regions",
+            ddOutFields: ["RegionName", "RegionID"],
+            orderByFields: ["RegionName"],
+            options: [ { label: "[All Alaska regions]", value: "All" } ],
+            SelectedOption: "All",
+            whereField: "RegionID"
+          },
+          Locale:
+          { ddName: "Locale",
+            LayerNameAddOn: "",
+            totalsLayerNameAddOn: "Locales",
+            subLayerName: "Locales (area)",
+            ddOutFields: ["Locale", "LocaleID"],
+            orderByFields: ["Locale"],
+            options: [ { label: "[All]", value: "All" } ],
+            SelectedOption: "All",
+            whereField: "LocaleID"
+          },
+          Habitat:
+          { ddName: "Habitat",
+            LayerNameAddOn: "Habitats",
+            totalsLayerNameAddOn: "Habitats",
+            options: [
+              { label: "All", value: "All" },
+              { label: "Bedrock", value: "Bedrock" },
+              { label: "Eelgrass", value: "Eelgrass" },
+              { label: "Kelp", value: "Kelp" },
+              { label: "Sand-Gravel", value: "Sand-Gravel" }
+            ],
+            SelectedOption: "All",
+            whereField: "Habitat",
+            isAlpha: true
+          },
+          Species:
+          { ddName: "Species",
+            LayerNameAddOn: "Species",
+            totalsLayerNameAddOn: "Species",
+            subLayerName: "vw_SpCatch_allAK",
+            ddOutFields: ["Sp_CommonName", "SpCode"],
+            orderByFields: ["Sp_CommonName"],
+            options: [ { label: "[All]", value: "All" } ],
+            SelectedOption: "All",
+            whereField: "SpCode",
+            isAlpha: true
+          }
+        },
+*/
         currTab: 0,
         tabInfo: [
           {
@@ -302,11 +357,22 @@ define([
             LayerNameAddOn: 'Regions',
             parentAreaType: '',
             visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-            featureOutFields: ["Region", "Hauls", "Species", "Catch", "Envelope"],
+            featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
             specialFormatting: {      // Special HTML formatting for field values
-              Envelope: "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@\")' height='15' width='15' alt=''>"
+              Envelope: {
+                title:  "",
+                colWidth:  20,
+                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@Envelope@\")' height='15' width='15' alt=''>"
+              },
+              RegionID: {
+                title:  "",
+                colWidth:  20,
+                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom(faWidget,@RegionID@,\"@Envelope@\")' height='15' width='15' alt=''>"
+              }
             },
             idField: 'Region',
+            subTableDD: "Region",
+            resetDDs:  ["Region", "Locale"],
             clickableSymbolType: "extent",
             clickableSymbolInfo: {
               color: [ 51,51, 204, 0.1 ],
@@ -944,8 +1010,6 @@ define([
 
   return declare(null, {
 
-    moreStuff: "moreStuff",
-
     gotoExtent: function(extText) {
       var a = extText.split(",");
       var newExtent = new Extent({
@@ -959,7 +1023,21 @@ define([
       view.goTo(newExtent);
     },
 
+    selectAndZoom: function(w, id, extText) {
+      var newTab = w.currTab +1;
+      var currTabInfo = w.tabInfo[w.currTab];
+      var ddName = currTabInfo.subTableDD;
+      var ddIndex = w.dropDownInfo.findIndex(function(f){
+        return f.ddName === ddName;
+      });
+      var ddDom = getEl(w.dropDownInfo[ddIndex].domId);
+      ddDom.value = id;
+      dropdownSelectHandler(w, ddIndex, ddDom);
+      w.setActiveTab(newTab);
+      // TODO: Write function to get the ddItem for w.subTableDD, etc.
 
+      this.gotoExtent(extText);
+    },
 
   constructor: function (kwArgs) {
       //lang.mixin(this, kwArgs);

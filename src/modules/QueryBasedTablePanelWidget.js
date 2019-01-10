@@ -32,6 +32,15 @@ define([
 
   return declare(QueryBasedPanelWidget, {
 
+    replaceNamesWithValues: function(template, attrs) {
+      var a = template.split("@");
+      for (var i=0; i<a.length; i++)
+        if (a[i] in attrs) {
+          a[i] = attrs[a[i]];
+        }
+      return a.join("");
+    },
+
     constructor: function(/*Object*/ kwArgs){
 
       lang.mixin(this, kwArgs);
@@ -49,14 +58,22 @@ define([
         var columnStyleCSS = "";
 
         for (var i=0; i<fields.length; i++) {
+          var title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
+          if (title === null)
+            title = fields[i].alias;
           tableColumns.push({
             field: fields[i].name,
-            label: fields[i].alias,
+            label: title,
             formatter: function(value){
               return value       // This causes dGrid to treat values as HTML code
             },
           });
-          var colWidth = (fields[i].alias.length + 1) * 12;
+
+          // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
+          var colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
+          if (!colWidth)
+            colWidth = (title.length + 1) * 12;
+
           columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
           nonNullCount[fields[i].name] = 0;
         }
@@ -72,14 +89,14 @@ define([
             var idFieldValue = features[i].attributes[this.idField];
             features[i].attributes[this.idField] = "<span gObjIndex='@" + i + "@'>" + idFieldValue + "</span>";
           }
+          var origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
           for (a in features[i].attributes) {
-            if (this.specialFormatting && this.specialFormatting[a]) {
-              var v = features[i].attributes[a];
-              features[i].attributes[a] = this.specialFormatting[a].replace(/@/g, v);
+            var template = getIfExists(this,"specialFormatting." + a + ".html");
+            if (template) {
+              features[i].attributes[a] = this.replaceNamesWithValues(template, origAttrs);
             }
             if (features[i].attributes[a]) {
               nonNullCount[a] += 1;
-              //features[i].attributes[a] = "<i>" + features[i].attributes[a] + "</i>";
             }
           }
           tableData.push(features[i].attributes);
@@ -173,14 +190,19 @@ define([
         };
 
         this.showGridTooltip = function(event, r, associatedGraphic){
-          var cell=this.grid.cell(event);
-          if (cell.column) {
-            var fieldName = cell.column.field;
-            var fieldValueDescr = this.attrValDescription(fieldName, associatedGraphic.attributes);
-            if (fieldValueDescr !== associatedGraphic.attributes[fieldName]) {
-              var toolTipText = fieldValueDescr;
-              dijit.showTooltip(toolTipText, cell.element);
+          try {     //JN
+            var cell = this.grid.cell(event);
+            if (cell.column) {
+              var fieldName = cell.column.field;
+              var fieldValueDescr = this.attrValDescription(fieldName, associatedGraphic.attributes);
+              if (fieldValueDescr !== associatedGraphic.attributes[fieldName]) {
+                var toolTipText = fieldValueDescr;
+                dijit.showTooltip(toolTipText, cell.element);
+              }
             }
+          } catch(err) {
+            // TODO: Figure this out
+            console.log("ERROR in showGridTooltip");
           }
         };
 
@@ -222,14 +244,6 @@ define([
 
       };
 
-
-/*
-      this.dropdownSelectHandler = function(evt) {
-        //alert("You selected " + evt.target.value);
-        this.w.dropDownInfo[this.index].SelectedOption = evt.target.value;
-        this.w.runQuery(view.extent);
-      };
-*/
 
       this.getDropDownOptions = function(ddNum, headerContent) {
         var ddItem = this.dropDownInfo[ddNum];
@@ -292,6 +306,7 @@ define([
             var args = this.objName + ',' + d + ',' + ddItem.domId;
             ddHtml += '<select id="' + ddItem.domId + '" onchange="dropdownSelectHandler(' + args + ')" ></select>&emsp;';
             headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';
+            ddItem.dom = getEl(ddItem.domId);
             if (ddItem.subLayerName) {
               this.getDropDownOptions(d, ddItem.domId);
             } else {
