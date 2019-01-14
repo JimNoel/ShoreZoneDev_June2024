@@ -138,6 +138,12 @@ define([
         idField: "PHY_IDENT",
         featureOutFields:  ["PHY_IDENT"],     // Other fields will be added based on queries of map service layers
         extraOutFields:  ["CMECS_1", "CMECS_2", "CMECS_3", "Length_M", "Slope_calc", "SHORE_PROB", "LOST_SHORE", "Fetch_max", "Wave_Dissipation", "Orient_dir", "Tidal_height", "CVI_Rank"],
+        specialFormatting: {      // Special HTML formatting for field values
+          CMECS_1: { colWidth: 130 },
+          CMECS_2: { colWidth: 130 },
+          CMECS_3: { colWidth: 130 }
+        },
+
         showFieldsInPopup: "*",
         //trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         hideMarkersAtStart: true,
@@ -295,59 +301,6 @@ define([
             isAlpha: true
           }
         ],
-/*
-        dropDownInfo: {
-          Region:
-          { ddName: "Region",
-            LayerNameAddOn: "",
-            totalsLayerNameAddOn: "Regions",
-            subLayerName: "Regions",
-            ddOutFields: ["RegionName", "RegionID"],
-            orderByFields: ["RegionName"],
-            options: [ { label: "[All Alaska regions]", value: "All" } ],
-            SelectedOption: "All",
-            whereField: "RegionID"
-          },
-          Locale:
-          { ddName: "Locale",
-            LayerNameAddOn: "",
-            totalsLayerNameAddOn: "Locales",
-            subLayerName: "Locales (area)",
-            ddOutFields: ["Locale", "LocaleID"],
-            orderByFields: ["Locale"],
-            options: [ { label: "[All]", value: "All" } ],
-            SelectedOption: "All",
-            whereField: "LocaleID"
-          },
-          Habitat:
-          { ddName: "Habitat",
-            LayerNameAddOn: "Habitats",
-            totalsLayerNameAddOn: "Habitats",
-            options: [
-              { label: "All", value: "All" },
-              { label: "Bedrock", value: "Bedrock" },
-              { label: "Eelgrass", value: "Eelgrass" },
-              { label: "Kelp", value: "Kelp" },
-              { label: "Sand-Gravel", value: "Sand-Gravel" }
-            ],
-            SelectedOption: "All",
-            whereField: "Habitat",
-            isAlpha: true
-          },
-          Species:
-          { ddName: "Species",
-            LayerNameAddOn: "Species",
-            totalsLayerNameAddOn: "Species",
-            subLayerName: "vw_SpCatch_allAK",
-            ddOutFields: ["Sp_CommonName", "SpCode"],
-            orderByFields: ["Sp_CommonName"],
-            options: [ { label: "[All]", value: "All" } ],
-            SelectedOption: "All",
-            whereField: "SpCode",
-            isAlpha: true
-          }
-        },
-*/
         currTab: 0,
         tabInfo: [
           {
@@ -392,14 +345,32 @@ define([
             idField: 'Locale',
             clickableSymbolType: "point",
             clickableSymbolInfo: {
-              "style":"square",
-              "color":[255,255,255,1.0],
+              style:"square",
+              color:[255,255,255,1.0],
               outline: {  // autocasts as new SimpleLineSymbol()
                 color: [ 128, 128, 128, 1.0 ],
                 width: "0.5px"
               },
-              "size":12
+              size:12
             },
+/*  // Possibly will use if GraphicsLayer gets changed to FeatureLayer
+            labelClass: { // autocasts as new LabelClass()
+              symbol: {
+                type: "text", // autocasts as new TextSymbol()
+                color: "red",
+                haloColor: "black",
+                font: { // autocast as new Font()
+                  family: "playfair-display",
+                  size: 12,
+                  weight: "bold"
+                }
+              },
+              labelPlacement: "above-center",
+              labelExpressionInfo: {
+                expression: "$feature.MARKER_ACTIVITY"
+              }
+            },
+*/
             textOverlayPars: {
               type: "text",  // autocasts as new TextSymbol()
               color: "black",

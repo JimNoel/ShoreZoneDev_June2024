@@ -24,6 +24,7 @@ define([
 */
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
+//  "esri/layers/FeatureLayer",       // Considering using this instead of GraphicsLayer
   "esri/layers/GraphicsLayer",
   "esri/renderers/SimpleRenderer",
   "esri/renderers/UniqueValueRenderer",
@@ -57,6 +58,11 @@ define([
         this.clickableLayer.id = this.panelName + "_Clickable";
         this.clickableLayer.title = this.clickableLayer.id;
         this.clickableLayer.visible = true;
+/*
+        this.clickableLayer.labelingInfo = null;
+        if (this.labelClass)
+          this.clickableLayer.labelingInfo = this.labelClass;
+*/
         if (this.hideMarkersAtStart)
           this.clickableLayer.visible = !this.hideMarkersAtStart;
 
@@ -280,6 +286,7 @@ define([
       for (o in this.tabInfo[index]) {
         this[o] = this.tabInfo[index][o];
       }
+      //this.clickableLayer.labelingInfo = this.labelClass;
       if (!this.tabInfo[index].textOverlayPars)
         this.textOverlayPars = null;              // Reset main textOverlayPars to null if textOverlayPars is not specified in new tab info
 

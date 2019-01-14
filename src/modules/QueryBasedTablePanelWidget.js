@@ -72,7 +72,7 @@ define([
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
           var colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
           if (!colWidth)
-            colWidth = (title.length + 1) * 12;
+            colWidth = (title.length) * 15;
 
           columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
           nonNullCount[fields[i].name] = 0;
@@ -105,12 +105,12 @@ define([
         this.store = new (declare([Memory, Trackable]))({
           data: tableData
         });
-/*
+
         for (var c=0; c<tableColumns.length; c++) {
           var col = tableColumns[c];
-          col.hidden = (nonNullCount[col.field]===0);
+          col.hidden = (nonNullCount[col.field]===0);       // TODO: sometimes can't show column subsequently?
         }
-/**/
+
         // Instantiate grid
         //this.grid = null;
         this.grid = new (declare([OnDemandGrid, ColumnHider, ColumnReorder, ColumnResizer]))({
@@ -150,7 +150,7 @@ define([
         this.grid.on('.dgrid-content .dgrid-row:mouseover', function (event) {
           var row = this.grid.row(event);
           var rowIndex = event.selectorTarget.rowIndex;
-          var gObjFieldHtml = this.store.data[rowIndex].PHY_IDENT;
+          var gObjFieldHtml = this.store.data[rowIndex][this.idField];
           var gObjIndex = event.selectorTarget.innerHTML.split("@")[1];
           var associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
           this.showGridTooltip(event, rowIndex, associatedGraphic);
