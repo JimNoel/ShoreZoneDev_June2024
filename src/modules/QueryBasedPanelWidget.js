@@ -413,6 +413,8 @@ define([
     clearGraphics: function() {
       if (this.clickableLayer)
         this.clickableLayer.removeAll();
+      if (this.labelsLayer)
+        this.labelsLayer.removeAll();
       if (this.highlightLayer)
         this.highlightLayer.removeAll();
       if (this.trackingLayer)

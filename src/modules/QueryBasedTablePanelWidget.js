@@ -261,9 +261,12 @@ define([
           var ddFields = ddItem.ddOutFields;
           for (var i=0;  i<results.features.length; i++) {
             var a = results.features[i].attributes;
+            var v = a[ddFields[1]];
+            if (a["Envelope"])
+              v += ":" + a["Envelope"];
             options.push({
               label: a[ddFields[0]],
-              value: a[ddFields[1]]
+              value: v
             });
           }
           this.w.makeDropdownOptionsHtml(ddNum, this.headerContent)
