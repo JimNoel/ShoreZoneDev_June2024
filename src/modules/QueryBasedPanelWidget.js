@@ -24,7 +24,6 @@ define([
 */
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
-//  "esri/layers/FeatureLayer",       // Considering using this instead of GraphicsLayer
   "esri/layers/GraphicsLayer",
   "esri/renderers/SimpleRenderer",
   "esri/renderers/UniqueValueRenderer",
@@ -71,6 +70,13 @@ define([
 
         this.clickableLayer.widgetController = this;    // Custom property added to Graphics Layer object, to reference back to this widget
         this.map.add(this.clickableLayer);
+        if (this.hasTextOverlayLayer) {
+          this.labelsLayer = new GraphicsLayer();
+          this.labelsLayer.title = this.baseName + "_markerLabels";
+          this.labelsLayer.listMode = "hide";
+          map.add(this.labelsLayer);
+
+        }
         this.mouseStillOver = false;
         this.infoWin = this.view.popup;
         this.counter = 0;
@@ -589,9 +595,13 @@ define([
             overlayPars.text = a[this.textOverlayField];
             var textGraphic = new Graphic({
               geometry: mapFeature,
-              symbol: overlayPars,
+              symbol: overlayPars
+/*
+              haloColor: "white",
+              haloSize: "5px"
+*/
             });
-            this.clickableLayer.add(textGraphic);
+            this.labelsLayer.add(textGraphic);
           }
         }
 

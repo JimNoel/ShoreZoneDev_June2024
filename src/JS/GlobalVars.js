@@ -51,7 +51,7 @@ var faSublayerIDs = {};
 makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 
 
-var locateIconLayer;
+var locateIconLayer;     // GraphicsLayer for displaying user location.  Used by Locate widget.
 var layoutCode = "h2";     // default layout
 var initTab = "szTab";
 
@@ -640,7 +640,7 @@ var mapStuff;
 
 // For debug purposes
 function test() {
-  //youtube_player.setSize(400,200);
+  //map.layers.reorder(labelsLayer, map.layers.items.length-1);
   alert("This is a test.");
 }
 

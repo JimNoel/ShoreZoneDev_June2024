@@ -440,6 +440,7 @@ define([
           style: "solid",
           width: "2px"
         },
+        hasTextOverlayLayer: true,
         //popupTitle: "Fish Atlas Region",
         clickableMsg: null,
         map: map,
