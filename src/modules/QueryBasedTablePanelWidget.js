@@ -137,10 +137,8 @@ define([
 
         this.grid.on('dgrid-refresh-complete', function(event) {
           var rows = event.grid._rows;
-          for (r in rows)
+          for (var r=0; r<rows.length; r++)
             rows[r].setAttribute("id", "tableRow" + r);
-          //var testRow = event.grid._rows[3];
-          //testRow.setAttribute("id", "testRow");
           this.repositionTotalLabels(event.grid.columns);
         }.bind(this));
 
@@ -353,7 +351,6 @@ define([
       }
 
       this.highlightAssociatedRow = function(graphic) {
-        // TODO: Highlight row corresponding to "item" attribute of graphic
         if (this.selectedRow)
           this.selectedRow.style.backgroundColor = unselectColor;
         var r = graphic.attributes.item;
@@ -361,6 +358,7 @@ define([
         this.selectedRow = getEl(rowId);    // document.querySelectorAll(".dgrid-row", this.grid.domNode)[r];
         this.selectedRow.style.backgroundColor = selectColor;
         this.selectedRow.scrollIntoView();
+        // TODO: Try to get this.grid.select to work
 /*      // Can't get this.grid.select to work, so directly applying BG color to HTML elements (above)
         this.grid.select(document.querySelectorAll(".dgrid-row", this.grid.domNode)[0]);
         this.grid.select(this.store.data[r]);

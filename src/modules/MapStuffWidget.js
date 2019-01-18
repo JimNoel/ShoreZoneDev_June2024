@@ -430,21 +430,25 @@ define([
             idField: 'Region'
           }
         ],
-        layerName: "vw_CatchStats_Regions",
-        layerBaseName: "vw_CatchStats_",
+        layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+                                              //   using the current panel info and dropdown info for any dropdowns that have something selected.
         spatialRelationship: null,      // Using null as a flag to not filter spatially
         showFieldsInPopup: "*",
+
+        // TODO: Remove, and use something like setActiveTab in constructor
         clickableSymbolType: "extent",
         clickableSymbolInfo: {
           color: [ 51,51, 204, 0.1 ],
           style: "solid",
           width: "2px"
         },
+
         hasTextOverlayLayer: true,
-        //popupTitle: "Fish Atlas Region",
-        clickableMsg: null,
+        clickableMsg: null
+/*
         map: map,
         view: view
+*/
       });
       siteTabs.fa.widgets = [faWidget];
     }, function(error){

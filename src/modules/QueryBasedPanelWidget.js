@@ -69,7 +69,7 @@ define([
         this.setRenderer();
 
         this.clickableLayer.widgetController = this;    // Custom property added to Graphics Layer object, to reference back to this widget
-        this.map.add(this.clickableLayer);
+        map.add(this.clickableLayer);
         if (this.hasTextOverlayLayer) {
           this.labelsLayer = new GraphicsLayer();
           this.labelsLayer.title = this.baseName + "_markerLabels";
@@ -78,7 +78,7 @@ define([
 
         }
         this.mouseStillOver = false;
-        this.infoWin = this.view.popup;
+        this.infoWin = view.popup;
         this.counter = 0;
 
         // To indicate item currently hovered-over or touched
@@ -119,7 +119,7 @@ define([
 
         this.highlightLayer.renderer = new SimpleRenderer(this.highlightSymbol);
 //        this.highlightLayer.widgetController = this;    // Custom property added to Graphics Layer object, to reference back to this widget
-        this.map.add(this.highlightLayer);
+        map.add(this.highlightLayer);
       }
 
       if (this.trackingSymbolInfo) {
@@ -133,7 +133,7 @@ define([
         this.trackingImageURL = symbolArgs[0];
         this.trackingSymbol = new PictureMarkerSymbol(symbolArgs[0], symbolArgs[1], symbolArgs[2]);
         this.trackingLayer.renderer = new SimpleRenderer(this.trackingSymbol);
-        this.map.add(this.trackingLayer);
+        map.add(this.trackingLayer);
         this.playDir = 1;     // playback direction
       }
 
@@ -154,6 +154,11 @@ define([
       }
 
       this.addPanelHtml();
+
+/*  TODO: Use modified version of setActiveTab, so tab info gets copied, but query not run
+      if (this.tabInfo)
+        this.setActiveTab(0);
+*/
 
       this.noFeatures = function(f) {
         if (f.length===0) {
@@ -295,23 +300,6 @@ define([
       //this.clickableLayer.labelingInfo = this.labelClass;
       if (!this.tabInfo[index].textOverlayPars)
         this.textOverlayPars = null;              // Reset main textOverlayPars to null if textOverlayPars is not specified in new tab info
-
-/*
-      if (this.resetDDs) {
-        for (d in this.dropDownInfo) {
-          var ddInfo = this.dropDownInfo[d];
-          for (n in this.resetDDs) {
-            if (ddInfo.ddName === this.resetDDs[n]) {
-              // TODO: Get this to work
-              //ddInfo.SelectedOption = "All";
-              //getEl(ddInfo.domId).value = ddInfo.SelectedOption;
-            }
-
-          }
-          //alert("YO!");
-        }
-      }
-*/
 
       this.setClickableSybolType();
       //this.setRenderer();
@@ -456,7 +444,7 @@ define([
           var item = ddInfo[d];
           // TODO: Check this
           if ((item.SelectedOption !== "All") /*&& (getEl(item.domId).parentNode.style.display !== "none")*/) {     // Do only if something selected, and (parent span of) dropdown is visible
-            var selOption = item.SelectedOption;
+            var selOption = item.SelectedOption.split(":")[0];      // In case additional info such as extent is included, this gets just the value
             if (item.isAlpha)
               selOption = "'" + selOption + "'";
             this.ddLayerNameAddOn += item.LayerNameAddOn;
