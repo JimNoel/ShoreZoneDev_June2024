@@ -687,7 +687,8 @@ define([
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
       hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic), minHoverTime);       // delay popup
-
+      if (currentWidgetController.grid)
+        currentWidgetController.highlightAssociatedRow(currentHoveredGraphic)
     }
   };
 

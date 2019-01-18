@@ -11,6 +11,11 @@
  *    -- perhaps other args for outFields and where clause?
  */
 
+
+var selectColor = "green";
+var unselectColor = "white";
+
+
 define([
   "dojo/_base/declare",
   "dojo/_base/lang",
@@ -23,10 +28,11 @@ define([
   "dgrid/extensions/ColumnReorder",
   "dgrid/extensions/ColumnResizer",
   "dgrid/Selector",
+  "dgrid/Selection",
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
   "noaa/QueryBasedPanelWidget"
-], function(declare, lang, on, Select, Memory, Trackable, OnDemandGrid, ColumnHider, ColumnReorder, ColumnResizer, Selector,
+], function(declare, lang, on, Select, Memory, Trackable, OnDemandGrid, ColumnHider, ColumnReorder, ColumnResizer, Selector, Selection,
             Query, QueryTask, QueryBasedPanelWidget){
 
 
@@ -48,6 +54,7 @@ define([
       this.hideEmptyColumns = true;
       this.store = null;
       this.grid = null;
+      this.selectedRow = null;
 
       this.makeTable = function(fields, features) {
         // Create a dGrid table from returned data
@@ -87,7 +94,8 @@ define([
         for (var i=0; i<features.length; i++) {
           if (this.idField) {
             var idFieldValue = features[i].attributes[this.idField];
-            features[i].attributes[this.idField] = "<span gObjIndex='@" + i + "@'>" + idFieldValue + "</span>";
+            features[i].attributes[this.idField] = idFieldValue + "<span id='@" + i + "@'></span>";     // "@" used for easy splitting out of values
+            //features[i].attributes[this.idField] = idFieldValue + "<span gObjIndex='@" + i + "@'></span>";
           }
           var origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
           for (a in features[i].attributes) {
@@ -113,7 +121,7 @@ define([
 
         // Instantiate grid
         //this.grid = null;
-        this.grid = new (declare([OnDemandGrid, ColumnHider, ColumnReorder, ColumnResizer]))({
+        this.grid = new (declare([OnDemandGrid, ColumnHider, ColumnReorder, ColumnResizer, Selection]))({
           className: "dataTable",
           loadingMessage: 'Loading data...',
           noDataMessage: 'No results found.',
@@ -128,6 +136,9 @@ define([
         });
 
         this.grid.on('dgrid-refresh-complete', function(event) {
+          var rows = event.grid._rows;
+          for (r in rows)
+            rows[r].setAttribute("id", "tableRow" + r);
           //var testRow = event.grid._rows[3];
           //testRow.setAttribute("id", "testRow");
           this.repositionTotalLabels(event.grid.columns);
@@ -339,6 +350,24 @@ define([
           this.headerContent.children[c].style.display = "none";
         for (c in this.visibleHeaderElements)
           getEl(this.visibleHeaderElements[c]).style.display = "inline";
+      }
+
+      this.highlightAssociatedRow = function(graphic) {
+        // TODO: Highlight row corresponding to "item" attribute of graphic
+        if (this.selectedRow)
+          this.selectedRow.style.backgroundColor = unselectColor;
+        var r = graphic.attributes.item;
+        var rowId = "@" + r + "@";      //"tableRow" + r
+        this.selectedRow = getEl(rowId);    // document.querySelectorAll(".dgrid-row", this.grid.domNode)[r];
+        this.selectedRow.style.backgroundColor = selectColor;
+        this.selectedRow.scrollIntoView();
+/*      // Can't get this.grid.select to work, so directly applying BG color to HTML elements (above)
+        this.grid.select(document.querySelectorAll(".dgrid-row", this.grid.domNode)[0]);
+        this.grid.select(this.store.data[r]);
+        this.grid.select(this.grid.row(r));
+        this.grid.select("tableRow" + r);
+*/
+
       }
 
       this.makeTableHeaderHtml();
