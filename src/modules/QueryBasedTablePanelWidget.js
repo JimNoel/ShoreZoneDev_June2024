@@ -271,11 +271,14 @@ define([
           for (var i=0;  i<results.features.length; i++) {
             var a = results.features[i].attributes;
             var v = a[ddFields[1]];
+            var extentStr = null;
             if (a["Envelope"])
-              v += ":" + a["Envelope"];
+              extentStr = a["Envelope"];
+              //v += ":" + a["Envelope"];
             options.push({
               label: a[ddFields[0]],
-              value: v
+              value: v,
+              extent: extentStr
             });
           }
           this.w.makeDropdownOptionsHtml(ddNum, this.headerContent)
@@ -287,7 +290,10 @@ define([
         var ddItem = this.dropDownInfo[ddNum];
         var theHtml = '';
         ddItem.options.forEach(function(item, index, array) {
-          theHtml += '<option value="' + item.value + '">' + item.label + '</option>';
+          var extentStr = '';
+          if (item.extent)
+            extentStr = 'extent="' + item.extent + '" ';
+          theHtml += '<option ' + extentStr + 'value="' + item.value + '">' + item.label + '</option>';
         });
         getEl(domId).innerHTML = theHtml;
       };

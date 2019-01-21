@@ -399,8 +399,12 @@ function sliderHandler(divID) {
   document.getElementById(divID + "_content").style.opacity = document.getElementById(divID + "_slider").value/100;
 }
 
-function dropdownSelectHandler(w, index, dd) {
-  w.dropDownInfo[index].SelectedOption = dd.value;
+function dropdownSelectHandler(w, index, ddElement) {
+  var ddInfo = w.dropDownInfo[index];
+  ddInfo.SelectedOption = ddElement.value;
+  var newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
+  if (newExtent)
+    mapStuff.gotoExtent(newExtent);
   w.runQuery(view.extent);
 }
 

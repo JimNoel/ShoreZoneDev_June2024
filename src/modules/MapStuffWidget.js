@@ -261,7 +261,7 @@ define([
             subLayerName: "Regions",
             ddOutFields: ["RegionName", "RegionID", "Envelope"],
             orderByFields: ["RegionName"],
-            options: [ { label: "[All Alaska regions]", value: "All" } ],
+            options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
             SelectedOption: "All",
             whereField: "RegionID"
           },

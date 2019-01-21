@@ -444,7 +444,7 @@ define([
           var item = ddInfo[d];
           // TODO: Check this
           if ((item.SelectedOption !== "All") /*&& (getEl(item.domId).parentNode.style.display !== "none")*/) {     // Do only if something selected, and (parent span of) dropdown is visible
-            var selOption = item.SelectedOption.split(":")[0];      // In case additional info such as extent is included, this gets just the value
+            var selOption = item.SelectedOption;        //.split(":")[0];      // In case additional info such as extent is included, this gets just the value
             if (item.isAlpha)
               selOption = "'" + selOption + "'";
             this.ddLayerNameAddOn += item.LayerNameAddOn;
