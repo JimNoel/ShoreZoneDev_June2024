@@ -23,7 +23,8 @@ define([
   "dijit/form/Select",
   "dstore/Memory",
   "dstore/Trackable",
-  "dgrid/OnDemandGrid",
+  "dgrid/Grid",
+  //"dgrid/OnDemandGrid",           // Optionally, use the "OnDemandGrid" class for Grid instead of the "Grid" class
   "dgrid/extensions/ColumnHider",
   "dgrid/extensions/ColumnReorder",
   "dgrid/extensions/ColumnResizer",
@@ -32,7 +33,7 @@ define([
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
   "noaa/QueryBasedPanelWidget"
-], function(declare, lang, on, Select, Memory, Trackable, OnDemandGrid, ColumnHider, ColumnReorder, ColumnResizer, Selector, Selection,
+], function(declare, lang, on, Select, Memory, Trackable, Grid, ColumnHider, ColumnReorder, ColumnResizer, Selector, Selection,
             Query, QueryTask, QueryBasedPanelWidget){
 
 
@@ -109,7 +110,6 @@ define([
           }
           tableData.push(features[i].attributes);
         }
-        //this.store = null;
         this.store = new (declare([Memory, Trackable]))({
           data: tableData
         });
@@ -120,15 +120,15 @@ define([
         }
 
         // Instantiate grid
-        //this.grid = null;
-        this.grid = new (declare([OnDemandGrid, ColumnHider, ColumnReorder, ColumnResizer, Selection]))({
+        this.grid = new (declare([Grid, ColumnHider, ColumnReorder, ColumnResizer, Selection]))({
           className: "dataTable",
           loadingMessage: 'Loading data...',
           noDataMessage: 'No results found.',
-          collection: this.store,
+          //collection: this.store,     // If using OnDemandGrid, include this
           columns: tableColumns
         }, this.displayDivName);
-        this.grid.startup();
+        //this.grid.startup();              // If using OnDemandGrid, include this
+        this.grid.renderArray(tableData);   // If using Grid, include this
 
 
         this.grid.on('dgrid-error', function(event) {
@@ -177,6 +177,7 @@ define([
 
 
         this.repositionTotalLabels = function(columns) {
+          //TODO:  No longer kicks in on initial table creation
           if (!this.totalOutFields)
             return;
           var posTop = $(this.footerWrapper).position().top + 2;
@@ -357,6 +358,7 @@ define([
       }
 
       this.highlightAssociatedRow = function(graphic) {
+        // TODO: Handle issue with limited number of rows currenty rendered (default 25?)  Possibly go to Grid or GridFromHtml instead of OnDemandGrid?
         if (this.selectedRow)
           this.selectedRow.style.backgroundColor = unselectColor;
         var r = graphic.attributes.item;

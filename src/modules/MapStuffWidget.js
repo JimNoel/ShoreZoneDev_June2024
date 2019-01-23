@@ -77,7 +77,6 @@ define([
         headerDivName:  "photoHeaderDiv",
         disabledMsgInfix: "photo points",
         disabledMsgDivName: "disabledMsg_photo",
-        //dfltCaptionHTML: "<label style='color:red'>Zoom in further to see photos</label>",
         noQuery: true,
         trackingSymbolInfo: "assets/images/Camera24X24.png:24:24",
         clickableSymbolType: "point",
@@ -99,7 +98,6 @@ define([
         headerDivName:  "videoHeaderDiv",
         disabledMsgInfix: "video points",
         disabledMsgDivName: "disabledMsg_video",
-        //dfltCaptionHTML: "<label style='color:red'>Zoom in further to see video</label>",
         //displayDivName: "#videoImageContainer",
         mapServiceLayer: szMapServiceLayer,
         layerName: "1s",
@@ -130,7 +128,6 @@ define([
         displayDivName: "unitsContainer",
         disabledMsgInfix: "units",
         disabledMsgDivName: "disabledMsg_units",
-        //dfltCaptionHTML: "<label style='color:red'>Zoom in further to see units</label>",
         mapServiceLayer: szMapServiceLayer,
         layerName: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
         layerPath: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
@@ -197,47 +194,21 @@ define([
     });
 
     ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {"opacity" : 0.5});
-    /*
         ssMapServiceLayer.when(function(resolvedVal) {
           console.log("Shore Station MapServiceLayer loaded.");
           ssMapServiceLayer.visible = false;
           ssWidget = new QueryBasedTablePanelWidget({
-            panelName: "ssPanel",
-            contentPaneId: "ssDiv",
-            baseName: "ss",
-            headerDivName:  "ssHeaderDiv",
-            displayDivName: "ssContainer",
-            disabledMsgDivName: "disabledMsg_ss",
-            dfltCaptionHTML: "<label style='color:red'>Zoom in further to see Shore Station features</label>",
-            mapServiceLayer: ssMapServiceLayer,
-            layerName: "Regions",
-            layerPath: "Regions",
-            featureOutFields:  ["RegionNumID","RegionalID", "Region"],      //["*"],
-            showFieldsInPopup: "*",
-            //trackingSymbolInfo: "assets/images/video24X24.png:24:24",
-            clickableSymbolType: "extent",
-            clickableSymbolInfo: {
-              color: [ 51,51, 204, 0.1 ],
-              style: "solid",
-              width: "2px"
-            },
-            popupTitle: "Shore Station Region",
-            clickableMsg: null,
-            map: map,
-            view: view
+            // Copy in from faWidget parameters (below), and modify for Shore Stations
           });
 
         }, function(error){
           debug("Shore Station MapServiceLayer failed to load:  " + error);
         });
-    */
 
     faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {"opacity" : 0.5});
     faMapServiceLayer.when(function() {
       console.log("Fish Atlas MapServiceLayer loaded.");
       faMapServiceLayer.visible = false;
-      // noinspection SyntaxError
-      // noinspection SyntaxError
       faWidget = new QueryBasedTablePanelWidget({
         objName: "faWidget",
         title: "Fish Atlas",
@@ -252,7 +223,6 @@ define([
         tableHeaderTitle: "All Regions",
         displayDivName: "faContainer",
         disabledMsgDivName: "disabledMsg_fa",
-        //dfltCaptionHTML: "<label style='color:red'>Zoom in further to see Fish Atlas features</label>",
         mapServiceLayer: faMapServiceLayer,
         dropDownInfo: [
           { ddName: "Region",
@@ -353,24 +323,6 @@ define([
               },
               size:12
             },
-/*  // Possibly will use if GraphicsLayer gets changed to FeatureLayer
-            labelClass: { // autocasts as new LabelClass()
-              symbol: {
-                type: "text", // autocasts as new TextSymbol()
-                color: "red",
-                haloColor: "black",
-                font: { // autocast as new Font()
-                  family: "playfair-display",
-                  size: 12,
-                  weight: "bold"
-                }
-              },
-              labelPlacement: "above-center",
-              labelExpressionInfo: {
-                expression: "$feature.MARKER_ACTIVITY"
-              }
-            },
-*/
             textOverlayPars: {
               type: "text",  // autocasts as new TextSymbol()
               color: "black",
@@ -445,10 +397,6 @@ define([
 
         hasTextOverlayLayer: true,
         clickableMsg: null
-/*
-        map: map,
-        view: view
-*/
       });
       siteTabs.fa.widgets = [faWidget];
     }, function(error){
