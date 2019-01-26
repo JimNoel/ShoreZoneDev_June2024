@@ -46,7 +46,7 @@ define([
     constructor: function(/*Object*/ kwArgs){
       lang.mixin(this, kwArgs);
 
-      //this.addPanelHtml();
+      console.log("Making " + this.panelName);
 
       this.noFeaturesPanels = [this];
 
@@ -239,7 +239,7 @@ define([
         //debug("displayPlayButton complete");
       };
 
-      console.log(this.panelName);
+      console.log(this.panelName + " created");
 
     },
 
@@ -443,12 +443,13 @@ define([
         for (d in ddInfo) {
           var item = ddInfo[d];
           // TODO: Check this
-          if ((item.SelectedOption !== "All") /*&& (getEl(item.domId).parentNode.style.display !== "none")*/) {     // Do only if something selected, and (parent span of) dropdown is visible
-            var selOption = item.SelectedOption;        //.split(":")[0];      // In case additional info such as extent is included, this gets just the value
+          if ((item.SelectedOption !== "All")) {
+            var selOption = item.SelectedOption;
             if (item.isAlpha)
               selOption = "'" + selOption + "'";
             this.ddLayerNameAddOn += item.LayerNameAddOn;
-            this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
+            if (item.totalsLayerNameAddOn)
+              this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
             if (theWhere !== "")
               theWhere += " AND ";
             theWhere += item.whereField + "=" + selOption;
@@ -541,12 +542,14 @@ define([
         a.item = n;
 
         var geom = g.geometry;
+        if (g.geometry.type === "polyline")
+          geom = g.geometry.extent;
         var centroid = g.geometry;
+
         var skipFeature = false;
       // If feature is not a point, use center of feature extent for "x" and "y" attributes
         if (g.geometry.type !== "point") {
-          geom = g.geometry.extent;
-          centroid = geom.center;
+          centroid = g.geometry.extent.center;
         } else if (this.clickableSymbolGap) {
           var gArray = this.clickableLayer.graphics.items;
           var l = gArray.length;
@@ -558,8 +561,8 @@ define([
               skipFeature = true;
           }
         }
-        a.x = centroid.x;    // g.geometry.x;
-        a.y = centroid.y;    // g.geometry.y;
+        a.x = centroid.x;
+        a.y = centroid.y;
 
         if (!skipFeature) {
           var mapFeature = webMercatorUtils.webMercatorToGeographic(geom);      //projPoint);   //this._webMercatorToGeographic(projPoint);

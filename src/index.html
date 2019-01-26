@@ -84,6 +84,7 @@
               q:  ["qt",  "t:200px",    "CP"],        // set query panel height
               t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
                 szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                ss:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
                 fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
       layouts["h2"] = {
@@ -99,6 +100,7 @@
                 //q:  ["qt",  "l:200px",    "CP"],        // set query panel height
                 t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
                   szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                  ss:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
                   fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
       layouts["v3"] = {
@@ -114,6 +116,7 @@
               //q:  ["qt",  "t:200px",    "CP"],        // set query panel height
               t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
                 szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                ss:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
                 fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
 
@@ -353,8 +356,13 @@
             faWidget.setActiveTab(0);
         }
         else if (tabID === "ssTab") {
+          siteTabs.visManager.promoteClass("ss");
+          if (ssWidget)
+            ssWidget.setActiveTab(0);
+/*
           if (confirm(FaSsMsg.replace(/@/g,"Shore Station")))
             window.open(flexSiteURL + "@T=SS");
+*/
         }
         else if (tabID === "szUnitsTab") {
           if (confirm("Open the ShoreZone 3D Units demo site?"))

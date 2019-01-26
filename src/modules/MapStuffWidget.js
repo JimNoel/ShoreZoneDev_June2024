@@ -167,7 +167,7 @@ define([
       siteTabs.sz.widgets = [szPhotoWidget, szVideoWidget, szUnitsWidget];
 
 
-      /*
+/*
       this.prequeryTask = new QueryTask(szMapServiceLayerURL + "/2");
       this.prequery = new Query();
       with (this.prequery) {
@@ -177,7 +177,7 @@ define([
         num = 1000;
         start = 0;
       }
-      */
+*/
 
       /*  TRY:  attempt to catch sublayer visibility change event
       var subLayers = szMapServiceLayer.allSublayers;
@@ -194,16 +194,95 @@ define([
     });
 
     ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {"opacity" : 0.5});
-        ssMapServiceLayer.when(function(resolvedVal) {
-          console.log("Shore Station MapServiceLayer loaded.");
-          ssMapServiceLayer.visible = false;
-          ssWidget = new QueryBasedTablePanelWidget({
-            // Copy in from faWidget parameters (below), and modify for Shore Stations
-          });
+    ssMapServiceLayer.when(function(resolvedVal) {
+      console.log("Shore Station MapServiceLayer loaded.");
+      ssMapServiceLayer.visible = false;
 
-        }, function(error){
-          debug("Shore Station MapServiceLayer failed to load:  " + error);
-        });
+      /*  ssWidget def */
+      ssWidget = new QueryBasedTablePanelWidget({
+        objName: "ssWidget",
+        title: "Shore Stations",
+        sublayerIDs: ssSublayerIDs,
+        panelName: "ssPanel",
+        panelType: "table",
+        contentPaneId: "ssDiv",
+        baseName: "ss",
+        headerDivName:  "ssHeaderDiv",
+        footerDivName:  "ssFooterDiv",
+        tableHeaderTitle: "All Regions",
+        displayDivName: "ssContainer",
+        disabledMsgDivName: "disabledMsg_ss",
+        mapServiceLayer: ssMapServiceLayer,
+        dropDownInfo: [
+          { ddName: "Region",
+            LayerNameAddOn: "",
+            subLayerName: "Regions",
+            ddOutFields: ["Region", "RegionNumID", "Envelope"],
+            orderByFields: ["Region"],
+            options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+            SelectedOption: "All",
+            whereField: "RegionNumID"
+          }
+        ],
+        currTab: 0,
+        tabInfo: [
+          {
+            tabName: 'Regions',
+            tabTitle: 'Shore Stations Regions',
+            popupTitle: "Shore Stations Region",
+            LayerNameAddOn: 'Regions',
+            parentAreaType: '',
+            visibleHeaderElements: ['ssTableHeaderTitle', 'ssCheckboxSpan_showFeatures'],
+            featureOutFields: ["Envelope", "Region", "RegionalID", "RegionNumID"],
+            specialFormatting: {      // Special HTML formatting for field values
+              Envelope: {
+                title:  "",
+                colWidth:  20,
+                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@Envelope@\")' height='15' width='15' alt=''>"
+              },
+              RegionNumID: {
+                title:  "",
+                colWidth:  20,
+                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom(ssWidget,@RegionNumID@,\"@Envelope@\")' height='15' width='15' alt=''>"
+              }
+            },
+            idField: 'Region',
+            subTableDD: "Region",
+            resetDDs:  ["Region", "Locale"],
+            clickableSymbolType: "extent",
+            clickableSymbolInfo: {
+              color: [ 51,51, 204, 0.1 ],
+              style: "solid",
+              width: "2px"
+            },
+            //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
+          }
+        ],
+
+        layerBaseName: "",      // Blank for Shore Stations, since there are no group queries
+        // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+        //   using the current panel info and dropdown info for any dropdowns that have something selected.
+
+        spatialRelationship: null,      // Using null as a flag to not filter spatially
+        showFieldsInPopup: "*",
+
+        // TODO: Remove, and use something like setActiveTab in constructor
+        clickableSymbolType: "extent",
+        clickableSymbolInfo: {
+          color: [ 51,51, 204, 0.1 ],
+          style: "solid",
+          width: "2px"
+        },
+
+        hasTextOverlayLayer: true,
+        clickableMsg: null
+      });
+      /* end szWidget def*/
+
+      siteTabs.ss.widgets = [ssWidget];
+    }, function(error){
+      debug("Shore Station MapServiceLayer failed to load:  " + error);
+    });
 
     faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {"opacity" : 0.5});
     faMapServiceLayer.when(function() {
@@ -445,11 +524,13 @@ define([
     //var extent3d_geog = webMercatorUtils.webMercatorToGeographic(extent3d);
 
 
-    /*JN  This doesn't work.  Make custom prequery function using XMLHttpRequest, with setting for resultRecordCount?
+/*
+    //JN  This doesn't work.  Make custom prequery function using XMLHttpRequest, with setting for resultRecordCount?
     // or: Dissolve 10s on VideoTapeID, assume each 10s feature represents up to 4000 points (a little more than an hour of video), run executeForCount on 10s and use 4000*Count as estimated # of point in view
     if (!this.prequeryTask)
       return;
-    this.prequeryTask.executeForCount({ where: "1=1"}).when(function(results){
+    this.prequeryTask.geometry = map.extent;
+    this.prequeryTask.executeForCount({ where: "1=1"}).then(function(results){
       if (results.features.length===maxSZFeatures) {
         console.log(this.baseName + ":  maxSZFeatures (" + maxSZFeatures + ") returned.");
       } else {
@@ -458,7 +539,7 @@ define([
     }.bind(this), function(error) {
       console.log(this.baseName + ":  QueryTask failed.");
     }.bind(this));
-    */
+*/
 
 
     //OBS?  lastExtent = newExtent;
@@ -909,7 +990,7 @@ define([
     map = new Map({
       basemap: "hybrid",
       //ground: "world-elevation",      // Used only with SceneView
-      layers:  [sslMapServiceLayer, /*ssMapServiceLayer,*/ faMapServiceLayer, szMapServiceLayer]
+      layers:  [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer]
     });
 
     view = new View({

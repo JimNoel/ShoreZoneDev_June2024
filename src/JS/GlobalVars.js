@@ -45,8 +45,11 @@ var szSublayerIDs = {};
 makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
 
 
-var ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation/MapServer";
-var faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer";     // aTest_FishAtlas_wViews
+var ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_wViews/MapServer";        // ShoreStation gives CORS error for some reason
+var ssSublayerIDs = {};
+makeSublayerIdTable(ssMapServiceLayerURL, ssSublayerIDs);
+
+var faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer";
 var faSublayerIDs = {};
 makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 

@@ -130,11 +130,12 @@ define([
         //this.grid.startup();              // If using OnDemandGrid, include this
         this.grid.renderArray(tableData);   // If using Grid, include this
 
-
         this.grid.on('dgrid-error', function(event) {
           debug('dgrid-error:  ' + event.error.message);
         });
 
+        // This doesn't work when using Grid instead of OnDemandGrid
+        // TODO: Implement SingleQuery, to get dgrid-refresh-complete?  (Tried once, didn't work.)
         this.grid.on('dgrid-refresh-complete', function(event) {
           var rows = event.grid._rows;
           for (var r=0; r<rows.length; r++)
@@ -175,9 +176,13 @@ define([
           this.hideGridTooltip(event);
         }.bind(this));
 
+/*
+        this.grid.watch("_rows", function() {
+          alert("Hey!");
+        });
+*/
 
         this.repositionTotalLabels = function(columns) {
-          //TODO:  No longer kicks in on initial table creation
           if (!this.totalOutFields)
             return;
           var posTop = $(this.footerWrapper).position().top + 2;
@@ -246,6 +251,7 @@ define([
             var totalValues = results.features[0].attributes;
             for (a in totalValues)
               this.totalLabels[a].node.innerHTML = totalValues[a];
+            this.repositionTotalLabels(this.grid.columns);
           }.bind(this), function(error) {
             console.log(this.baseName + ":  QueryTask for Totals failed.");
           }.bind(this));
