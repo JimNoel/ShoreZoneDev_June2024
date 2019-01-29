@@ -339,7 +339,7 @@
       var flexSiteURL = "https://alaskafisheries.noaa.gov/mapping/szflex/index.html?L=B";
       var SZ3dUnitsSiteURL = "https://alaskafisheries.noaa.gov/mapping/jstest/szunits3d.html";
 
-      changeState(initTab);     // TODO:  This doesn't work yet, faWidget/ssWidget need to be instantiated at this point
+      changeState(initTab);
 
       stateNavigator.watch("selectedChildWidget", function(name, oval, nval){
         changeState(nval.id, oval.id);

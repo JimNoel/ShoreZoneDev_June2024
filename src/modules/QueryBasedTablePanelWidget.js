@@ -364,12 +364,12 @@ define([
       }
 
       this.highlightAssociatedRow = function(graphic) {
-        // TODO: Handle issue with limited number of rows currenty rendered (default 25?)  Possibly go to Grid or GridFromHtml instead of OnDemandGrid?
+        return;     // TODO: Coordinate with dGrid mouseover highlightiung, and implement later
         if (this.selectedRow)
           this.selectedRow.style.backgroundColor = unselectColor;
         var r = graphic.attributes.item;
         var rowId = "@" + r + "@";      //"tableRow" + r
-        this.selectedRow = getEl(rowId);    // document.querySelectorAll(".dgrid-row", this.grid.domNode)[r];
+        this.selectedRow = getEl(rowId).parentNode.parentNode;    // document.querySelectorAll(".dgrid-row", this.grid.domNode)[r];
         this.selectedRow.style.backgroundColor = selectColor;
         this.selectedRow.scrollIntoView();
         // TODO: Try to get this.grid.select to work
