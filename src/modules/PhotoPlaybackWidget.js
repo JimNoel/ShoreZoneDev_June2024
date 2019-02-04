@@ -47,7 +47,7 @@ define([
     debug("on_image_error");
     //PHOTO_SERVER = alternateImageBaseDir;
     //update_photo(update_photo_latest_params);
-    alert("No image found.");
+    setMessage("photoNoImageMessage", "Unable to find image.");
     $("#photoImage").unbind('error');
     return true;
   }
@@ -82,9 +82,12 @@ define([
   }
 
   function load_NOAA_Photo(new_img_src) {
+/*
     if (!justAK)
       return;
-    setMessage_Mario("photoNoImageMessage", {"visible": true, "text": "Image not found on Picasa.  Trying the NOAA server...", "fade": 1000});
+*/
+    //setMessage_Mario("photoNoImageMessage", {"visible": true, "text": "Image not found on Picasa.  Trying the NOAA server...", "fade": 1000});
+    setMessage("photoNoImageMessage",  "Image not found on Picasa.  Trying the NOAA server...", true, 1000);
     latest_img_src = new_img_src;
     $("#photoImage").attr("src", latest_img_src);
   }
@@ -114,7 +117,8 @@ define([
   }
 
   function load_Picasa_Photo(userID, albumID, photoID, NOAA_img_src) {
-    if ((albumID===null) || (photoID===null)) {
+    var picasaDeprecated = true
+    if ((albumID===null) || (photoID===null) || picasaDeprecated) {
       load_NOAA_Photo(NOAA_img_src);
       return;
     }
