@@ -140,13 +140,15 @@ define([
       // Skip if the widget doesn't get its data directly from a query
       // e.g. PhotoPlaybackWidget, which uses a subset of the data from VideoPanelWidget
       if (!this.noQuery) {
+        if (!this.orderByFields)
+          this.orderByFields = [];      // If orderByFields hasn't been specified in MapStuffWidget, then default to empty array
         var subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         this.queryTask = new QueryTask(subLayerURL);
         this.query = new Query();
         with (this.query) {
           returnGeometry = true;
           spatialRelationship = this.spatialRelationship;      //"contains";
-          orderByFields = [];
+          orderByFields = this.orderByFields;
           where = "";
           //returnCountOnly = true;
         }
@@ -459,6 +461,7 @@ define([
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
       }
       this.query.where = theWhere;
+      //this.query.orderByFields = this.orderByFields;
 
 
       this.queryTask.execute(this.query).then(function(results){

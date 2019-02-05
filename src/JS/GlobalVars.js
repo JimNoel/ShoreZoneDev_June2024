@@ -643,6 +643,23 @@ function gotoSavedExtent(offset) {
 }
 /* For extent history and prev/next extent navigation*/
 
+
+function simulateMouseEvent(el, evType) {
+  var event = new MouseEvent(evType, {
+    view: window,
+    bubbles: true,
+    cancelable: true
+  });
+  var cancelled = !el.dispatchEvent(event);
+  if (cancelled) {
+    // A handler called preventDefault.
+    console.log("cancelled");
+  } else {
+    // None of the handlers called preventDefault.
+    console.log("not cancelled");
+  }
+}
+
 var mapStuff;
 
 // For debug purposes
@@ -650,6 +667,8 @@ function test() {
   //map.layers.reorder(labelsLayer, map.layers.items.length-1);
   alert("This is a test.");
 }
+
+
 
 
 /* Unused functions

@@ -247,7 +247,6 @@ define([
       "Picasa_PhotoID"
       ];
 */
-      this.query.orderByFields = ["Date_Time"];
       this.query.where = "(MP4_Seconds IS NOT NULL) AND (MP4_Seconds >= -1)";
       this.playbackRate = 1.0;
       this.noFeaturesPanels.push(szPhotoWidget);

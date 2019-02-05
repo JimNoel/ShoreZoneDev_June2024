@@ -12,8 +12,8 @@
  */
 
 
-var selectColor = "green";
-var unselectColor = "white";
+var selectColor = "#DCEEFF";
+var unselectColor = "";   // "white";
 
 
 define([
@@ -150,6 +150,7 @@ define([
         }.bind(this));
 
         this.grid.on('.dgrid-header .dgrid-cell:mouseover', function (event) {
+          this.unHighlightCurrentRow();     // If row has been highlighted due to feature mouseover, this unhighlights it
           this.showHeaderTooltip(event);
         }.bind(this));
 
@@ -364,22 +365,17 @@ define([
       }
 
       this.highlightAssociatedRow = function(graphic) {
-        return;     // TODO: Coordinate with dGrid mouseover highlightiung, and implement later
-        if (this.selectedRow)
-          this.selectedRow.style.backgroundColor = unselectColor;
+        this.unHighlightCurrentRow();
         var r = graphic.attributes.item;
         var rowId = "@" + r + "@";      //"tableRow" + r
         this.selectedRow = getEl(rowId).parentNode.parentNode;    // document.querySelectorAll(".dgrid-row", this.grid.domNode)[r];
         this.selectedRow.style.backgroundColor = selectColor;
         this.selectedRow.scrollIntoView();
-        // TODO: Try to get this.grid.select to work
-/*      // Can't get this.grid.select to work, so directly applying BG color to HTML elements (above)
-        this.grid.select(document.querySelectorAll(".dgrid-row", this.grid.domNode)[0]);
-        this.grid.select(this.store.data[r]);
-        this.grid.select(this.grid.row(r));
-        this.grid.select("tableRow" + r);
-*/
+      }
 
+      this.unHighlightCurrentRow = function() {
+        if (this.selectedRow)
+          this.selectedRow.style.backgroundColor = unselectColor;
       }
 
       this.makeTableHeaderHtml();

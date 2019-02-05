@@ -104,6 +104,7 @@ define([
         layerPath: "Video Flightline/1s",
         spatialRelationship: "contains",
         featureOutFields: ["*"],
+        orderByFields: ["Date_Time"],
         trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
         clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,
@@ -134,6 +135,7 @@ define([
         spatialRelationship: "contains",
         idField: "PHY_IDENT",
         featureOutFields:  ["PHY_IDENT"],     // Other fields will be added based on queries of map service layers
+        orderByFields: ["PHY_IDENT"],
         extraOutFields:  ["CMECS_1", "CMECS_2", "CMECS_3", "Length_M", "Slope_calc", "SHORE_PROB", "LOST_SHORE", "Fetch_max", "Wave_Dissipation", "Orient_dir", "Tidal_height", "CVI_Rank"],
         specialFormatting: {      // Special HTML formatting for field values
           CMECS_1: { colWidth: 130 },
@@ -360,6 +362,7 @@ define([
             parentAreaType: '',
             visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
+            orderByFields: ["RegionName"],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
                 title:  "",
