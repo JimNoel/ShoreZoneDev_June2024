@@ -95,8 +95,9 @@ define([
         for (var i=0; i<features.length; i++) {
           if (this.idField) {
             var idFieldValue = features[i].attributes[this.idField];
-            features[i].attributes[this.idField] = idFieldValue + "<span id='@" + i + "@'></span>";     // "@" used for easy splitting out of values
-            //features[i].attributes[this.idField] = idFieldValue + "<span gObjIndex='@" + i + "@'></span>";
+            features[i].attributes[this.idField] = idFieldValue + "<span id='" + this.baseName + "@" + i + "@'></span>";
+            // For identifying the equivalent row in the table, on feature click
+            // "@" used for easy splitting out of values
           }
           var origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
           for (a in features[i].attributes) {
@@ -367,10 +368,11 @@ define([
       this.highlightAssociatedRow = function(graphic) {
         this.unHighlightCurrentRow();
         var r = graphic.attributes.item;
-        var rowId = "@" + r + "@";      //"tableRow" + r
-        this.selectedRow = getEl(rowId).parentNode.parentNode;    // document.querySelectorAll(".dgrid-row", this.grid.domNode)[r];
+        var rowId = this.baseName + "@" + r + "@";      // Embedded in idField at feature creation
+        this.selectedRow = getEl(rowId).parentNode.parentNode;
         this.selectedRow.style.backgroundColor = selectColor;
-        this.selectedRow.scrollIntoView();
+        if (!isInViewport(this.selectedRow,this.grid.bodyNode))
+          this.selectedRow.scrollIntoView();
       }
 
       this.unHighlightCurrentRow = function() {

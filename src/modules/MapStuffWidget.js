@@ -362,7 +362,7 @@ define([
             parentAreaType: '',
             visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
-            orderByFields: ["RegionName"],
+            orderByFields: ["Region"],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
                 title:  "",
@@ -394,6 +394,7 @@ define([
             parentAreaType: 'Regions',
             visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Region", "MapID", "Locale", "Hauls", "Species", "Catch"],
+            orderByFields: ["Region", "Locale"],
             idField: 'Locale',
             clickableSymbolType: "point",
             clickableSymbolInfo: {
@@ -425,6 +426,7 @@ define([
             parentAreaType: 'Locales',
             visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch"],
+            orderByFields: ["Region", "Locale", "Site"],
             idField: 'Site',
             clickableSymbolType: "point",
             clickableSymbolInfo: {

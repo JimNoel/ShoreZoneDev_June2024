@@ -461,19 +461,16 @@ define([
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
       }
       this.query.where = theWhere;
-      //this.query.orderByFields = this.orderByFields;
+      this.query.orderByFields = this.orderByFields;
 
 
       this.queryTask.execute(this.query).then(function(results){
-          //var theFeatures = results.features;
           if (results.features.length===maxSZFeatures) {
               console.log(this.baseName + ":  maxSZFeatures (" + maxSZFeatures + ") returned.");
-              //alert("Too many features for " + this.layerName + ".  Zoom in further.");
           } else {
             this.processData(results);
           }
       }.bind(this), function(error) {
-          //*JN alert("QueryTask failed.");
           console.log(this.baseName + ":  QueryTask failed.");
       }.bind(this));
 
@@ -493,7 +490,7 @@ define([
       //   return;
       this.trackingLayer.removeAll();
       var projPoint = new Point(attrs.x, attrs.y);
-      var markerPoint = webMercatorUtils.webMercatorToGeographic(projPoint);   //this._webMercatorToGeographic(projPoint);
+      var markerPoint = webMercatorUtils.webMercatorToGeographic(projPoint);
       var newFeature = new Graphic(markerPoint, this.trackingSymbol);
       this.trackingLayer.add(newFeature);
       if (this.headerDivName) {
@@ -501,7 +498,7 @@ define([
         if (attrs.Caption)
           headerDiv.innerHTML = attrs.Caption;
         else
-          headerDiv.innerHTML = getEl(this.disabledMsgDivName).innerHTML;    //this.dfltCaptionHTML;
+          headerDiv.innerHTML = getEl(this.disabledMsgDivName).innerHTML;
       }
     },
 

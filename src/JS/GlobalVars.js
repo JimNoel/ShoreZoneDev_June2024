@@ -660,6 +660,14 @@ function simulateMouseEvent(el, evType) {
   }
 }
 
+function isInViewport(el, scrollWindow) {
+  var elementTop = $(el).offset().top;
+  var elementBottom = elementTop + $(el).outerHeight();
+  var viewportTop = $(scrollWindow).offset().top;
+  var viewportBottom = viewportTop + $(scrollWindow).height();
+  return elementTop >= viewportTop && elementBottom <= viewportBottom;
+};
+
 var mapStuff;
 
 // For debug purposes
