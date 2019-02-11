@@ -77,15 +77,15 @@
           mvp:   ["root", "c",  "BC:h"],      // set width of map and media panels in pixels, query/table panels get remainder    min. 600px to display map correctly
             m:     ["mvp",  "c",  "CP", {id: "mapDiv"}],
             vp:    ["mvp",  "b:30%",  "BC:v", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
-              v:      ["vp",  "l:50%",  "CP", {id: "videoDiv", class: "mediaPanelDiv"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
-              p:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+              szV:      ["vp",  "l:50%",  "CP", {id: "videoDiv", class: "mediaPanelDiv sz"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+              szP:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv sz"}],
           qtEP:    ["root", "r:50%",  "EP:Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
             qt:    ["qtEP", "c",        "BC:h"],
               q:  ["qt",  "t:200px",    "CP"],        // set query panel height
               t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
-                szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
-                ss:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
-                fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
+                szT:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                ssT:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
+                faT:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
       layouts["h2"] = {
         id: "layoutH2",
@@ -93,15 +93,17 @@
             mvp:   ["root", "c",  "BC:v", {id: "mapMediaBC"}],      // set width of map and media panels in pixels, query/table panels get remainder
               m:     ["mvp",  "c",  "CP", {id: "mapDiv"}],
               vp:    ["mvp",  "r:500px",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
-                v:      ["vp",  "c",     "CP", {id: "videoDiv", class: "mediaPanelDiv"}],  // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
-                p:      ["vp",  "b:50%", "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+                szV:      ["vp",  "c",     "CP", {id: "videoDiv", class: "mediaPanelDiv sz"}],  // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+                szP:      ["vp",  "b:50%", "CP", {id: "photoDiv", class: "mediaPanelDiv sz"}],
+//                faC:      ["vp",  "c", "CP", {id: "faChartsDiv", class: "mediaPanelDiv fa"}],
+//                faP:      ["vp",  "b:50%", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv fa"}],
             qtEP:    ["root", "b:300px",  "EP:", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
               qt:       ["qtEP", "c",   "BC:v"],
                 //q:  ["qt",  "l:200px",    "CP"],        // set query panel height
                 t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
-                  szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
-                  ss:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
-                  fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
+                  szT:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                  ssT:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
+                  faT:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
       layouts["v3"] = {
         id: "layoutV3",
@@ -109,15 +111,15 @@
         root:  [null,   "c",       "BC:v"],
           m:     ["root",  "l:800px",  "CP", {id: "mapDiv"}],
           vp:    ["root",  "c",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
-              v:      ["vp",  "t:45%",  "CP", {id: "videoDiv", class: "mediaPanelDiv"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
-              p:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+              szV:      ["vp",  "t:45%",  "CP", {id: "videoDiv", class: "mediaPanelDiv sz"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+              szP:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv sz"}],
           qtEP:    ["root", "r:300px",  "EP", "Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
             qt:    ["qtEP", "c",        "BC:h"],
               //q:  ["qt",  "t:200px",    "CP"],        // set query panel height
               t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
-                szU:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
-                ss:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
-                fa:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
+                szT:      ["t",  "c", "CP", {id: "unitsDiv", class: "tablePanelDiv sz"}],
+                ssT:      ["t",  "c", "CP", {id: "ssDiv", class: "tablePanelDiv ss"}],
+                faT:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
 
       var splitterInfo = [];    // To hold info used in accessing splitters, to handle drag events
