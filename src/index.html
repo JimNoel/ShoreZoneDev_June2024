@@ -231,16 +231,8 @@
         addContent('mapDiv', '<span id="coordinates" ></span>');
       }
 
-/*
-      function adjustDojoLayoutDivs() {
-        // HACK to adjust positioning of Dojo layout elements
-        // Call after outerBC.startup()
-        document.getElementById("panelTabs_fa").style.top = "0";
-      }
-*/
-
       var linksContent = '';
-/*
+/*  //Add buttons to change layout.  So far, this isn't working post-load, so disabled for now.
       linksContent += '<img src="assets/images/layoutH2.png" id="btn_h2" class="layoutImg" >';
       linksContent += '<img src="assets/images/layoutV2.png" id="btn_v2" class="layoutImg" style="left: 40px;" >';
       linksContent += '<img src="assets/images/layoutV3.png" id="btn_v3" class="layoutImg" style="left: 80px;">';
@@ -349,30 +341,53 @@
 
       // Switch between ShoreZone/FishAtlas/ShoreStation states
       function changeState(tabID, oldTabID) {
-        if (tabID === "szTab") {
-          siteTabs.visManager.promoteClass("sz");
-        }
-        else if (tabID === "faTab") {
-          siteTabs.visManager.promoteClass("fa");
-          if (faWidget)
-            faWidget.setActiveTab(0);
-        }
-        else if (tabID === "ssTab") {
-          siteTabs.visManager.promoteClass("ss");
-          if (ssWidget)
-            ssWidget.setActiveTab(0);
-/*
-          if (confirm(FaSsMsg.replace(/@/g,"Shore Station")))
-            window.open(flexSiteURL + "@T=SS");
-*/
-        }
-        else if (tabID === "szUnitsTab") {
+        // 3D units demo site
+        if (tabID === "szUnitsTab") {
           if (confirm("Open the ShoreZone 3D Units demo site?"))
             window.open(SZ3dUnitsSiteURL);
+          return;
         }
-
+        /*    Code for going to Flex site if FA/SS is not ready on current site
+                  if (confirm(FaSsMsg.replace(/@/g,"Shore Station")))
+                    window.open(flexSiteURL + "@T=SS");
+        */
+        var className = tabID.slice(0,2);
+        switchTo(className);
       }
 
+      function switchTo(className) {
+        if (!siteTabs[className].widgets)
+          return;
+        siteTabs.visManager.promoteClass(className);
+        var widgets = siteTabs[className].widgets;
+        for (i in widgets) {    // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
+          if (widgets[i].tabInfo)
+            widgets[i].setActiveTab(0);
+        }
+        setGraphicsLayersVisibilities(className);
+      }
+
+      function setGraphicsLayersVisibilities(className) {
+        var classNames = siteTabs.tabs;
+        for (i in classNames) {
+          var isVisible = (classNames[i] === className);
+          var widgets = siteTabs[classNames[i]].widgets;
+          for (j in widgets) {
+            //widgets[j].clickableLayer.visible = isVisible;
+            with (widgets[j]) {
+              setLayerVisibility(clickableLayer, isVisible);
+              setLayerVisibility(highlightLayer, isVisible);
+              setLayerVisibility(trackingLayer, isVisible);
+            }
+          }
+        }
+      }
+
+      function setLayerVisibility(layer, isVisible) {
+        if (!layer)
+          return;
+        layer.visible = isVisible;
+      }
 
 
 

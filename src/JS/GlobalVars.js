@@ -18,10 +18,10 @@ var minVideoLOD = 12;
 var maxSZFeatures = 1000;    // get from query?     see UnitsPanelWidget, line 107, for an example.  Get value from  A.maxRecordCount
 var maxExtentWidth = 100;     // maximal extent in kilometers for video
 
-//var gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/SZFlexWebSiteTools/GPServer/GroupDataExtract";     // URL for GroupDataExtract GP service
+var aoosPhotosBaseUrl = "https://servomatic9000.axiomalaska.com/photo-server/";
+
 var gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
 
-//var offlineAppURL = "https://s3.amazonaws.com/sz-offline-01.mapiworks.com/index.html";
 var offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
 
 //Map service URLs

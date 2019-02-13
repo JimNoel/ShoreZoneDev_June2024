@@ -203,6 +203,7 @@ define([
       /*  ssWidget def */
       ssWidget = new QueryBasedTablePanelWidget({
         objName: "ssWidget",
+        //gotoFlexMsg: "Sorry, Shore Stations has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.",
         title: "Shore Stations",
         sublayerIDs: ssSublayerIDs,
         panelName: "ssPanel",
@@ -292,6 +293,7 @@ define([
       faMapServiceLayer.visible = false;
       faWidget = new QueryBasedTablePanelWidget({
         objName: "faWidget",
+        //gotoFlexMsg: "Sorry, Fish Atlas has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.",
         title: "Fish Atlas",
         sublayerIDs: faSublayerIDs,
         panelName: "faPanel",

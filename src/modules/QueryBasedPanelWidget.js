@@ -50,6 +50,8 @@ define([
 
       this.noFeaturesPanels = [this];
 
+      this.clickableLayer = null;
+      this.highlightLayer = null;
       if (this.clickableSymbolInfo) {
         // Add (transparent) Graphics Layer for selecting feature
         this.clickableLayer = new GraphicsLayer();
@@ -122,6 +124,7 @@ define([
         map.add(this.highlightLayer);
       }
 
+      this.trackingLayer = null;
       if (this.trackingSymbolInfo) {
         // Add Graphics Layer for tracking icon
         this.trackingLayer = new GraphicsLayer();

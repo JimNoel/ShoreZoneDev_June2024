@@ -81,15 +81,47 @@ define([
     //debug("on_image_abort");
   }
 
+  function load_Photo(new_img_src) {
+    //setMessage("photoNoImageMessage",  "Image not found on Picasa.  Trying the NOAA server...", true, 1000);
+    latest_img_src = new_img_src;
+    $("#photoImage").attr("src", latest_img_src);
+  }
+
   function load_NOAA_Photo(new_img_src) {
-/*
-    if (!justAK)
-      return;
-*/
-    //setMessage_Mario("photoNoImageMessage", {"visible": true, "text": "Image not found on Picasa.  Trying the NOAA server...", "fade": 1000});
+    /*        if (!justAK)
+                return;    */
     setMessage("photoNoImageMessage",  "Image not found on Picasa.  Trying the NOAA server...", true, 1000);
     latest_img_src = new_img_src;
     $("#photoImage").attr("src", latest_img_src);
+  }
+
+  function load_AOOS_Photo(userID, albumID, photoID, NOAA_img_src) {
+    if ((albumID===null) || (photoID===null)) {
+      load_NOAA_Photo(NOAA_img_src);
+      return;
+    }
+    var aoosURL = aoosPhotosBaseUrl + userID + "/" + albumID + "/" + photoID + "/photo";     // "/thumbnail";
+    load_Photo(aoosURL);
+  }
+
+/*    Picasa API has been deprecated
+  function preload_Picasa_Photo(userID, albumID, photoID, NOAA_img_src) {
+    var picasaDeprecated = true
+    if ((albumID===null) || (photoID===null) || picasaDeprecated) {
+      load_NOAA_Photo(NOAA_img_src);
+      return;
+    }
+    var picasaURL = "https://picasaweb.google.com/data/feed/api/user/" + userID + "/albumid/" + albumID + "/photoid/" + photoID + "?alt=json";
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange=function() {
+      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+        processPicasaData(xmlhttp.responseText);
+      }
+      else if (xmlhttp.readyState === 4 && xmlhttp.status !== 200)
+        load_NOAA_Photo(NOAA_img_src);
+    }
+    xmlhttp.open("GET", picasaURL, true);
+    xmlhttp.send();
   }
 
   function processPicasaData(response) {
@@ -115,26 +147,7 @@ define([
     $("#photoImage").attr("src", latest_img_src);
     photo_load_times[latest_img_src] = {"load_start": Date.now()}
   }
-
-  function load_Picasa_Photo(userID, albumID, photoID, NOAA_img_src) {
-    var picasaDeprecated = true
-    if ((albumID===null) || (photoID===null) || picasaDeprecated) {
-      load_NOAA_Photo(NOAA_img_src);
-      return;
-    }
-
-    var picasaURL = "https://picasaweb.google.com/data/feed/api/user/" + userID + "/albumid/" + albumID + "/photoid/" + photoID + "?alt=json";
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange=function() {
-      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-        processPicasaData(xmlhttp.responseText);
-      }
-      else if (xmlhttp.readyState === 4 && xmlhttp.status !== 200)
-        load_NOAA_Photo(NOAA_img_src);
-    }
-    xmlhttp.open("GET", picasaURL, true);
-    xmlhttp.send();
-  }
+*/
 
   function photoPlayer() {
     // Manage timed playback of photos
@@ -201,7 +214,7 @@ define([
         next_photo_DT = next_photo_point["DATE_TIME"]/1000;
         //secs_to_next_photo = next_photo_DT - prev_photo_DT;
         prev_photo_DT = next_photo_DT;
-        load_Picasa_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
+        load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
         photoLoadStartHandler();
         this.moveToFeature(next_photo_point);
       }
