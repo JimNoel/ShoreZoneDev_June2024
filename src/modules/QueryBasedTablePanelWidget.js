@@ -249,6 +249,7 @@ define([
           var totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
           this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[totalsLayerName].toString();
           this.query.outFields = this.totalOutFields;
+          this.query.orderByFields = null;
           this.queryTask.execute(this.query).then(function(results){
             var totalValues = results.features[0].attributes;
             for (a in totalValues)

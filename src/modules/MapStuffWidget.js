@@ -395,9 +395,22 @@ define([
             LayerNameAddOn: 'Locales',
             parentAreaType: 'Regions',
             visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-            featureOutFields: ["Region", "MapID", "Locale", "Hauls", "Species", "Catch"],
+            featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
             orderByFields: ["Region", "Locale"],
+            specialFormatting: {      // Special HTML formatting for field values
+              Envelope: {
+                title:  "",
+                colWidth:  20,
+                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@Envelope@\")' height='15' width='15' alt=''>"
+              },
+              LocaleID: {
+                title:  "",
+                colWidth:  20,
+                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom(faWidget,@LocaleID@,\"@Envelope@\")' height='15' width='15' alt=''>"
+              }
+            },
             idField: 'Locale',
+            subTableDD: "Locale",
             clickableSymbolType: "point",
             clickableSymbolInfo: {
               style:"square",
@@ -1037,12 +1050,13 @@ define([
     },
 
     selectAndZoom: function(w, id, extText) {
-      var newTab = w.currTab +1;
+      var newTab = parseInt(w.currTab) + 1;
       var currTabInfo = w.tabInfo[w.currTab];
       var ddName = currTabInfo.subTableDD;
       var ddIndex = w.dropDownInfo.findIndex(function(f){
         return f.ddName === ddName;
       });
+      // TODO: Dropdown hasn't been populated yet!
       var ddDom = getEl(w.dropDownInfo[ddIndex].domId);
       ddDom.value = id;
       dropdownSelectHandler(w, ddIndex, ddDom);
