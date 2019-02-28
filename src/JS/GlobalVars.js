@@ -402,6 +402,12 @@ function sliderHandler(divID) {
   document.getElementById(divID + "_content").style.opacity = document.getElementById(divID + "_slider").value/100;
 }
 
+function setDropdownValue(ddInfo, value) {
+  var ddDom = getEl(ddInfo.domId);
+  ddDom.value = value;
+  ddInfo.SelectedOption = value;
+}
+
 function dropdownSelectHandler(w, index, ddElement) {
   var ddInfo = w.dropDownInfo[index];
   ddInfo.SelectedOption = ddElement.value;
