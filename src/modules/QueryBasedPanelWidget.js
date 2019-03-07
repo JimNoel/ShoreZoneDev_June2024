@@ -309,6 +309,11 @@ define([
       this.setClickableSybolType();
       //this.setRenderer();
       this.setHeaderItemVisibility();
+      if (this.resetDDs) {
+        for (d in this.resetDDs) {
+          setDropdownValue(this.dropDownInfo[this.resetDDs[d]], "All");      //getEl(this.baseName + "Dropdown_" + this.resetDDs[d], 0))
+        }
+      }
       this.runQuery(view.extent);
 
       // make LABEL elements for totals

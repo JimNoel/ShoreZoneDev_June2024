@@ -104,14 +104,15 @@ define([
     load_Photo(aoosURL);
   }
 
-/*    Picasa API has been deprecated
+  // Picasa API has been deprecated
   function preload_Picasa_Photo(userID, albumID, photoID, NOAA_img_src) {
-    var picasaDeprecated = true
+    var picasaDeprecated = false;
     if ((albumID===null) || (photoID===null) || picasaDeprecated) {
       load_NOAA_Photo(NOAA_img_src);
       return;
     }
-    var picasaURL = "https://picasaweb.google.com/data/feed/api/user/" + userID + "/albumid/" + albumID + "/photoid/" + photoID + "?alt=json";
+  // var picasaURL = "https://picasaweb.google.com/data/feed/api/user/userID?deprecation-extension=true"
+    var picasaURL = "https://picasaweb.google.com/data/feed/api/user/" + userID + "/albumid/" + albumID + "/photoid/" + photoID + "?alt=json&deprecation-extension=true";
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange=function() {
       if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
@@ -147,7 +148,6 @@ define([
     $("#photoImage").attr("src", latest_img_src);
     photo_load_times[latest_img_src] = {"load_start": Date.now()}
   }
-*/
 
   function photoPlayer() {
     // Manage timed playback of photos
@@ -214,7 +214,8 @@ define([
         next_photo_DT = next_photo_point["DATE_TIME"]/1000;
         //secs_to_next_photo = next_photo_DT - prev_photo_DT;
         prev_photo_DT = next_photo_DT;
-        load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
+        preload_Picasa_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
+//        load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
         photoLoadStartHandler();
         this.moveToFeature(next_photo_point);
       }

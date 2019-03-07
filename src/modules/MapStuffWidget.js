@@ -77,6 +77,7 @@ define([
         headerDivName:  "photoHeaderDiv",
         disabledMsgInfix: "photo points",
         disabledMsgDivName: "disabledMsg_photo",
+        mapServiceLayer: null,
         noQuery: true,
         trackingSymbolInfo: "assets/images/Camera24X24.png:24:24",
         clickableSymbolType: "point",
@@ -321,7 +322,7 @@ define([
           { ddName: "Locale",
             LayerNameAddOn: "",
             totalsLayerNameAddOn: "Locales",
-            subLayerName: "Locales (area)",
+            subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
             ddOutFields: ["Locale", "LocaleID", "Envelope"],
             orderByFields: ["Locale"],
             options: [ { label: "[All]", value: "All" } ],
@@ -379,7 +380,7 @@ define([
             },
             idField: 'Region',
             subTableDD: "Region",
-            resetDDs:  ["Region", "Locale"],
+            resetDDs: [0, 1],      //["Region", "Locale"],
             clickableSymbolType: "extent",
             clickableSymbolInfo: {
               color: [ 51,51, 204, 0.1 ],
@@ -411,6 +412,7 @@ define([
             },
             idField: 'Locale',
             subTableDD: "Locale",
+            resetDDs: [1],      //["Region", "Locale"],
             clickableSymbolType: "point",
             clickableSymbolInfo: {
               style:"square",
@@ -1056,10 +1058,10 @@ define([
       var ddIndex = w.dropDownInfo.findIndex(function(f){
         return f.ddName === ddName;
       });
-      // TODO: Dropdown hasn't been populated yet!
-      var ddDom = getEl(w.dropDownInfo[ddIndex].domId);
+      var ddInfo = w.dropDownInfo[ddIndex];
+      var ddDom = getEl(ddInfo.domId);
       ddDom.value = id;
-      dropdownSelectHandler(w, ddIndex, ddDom);
+      ddInfo.SelectedOption = ddDom.value;
       w.setActiveTab(newTab);
       // TODO: Write function to get the ddItem for w.subTableDD, etc.
 

@@ -292,19 +292,26 @@ define([
             });
           }
           this.w.makeDropdownOptionsHtml(ddNum, this.headerContent)
-        }.bind({ddItem: ddItem, headerContent: headerContent, w: this}));       // best example of .bind?
+        }.bind({ddItem: ddItem, headerContent: headerContent, w: this}))/*.else({
+          console.log("Query error in getDropDownOptions");
+        })*/;
       };
 
 
       this.makeDropdownOptionsHtml = function(ddNum, domId) {
         var ddItem = this.dropDownInfo[ddNum];
+        var options = ddItem.options;
         var theHtml = '';
-        ddItem.options.forEach(function(item, index, array) {
+        for (i in options) {
           var extentStr = '';
-          if (item.extent)
-            extentStr = 'extent="' + item.extent + '" ';
-          theHtml += '<option ' + extentStr + 'value="' + item.value + '">' + item.label + '</option>';
+          if (options[i].extent)
+            extentStr = 'extent="' + options[i].extent + '" ';
+          theHtml += '<option ' + extentStr + 'value="' + options[i].value + '">' + options[i].label + '</option>';
+        }
+/*
+        ddItem.options.forEach(function(item, index, array) {
         });
+*/
         getEl(domId).innerHTML = theHtml;
       };
 
