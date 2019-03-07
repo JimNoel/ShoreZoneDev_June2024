@@ -375,6 +375,7 @@
           for (j in widgets) {
             //widgets[j].clickableLayer.visible = isVisible;
             with (widgets[j]) {
+              setLayerVisibility(mapServiceLayer, isVisible);
               setLayerVisibility(clickableLayer, isVisible);
               setLayerVisibility(highlightLayer, isVisible);
               setLayerVisibility(trackingLayer, isVisible);
