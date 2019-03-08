@@ -252,7 +252,7 @@ define([
             },
             idField: 'Region',
             subTableDD: "Region",
-            resetDDs:  ["Region", "Locale"],
+            //resetDDs:  ["Region", "Locale"],
             clickableSymbolType: "extent",
             clickableSymbolInfo: {
               color: [ 51,51, 204, 0.1 ],
@@ -380,7 +380,7 @@ define([
             },
             idField: 'Region',
             subTableDD: "Region",
-            resetDDs: [0, 1],      //["Region", "Locale"],
+            //resetDDs: [0, 1],      //["Region", "Locale"],
             clickableSymbolType: "extent",
             clickableSymbolInfo: {
               color: [ 51,51, 204, 0.1 ],
@@ -412,7 +412,7 @@ define([
             },
             idField: 'Locale',
             subTableDD: "Locale",
-            resetDDs: [1],      //["Region", "Locale"],
+            //resetDDs: [1],      //["Region", "Locale"],
             clickableSymbolType: "point",
             clickableSymbolInfo: {
               style:"square",

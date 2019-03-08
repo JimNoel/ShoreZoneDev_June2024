@@ -309,11 +309,13 @@ define([
       this.setClickableSybolType();
       //this.setRenderer();
       this.setHeaderItemVisibility();
+/*  // OBS: Not resetting dropdown values
       if (this.resetDDs) {
         for (d in this.resetDDs) {
-          setDropdownValue(this.dropDownInfo[this.resetDDs[d]], "All");      //getEl(this.baseName + "Dropdown_" + this.resetDDs[d], 0))
+          setDropdownValue(this.dropDownInfo[this.resetDDs[d]], "All");
         }
       }
+*/
       this.runQuery(view.extent);
 
       // make LABEL elements for totals
@@ -452,8 +454,8 @@ define([
         var ddInfo = this.dropDownInfo;
         for (d in ddInfo) {
           var item = ddInfo[d];
-          // TODO: Check this
-          if ((item.SelectedOption !== "All")) {
+          var spanName = item.domId.replace("_","Span_");     // Name of associated SPAN element -- If span not visible, don't include in where clause
+          if ((this.visibleHeaderElements.includes(spanName)) && (item.SelectedOption !== "All")) {
             var selOption = item.SelectedOption;
             if (item.isAlpha)
               selOption = "'" + selOption + "'";
