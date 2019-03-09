@@ -59,8 +59,6 @@ define([
 
       this.makeTable = function(fields, features) {
         // Create a dGrid table from returned data
-        getEl(this.displayDivName).innerHTML = "";      // clear the DIV
-
         var tableColumns = [];
         var nonNullCount = new Object();
         var columnStyleCSS = "";
@@ -234,12 +232,13 @@ define([
         //console.log("processData: Table");
         var fields = results.fields;
         var features = results.features;
+        getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
+        getEl(this.displayDivName).innerHTML = "";      // clear the DIV
         if (this.noFeatures(features))
           return;
 
         this.makeClickableGraphics(features);
         this.makeTable(fields, features);
-        getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
         if (this.totalOutFields) {
           if (features.length === 0) {
             for (l in this.totalLabels)
