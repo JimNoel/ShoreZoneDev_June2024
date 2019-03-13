@@ -599,7 +599,7 @@ var refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' sr
 
 /* For pan/zoom-to-rectangle toggle */
 var panning = true;      // If not panning, then zooms to drawn rectangle
-var panZoomHtml = "<img id='btn_pan' src='assets/images/i_pan.png' onclick='togglePanZoom(true)' height='32px' width='32px' title='Click to enable panning' /><hr>";
+var panZoomHtml = "<img id='btn_pan' src='assets/images/i_pan.png' onclick='togglePanZoom(true)' height='32px' width='32px' title='Click to enable panning' /><br>";
 panZoomHtml += "<img id='btn_zoomRect' src='assets/images/i_zoomin.png' onclick='togglePanZoom(false)' height='32px' width='32px' title='Click to enable zoom-in to drawn rectangle' style='opacity: 0.2' />";
 
 function togglePanZoom(mode) {
@@ -617,7 +617,7 @@ function togglePanZoom(mode) {
 /* For pan/zoom-to-rectangle toggle */
 
 /* For extent history and prev/next extent navigation*/
-var prevNextBtnsHtml = "<img id='btn_prevExtent' src='assets/images/backward.png' onclick='gotoSavedExtent(-1)' title='Click to go to previous extent' height='32px' width='32px' /><hr>";
+var prevNextBtnsHtml = "<img id='btn_prevExtent' src='assets/images/backward.png' onclick='gotoSavedExtent(-1)' title='Click to go to previous extent' height='32px' width='32px' /><br>";
 prevNextBtnsHtml += "<img id='btn_nextExtent' src='assets/images/forward.png' onclick='gotoSavedExtent(1)' title='Click to go to next extent in history' height='32px' width='32px' style='opacity: 0.2' />";
 
 var savedExtentsWidget = null;

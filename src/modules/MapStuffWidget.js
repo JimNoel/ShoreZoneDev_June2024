@@ -911,11 +911,16 @@ define([
 
 
 
+    var homeWidget = new Home({
+      view: view
+    });
+    view.ui.add({ component: homeWidget, position: "top-left", index: 1});
+
     var locateWidget = new Locate({
       view: view,   // Attaches the Locate button to the view
       graphicsLayer: locateIconLayer  // The layer the locate graphic is assigned to
     });
-    view.ui.add(locateWidget, "top-right");
+    view.ui.add({ component: locateWidget, position: "top-left", index: 2});
 
     // Add ESRI basemap gallery widget to map, inside an Expand widget
     var basemapGallery = new BasemapGallery({
@@ -962,18 +967,13 @@ define([
     view.ui.add(settingsExpand, "top-right");
 
 
-    var homeWidget = new Home({
-      view: view
-    });
-    view.ui.add(homeWidget, "top-left");
-
     // Add ESRI search widget to map
     var searchWidget = new Search({ view: view });
     view.ui.add(searchWidget, "bottom-right");
 
     var prevNextBtnsDiv = document.createElement("DIV");
     prevNextBtnsDiv.innerHTML = prevNextBtnsHtml;
-    view.ui.add(prevNextBtnsDiv, "top-left");
+    view.ui.add(prevNextBtnsDiv, "top-right");
 
     savedExtentsWidget = new Bookmarks({
       view: view
@@ -985,7 +985,7 @@ define([
       content: savedExtentsWidget
     });
     view.ui.add(savedExtentsExpand, {
-      position: "top-left"
+      position: "top-right"
     });
 
     savedExtentsWidget.on("select-bookmark", function(event){
