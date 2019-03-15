@@ -538,8 +538,6 @@ define([
 */
 
   function handleExtentChange(newExtent) {
-    //layerList_ExpandAll(true);
-
     // For 3D, change newExtent to Polygon of tilted view extent
     // If using MapView (2D), comment out these lines
     //var extent3d = sceneViewExtent(view, 200);
@@ -615,12 +613,15 @@ define([
       //view.popup = p;     // if using new popup
     });
 
+/*  //OBS?
     // When layer view is available, expand the LayerList
     view.whenLayerView(szMapServiceLayer).then(function(lyrView){
       //view.extent = szMapServiceLayer.fullExtent;
       watchUtils.whenFalseOnce(lyrView, "updating").when(function(){
+        layerList_ExpandAll(true);
       });
     });
+*/
 
     view.watch("extent", function(newExtent, oldExtent, property, theView) {
       if (theView.interacting)    // Bypass if panning or using mouse wheel.  In this case, the watch on "interacting" (below) will kick in when the interaction is complete
@@ -799,13 +800,12 @@ define([
     // });
 
     layerListWidget.listItemCreatedFunction = function(event) {
-      var item = event.item;
+      event.item.open = true;
 /*
+      var item = event.item;
       if (item.layer.title === "Video Flightline") {
         item.layer.listMode = "hide-children";
       }
-*/
-/*
       if (item.layer.parent.title === undefined) {
       //if (!item.layer.allSublayers) {
         var leafLegend = new Legend({
@@ -817,17 +817,16 @@ define([
           open: true
         };
       }
-*/
-      //event.item.open = true;
-      /*  NOT SURE WHAT THIS WAS FOR?
+      //  NOT SURE WHAT THIS WAS FOR?
       if (event.item.layer.title === "Derived ShoreZone Attributes")
         event.item.layer.visible = false;     // turn off layer display
       if (event.item.layer.title === "Video Flightline")
         event.item.visible = false;
-      */
+*/
     };
 
 
+/*  //OBS?
 //  Function to expand/collapse all nodes of the LayerList
 //   expands if expand=true, otherwise collapses
     function layerList_ExpandAll(expand) {
@@ -842,6 +841,7 @@ define([
           }
       }
     }
+*/
 
 
     // place the LayerList in an Expand widget
@@ -851,7 +851,7 @@ define([
       expandIconClass: "esri-icon-layer-list",
       expandTooltip: "Click here to view and select layers",
       collapseTooltip: "Hide layer list",
-      expanded: false
+      expanded: true      // PUB: set to true
     });
     view.ui.add({ component: llExpand, position: "top-left", index: 0});
     /**/
@@ -905,7 +905,7 @@ define([
           expandIconClass: "esri-icon-layers",
           expandTooltip: "Click here to see the legend",
           collapseTooltip: "Hide legend",
-          expanded: false
+          expanded: true      // PUB: set to true
         });
         view.ui.add(legendExpand, "top-right");
 
