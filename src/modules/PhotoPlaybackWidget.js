@@ -104,6 +104,52 @@ define([
     load_Photo(aoosURL);
   }
 
+  function preload_AOOS_Photo(photoPoint, NOAA_img_src) {
+    if ((photoPoint.LAT_DDEG===null) || (photoPoint.LON_DDEG===null)) {
+      load_NOAA_Photo(NOAA_img_src);
+      return;
+    }
+    var queryURL = aoosQueryBaseUrl.replace("{lon}",photoPoint.LON_DDEG).replace("{lat}",photoPoint.LAT_DDEG);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange=function() {
+      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+        processAoosData(xmlhttp.responseText);
+      }
+      else if (xmlhttp.readyState === 4 && xmlhttp.status !== 200) {
+        console.log("status = " + xmlhttp.status);
+        load_NOAA_Photo(NOAA_img_src);
+      }
+    }
+    xmlhttp.open("GET", queryURL, true);
+    xmlhttp.send();
+  }
+
+  function processAoosData(response) {
+    var data = JSON.parse(response);
+    var s = data.feed.media$group.media$content[0].url;
+    var p = s.lastIndexOf("/");
+    var imageUrl = s.slice(0,p) + "/s{0}" + s.slice(p);
+    origHeight = data.feed.gphoto$height.$t;      // Original height in pixels of image stored in Picasa
+    origWidth = data.feed.gphoto$width.$t;        // Original width in pixels of image stored in Picasa
+
+    photoAspectRatio = origWidth / origHeight;
+    //var pDims = mediaDimensions("photoDiv", photoAspectRatio);
+    var photoPanel = getEl("photoContainer");
+    var requestWidth = $(photoPanel).width();   // This will be the requested width in pixels of the photo, for the panel
+    var panelHeight = $(photoPanel).height();
+    var widthFromAspect = parseInt(panelHeight*photoAspectRatio);
+    if(requestWidth > widthFromAspect) {      // Given the panel height, widthFromAspect is the maximum allowable width
+      requestWidth = widthFromAspect;         //   so reset requestWidth to widthFromAspect if it is greater
+    }
+    latest_img_src = imageUrl.replace("{0}", requestWidth);  // Set image URL to return image sized to the panel
+
+    orig_img_src = imageUrl.replace("{0}",origWidth);     // For downloads, set image URL to return maximum resolution
+    $("#photoImage").attr("src", latest_img_src);
+    photo_load_times[latest_img_src] = {"load_start": Date.now()}
+  }
+
+
+/*
   // Picasa API has been deprecated
   function preload_Picasa_Photo(userID, albumID, photoID, NOAA_img_src) {
     var picasaDeprecated = false;
@@ -111,7 +157,6 @@ define([
       load_NOAA_Photo(NOAA_img_src);
       return;
     }
-  // var picasaURL = "https://picasaweb.google.com/data/feed/api/user/userID?deprecation-extension=true"
     var picasaURL = "https://picasaweb.google.com/data/feed/api/user/" + userID + "/albumid/" + albumID + "/photoid/" + photoID + "?alt=json&deprecation-extension=true";
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange=function() {
@@ -148,6 +193,7 @@ define([
     $("#photoImage").attr("src", latest_img_src);
     photo_load_times[latest_img_src] = {"load_start": Date.now()}
   }
+*/
 
   function photoPlayer() {
     // Manage timed playback of photos
@@ -214,8 +260,9 @@ define([
         next_photo_DT = next_photo_point["DATE_TIME"]/1000;
         //secs_to_next_photo = next_photo_DT - prev_photo_DT;
         prev_photo_DT = next_photo_DT;
-        preload_Picasa_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
-//        load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
+        //preload_Picasa_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
+        //preload_AOOS_Photo(next_photo_point, new_img_src);
+        load_NOAA_Photo(new_img_src);
         photoLoadStartHandler();
         this.moveToFeature(next_photo_point);
       }

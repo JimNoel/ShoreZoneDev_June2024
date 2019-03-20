@@ -851,7 +851,7 @@ define([
       expandIconClass: "esri-icon-layer-list",
       expandTooltip: "Click here to view and select layers",
       collapseTooltip: "Hide layer list",
-      expanded: true      // PUB: set to true
+      expanded: false      // PUB: set to true
     });
     view.ui.add({ component: llExpand, position: "top-left", index: 0});
     /**/
@@ -905,7 +905,7 @@ define([
           expandIconClass: "esri-icon-layers",
           expandTooltip: "Click here to see the legend",
           collapseTooltip: "Hide legend",
-          expanded: true      // PUB: set to true
+          expanded: false      // PUB: set to true
         });
         view.ui.add(legendExpand, "top-right");
 
