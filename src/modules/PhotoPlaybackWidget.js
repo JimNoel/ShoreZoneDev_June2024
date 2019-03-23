@@ -262,7 +262,8 @@ define([
         prev_photo_DT = next_photo_DT;
         //preload_Picasa_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
         //preload_AOOS_Photo(next_photo_point, new_img_src);
-        load_NOAA_Photo(new_img_src);
+        //load_NOAA_Photo(new_img_src);
+        load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
         photoLoadStartHandler();
         this.moveToFeature(next_photo_point);
       }

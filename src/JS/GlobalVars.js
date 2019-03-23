@@ -43,7 +43,6 @@ var szServerURL = szServerURLnoaa;
 var szRestServicesURL = szRestServicesURLnoaa;
 var szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
 var szSublayerIDs = {};
-makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
 
 
 var ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_wViews/MapServer";        // ShoreStation gives CORS error for some reason
@@ -93,6 +92,7 @@ if (siteParsJSON !== "") {
     initTab = sitePars["tab"] + "Tab";
 }
 
+makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
 
 var sslMapServiceLayerURL = szRestServicesURL + "/Ports_SSL/MapServer";
 
