@@ -20,6 +20,8 @@ define([
 // private vars and functions here
   var picasaOffline = false;
   var latest_img_src = false;
+  var photoSource1 = null;
+  var photoSource2 = null;
   var prev_photo_DT = 0;
   var next_photo_DT = 0;
   var secs_to_next_photo = null;
@@ -47,8 +49,12 @@ define([
     debug("on_image_error");
     //PHOTO_SERVER = alternateImageBaseDir;
     //update_photo(update_photo_latest_params);
-    setMessage("photoNoImageMessage", "Unable to find image.");
-    $("#photoImage").unbind('error');
+    if (e.target.src.includes("alaskafisheries.noaa.gov")) {    // Tried NOOA server and failed
+      load_AOOS_Photo(update_photo_latest_params["Picasa_UserID"], update_photo_latest_params["Picasa_AlbumID"], update_photo_latest_params["Picasa_PhotoID"], "");
+    } else {    // Tried AOOS, also failed
+      setMessage("photoNoImageMessage", "Unable to find image.");
+    }
+    //$("#photoImage").unbind('error');     // OBS: Was handling error only once, then switching to GINA server
     return true;
   }
 
@@ -82,28 +88,48 @@ define([
   }
 
   function load_Photo(new_img_src) {
-    //setMessage("photoNoImageMessage",  "Image not found on Picasa.  Trying the NOAA server...", true, 1000);
     latest_img_src = new_img_src;
     $("#photoImage").attr("src", latest_img_src);
   }
 
   function load_NOAA_Photo(new_img_src) {
-    /*        if (!justAK)
-                return;    */
-    setMessage("photoNoImageMessage",  "Image not found on Picasa.  Trying the NOAA server...", true, 1000);
+/*    // Normally, photos from NOAA server are not available from the national site
+    if (!justAK)
+      return;
+*/
+    //setMessage("photoNoImageMessage",  "Image not found on Picasa.  Trying the NOAA server...", true, 1000);    // For now, trying from NOAA server first
     latest_img_src = new_img_src;
     $("#photoImage").attr("src", latest_img_src);
   }
 
   function load_AOOS_Photo(userID, albumID, photoID, NOAA_img_src) {
     if ((albumID===null) || (photoID===null)) {
-      load_NOAA_Photo(NOAA_img_src);
+      //load_NOAA_Photo(NOAA_img_src);      // Currently trying NOAA first, then AOOS.
       return;
     }
-    var aoosURL = aoosPhotosBaseUrl + userID + "/" + albumID + "/" + photoID + "/photo";     // "/thumbnail";
+    var aoosURL = aoosPhotosBaseUrl + userID + "/" + albumID + "/" + photoID + "/thumbnail";     // photo
     load_Photo(aoosURL);
   }
 
+  function make_PhotoUrl_NOAA(pt) {
+/*  // Normally, photos from NOAA server are not available from the national site
+        if (!justAK)
+          return null;
+*/
+    if ((pt.userID===null) || (pt.albumID===null) || (pt.photoID===null))
+      return null;
+    else
+      return (aoosPhotosBaseUrl + pt.userID + "/" + pt.albumID + "/" + pt.photoID + "/thumbnail");     // photo
+  }
+
+  function make_PhotoUrl_AOOS(pt) {
+    if ((pt.userID===null) || (pt.albumID===null) || (pt.photoID===null))
+      return null;
+    else
+      return (aoosPhotosBaseUrl + pt.userID + "/" + pt.albumID + "/" + pt.photoID + "/thumbnail");     // photo
+  }
+
+/*
   function preload_AOOS_Photo(photoPoint, NOAA_img_src) {
     if ((photoPoint.LAT_DDEG===null) || (photoPoint.LON_DDEG===null)) {
       load_NOAA_Photo(NOAA_img_src);
@@ -147,6 +173,7 @@ define([
     $("#photoImage").attr("src", latest_img_src);
     photo_load_times[latest_img_src] = {"load_start": Date.now()}
   }
+*/
 
 
 /*
@@ -260,11 +287,11 @@ define([
         next_photo_DT = next_photo_point["DATE_TIME"]/1000;
         //secs_to_next_photo = next_photo_DT - prev_photo_DT;
         prev_photo_DT = next_photo_DT;
-        //preload_Picasa_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
-        //preload_AOOS_Photo(next_photo_point, new_img_src);
-        //load_NOAA_Photo(new_img_src);
-        load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
-        photoLoadStartHandler();
+        photoSource1 = new_img_src;
+        photoSource2 = make_PhotoUrl_AOOS(next_photo_point);
+        load_NOAA_Photo(new_img_src);
+        //load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
+        //photoLoadStartHandler();
         this.moveToFeature(next_photo_point);
       }
     },
