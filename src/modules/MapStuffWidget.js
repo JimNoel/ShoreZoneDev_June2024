@@ -441,7 +441,7 @@ define([
             popupTitle: "Fish Atlas Site",
             LayerNameAddOn: 'Sites',
             parentAreaType: 'Locales',
-            visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+            visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch"],
             orderByFields: ["Region", "Locale", "Site"],
             idField: 'Site',
@@ -769,7 +769,7 @@ define([
     }
 
     function wrapperWithOpacitySlider(divNode, title) {
-      // Inserts a penal (divNode) into a wrapper DIV with a slider controlling the panel's opacity
+      // Inserts a panel (divNode) into a wrapper DIV with a slider controlling the panel's opacity
       // Returns a handle to the new wrapper DIV
       var divID = divNode.id;
       var newDiv = document.createElement("div");
@@ -878,8 +878,8 @@ define([
 
     view.container.ondragover = drag_over;
     view.container.ondrop = drop;
-    //view.popup.container.ondragover = drag_over;
-    //view.popup.container.ondrop = drop;
+    //view.popup.container.ondragover = panel_drag_over;
+    //view.popup.container.ondrop = panel_drop;
 
 
     // ESRI Legend widget.  This goes in the "legendDom" DIV, rather than the map

@@ -673,7 +673,48 @@ function isInViewport(el, scrollWindow) {
   var viewportTop = $(scrollWindow).offset().top;
   var viewportBottom = viewportTop + $(scrollWindow).height();
   return elementTop >= viewportTop && elementBottom <= viewportBottom;
-};
+}
+
+function makeDraggablePanel(divID, headerText, hasOpacitySlider, /*theClass,*/ theStyle, theContent) {
+  var newDiv = makeHtmlElement("div", divID, "draggableDiv", theStyle, theContent);
+  if (headerText || hasOpacitySlider) {
+    var headerDiv = makeHtmlElement("div", divID + "_header", "draggableDivHeader");
+    headerDiv.innerHTML = '<b style="position:absolute;left:10px; top:0px">' + headerText + '</b>';
+    headerDiv.innerHTML += '<input type="range" value="90" class="opacitySlider" oninput="sliderHandler(\'' + divID + '\')" id="' + divID + '_slider" >';
+    newDiv.appendChild(headerDiv);
+  }
+  newDiv.draggable = true;
+  newDiv.ondragstart = panel_drag_start;
+  newDiv.ondragover = panel_drag_over;
+  newDiv.ondrop = panel_drop;
+  var contentDiv = makeHtmlElement("div", divID + "_content", "draggableDivContent");
+  contentDiv.innerHTML = "Hello!";
+  newDiv.appendChild(contentDiv);
+  document.body.appendChild(newDiv);
+  return newDiv;
+}
+
+function panel_drag_start(event) {
+  var style = window.getComputedStyle(event.target, null);
+  var str = (parseInt(style.getPropertyValue("left")) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top")) - event.clientY)+ ',' + event.target.id;
+  event.dataTransfer.setData("Text",str);
+}
+
+function panel_drop(event) {
+  var offset = event.dataTransfer.getData("Text").split(',');
+  var dm = getEl(offset[2]);
+  dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
+  dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
+  event.preventDefault();
+  return false;
+}
+
+function panel_drag_over(event) {
+  event.preventDefault();
+  return false;
+}
+
+
 
 var mapStuff;
 
