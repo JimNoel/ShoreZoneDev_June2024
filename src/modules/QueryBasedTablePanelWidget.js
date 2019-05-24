@@ -63,6 +63,18 @@ define([
         var nonNullCount = new Object();
         var columnStyleCSS = "";
 
+        var dupFields = [];
+        if (this.dupFields)
+          dupFields = this.dupFields;
+        for (var f in this.dupFields) {
+          var p = this.featureOutFields.indexOf(this.dupFields[f]);
+          var newField =       fields[p].toJSON();      //
+          newField.name = newField.name + "2";
+          fields.splice(p + 1, 0, newField);
+        }
+
+
+
         for (var i=0; i<fields.length; i++) {
           var title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
           if (title === null)
@@ -91,6 +103,10 @@ define([
 
         var tableData = [];
         for (var i=0; i<features.length; i++) {
+
+          for (f in dupFields)      // Make duplicate fields:  Value is the same, attribute name has '2' added to end
+            features[i].attributes[dupFields[f]+'2'] = features[i].attributes[dupFields[f]];
+
           if (this.idField) {
             var idFieldValue = features[i].attributes[this.idField];
             features[i].attributes[this.idField] = idFieldValue + "<span id='" + this.baseName + "@" + i + "@'></span>";
@@ -356,13 +372,14 @@ define([
         var spanHtml = '<span id="' + fCtSpanId + '">' + fCtHtml + '</span>';
         headerContent.innerHTML += spanHtml;
 
-        var cbID = this.baseName + 'Checkbox_showFeatures';
-        var cbSpanId = cbID.replace("_","Span_");
-        var args = this.objName + '.clickableLayer,' + cbID;
-        var cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
-        headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
-        getEl(cbID).checked = this.clickableLayer.visible;
-
+        if (this.clickableLayer) {
+          var cbID = this.baseName + 'Checkbox_showFeatures';
+          var cbSpanId = cbID.replace("_","Span_");
+          var args = this.objName + '.clickableLayer,' + cbID;
+          var cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
+          headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
+          getEl(cbID).checked = this.clickableLayer.visible;
+        }
       };
 
       this.setHeaderItemVisibility = function() {
@@ -390,6 +407,8 @@ define([
       this.makeTableHeaderHtml();
       if (this.footerDivName)
         this.makeTableFooterHtml();
+      /*JN*/ console.log("Looky here!  " + this.objName);
+
 
     }
 

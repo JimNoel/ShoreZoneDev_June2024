@@ -115,6 +115,7 @@ var szVideoWidget = null;
 var szPhotoWidget = null;
 var szUnitsWidget = null;
 var faWidget = null;
+var faSpTableWidget = null;
 var ssWidget = null;
 var offLineLink = null;
 var gp = null;      // for Geoprocessor

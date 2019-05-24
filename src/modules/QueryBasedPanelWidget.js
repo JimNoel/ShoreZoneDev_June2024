@@ -46,7 +46,9 @@ define([
     constructor: function(/*Object*/ kwArgs){
       lang.mixin(this, kwArgs);
 
-      console.log("Making " + this.panelName);
+/* DEBUG for faSpTableWidget*/
+
+      //console.log("Making " + this.panelName);
 
       this.noFeaturesPanels = [this];
 
@@ -59,11 +61,6 @@ define([
         this.clickableLayer.id = this.panelName + "_Clickable";
         this.clickableLayer.title = this.clickableLayer.id;
         this.clickableLayer.visible = true;
-/*
-        this.clickableLayer.labelingInfo = null;
-        if (this.labelClass)
-          this.clickableLayer.labelingInfo = this.labelClass;
-*/
         if (this.hideMarkersAtStart)
           this.clickableLayer.visible = !this.hideMarkersAtStart;
 
@@ -103,21 +100,6 @@ define([
           if (this.highlightSymbolType === "polyline")
             this.highlightSymbol = new SimpleLineSymbol(this.highlightSymbolInfo);
         }
-
-        /*
-        this.highlightSymbol = this.clickableSymbol.clone();
-        if (this.highlightSymbolType === "polyline") {
-          //this.highlightSymbol.color.a = 0;
-          this.highlightSymbol.color = "red";
-          this.highlightSymbol.width = "2px";
-          //this.highlightSymbol.size += 5;
-        } else{
-          this.highlightSymbol.color.a = 0;
-          this.highlightSymbol.outline.color = "red";
-          this.highlightSymbol.outline.width = "2px";
-          this.highlightSymbol.size += 5;
-        }
-        */
 
         this.highlightLayer.renderer = new SimpleRenderer(this.highlightSymbol);
 //        this.highlightLayer.widgetController = this;    // Custom property added to Graphics Layer object, to reference back to this widget
@@ -159,11 +141,6 @@ define([
       }
 
       this.addPanelHtml();
-
-/*  TODO: Use modified version of setActiveTab, so tab info gets copied, but query not run
-      if (this.tabInfo)
-        this.setActiveTab(0);
-*/
 
       this.noFeatures = function(f) {
         if (f.length===0) {
@@ -243,30 +220,16 @@ define([
         this.highlightFeature(e.highlightGeometry);          // geometry);
         //debug("displayPlayButton complete");
       };
+/*end DEBUG for faSpTableWidget*/
 
-      console.log(this.panelName + " created");
-
+      //console.log(this.panelName + " created");
+//return;
     },
 
 
 //    METHOD DEFINITIONS
 
   setRenderer: function() {
-/*
-    if (this.renderingInfo) {
-      //var uniqueValueInfos = [];
-      var valueInfo = this.renderingInfo.uniqueValueInfos;
-      var template = this.clickableSymbolInfo;
-      for (s in valueInfo) {
-        var symbol = new SimpleMarkerSymbol(valueInfo[s].symbol);
-        symbol.style = template.style;
-        symbol.outline = template.outline;
-        symbol.size = template.size;
-        //symbol.type = 'simple-marker';
-      }
-      this.clickableLayer.renderer = new UniqueValueRenderer(this.renderingInfo);
-    } else {
-*/
       this.clickableLayer.renderer = new SimpleRenderer(this.clickableSymbol);
 //    }
   },
@@ -284,12 +247,6 @@ define([
     },
 
     setActiveTab: function(index) {
-/*
-      if (index === this.currTab)
-        return;
-      if (this.currTab === -1)
-        this.currTab = 0;
-*/
       this.prevTab = this.currTab;
       var tabId = this.tabInfo[this.prevTab].tabId;
       getEl(tabId).className = "";
@@ -302,20 +259,16 @@ define([
       for (o in this.tabInfo[index]) {
         this[o] = this.tabInfo[index][o];
       }
-      //this.clickableLayer.labelingInfo = this.labelClass;
+
+      // Reset to null any parameters not specified in new tab info
       if (!this.tabInfo[index].textOverlayPars)
-        this.textOverlayPars = null;              // Reset main textOverlayPars to null if textOverlayPars is not specified in new tab info
+        this.textOverlayPars = null;
+      if (!this.tabInfo[index].dupFields)
+        this.dupFields = null;
 
       this.setClickableSybolType();
       //this.setRenderer();
       this.setHeaderItemVisibility();
-/*  // OBS: Not resetting dropdown values
-      if (this.resetDDs) {
-        for (d in this.resetDDs) {
-          setDropdownValue(this.dropDownInfo[this.resetDDs[d]], "All");
-        }
-      }
-*/
       this.runQuery(view.extent);
 
       // make LABEL elements for totals
@@ -422,32 +375,29 @@ define([
       view.popup.close();
     },
 
-    runQuery: function(extent) {
-      var pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
-      this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
-      if (this.query.spatialRelationship) {
-        this.query.geometry = new Extent({
-          spatialReference: extent.spatialReference,
-          xmin: extent.xmin + pad,
-          xmax: extent.xmax - pad,
-          ymin: extent.ymin + pad,
-          ymax: extent.ymax - pad
-        });
+    runQuery: function(extent, areaType, id) {
+      if (extent) {
+        var pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
+        this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
+        if (this.query.spatialRelationship) {
+          this.query.geometry = new Extent({
+            spatialReference: extent.spatialReference,
+            xmin: extent.xmin + pad,
+            xmax: extent.xmax - pad,
+            ymin: extent.ymin + pad,
+            ymax: extent.ymax - pad
+          });
+        }
+      }
+      var theWhere = "";
+      if (areaType && id) {
+        this.LayerNameAddOn = areaType + "s";
+        theWhere = areaType + "ID=" + id;
       }
       this.query.outFields = this.featureOutFields;
       if (this.extraOutFields)                                                       // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
         this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
       queryComplete = false;
-
-      /* test count
-       this.queryTask.executeForCount({where: ""}).when(function(count){
-                alert(count, " features matched the input query");
-       }, function(error){
-            alert(error); // Will print error in console if unsupported layers are used
-       });
-       /**/
-
-      var theWhere = "";
       if (this.tabInfo) {
         this.ddLayerNameAddOn = "";
         this.ddTotalsLayerNameAddOn = "";
@@ -511,22 +461,6 @@ define([
           headerDiv.innerHTML = getEl(this.disabledMsgDivName).innerHTML;
       }
     },
-
-    /*
-    _webMercatorToGeographic: function(point) {
-      if (!point) {
-        alert("Point is null");
-        return;
-      }
-      try {
-        var geogPoint = webMercatorUtils.webMercatorToGeographic(point);
-        return geogPoint;
-      }
-      catch(err) {
-        alert(err.message)
-      }
-    },
-    */
 
     clearAllHighlights: function() {
       szVideoWidget.highlightLayer.removeAll();
@@ -599,10 +533,6 @@ define([
             var textGraphic = new Graphic({
               geometry: mapFeature,
               symbol: overlayPars
-/*
-              haloColor: "white",
-              haloSize: "5px"
-*/
             });
             this.labelsLayer.add(textGraphic);
           }

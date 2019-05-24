@@ -292,6 +292,7 @@ define([
     faMapServiceLayer.when(function() {
       console.log("Fish Atlas MapServiceLayer loaded.");
       faMapServiceLayer.visible = false;
+
       faWidget = new QueryBasedTablePanelWidget({
         objName: "faWidget",
         //gotoFlexMsg: "Sorry, Fish Atlas has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.",
@@ -365,6 +366,7 @@ define([
             parentAreaType: '',
             visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
+            dupFields:  ["RegionID"],
             orderByFields: ["Region"],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
@@ -373,7 +375,12 @@ define([
                 html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@Envelope@\")' height='15' width='15' alt=''>"
               },
               RegionID: {
-                title:  "",
+                title:  "Fish Catch",
+                colWidth:  20,
+                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable(faSpTableWidget,\"Region\",@RegionID@)' height='15' width='15' alt=''>"
+              },
+              RegionID2: {
+                title:  "Locales",
                 colWidth:  20,
                 html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom(faWidget,@RegionID@,\"@Envelope@\")' height='15' width='15' alt=''>"
               }
@@ -499,7 +506,95 @@ define([
         hasTextOverlayLayer: true,
         clickableMsg: null
       });
+
       siteTabs.fa.widgets = [faWidget];
+
+      faSpTableWidget = new QueryBasedTablePanelWidget({
+        objName: "faSpTableWidget",
+        title: "Fish Atlas",
+        sublayerIDs: faSublayerIDs,
+        panelName: "faSpTablePanel",
+        panelType: "table",
+        contentPaneId: "faSpTableDiv_content",
+        baseName: "faSpTable",
+        headerDivName:  "faSpTableHeaderDiv",
+        footerDivName:  "faSpTableFooterDiv",
+        totalOutFields: ["Count_Fish", "Count_measured"],
+        tableHeaderTitle: "All Regions",
+        displayDivName: "faSpTableContainer",
+        mapServiceLayer: faMapServiceLayer,
+        dropDownInfo: [
+          /*
+                    { ddName: "Region",
+                      LayerNameAddOn: "",
+                      totalsLayerNameAddOn: "Regions",
+                      subLayerName: "Regions",
+                      ddOutFields: ["RegionName", "RegionID", "Envelope"],
+                      orderByFields: ["RegionName"],
+                      options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+                      SelectedOption: "All",
+                      whereField: "RegionID"
+                    },
+                    { ddName: "Locale",
+                      LayerNameAddOn: "",
+                      totalsLayerNameAddOn: "Locales",
+                      subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
+                      ddOutFields: ["Locale", "LocaleID", "Envelope"],
+                      orderByFields: ["Locale"],
+                      options: [ { label: "[All]", value: "All" } ],
+                      SelectedOption: "All",
+                      whereField: "LocaleID"
+                    },
+                    { ddName: "Species",
+                      LayerNameAddOn: "Species",
+                      totalsLayerNameAddOn: "Species",
+                      subLayerName: "vw_SpCatch_allAK",
+                      ddOutFields: ["Sp_CommonName", "SpCode"],
+                      orderByFields: ["Sp_CommonName"],
+                      options: [ { label: "[All]", value: "All" } ],
+                      SelectedOption: "All",
+                      whereField: "SpCode",
+                      isAlpha: true
+                    }
+          */
+        ],
+        currTab: 0,
+        featureOutFields: ["Sp_CommonName", "Count_Fish", "AvgFL", "Count_measured"],
+        orderByFields: ["Count_Fish"],
+        tabInfo: [
+          {
+            tabName: 'Regions',
+            tabTitle: 'Fish Atlas Regions',
+            LayerNameAddOn: 'Regions',
+            visibleHeaderElements: [],
+            specialFormatting: {      // Special HTML formatting for field values
+            },
+            idField: 'Region'
+          },
+          {
+            tabName: 'Locales',
+            tabTitle: 'Fish Atlas Locales',
+            LayerNameAddOn: 'Locales',
+            visibleHeaderElements: [],
+            specialFormatting: {      // Special HTML formatting for field values
+            },
+            idField: 'Locale'
+          },
+          {
+            tabName: 'Sites',
+            tabTitle: 'Fish Atlas Sites',
+            LayerNameAddOn: 'Sites',
+            visibleHeaderElements: [],
+            idField: 'Site'
+          }
+          ],
+        layerBaseName: "vw_SpCatch_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+        //   using the current panel info and dropdown info for any dropdowns that have something selected.
+        spatialRelationship: null,      // Using null as a flag to not filter spatially
+      });
+
+
+
     }, function(error){
       debug("Fish Atlas MapServiceLayer failed to load:  " + error);
     });
@@ -1064,11 +1159,15 @@ define([
       ddInfo.SelectedOption = ddDom.value;
       w.setActiveTab(newTab);
       // TODO: Write function to get the ddItem for w.subTableDD, etc.
-
       this.gotoExtent(extText);
     },
 
-  constructor: function (kwArgs) {
+    openSpeciesTable: function(w, areaType, id) {
+      console.log("openSpeciesTable");
+      w.runQuery(null, areaType, id);
+    },
+
+    constructor: function (kwArgs) {
       //lang.mixin(this, kwArgs);
       initMap();
       console.log("MapStuff object created.");
