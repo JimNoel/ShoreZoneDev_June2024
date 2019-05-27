@@ -375,7 +375,7 @@ define([
       view.popup.close();
     },
 
-    runQuery: function(extent, areaType, id) {
+    runQuery: function(extent, queryPars) {
       if (extent) {
         var pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
         this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
@@ -390,33 +390,40 @@ define([
         }
       }
       var theWhere = "";
-      if (areaType && id) {
-        this.LayerNameAddOn = areaType + "s";
-        theWhere = areaType + "ID=" + id;
-      }
       this.query.outFields = this.featureOutFields;
       if (this.extraOutFields)                                                       // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
         this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
       queryComplete = false;
-      if (this.tabInfo) {
-        this.ddLayerNameAddOn = "";
-        this.ddTotalsLayerNameAddOn = "";
-        var ddInfo = this.dropDownInfo;
-        for (d in ddInfo) {
-          var item = ddInfo[d];
-          var spanName = item.domId.replace("_","Span_");     // Name of associated SPAN element -- If span not visible, don't include in where clause
-          if ((this.visibleHeaderElements.includes(spanName)) && (item.SelectedOption !== "All")) {
-            var selOption = item.SelectedOption;
-            if (item.isAlpha)
-              selOption = "'" + selOption + "'";
-            this.ddLayerNameAddOn += item.LayerNameAddOn;
-            if (item.totalsLayerNameAddOn)
-              this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
-            if (theWhere !== "")
-              theWhere += " AND ";
-            theWhere += item.whereField + "=" + selOption;
+
+      this.ddLayerNameAddOn = "";
+      if (queryPars) {
+        this.LayerNameAddOn = queryPars.areaType + "s";
+        theWhere = queryPars.areaType + "ID=" + queryPars.id;
+        if (queryPars.header)
+          this.title = queryPars.header;
+      } else {    // Do this only when query parameters are not already specified in the argument
+        if (this.dropDownInfo) {
+          this.ddTotalsLayerNameAddOn = "";
+          var ddInfo = this.dropDownInfo;
+          for (d in ddInfo) {
+            var item = ddInfo[d];
+            var spanName = item.domId.replace("_","Span_");     // Name of associated SPAN element -- If span not visible, don't include in where clause
+            if ((this.visibleHeaderElements.includes(spanName)) && (item.SelectedOption !== "All")) {
+              var selOption = item.SelectedOption;
+              if (item.isAlpha)
+                selOption = "'" + selOption + "'";
+              this.ddLayerNameAddOn += item.LayerNameAddOn;
+              if (item.totalsLayerNameAddOn)
+                this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
+              if (theWhere !== "")
+                theWhere += " AND ";
+              theWhere += item.whereField + "=" + selOption;
+            }
           }
         }
+      }
+
+      if (this.dynamicLayerName) {    // Do this only if layer name changes, e.g. when querying on pre-grouped views
         this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
       }

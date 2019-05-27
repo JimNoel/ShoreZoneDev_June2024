@@ -39,6 +39,7 @@ define([
 
   return declare(QueryBasedPanelWidget, {
 
+/*OBS
     replaceNamesWithValues: function(template, attrs) {
       var a = template.split("@");
       for (var i=0; i<a.length; i++)
@@ -47,6 +48,7 @@ define([
         }
       return a.join("");
     },
+*/
 
     constructor: function(/*Object*/ kwArgs){
 
@@ -117,7 +119,14 @@ define([
           for (a in features[i].attributes) {
             var template = getIfExists(this,"specialFormatting." + a + ".html");
             if (template) {
-              features[i].attributes[a] = this.replaceNamesWithValues(template, origAttrs);
+              var fmtInfo = this.specialFormatting[a];
+              if (fmtInfo.plugInFields) {
+                var args = fmtInfo.args;
+                for (p in fmtInfo.plugInFields)
+                  args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
+                features[i].attributes[a] = template.replace("{args}", args);
+              }
+              //features[i].attributes[a] = this.replaceNamesWithValues(template, origAttrs);
             }
             if (features[i].attributes[a]) {
               nonNullCount[a] += 1;

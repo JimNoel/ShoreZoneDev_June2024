@@ -242,12 +242,16 @@ define([
               Envelope: {
                 title:  "",
                 colWidth:  20,
-                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@Envelope@\")' height='15' width='15' alt=''>"
+                plugInFields: ["Envelope"],
+                args: '"{0}"',
+                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
               },
               RegionNumID: {
                 title:  "",
                 colWidth:  20,
-                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom(ssWidget,@RegionNumID@,\"@Envelope@\")' height='15' width='15' alt=''>"
+                plugInFields: ["RegionNumID", "Envelope"],
+                args: 'ssWidget,{0},"{1}"',
+                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
               }
             },
             idField: 'Region',
@@ -309,6 +313,7 @@ define([
         displayDivName: "faContainer",
         disabledMsgDivName: "disabledMsg_fa",
         mapServiceLayer: faMapServiceLayer,
+        dynamicLayerName: true,
         dropDownInfo: [
           { ddName: "Region",
             LayerNameAddOn: "",
@@ -372,17 +377,23 @@ define([
               Envelope: {
                 title:  "",
                 colWidth:  20,
-                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@Envelope@\")' height='15' width='15' alt=''>"
+                plugInFields: ["Envelope"],
+                args: '"{0}"',
+                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
               },
               RegionID: {
                 title:  "Fish Catch",
                 colWidth:  20,
-                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable(faSpTableWidget,\"Region\",@RegionID@)' height='15' width='15' alt=''>"
+                plugInFields: ["RegionID"],   //, "Region"],
+                args: 'faSpTableWidget,"Region",{0}',   //,"{1}"',
+                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
               },
               RegionID2: {
                 title:  "Locales",
                 colWidth:  20,
-                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom(faWidget,@RegionID@,\"@Envelope@\")' height='15' width='15' alt=''>"
+                plugInFields: ["RegionID", "Envelope"],
+                args: 'faWidget,{0},"{1}"',
+                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
               }
             },
             idField: 'Region',
@@ -409,12 +420,16 @@ define([
               Envelope: {
                 title:  "",
                 colWidth:  20,
-                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent(\"@Envelope@\")' height='15' width='15' alt=''>"
+                plugInFields: ["Envelope"],
+                args: '"{0}"',
+                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
               },
               LocaleID: {
                 title:  "",
                 colWidth:  20,
-                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom(faWidget,@LocaleID@,\"@Envelope@\")' height='15' width='15' alt=''>"
+                plugInFields: ["LocaleID", "Envelope"],
+                args: 'faWidget,{0},"{1}"',
+                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
               }
             },
             idField: 'Locale',
@@ -523,6 +538,7 @@ define([
         tableHeaderTitle: "All Regions",
         displayDivName: "faSpTableContainer",
         mapServiceLayer: faMapServiceLayer,
+        dynamicLayerName: true,
         dropDownInfo: [
           /*
                     { ddName: "Region",
@@ -1162,9 +1178,11 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, areaType, id) {
+    openSpeciesTable: function(w, areaType, id, headerText) {
       console.log("openSpeciesTable");
-      w.runQuery(null, areaType, id);
+      if (headerText)
+        headerText = "Fish Catch for " + headerText;
+      w.runQuery(null, {areaType: areaType, id: id, header: headerText} );
     },
 
     constructor: function (kwArgs) {
