@@ -78,9 +78,11 @@ define([
 
 
         for (var i=0; i<fields.length; i++) {
+          // Use supplied title for column name
           var title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
           if (title === null)
             title = fields[i].alias;
+
           tableColumns.push({
             field: fields[i].name,
             label: title,
@@ -109,29 +111,34 @@ define([
           for (f in dupFields)      // Make duplicate fields:  Value is the same, attribute name has '2' added to end
             features[i].attributes[dupFields[f]+'2'] = features[i].attributes[dupFields[f]];
 
-          if (this.idField) {
+          var origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
+          for (a in features[i].attributes)
+            if (features[i].attributes[a]) {
+              var numDecimals = getIfExists(this,"specialFormatting." + a + ".numDecimals");
+              if (numDecimals)
+                features[i].attributes[a] = features[i].attributes[a].toFixed(numDecimals);
+              var template = getIfExists(this,"specialFormatting." + a + ".html");
+              if (template) {
+                var fmtInfo = this.specialFormatting[a];
+                if (fmtInfo.plugInFields) {
+                  var args = fmtInfo.args;
+                  for (p in fmtInfo.plugInFields)
+                    args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
+                  features[i].attributes[a] = template.replace("{args}", args);
+                }
+              }
+              if (features[i].attributes[a]) {
+                nonNullCount[a] += 1;
+              }
+          }
+
+          if (this.idField) {     // For idField, insert span for identifying original row number, so correct feature is identified regardless of current table order
             var idFieldValue = features[i].attributes[this.idField];
             features[i].attributes[this.idField] = idFieldValue + "<span id='" + this.baseName + "@" + i + "@'></span>";
             // For identifying the equivalent row in the table, on feature click
             // "@" used for easy splitting out of values
           }
-          var origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
-          for (a in features[i].attributes) {
-            var template = getIfExists(this,"specialFormatting." + a + ".html");
-            if (template) {
-              var fmtInfo = this.specialFormatting[a];
-              if (fmtInfo.plugInFields) {
-                var args = fmtInfo.args;
-                for (p in fmtInfo.plugInFields)
-                  args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
-                features[i].attributes[a] = template.replace("{args}", args);
-              }
-              //features[i].attributes[a] = this.replaceNamesWithValues(template, origAttrs);
-            }
-            if (features[i].attributes[a]) {
-              nonNullCount[a] += 1;
-            }
-          }
+
           tableData.push(features[i].attributes);
         }
         this.store = new (declare([Memory, Trackable]))({
@@ -183,6 +190,8 @@ define([
         }.bind(this));
 
         this.grid.on('.dgrid-content .dgrid-row:mouseover', function (event) {
+          if (this.noGeometry)
+            return;
           var row = this.grid.row(event);
           var rowIndex = event.selectorTarget.rowIndex;
           var gObjFieldHtml = this.store.data[rowIndex][this.idField];
@@ -198,6 +207,8 @@ define([
         }.bind(this));
 
         this.grid.on('.dgrid-content .dgrid-row:mouseout', function (event) {
+          if (this.noGeometry)
+            return;
           this.hideGridTooltip(event);
         }.bind(this));
 

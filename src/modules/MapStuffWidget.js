@@ -217,6 +217,7 @@ define([
         displayDivName: "ssContainer",
         disabledMsgDivName: "disabledMsg_ss",
         mapServiceLayer: ssMapServiceLayer,
+        dynamicLayerName: true,
         dropDownInfo: [
           { ddName: "Region",
             LayerNameAddOn: "",
@@ -384,8 +385,8 @@ define([
               RegionID: {
                 title:  "Fish Catch",
                 colWidth:  20,
-                plugInFields: ["RegionID"],   //, "Region"],
-                args: 'faSpTableWidget,"Region",{0}',   //,"{1}"',
+                plugInFields: ["RegionID", "Region"],
+                args: 'faSpTableWidget,"Region",{0},"{1}"',
                 html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
               },
               RegionID2: {
@@ -530,6 +531,7 @@ define([
         sublayerIDs: faSublayerIDs,
         panelName: "faSpTablePanel",
         panelType: "table",
+        draggablePanelId: "faSpTableDiv",
         contentPaneId: "faSpTableDiv_content",
         baseName: "faSpTable",
         headerDivName:  "faSpTableHeaderDiv",
@@ -575,8 +577,30 @@ define([
           */
         ],
         currTab: 0,
+        tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
         featureOutFields: ["Sp_CommonName", "Count_Fish", "AvgFL", "Count_measured"],
         orderByFields: ["Count_Fish"],
+        visibleHeaderElements: ['faSpTableLabelSpan_featureCount'],
+        specialFormatting: {      // Special HTML formatting for field values
+          Sp_CommonName: {
+            title: "Species",
+            colWidth: 200
+          },
+          Count_Fish: {
+            title: "Catch",
+            colWidth: 100
+          },
+          AvgFL: {
+            title: "Average Length",
+            colWidth: 150,
+            numDecimals: 1
+          },
+          Count_measured: {
+            title: "# Measured",
+            colWidth: 150
+          },
+        },
+/*
         tabInfo: [
           {
             tabName: 'Regions',
@@ -604,9 +628,11 @@ define([
             idField: 'Site'
           }
           ],
+*/
         layerBaseName: "vw_SpCatch_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
         //   using the current panel info and dropdown info for any dropdowns that have something selected.
         spatialRelationship: null,      // Using null as a flag to not filter spatially
+        noGeometry: true
       });
 
 
@@ -1182,6 +1208,7 @@ define([
       console.log("openSpeciesTable");
       if (headerText)
         headerText = "Fish Catch for " + headerText;
+      w.setHeaderItemVisibility();
       w.runQuery(null, {areaType: areaType, id: id, header: headerText} );
     },
 

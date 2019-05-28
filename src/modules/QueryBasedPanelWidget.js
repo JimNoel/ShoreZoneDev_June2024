@@ -399,8 +399,10 @@ define([
       if (queryPars) {
         this.LayerNameAddOn = queryPars.areaType + "s";
         theWhere = queryPars.areaType + "ID=" + queryPars.id;
-        if (queryPars.header)
+        if (queryPars.header) {
           this.title = queryPars.header;
+          getEl(this.draggablePanelId + "_header").innerText = this.title;
+        }
       } else {    // Do this only when query parameters are not already specified in the argument
         if (this.dropDownInfo) {
           this.ddTotalsLayerNameAddOn = "";
