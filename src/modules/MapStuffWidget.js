@@ -362,6 +362,10 @@ define([
             isAlpha: true
           }
         ],
+        speciesTableInfo : {
+          iconLabel: 'Total Fish Catch',
+          args: 'faSpTableWidget,null,null,"All Regions"'
+        },
         currTab: 0,
         tabInfo: [
           {
@@ -370,7 +374,7 @@ define([
             popupTitle: "Fish Atlas Region",
             LayerNameAddOn: 'Regions',
             parentAreaType: '',
-            visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+            visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
             featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
             dupFields:  ["RegionID"],
             orderByFields: ["Region"],
@@ -536,7 +540,7 @@ define([
         baseName: "faSpTable",
         headerDivName:  "faSpTableHeaderDiv",
         footerDivName:  "faSpTableFooterDiv",
-        totalOutFields: ["Count_Fish", "Count_measured"],
+        totalOutFields: ["Catch"],
         tableHeaderTitle: "All Regions",
         displayDivName: "faSpTableContainer",
         mapServiceLayer: faMapServiceLayer,
@@ -631,6 +635,7 @@ define([
 */
         layerBaseName: "vw_SpCatch_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
         //   using the current panel info and dropdown info for any dropdowns that have something selected.
+        totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
         spatialRelationship: null,      // Using null as a flag to not filter spatially
         noGeometry: true
       });
@@ -1209,6 +1214,7 @@ define([
       if (headerText)
         headerText = "Fish Catch for " + headerText;
       w.setHeaderItemVisibility();
+      setDisplay(w.draggablePanelId, true);
       w.runQuery(null, {areaType: areaType, id: id, header: headerText} );
     },
 

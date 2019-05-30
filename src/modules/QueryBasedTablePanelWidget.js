@@ -281,8 +281,8 @@ define([
               this.totalLabels[l].node.innerHTML = "0";
             return;
           }
-          var totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
-          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[totalsLayerName].toString();
+          //var totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
+          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.totalsLayerName].toString();
           this.query.outFields = this.totalOutFields;
           this.query.orderByFields = null;
           this.queryTask.execute(this.query).then(function(results){
@@ -399,6 +399,14 @@ define([
           var cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
           headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           getEl(cbID).checked = this.clickableLayer.visible;
+        }
+
+        // Total Species Data
+        if (this.speciesTableInfo) {
+          var spTableSpanId = this.baseName + 'IconSpeciesTable';
+          var spTableHtml = '&emsp;<LABEL class="boldLabel">' + this.speciesTableInfo.iconLabel + '</LABEL>&ensp;';
+          spTableHtml += "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable(" + this.speciesTableInfo.args + ")' height='15' width='15' alt=''>";
+          headerContent.innerHTML += '<span id="' + spTableSpanId + '">' + spTableHtml + '</span>';
         }
       };
 

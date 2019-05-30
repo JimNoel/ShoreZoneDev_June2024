@@ -264,13 +264,14 @@ cursor: pointer;
     position: absolute;
     left:100px;
     top:100px;
-    width:500px;
+    width:600px;
     height:500px;
     z-index: 9;
     border: 1px solid #d3d3d3;
     text-align: center;
     resize: both;
-    overflow: auto;
+    overflow: hidden; /*auto;*/
+    display: none;
 }
 
 .draggableDivHeader {
@@ -289,9 +290,26 @@ cursor: pointer;
 
 .opacitySlider {
     position: absolute;
-    right:10px;
+    right:25px;
     top:5px;
     height:10px;
     z-index: 11;
 }
 
+/* The Close Button */
+.close {
+    position: absolute;
+    right:5px;
+    top:0px;
+    color: black;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}

@@ -332,6 +332,17 @@ function setDisabled(id, value) {
     el.disabled = value;
 }
 
+function setDisplay(id, value) {
+  // Show/hide HTML element   NOTE: If other visible elements are in the paranet element, these will shift to fill the missing space
+  el = getEl(id);
+  if (!el)
+    return;   // do nothing if el doesn't exist
+  var display = "none";
+  if (value)
+    display = "block";
+  el.style.display = display;
+}
+
 function setVisible(id, value) {
   // Show/hide HTML element
   el = getEl(id);
@@ -680,8 +691,10 @@ function makeDraggablePanel(divID, headerText, hasOpacitySlider, /*theClass,*/ t
   var newDiv = makeHtmlElement("div", divID, "draggableDiv", theStyle, theContent);
   if (headerText || hasOpacitySlider) {
     var headerDiv = makeHtmlElement("div", divID + "_header", "draggableDivHeader");
-    headerDiv.innerHTML = '<b style="position:absolute;left:10px; top:0px">' + headerText + '</b>';
+    headerDiv.innerHTML = '<b id="' + divID + '_headerText" style="position:absolute;left:10px; top:0px">' + headerText + '</b>';
     headerDiv.innerHTML += '<input type="range" value="90" class="opacitySlider" oninput="sliderHandler(\'' + divID + '\')" id="' + divID + '_slider" >';
+    var onClickFunction = "setDisplay('" + divID + "',false);";
+    headerDiv.innerHTML += '<span class="close" title="Close panel" onclick=' + onClickFunction + '>&times;</span>';
     newDiv.appendChild(headerDiv);
   }
   newDiv.draggable = true;

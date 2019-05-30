@@ -137,10 +137,10 @@ define([
           where = "";
           //returnCountOnly = true;
         }
-
       }
 
       this.addPanelHtml();
+      this.makeFooterElements();
 
       this.noFeatures = function(f) {
         if (f.length===0) {
@@ -246,6 +246,30 @@ define([
         this.clickableSymbol = new SimpleFillSymbol(this.clickableSymbolInfo);
     },
 
+    makeFooterElements: function() {
+      if (!this.footerWrapper)
+        return;
+      this.footerWrapper.innerHTML = "";
+      // make LABEL elements for totals
+      if (this.totalOutFields) {
+        var fields = this.totalOutFields;
+        this.totalLabels = {};
+        for (f in fields) {
+          var fieldName = fields[f];
+          var colNum = this.query.outFields.indexOf(fields[f]);
+          if (colNum === -1)
+            this.totalLabels[fieldName] = null;
+          else {
+            this.totalLabels[fieldName] = {
+              colNum: colNum,
+              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0; left: 100px", "Total")
+            }
+            this.footerWrapper.appendChild(this.totalLabels[fieldName].node);
+          }
+        }
+      }
+    },
+
     setActiveTab: function(index) {
       this.prevTab = this.currTab;
       var tabId = this.tabInfo[this.prevTab].tabId;
@@ -271,26 +295,7 @@ define([
       this.setHeaderItemVisibility();
       this.runQuery(view.extent);
 
-      // make LABEL elements for totals
-      this.footerWrapper.innerHTML = "";
-      if (this.totalOutFields) {
-        var fields = this.totalOutFields;
-        this.totalLabels = {};
-        for (f in fields) {
-          var fieldName = fields[f];
-          var colNum = this.query.outFields.indexOf(fields[f]);
-          if (colNum === -1)
-            this.totalLabels[fieldName] = null;
-          else {
-            this.totalLabels[fieldName] = {
-              colNum: colNum,
-              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0; left: 100px", "Total")
-            }
-            this.footerWrapper.appendChild(this.totalLabels[fieldName].node);
-          }
-        }
-      }
-
+      this.makeFooterElements();
     },
 
     tabClickHandler: function(evt) {
@@ -396,16 +401,20 @@ define([
       queryComplete = false;
 
       this.ddLayerNameAddOn = "";
+      this.ddTotalsLayerNameAddOn = "";
       if (queryPars) {
-        this.LayerNameAddOn = queryPars.areaType + "s";
-        theWhere = queryPars.areaType + "ID=" + queryPars.id;
+        this.LayerNameAddOn = "";
+        theWhere = "";
+        if (queryPars.areaType) {
+          this.LayerNameAddOn = queryPars.areaType + "s";
+          theWhere = queryPars.areaType + "ID=" + queryPars.id;
+        }
         if (queryPars.header) {
           this.title = queryPars.header;
-          getEl(this.draggablePanelId + "_header").innerText = this.title;
+          getEl(this.draggablePanelId + "_headerText").innerText = this.title;
         }
       } else {    // Do this only when query parameters are not already specified in the argument
         if (this.dropDownInfo) {
-          this.ddTotalsLayerNameAddOn = "";
           var ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
             var item = ddInfo[d];
@@ -428,6 +437,9 @@ define([
       if (this.dynamicLayerName) {    // Do this only if layer name changes, e.g. when querying on pre-grouped views
         this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
+        this.totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
+        if (this.totalsBaseName)
+          this.totalsLayerName = this.totalsBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;     // A little weird, but this is for totals on "vw_SpCatch" , which come from "vw_CatchStats"
       }
       this.query.where = theWhere;
       this.query.orderByFields = this.orderByFields;
