@@ -59,6 +59,7 @@ define([
       this.grid = null;
       this.selectedRow = null;
 
+
       this.makeTable = function(fields, features) {
         // Create a dGrid table from returned data
         var tableColumns = [];
@@ -351,11 +352,13 @@ define([
       };
 
 
+/*
       this.makeTableFooterHtml = function() {
         var footerDivNode = getEl(this.footerDivName);
         this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
         footerDivNode.appendChild(this.footerWrapper);
       };
+*/
 
 
       this.makeTableHeaderHtml = function() {
@@ -433,14 +436,47 @@ define([
       }
 
       this.makeTableHeaderHtml();
+/*
       if (this.footerDivName)
         this.makeTableFooterHtml();
+*/
       /*JN*/ console.log("Looky here!  " + this.objName);
 
+    },
 
+    makeFooterElements: function() {
+       if (!this.inherited(arguments))     // Run inherited code from QueryBasedPanelWidget
+         return;      // If no footer created, then don't execute the rest of the function
+/*
+      var footerDivNode = getEl(this.footerDivName);
+      footerDivNode.innerHTML = "";
+      this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
+      footerDivNode.appendChild(this.footerWrapper);
+*/
+      // make LABEL elements for totals
+      if (this.totalOutFields) {
+        this.footerWrapper.innerHTML = "";
+        var fields = this.totalOutFields;
+        this.totalLabels = {};
+        for (f in fields) {
+          var fieldName = fields[f];
+//         var colNum = this.tabInfo[this.currTab].featureOutFields.indexOf(fields[f]);
+          var colNum = this.featureOutFields.indexOf(fields[f]);
+          if (colNum === -1)
+            this.totalLabels[fieldName] = null;
+          else {
+            this.totalLabels[fieldName] = {
+              colNum: colNum,
+              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0; left: 100px", "Total")
+            }
+            this.footerWrapper.appendChild(this.totalLabels[fieldName].node);
+          }
+        }
+      }
+      console.log("QueryBasedPanelWidget:  makeFooterElements");
     }
 
-  });
+    });
 
 
 });
