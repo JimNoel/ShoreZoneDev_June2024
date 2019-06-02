@@ -140,7 +140,7 @@ define([
       }
 
       this.addPanelHtml();
-      this.makeFooterElements();
+//      this.makeFooterElements();
 
       this.noFeatures = function(f) {
         if (f.length===0) {
@@ -247,27 +247,13 @@ define([
     },
 
     makeFooterElements: function() {
-      if (!this.footerWrapper)
-        return;
+      if (!this.footerDivName)
+        return false;
+      //var footerDivNode = getEl(this.footerDivName);
+      this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
+      this.footerPanel.appendChild(this.footerWrapper);
       this.footerWrapper.innerHTML = "";
-      // make LABEL elements for totals
-      if (this.totalOutFields) {
-        var fields = this.totalOutFields;
-        this.totalLabels = {};
-        for (f in fields) {
-          var fieldName = fields[f];
-          var colNum = this.query.outFields.indexOf(fields[f]);
-          if (colNum === -1)
-            this.totalLabels[fieldName] = null;
-          else {
-            this.totalLabels[fieldName] = {
-              colNum: colNum,
-              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0; left: 100px", "Total")
-            }
-            this.footerWrapper.appendChild(this.totalLabels[fieldName].node);
-          }
-        }
-      }
+      return true;
     },
 
     setActiveTab: function(index) {
@@ -337,24 +323,27 @@ define([
 
       // Main panel content
       var midContent = '';
-      var footerPanel = null;
+      this.footerPanel = null;
       if (classType === 'media') {
         var imgHtml = '    <img id="photoImage" class="imageContainer" src="" alt="">\n';
         if (name === 'video')
           imgHtml = '    <div id="videoImageContainer" class="imageContainer"></div>\n';
         midContent = '<div id="' + name + 'NoImageMessage" class="mediaMessageDiv" style="padding: 0" ><b>No ' + name + '</b></div>' + imgHtml;
-        footerPanel = makeHtmlElement("div", name + "ToolsDiv", "mediaToolsContainer");
+        this.footerPanel = makeHtmlElement("div", name + "ToolsDiv", "mediaToolsContainer");
       } else {
-        if (this.footerDivName)
-          footerPanel = makeHtmlElement("div", this.footerDivName, classType + "FooterDiv");
+        if (this.footerDivName) {
+          this.footerPanel = makeHtmlElement("div", this.footerDivName, classType + "FooterDiv");
+        }
       }
 
       var centerPanel = makeHtmlElement("div", name + "Container", classType + "ContainerDiv");
       centerPanel.innerHTML = midContent;
       theContainer.appendChild(centerPanel);
 
-      if (footerPanel)
-        theContainer.appendChild(footerPanel);
+      if (this.footerPanel) {
+        theContainer.appendChild(this.footerPanel);
+        this.makeFooterElements();
+      }
 
       panelDiv.appendChild(theContainer);      // Attach to parent element
 

@@ -367,6 +367,7 @@ define([
           args: 'faSpTableWidget,null,null,"All Regions"'
         },
         currTab: 0,
+        featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
         tabInfo: [
           {
             tabName: 'Regions',
@@ -540,7 +541,7 @@ define([
         baseName: "faSpTable",
         headerDivName:  "faSpTableHeaderDiv",
         footerDivName:  "faSpTableFooterDiv",
-        totalOutFields: ["Catch"],
+        totalOutFields: ["Catch"],      //TODO:  Handle different field names in table query and totals query
         tableHeaderTitle: "All Regions",
         displayDivName: "faSpTableContainer",
         mapServiceLayer: faMapServiceLayer,
