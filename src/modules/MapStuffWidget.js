@@ -364,7 +364,7 @@ define([
         ],
         speciesTableInfo : {
           iconLabel: 'Total Fish Catch',
-          args: 'faSpTableWidget,null,null,"All Regions"'
+          args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions"'
         },
         currTab: 0,
         featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
@@ -391,7 +391,8 @@ define([
                 title:  "Fish Catch",
                 colWidth:  20,
                 plugInFields: ["RegionID", "Region"],
-                args: 'faSpTableWidget,"Region",{0},"{1}"',
+                //args: 'faSpTableWidget,"Region",{0},"{1}"',   //TODO: Redo with full table name, totals tabke name, WHERE clause, header
+                args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
                 html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
               },
               RegionID2: {
@@ -583,17 +584,18 @@ define([
         ],
         currTab: 0,
         tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
-        featureOutFields: ["Sp_CommonName", "Count_Fish", "AvgFL", "Count_measured"],
-        orderByFields: ["Count_Fish"],
+        featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
+        orderByFields: ["Catch DESC"],
         visibleHeaderElements: ['faSpTableLabelSpan_featureCount'],
         specialFormatting: {      // Special HTML formatting for field values
           Sp_CommonName: {
             title: "Species",
             colWidth: 200
           },
-          Count_Fish: {
+          Catch: {
             title: "Catch",
-            colWidth: 100
+            colWidth: 100,
+            useCommas: true
           },
           AvgFL: {
             title: "Average Length",
@@ -602,7 +604,8 @@ define([
           },
           Count_measured: {
             title: "# Measured",
-            colWidth: 150
+            colWidth: 150,
+            useCommas: true
           },
         },
 /*
@@ -634,9 +637,9 @@ define([
           }
           ],
 */
-        layerBaseName: "vw_SpCatch_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+        layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
         //   using the current panel info and dropdown info for any dropdowns that have something selected.
-        totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
+        //totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
         spatialRelationship: null,      // Using null as a flag to not filter spatially
         noGeometry: true
       });
@@ -1210,13 +1213,13 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, areaType, id, headerText) {
+      openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText) {
       console.log("openSpeciesTable");
       if (headerText)
         headerText = "Fish Catch for " + headerText;
       w.setHeaderItemVisibility();
       setDisplay(w.draggablePanelId, true);
-      w.runQuery(null, {areaType: areaType, id: id, header: headerText} );
+      w.runQuery(null, {tableName: tableName, totalsTableName: totalsTableName, theWhere: theWhere, header: headerText} );
     },
 
     constructor: function (kwArgs) {

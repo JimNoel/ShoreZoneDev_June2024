@@ -391,17 +391,18 @@ define([
 
       this.ddLayerNameAddOn = "";
       this.ddTotalsLayerNameAddOn = "";
+
       if (queryPars) {
-        this.LayerNameAddOn = "";
-        theWhere = "";
-        if (queryPars.areaType) {
-          this.LayerNameAddOn = queryPars.areaType + "s";
-          theWhere = queryPars.areaType + "ID=" + queryPars.id;
-        }
+        this.layerName = queryPars.tableName;
+        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
+        this.totalsLayerName = queryPars.totalsTableName;
+        if (queryPars.theWhere)
+          theWhere = queryPars.theWhere;
         if (queryPars.header) {
           this.title = queryPars.header;
           getEl(this.draggablePanelId + "_headerText").innerText = this.title;
         }
+
       } else {    // Do this only when query parameters are not already specified in the argument
         if (this.dropDownInfo) {
           var ddInfo = this.dropDownInfo;
@@ -421,15 +422,13 @@ define([
             }
           }
         }
+        if (this.dynamicLayerName) {    // Do this only if layer name changes, e.g. when querying on pre-grouped views
+          this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
+          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
+          this.totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
+        }
       }
 
-      if (this.dynamicLayerName) {    // Do this only if layer name changes, e.g. when querying on pre-grouped views
-        this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
-        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
-        this.totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
-        if (this.totalsBaseName)
-          this.totalsLayerName = this.totalsBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;     // A little weird, but this is for totals on "vw_SpCatch" , which come from "vw_CatchStats"
-      }
       this.query.where = theWhere;
       this.query.orderByFields = this.orderByFields;
 

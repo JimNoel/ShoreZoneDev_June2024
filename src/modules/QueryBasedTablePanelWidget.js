@@ -115,6 +115,9 @@ define([
           var origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
           for (a in features[i].attributes)
             if (features[i].attributes[a]) {
+              var useCommas = getIfExists(this,"specialFormatting." + a + ".useCommas");
+              if (useCommas)
+                features[i].attributes[a] = formatNumber_Commas(features[i].attributes[a]);
               var numDecimals = getIfExists(this,"specialFormatting." + a + ".numDecimals");
               if (numDecimals)
                 features[i].attributes[a] = features[i].attributes[a].toFixed(numDecimals);

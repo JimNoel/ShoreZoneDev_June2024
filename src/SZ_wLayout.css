@@ -216,6 +216,12 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
     width: 180px;
 }
 
+/*  // Can use this to change default alignment of items in cells
+.dataTable .dgrid-content .dgrid-cell {
+    text-align: right;
+}
+*/
+
 /*
 .dataTable .dgrid-cell:hover {
   background-color: #de0;
