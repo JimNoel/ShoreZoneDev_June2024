@@ -247,12 +247,12 @@ define([
     },
 
     makeFooterElements: function() {
-      if (!this.footerDivName)
+      if (!this.footerPanel)
         return false;
-      //var footerDivNode = getEl(this.footerDivName);
       this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
-      this.footerPanel.appendChild(this.footerWrapper);
       this.footerWrapper.innerHTML = "";
+      this.footerPanel.innerHTML = "";
+      this.footerPanel.appendChild(this.footerWrapper);
       return true;
     },
 

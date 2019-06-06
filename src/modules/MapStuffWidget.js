@@ -542,7 +542,8 @@ define([
         baseName: "faSpTable",
         headerDivName:  "faSpTableHeaderDiv",
         footerDivName:  "faSpTableFooterDiv",
-        totalOutFields: ["Catch"],      //TODO:  Handle different field names in table query and totals query
+        featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
+        totalOutFields: ["Catch", "Count_measured"],
         tableHeaderTitle: "All Regions",
         displayDivName: "faSpTableContainer",
         mapServiceLayer: faMapServiceLayer,
@@ -584,7 +585,6 @@ define([
         ],
         currTab: 0,
         tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
-        featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
         orderByFields: ["Catch DESC"],
         visibleHeaderElements: ['faSpTableLabelSpan_featureCount'],
         specialFormatting: {      // Special HTML formatting for field values

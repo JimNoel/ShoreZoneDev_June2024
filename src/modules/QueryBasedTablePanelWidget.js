@@ -230,7 +230,7 @@ define([
             var label = this.totalLabels[f];
             var column = columns[label.colNum];
             var colPos = $(column.headerNode.contents).position();
-            label.node.style.left = colPos.left + "px";
+            label.node.style.left = colPos.left + "px";     //TODO:  This is not working correctly for draggable panels
           }
         };
 
