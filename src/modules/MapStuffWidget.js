@@ -229,6 +229,10 @@ define([
             whereField: "RegionNumID"
           }
         ],
+        speciesTableInfo : {
+          iconLabel: 'Total Species Data',
+          args: 'ssSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions"'
+        },
         currTab: 0,
         tabInfo: [
           {
@@ -237,8 +241,8 @@ define([
             popupTitle: "Shore Stations Region",
             LayerNameAddOn: 'Regions',
             parentAreaType: '',
-            visibleHeaderElements: ['ssTableHeaderTitle', 'ssCheckboxSpan_showFeatures'],
-            featureOutFields: ["Envelope", "Region", "RegionalID", "RegionNumID"],
+            visibleHeaderElements: ['ssTableHeaderTitle', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
+            featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
                 title:  "",
@@ -248,12 +252,26 @@ define([
                 html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
               },
               RegionNumID: {
+                title:  "Region Id",
+                colWidth:  20
+              },
+              RegionalID: {
+                title:  "Regional Id",
+                colWidth:  20
+              },
+              Region: {
+                title:  "Region Name",
+                colWidth:  20
+              }
+/*
+              RegionNumID2: {
                 title:  "",
                 colWidth:  20,
                 plugInFields: ["RegionNumID", "Envelope"],
                 args: 'ssWidget,{0},"{1}"',
                 html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
               }
+*/
             },
             idField: 'Region',
             subTableDD: "Region",
@@ -289,6 +307,121 @@ define([
       /* end szWidget def*/
 
       siteTabs.ss.widgets = [ssWidget];
+
+      ssSpTableWidget = new QueryBasedTablePanelWidget({
+        objName: "ssSpTableWidget",
+        title: "Shore Stations",
+        sublayerIDs: ssSublayerIDs,
+        panelName: "ssSpTablePanel",
+        panelType: "table",
+        draggablePanelId: "ssSpTableDiv",
+        contentPaneId: "ssSpTableDiv_content",
+        baseName: "ssSpTable",
+        headerDivName:  "ssSpTableHeaderDiv",
+        footerDivName:  "ssSpTableFooterDiv",
+        featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
+        totalOutFields: ["Catch", "Count_measured"],
+        tableHeaderTitle: "All Regions",
+        displayDivName: "ssSpTableContainer",
+        mapServiceLayer: ssMapServiceLayer,
+        dynamicLayerName: true,
+        dropDownInfo: [
+          /*
+                    { ddName: "Region",
+                      LayerNameAddOn: "",
+                      totalsLayerNameAddOn: "Regions",
+                      subLayerName: "Regions",
+                      ddOutFields: ["RegionName", "RegionID", "Envelope"],
+                      orderByFields: ["RegionName"],
+                      options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+                      SelectedOption: "All",
+                      whereField: "RegionID"
+                    },
+                    { ddName: "Locale",
+                      LayerNameAddOn: "",
+                      totalsLayerNameAddOn: "Locales",
+                      subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
+                      ddOutFields: ["Locale", "LocaleID", "Envelope"],
+                      orderByFields: ["Locale"],
+                      options: [ { label: "[All]", value: "All" } ],
+                      SelectedOption: "All",
+                      whereField: "LocaleID"
+                    },
+                    { ddName: "Species",
+                      LayerNameAddOn: "Species",
+                      totalsLayerNameAddOn: "Species",
+                      subLayerName: "vw_SpCatch_allAK",
+                      ddOutFields: ["Sp_CommonName", "SpCode"],
+                      orderByFields: ["Sp_CommonName"],
+                      options: [ { label: "[All]", value: "All" } ],
+                      SelectedOption: "All",
+                      whereField: "SpCode",
+                      isAlpha: true
+                    }
+          */
+        ],
+        currTab: 0,
+        tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
+        orderByFields: ["Catch DESC"],
+        visibleHeaderElements: ['ssSpTableLabelSpan_featureCount'],
+        specialFormatting: {      // Special HTML formatting for field values
+          Sp_CommonName: {
+            title: "Species",
+            colWidth: 200
+          },
+          Catch: {
+            title: "Catch",
+            colWidth: 100,
+            useCommas: true
+          },
+          AvgFL: {
+            title: "Average Length",
+            colWidth: 150,
+            numDecimals: 1
+          },
+          Count_measured: {
+            title: "# Measured",
+            colWidth: 150,
+            useCommas: true
+          },
+        },
+        /*
+                tabInfo: [
+                  {
+                    tabName: 'Regions',
+                    tabTitle: 'Fish Atlas Regions',
+                    LayerNameAddOn: 'Regions',
+                    visibleHeaderElements: [],
+                    specialFormatting: {      // Special HTML formatting for field values
+                    },
+                    idField: 'Region'
+                  },
+                  {
+                    tabName: 'Locales',
+                    tabTitle: 'Fish Atlas Locales',
+                    LayerNameAddOn: 'Locales',
+                    visibleHeaderElements: [],
+                    specialFormatting: {      // Special HTML formatting for field values
+                    },
+                    idField: 'Locale'
+                  },
+                  {
+                    tabName: 'Sites',
+                    tabTitle: 'Fish Atlas Sites',
+                    LayerNameAddOn: 'Sites',
+                    visibleHeaderElements: [],
+                    idField: 'Site'
+                  }
+                  ],
+        */
+        layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+        //   using the current panel info and dropdown info for any dropdowns that have something selected.
+        //totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
+        spatialRelationship: null,      // Using null as a flag to not filter spatially
+        noGeometry: true
+      });
+
+
     }, function(error){
       debug("Shore Station MapServiceLayer failed to load:  " + error);
     });
@@ -389,9 +522,8 @@ define([
               },
               RegionID: {
                 title:  "Fish Catch",
-                colWidth:  20,
+                colWidth:  30,
                 plugInFields: ["RegionID", "Region"],
-                //args: 'faSpTableWidget,"Region",{0},"{1}"',   //TODO: Redo with full table name, totals tabke name, WHERE clause, header
                 args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
                 html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
               },
@@ -422,6 +554,7 @@ define([
             parentAreaType: 'Regions',
             visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
+            dupFields:  ["LocaleID"],
             orderByFields: ["Region", "Locale"],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
@@ -432,7 +565,14 @@ define([
                 html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
               },
               LocaleID: {
-                title:  "",
+                title:  "Fish Catch",
+                colWidth:  30,
+                plugInFields: ["LocaleID", "Locale"],
+                args: 'faSpTableWidget,"vw_CatchStats_LocalesSpecies","vw_CatchStats_Locales","LocaleID={0}","{1}"',
+                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+              },
+              LocaleID2: {
+                title:  "Sites",
                 colWidth:  20,
                 plugInFields: ["LocaleID", "Envelope"],
                 args: 'faWidget,{0},"{1}"',
@@ -471,8 +611,24 @@ define([
             LayerNameAddOn: 'Sites',
             parentAreaType: 'Locales',
             visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-            featureOutFields: ["Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch"],
+            featureOutFields: ["Envelope", "Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID"],
             orderByFields: ["Region", "Locale", "Site"],
+            specialFormatting: {      // Special HTML formatting for field values
+              Envelope: {     //TODO:  For Sites, Envelope is null.  Replace with set-sized envelope centered on the point
+                title:  "",
+                colWidth:  20,
+                plugInFields: ["Envelope"],
+                args: '"{0}"',
+                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+              },
+              SiteID: {
+                title:  "Fish Catch",
+                colWidth:  30,
+                plugInFields: ["SiteID", "Site"],
+                args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
+                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+              }
+            },
             idField: 'Site',
             clickableSymbolType: "point",
             clickableSymbolInfo: {

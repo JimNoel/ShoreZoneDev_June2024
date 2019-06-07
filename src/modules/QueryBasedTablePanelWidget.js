@@ -229,8 +229,10 @@ define([
           for (f in this.totalLabels) {
             var label = this.totalLabels[f];
             var column = columns[label.colNum];
-            var colPos = $(column.headerNode.contents).position();
-            label.node.style.left = colPos.left + "px";     //TODO:  This is not working correctly for draggable panels
+            var colPos = $(column.headerNode.contents).position().left;
+            if (this.baseName === "faSpTable")    //TODO:  This is not working correctly for draggable panels
+              colPos = colPos - 300;              // Temporary HACK
+            label.node.style.left = colPos + "px";
           }
         };
 
@@ -470,7 +472,7 @@ define([
           else {
             this.totalLabels[fieldName] = {
               colNum: colNum,
-              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0; left: 100px", "Total")
+              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0; left: 0px", "Total")
             }
             this.footerWrapper.appendChild(this.totalLabels[fieldName].node);
           }
