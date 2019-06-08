@@ -231,7 +231,7 @@ define([
         ],
         speciesTableInfo : {
           iconLabel: 'Total Species Data',
-          args: 'ssSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions"'
+          args: 'ssSpTableWidget,"webtable_AlaskaSpecies",null,null,"All Regions"'
         },
         currTab: 0,
         tabInfo: [
@@ -319,8 +319,7 @@ define([
         baseName: "ssSpTable",
         headerDivName:  "ssSpTableHeaderDiv",
         footerDivName:  "ssSpTableFooterDiv",
-        featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
-        totalOutFields: ["Catch", "Count_measured"],
+        featureOutFields: ["SppName", "Common_name"],
         tableHeaderTitle: "All Regions",
         displayDivName: "ssSpTableContainer",
         mapServiceLayer: ssMapServiceLayer,
@@ -362,28 +361,17 @@ define([
         ],
         currTab: 0,
         tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
-        orderByFields: ["Catch DESC"],
+        orderByFields: ["SppName"],
         visibleHeaderElements: ['ssSpTableLabelSpan_featureCount'],
         specialFormatting: {      // Special HTML formatting for field values
-          Sp_CommonName: {
+          SppName: {
             title: "Species",
             colWidth: 200
           },
-          Catch: {
-            title: "Catch",
-            colWidth: 100,
-            useCommas: true
-          },
-          AvgFL: {
-            title: "Average Length",
-            colWidth: 150,
-            numDecimals: 1
-          },
-          Count_measured: {
-            title: "# Measured",
-            colWidth: 150,
-            useCommas: true
-          },
+          Common_name: {
+            title: "Common Name",
+            colWidth: 100
+          }
         },
         /*
                 tabInfo: [

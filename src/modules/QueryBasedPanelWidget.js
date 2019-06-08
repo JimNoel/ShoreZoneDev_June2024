@@ -395,7 +395,9 @@ define([
       if (queryPars) {
         this.layerName = queryPars.tableName;
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
-        this.totalsLayerName = queryPars.totalsTableName;
+        this.totalsLayerName = null;
+        if (queryPars.totalsTableName)
+          this.totalsLayerName = queryPars.totalsTableName;
         if (queryPars.theWhere)
           theWhere = queryPars.theWhere;
         if (queryPars.header) {
