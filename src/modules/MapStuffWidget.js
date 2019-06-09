@@ -319,7 +319,7 @@ define([
         baseName: "ssSpTable",
         headerDivName:  "ssSpTableHeaderDiv",
         footerDivName:  "ssSpTableFooterDiv",
-        featureOutFields: ["SppName", "Common_name"],
+        featureOutFields: ["SppNameHtml", "Common_name"],
         tableHeaderTitle: "All Regions",
         displayDivName: "ssSpTableContainer",
         mapServiceLayer: ssMapServiceLayer,
@@ -361,10 +361,10 @@ define([
         ],
         currTab: 0,
         tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
-        orderByFields: ["SppName"],
+        orderByFields: ["SppNameHtml"],
         visibleHeaderElements: ['ssSpTableLabelSpan_featureCount'],
         specialFormatting: {      // Special HTML formatting for field values
-          SppName: {
+          SppNameHtml: {
             title: "Species",
             colWidth: 200
           },

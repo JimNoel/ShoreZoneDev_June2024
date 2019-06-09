@@ -45,7 +45,7 @@ var szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
 var szSublayerIDs = {};
 
 
-var ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_wViews/MapServer";        // ShoreStation gives CORS error for some reason
+var ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";        // ShoreStation gives CORS error for some reason
 var ssSublayerIDs = {};
 makeSublayerIdTable(ssMapServiceLayerURL, ssSublayerIDs);
 
