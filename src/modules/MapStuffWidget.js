@@ -231,7 +231,7 @@ define([
         ],
         speciesTableInfo : {
           iconLabel: 'Total Species Data',
-          args: 'ssSpTableWidget,"webtable_AlaskaSpecies",null,null,"All Regions"'
+          args: 'ssSpTableWidget,"vw_AlaskaSpecies",null,null,"All Regions"'
         },
         currTab: 0,
         tabInfo: [
@@ -243,6 +243,7 @@ define([
             parentAreaType: '',
             visibleHeaderElements: ['ssTableHeaderTitle', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
             featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
+            dupFields:  ["RegionalID"],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
                 title:  "",
@@ -262,7 +263,14 @@ define([
               Region: {
                 title:  "Region Name",
                 colWidth:  20
-              }
+              },
+              RegionalID2: {
+                title:  "Total Species Data",
+                colWidth:  30,
+                plugInFields: ["RegionalID", "Region"],
+                args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
+                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+              },
 /*
               RegionNumID2: {
                 title:  "",
@@ -310,7 +318,7 @@ define([
 
       ssSpTableWidget = new QueryBasedTablePanelWidget({
         objName: "ssSpTableWidget",
-        title: "Shore Stations",
+        title: "Species Data",       // "Shore Stations",
         sublayerIDs: ssSublayerIDs,
         panelName: "ssSpTablePanel",
         panelType: "table",
@@ -677,7 +685,7 @@ define([
 
       faSpTableWidget = new QueryBasedTablePanelWidget({
         objName: "faSpTableWidget",
-        title: "Fish Atlas",
+        title: "Fish Catch",
         sublayerIDs: faSublayerIDs,
         panelName: "faSpTablePanel",
         panelType: "table",
@@ -1360,7 +1368,7 @@ define([
       openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText) {
       console.log("openSpeciesTable");
       if (headerText)
-        headerText = "Fish Catch for " + headerText;
+        headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
       w.setHeaderItemVisibility();
       setDisplay(w.draggablePanelId, true);
       w.runQuery(null, {tableName: tableName, totalsTableName: totalsTableName, theWhere: theWhere, header: headerText} );

@@ -692,6 +692,7 @@ function makeDraggablePanel(divID, headerText, hasOpacitySlider, /*theClass,*/ t
   var newDiv = makeHtmlElement("div", divID, "draggableDiv", theStyle, theContent);
   if (headerText || hasOpacitySlider) {
     var headerDiv = makeHtmlElement("div", divID + "_header", "draggableDivHeader");
+    headerDiv.title = headerText;
     headerDiv.innerHTML = '<b id="' + divID + '_headerText" style="position:absolute;left:10px; top:0px">' + headerText + '</b>';
     headerDiv.innerHTML += '<input type="range" value="90" class="opacitySlider" oninput="sliderHandler(\'' + divID + '\')" id="' + divID + '_slider" >';
     var onClickFunction = "setDisplay('" + divID + "',false);";
