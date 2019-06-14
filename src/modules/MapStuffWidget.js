@@ -243,7 +243,7 @@ define([
             parentAreaType: '',
             visibleHeaderElements: ['ssTableHeaderTitle', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
             featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
-            dupFields:  ["RegionalID"],
+            calcFields:  [{name: "SpTableBtn", afterField: "Region"}],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
                 title:  "",
@@ -264,8 +264,8 @@ define([
                 title:  "Region Name",
                 colWidth:  20
               },
-              RegionalID2: {
-                title:  "Total Species Data",
+              SpTableBtn: {
+                title:  "Species Data",
                 colWidth:  30,
                 plugInFields: ["RegionalID", "Region"],
                 args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
@@ -506,7 +506,7 @@ define([
             parentAreaType: '',
             visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
             featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
-            dupFields:  ["RegionID"],
+            calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
             orderByFields: ["Region"],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
@@ -523,7 +523,7 @@ define([
                 args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
                 html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
               },
-              RegionID2: {
+              SelRegionBtn: {
                 title:  "Locales",
                 colWidth:  20,
                 plugInFields: ["RegionID", "Envelope"],
@@ -550,7 +550,7 @@ define([
             parentAreaType: 'Regions',
             visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
             featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
-            dupFields:  ["LocaleID"],
+            calcFields:  [{name: "SelLocaleBtn", afterField: "LocaleID"}],
             orderByFields: ["Region", "Locale"],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
@@ -567,7 +567,7 @@ define([
                 args: 'faSpTableWidget,"vw_CatchStats_LocalesSpecies","vw_CatchStats_Locales","LocaleID={0}","{1}"',
                 html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
               },
-              LocaleID2: {
+              SelLocaleBtn: {
                 title:  "Sites",
                 colWidth:  20,
                 plugInFields: ["LocaleID", "Envelope"],

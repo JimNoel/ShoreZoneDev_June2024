@@ -273,8 +273,8 @@ define([
       // Reset to null any parameters not specified in new tab info
       if (!this.tabInfo[index].textOverlayPars)
         this.textOverlayPars = null;
-      if (!this.tabInfo[index].dupFields)
-        this.dupFields = null;
+      if (!this.tabInfo[index].calcFields)
+        this.calcFields = null;
 
       this.setClickableSybolType();
       //this.setRenderer();

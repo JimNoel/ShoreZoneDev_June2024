@@ -66,13 +66,15 @@ define([
         var nonNullCount = new Object();
         var columnStyleCSS = "";
 
-        var dupFields = [];
-        if (this.dupFields)
-          dupFields = this.dupFields;
-        for (var f in this.dupFields) {
-          var p = this.featureOutFields.indexOf(this.dupFields[f]);
-          var newField =       fields[p].toJSON();      //
-          newField.name = newField.name + "2";
+        for (var f in this.calcFields) {
+          var p =0;
+          if (this.calcFields[f].afterField)
+            p = this.featureOutFields.indexOf(this.calcFields[f].afterField);     // Find insertion point for calculated field (default is 0)
+          var newField = {
+            name: this.calcFields[f].name,
+            alias: this.calcFields[f].name,
+            type: "string"
+          };
           fields.splice(p + 1, 0, newField);
         }
 
@@ -109,8 +111,8 @@ define([
         var tableData = [];
         for (var i=0; i<features.length; i++) {
 
-          for (f in dupFields)      // Make duplicate fields:  Value is the same, attribute name has '2' added to end
-            features[i].attributes[dupFields[f]+'2'] = features[i].attributes[dupFields[f]];
+          for (f in this.calcFields)      // Make duplicate fields:  Value is the same, attribute name has '2' added to end
+            features[i].attributes[this.calcFields[f].name] = "0";      //Insert new attribute with dummy value for calculated field
 
           var origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
           for (a in features[i].attributes)
@@ -122,7 +124,7 @@ define([
               if (numDecimals)
                 features[i].attributes[a] = features[i].attributes[a].toFixed(numDecimals);
               var template = getIfExists(this,"specialFormatting." + a + ".html");
-              if (template) {
+              if (template) {     // If template exists, use this to replace attribute value with HTML code
                 var fmtInfo = this.specialFormatting[a];
                 if (fmtInfo.plugInFields) {
                   var args = fmtInfo.args;
