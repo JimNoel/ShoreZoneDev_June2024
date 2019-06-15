@@ -271,15 +271,6 @@ define([
                 args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
                 html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
               },
-/*
-              RegionNumID2: {
-                title:  "",
-                colWidth:  20,
-                plugInFields: ["RegionNumID", "Envelope"],
-                args: 'ssWidget,{0},"{1}"',
-                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
-              }
-*/
             },
             idField: 'Region',
             subTableDD: "Region",
@@ -291,7 +282,69 @@ define([
               width: "2px"
             },
             //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
+          },
+          {
+            tabName: 'Stations',
+            tabTitle: 'Shore Stations Stations',
+            popupTitle: "Shore Stations Stations",
+            LayerNameAddOn: 'Field Stations',
+            parentAreaType: 'Regions',
+            visibleHeaderElements: ['ssTableHeaderTitle', 'ssCheckboxSpan_showFeatures'],
+            featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_"],
+            //calcFields:  [{name: "SpTableBtn", afterField: "Region"}],
+            specialFormatting: {      // Special HTML formatting for field values
+/*
+              Envelope: {
+                title:  "",
+                colWidth:  20,
+                plugInFields: ["Envelope"],
+                args: '"{0}"',
+                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+              },
+*/
+              LocaleConcat: {
+                title:  "Geographic Name",
+                colWidth:  50
+              },
+              station: {
+                title:  "Station Id",
+                colWidth:  20
+              },
+              ExpBio: {
+                title:  "EXP BIO",
+                colWidth:  20
+              },
+              CoastalClass: {
+                title:  "Coastal Class",
+                colWidth:  20
+              },
+              date_: {
+                title:  "Date Sampled",
+                colWidth:  20,
+                dateFormat: true
+              },
+/*
+              SpTableBtn: {
+                title:  "Species Data",
+                colWidth:  30,
+                plugInFields: ["RegionalID", "Region"],
+                args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
+                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+              },
+*/
+            },
+            idField: 'station',
+            //subTableDD: "Region",
+            //resetDDs:  ["Region", "Locale"],
+            clickableSymbolType: "point",
+            clickableSymbolInfo: {
+              color: [ 51,51, 204, 0.1 ],
+              style: "solid",
+              width: "2px"
+            },
+            //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
           }
+
         ],
 
         layerBaseName: "",      // Blank for Shore Stations, since there are no group queries

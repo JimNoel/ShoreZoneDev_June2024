@@ -734,6 +734,11 @@ function formatNumber_Commas(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
 
+function formatNumber_Date(num) {
+  var dateStr = new Date(num).toDateString();
+  return dateStr.split(" ").slice(1).join(" ");
+}
+
 
 var mapStuff;
 

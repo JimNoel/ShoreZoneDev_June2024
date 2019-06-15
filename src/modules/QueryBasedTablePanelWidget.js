@@ -109,6 +109,8 @@ define([
         document.body.appendChild(sheet);
 
         var tableData = [];
+
+
         for (var i=0; i<features.length; i++) {
 
           for (f in this.calcFields)      // Make duplicate fields:  Value is the same, attribute name has '2' added to end
@@ -120,6 +122,9 @@ define([
               var useCommas = getIfExists(this,"specialFormatting." + a + ".useCommas");
               if (useCommas)
                 features[i].attributes[a] = formatNumber_Commas(features[i].attributes[a]);
+              var dateFormat = getIfExists(this,"specialFormatting." + a + ".dateFormat");
+              if (dateFormat)
+                features[i].attributes[a] = formatNumber_Date(features[i].attributes[a]);
               var numDecimals = getIfExists(this,"specialFormatting." + a + ".numDecimals");
               if (numDecimals)
                 features[i].attributes[a] = features[i].attributes[a].toFixed(numDecimals);
