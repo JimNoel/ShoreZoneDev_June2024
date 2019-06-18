@@ -338,10 +338,21 @@ define([
             //resetDDs:  ["Region", "Locale"],
             clickableSymbolType: "point",
             clickableSymbolInfo: {
-              color: [ 51,51, 204, 0.1 ],
+              "style":"circle",
+              "color":[255,255,255,1.0],
+              outline: {  // autocasts as new SimpleLineSymbol()
+                color: [ 0, 0, 0, 1.0 ],
+                width: "0.5px"
+              },
+              "size":4
+            },
+/*
+            clickableSymbolInfo: {
+              color: [ 51,51, 204, 0.0 ],   // Transparency is 0 -- i.e. not visible
               style: "solid",
               width: "2px"
             },
+*/
             //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
           }
 

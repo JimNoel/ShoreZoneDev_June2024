@@ -50,7 +50,9 @@ define([
 
       //console.log("Making " + this.panelName);
 
-      this.noFeaturesPanels = [this];
+      this.noFeaturesPanels = [this];     //  For messaging when query returns no features.  Normally this array just includes the current object (this).
+                                          //  An exception is VideoPanelWidget, which adds an instance of PhotoPlaybackWidget, since query results for
+                                          //  VideoPlaybackWidget are also used by PhotoPlaybackWidget
 
       this.clickableLayer = null;
       this.highlightLayer = null;
