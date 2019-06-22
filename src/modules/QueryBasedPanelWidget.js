@@ -45,104 +45,10 @@ define([
 
     constructor: function(/*Object*/ kwArgs){
       lang.mixin(this, kwArgs);
-
-/* DEBUG for faSpTableWidget*/
-
-      //console.log("Making " + this.panelName);
-
-      this.noFeaturesPanels = [this];     //  For messaging when query returns no features.  Normally this array just includes the current object (this).
-                                          //  An exception is VideoPanelWidget, which adds an instance of PhotoPlaybackWidget, since query results for
-                                          //  VideoPlaybackWidget are also used by PhotoPlaybackWidget
-
-      this.clickableLayer = null;
-      this.highlightLayer = null;
-      if (this.clickableSymbolInfo) {
-        // Add (transparent) Graphics Layer for selecting feature
-        this.clickableLayer = new GraphicsLayer();
-        this.clickableLayer.listMode = "hide";
-        this.clickableLayer.id = this.panelName + "_Clickable";
-        this.clickableLayer.title = this.clickableLayer.id;
-        this.clickableLayer.visible = true;
-        if (this.hideMarkersAtStart)
-          this.clickableLayer.visible = !this.hideMarkersAtStart;
-
-        this.setClickableSybolType();
-        this.setRenderer();
-
-        this.clickableLayer.widgetController = this;    // Custom property added to Graphics Layer object, to reference back to this widget
-        map.add(this.clickableLayer);
-        if (this.hasTextOverlayLayer) {
-          this.labelsLayer = new GraphicsLayer();
-          this.labelsLayer.title = this.baseName + "_markerLabels";
-          this.labelsLayer.listMode = "hide";
-          map.add(this.labelsLayer);
-
-        }
-        this.mouseStillOver = false;
-        this.infoWin = view.popup;
-        this.counter = 0;
-
-        // To indicate item currently hovered-over or touched
-        if (!this.highlightSymbolType)
-          this.highlightSymbolType = this.clickableSymbolType;
-        this.highlightLayer = new GraphicsLayer();
-        this.highlightLayer.listMode = "hide";
-        this.highlightLayer.id = this.panelName + "_highlight";
-//        this.highlightLayer.title = this.highlightLayer.id;
-        this.highlightLayer.visible = true;
-
-        if (!this.highlightSymbolInfo) {
-          this.highlightSymbol = this.clickableSymbol.clone();
-          // So far, the only ones that don't have separate highlightSymbolInfo are Points
-          this.highlightSymbol.color.a = 0;
-          this.highlightSymbol.outline.color = "red";
-          this.highlightSymbol.outline.width = "2px";
-          this.highlightSymbol.size += 5;
-        } else {
-          if (this.highlightSymbolType === "polyline")
-            this.highlightSymbol = new SimpleLineSymbol(this.highlightSymbolInfo);
-        }
-
-        this.highlightLayer.renderer = new SimpleRenderer(this.highlightSymbol);
-//        this.highlightLayer.widgetController = this;    // Custom property added to Graphics Layer object, to reference back to this widget
-        map.add(this.highlightLayer);
-      }
-
-      this.trackingLayer = null;
-      if (this.trackingSymbolInfo) {
-        // Add Graphics Layer for tracking icon
-        this.trackingLayer = new GraphicsLayer();
-        this.trackingLayer.listMode = "hide";
-        this.trackingLayer.id = this.panelName + "_Tracking";
-        this.trackingLayer.title = this.trackingLayer.id;
-        this.trackingLayer.visible = true;
-        var symbolArgs = this.trackingSymbolInfo.split(":");
-        this.trackingImageURL = symbolArgs[0];
-        this.trackingSymbol = new PictureMarkerSymbol(symbolArgs[0], symbolArgs[1], symbolArgs[2]);
-        this.trackingLayer.renderer = new SimpleRenderer(this.trackingSymbol);
-        map.add(this.trackingLayer);
-        this.playDir = 1;     // playback direction
-      }
-
-      // Skip if the widget doesn't get its data directly from a query
-      // e.g. PhotoPlaybackWidget, which uses a subset of the data from VideoPanelWidget
-      if (!this.noQuery) {
-        if (!this.orderByFields)
-          this.orderByFields = [];      // If orderByFields hasn't been specified in MapStuffWidget, then default to empty array
-        var subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
-        this.queryTask = new QueryTask(subLayerURL);
-        this.query = new Query();
-        with (this.query) {
-          returnGeometry = true;
-          spatialRelationship = this.spatialRelationship;      //"contains";
-          orderByFields = this.orderByFields;
-          where = "";
-          //returnCountOnly = true;
-        }
-      }
-
+      this.initFeatureHandling();
       this.addPanelHtml();
 //      this.makeFooterElements();
+
 
       this.noFeatures = function(f) {
         if (f.length===0) {
@@ -222,22 +128,96 @@ define([
         this.highlightFeature(e.highlightGeometry);          // geometry);
         //debug("displayPlayButton complete");
       };
-/*end DEBUG for faSpTableWidget*/
 
-      //console.log(this.panelName + " created");
-//return;
     },
 
 
 //    METHOD DEFINITIONS
 
-  setRenderer: function() {
-      this.clickableLayer.renderer = new SimpleRenderer(this.clickableSymbol);
-//    }
-  },
+    initFeatureHandling: function() {
+      this.noFeaturesPanels = [this];     //  For messaging when query returns no features.  Normally this array just includes the current object (this).
+                                          //  An exception is VideoPanelWidget, which adds an instance of PhotoPlaybackWidget, since query results for
+                                          //  VideoPlaybackWidget are also used by PhotoPlaybackWidget
+      this.clickableLayer = null;
+      this.highlightLayer = null;
+      if (this.clickableSymbolInfo) {
+        // Add (transparent) Graphics Layer for selecting feature
+        this.clickableLayer = new GraphicsLayer();
+        this.clickableLayer.listMode = "hide";
+        this.clickableLayer.id = this.panelName + "_Clickable";
+        this.clickableLayer.title = this.clickableLayer.id;
+        this.clickableLayer.visible = true;
+        if (this.hideMarkersAtStart)
+          this.clickableLayer.visible = !this.hideMarkersAtStart;
+
+        this.setClickableRendering();
+
+        this.clickableLayer.widgetController = this;    // Custom property added to Graphics Layer object, to reference back to this widget
+        map.add(this.clickableLayer);
+        if (this.hasTextOverlayLayer) {
+          this.labelsLayer = new GraphicsLayer();
+          this.labelsLayer.title = this.baseName + "_markerLabels";
+          this.labelsLayer.listMode = "hide";
+          map.add(this.labelsLayer);
+
+        }
+        this.mouseStillOver = false;
+        this.infoWin = view.popup;
+        this.counter = 0;
+
+        // To indicate item currently hovered-over or touched
+        if (!this.highlightSymbolType)
+          this.highlightSymbolType = this.clickableSymbolType;
+        this.highlightLayer = new GraphicsLayer();
+        this.highlightLayer.listMode = "hide";
+        this.highlightLayer.id = this.panelName + "_highlight";
+//        this.highlightLayer.title = this.highlightLayer.id;
+        this.highlightLayer.visible = true;
+
+        this.setHighlightRendering();
+
+        map.add(this.highlightLayer);
+      }
+
+      this.trackingLayer = null;
+      if (this.trackingSymbolInfo) {
+        // Add Graphics Layer for tracking icon
+        this.trackingLayer = new GraphicsLayer();
+        this.trackingLayer.listMode = "hide";
+        this.trackingLayer.id = this.panelName + "_Tracking";
+        this.trackingLayer.title = this.trackingLayer.id;
+        this.trackingLayer.visible = true;
+        var symbolArgs = this.trackingSymbolInfo.split(":");
+        this.trackingImageURL = symbolArgs[0];
+        this.trackingSymbol = new PictureMarkerSymbol(symbolArgs[0], symbolArgs[1], symbolArgs[2]);
+        this.trackingLayer.renderer = new SimpleRenderer(this.trackingSymbol);
+        map.add(this.trackingLayer);
+        this.playDir = 1;     // playback direction
+      }
+
+      // Skip if the widget doesn't get its data directly from a query
+      // e.g. PhotoPlaybackWidget, which uses a subset of the data from VideoPanelWidget
+      if (!this.noQuery) {
+        if (!this.orderByFields)
+          this.orderByFields = [];      // If orderByFields hasn't been specified in MapStuffWidget, then default to empty array
+        var subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
+        this.queryTask = new QueryTask(subLayerURL);
+        var q = new Query();
+        q.returnGeometry = true;
+        q.spatialRelationship = this.spatialRelationship;      //"contains";
+        q.orderByFields = this.orderByFields;
+        q.where = "";
+        this.query = q;
+      }
+    },
+
+    changeFeatureHandling: function() {
+      this.setClickableRendering();
+      this.setHighlightRendering();
+    },
 
 
-  setClickableSybolType: function() {
+  setClickableRendering: function() {
       if (this.clickableSymbolType === "text")
         this.clickableSymbol = new TextSymbol(this.clickableSymbolInfo);
       if (this.clickableSymbolType === "point")
@@ -246,7 +226,25 @@ define([
         this.clickableSymbol = new SimpleLineSymbol(this.clickableSymbolInfo);
       else if (this.clickableSymbolType === "polygon" || this.clickableSymbolType === "extent")
         this.clickableSymbol = new SimpleFillSymbol(this.clickableSymbolInfo);
+      this.clickableLayer.renderer = new SimpleRenderer(this.clickableSymbol);
     },
+
+
+    setHighlightRendering: function() {
+      if (!this.highlightSymbolInfo) {
+        this.highlightSymbol = this.clickableSymbol.clone();
+        // So far, the only ones that don't have separate highlightSymbolInfo are Points
+        this.highlightSymbol.color.a = 0;
+        this.highlightSymbol.outline.color = "red";     // For points, border of point symbol.  For polygons, border of polygon.
+        this.highlightSymbol.outline.width = "2px";
+        this.highlightSymbol.size = highlightSize;   // += 5;      // (For polygons, this is meaningless, but also harmless.)
+      } else {
+        if (this.highlightSymbolType === "polyline")
+          this.highlightSymbol = new SimpleLineSymbol(this.highlightSymbolInfo);
+      }
+      this.highlightLayer.renderer = new SimpleRenderer(this.highlightSymbol);
+    },
+
 
     makeFooterElements: function() {
       if (!this.footerPanel)
@@ -278,8 +276,8 @@ define([
       if (!this.tabInfo[index].calcFields)
         this.calcFields = null;
 
-      this.setClickableSybolType();
-      //this.setRenderer();
+      this.changeFeatureHandling();
+
       this.setHeaderItemVisibility();
       this.runQuery(view.extent);
 

@@ -17,6 +17,7 @@ var startBasemap = "oceans";
 var minVideoLOD = 12;
 var maxSZFeatures = 1000;    // get from query?     see UnitsPanelWidget, line 107, for an example.  Get value from  A.maxRecordCount
 var maxExtentWidth = 100;     // maximal extent in kilometers for video
+var highlightSize = 15;
 
 var aoosQueryBaseUrl = "https://servomatic9000.axiomalaska.com/spatial-imagery/alaska_shorezone/imageMetadata?callback=jQuery111107511455304335468_1552688607085&x={lon}&y={lat}&width=300&height=300&_=1552688607089";
 var aoosPhotosBaseUrl = "https://servomatic9000.axiomalaska.com/photo-server/";
@@ -512,7 +513,6 @@ function resetCurrentFeatures() {
   extentDependentWidgets.forEach(function(w, index, array) {
     w.clearGraphics();
   });
-  //locateIconLayer.removeAll();
   setContent("offlineAppPanel", download_notZoomedInEnoughContent);
   //getEl("offlineAppPanel").innerHTML = download_notZoomedInEnoughContent;
 }

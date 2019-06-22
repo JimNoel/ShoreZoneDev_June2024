@@ -1069,11 +1069,6 @@ define([
 
       view.hitTest(screenPoint).then(handleGraphicHits);
 
-      /* DEBUG:  Show position of returned ESRI toMap method
-      mapCursorLayer.removeAll();
-      var newFeature = new Graphic(geogPoint, mapCursorSymbol);
-      mapCursorLayer.add(newFeature);
-      */
     });
   }
 
