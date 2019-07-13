@@ -69,7 +69,7 @@ define([
         for (var f in this.calcFields) {
           var p =0;
           if (this.calcFields[f].afterField)
-            p = this.featureOutFields.indexOf(this.calcFields[f].afterField);     // Find insertion point for calculated field (default is 0)
+            p = fields.findIndex(obj => obj.name == this.calcFields[f].afterField);
           var newField = {
             name: this.calcFields[f].name,
             alias: this.calcFields[f].name,
@@ -285,6 +285,14 @@ define([
         getEl(this.displayDivName).innerHTML = "";      // clear the DIV
         if (this.noFeatures(features))
           return;
+
+/*
+        if (this.mapServiceSublayerVisibility) {
+          for (l in this.mapServiceSublayers) {
+            this.
+          }
+        }
+*/
 
         this.makeClickableGraphics(features);
         this.makeTable(fields, features);

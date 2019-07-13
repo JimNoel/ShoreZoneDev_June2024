@@ -63,7 +63,7 @@ define([
 ], function(declare, watchUtils, Map, View, MapImageLayer, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget,
-            Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom) {
+            Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection) {
 
     function addServiceLayers() {
     szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {"opacity" : 0.5});
@@ -222,11 +222,12 @@ define([
           { ddName: "Region",
             LayerNameAddOn: "",
             subLayerName: "Regions",
-            ddOutFields: ["Region", "RegionNumID", "Envelope"],
+            ddOutFields: ["Region", "RegionalID", "Envelope"],
             orderByFields: ["Region"],
             options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
             SelectedOption: "All",
-            whereField: "RegionNumID"
+            whereField: "RegionalID",
+            isAlpha: true
           }
         ],
         speciesTableInfo : {
@@ -241,9 +242,9 @@ define([
             popupTitle: "Shore Stations Region",
             LayerNameAddOn: 'Regions',
             parentAreaType: '',
-            visibleHeaderElements: ['ssTableHeaderTitle', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
+            visibleHeaderElements: ['ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
             featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
-            calcFields:  [{name: "SpTableBtn", afterField: "Region"}],
+            calcFields:  [{name: "SpTableBtn", afterField: "Region"}, {name: "SelRegionBtn", afterField: "SpTableBtn"}],
             specialFormatting: {      // Special HTML formatting for field values
               Envelope: {
                 title:  "",
@@ -271,6 +272,13 @@ define([
                 args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
                 html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
               },
+              SelRegionBtn: {
+                title:  "Stations",
+                colWidth:  20,
+                plugInFields: ["RegionalID", "Envelope"],
+                args: 'ssWidget,"{0}","{1}"',
+                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
+              }
             },
             idField: 'Region',
             subTableDD: "Region",
@@ -289,7 +297,7 @@ define([
             popupTitle: "Shore Stations Stations",
             LayerNameAddOn: 'Field Stations',
             parentAreaType: 'Regions',
-            visibleHeaderElements: ['ssTableHeaderTitle', 'ssCheckboxSpan_showFeatures'],
+            visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
             featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_"],
             //calcFields:  [{name: "SpTableBtn", afterField: "Region"}],
             specialFormatting: {      // Special HTML formatting for field values
@@ -507,6 +515,7 @@ define([
         displayDivName: "faContainer",
         disabledMsgDivName: "disabledMsg_fa",
         mapServiceLayer: faMapServiceLayer,
+        mapServiceSublayers: ["Regions", "Locales", "Sites"],
         dynamicLayerName: true,
         dropDownInfo: [
           { ddName: "Region",
@@ -604,6 +613,7 @@ define([
               style: "solid",
               width: "2px"
             },
+            mapServiceSublayerVisibility: [false, false, true]
             //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
           },
           {
@@ -1333,6 +1343,7 @@ define([
     view.ui.add(prevNextBtnsDiv, "top-right");
 
     savedExtentsWidget = new Bookmarks({
+      //bookmarks: new Collection(),      // In 4.12, needed to get past bug
       view: view
     });
     var savedExtentsExpand = new Expand({

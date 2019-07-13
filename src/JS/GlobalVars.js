@@ -745,7 +745,8 @@ var mapStuff;
 // For debug purposes
 function test() {
   //map.layers.reorder(labelsLayer, map.layers.items.length-1);
-  alert("This is a test.");
+  //alert("This is a test.");
+  alert("Website last modified on  " + document.lastModified);
 }
 
 
