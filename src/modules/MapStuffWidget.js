@@ -1168,6 +1168,17 @@ define([
 
     layerListWidget.listItemCreatedFunction = function(event) {
       event.item.open = true;
+
+/*
+      const item = event.item;
+      if (item.layer.type != "group") {
+        // don't show legend twice
+        item.panel = {
+          content: "legend",
+          open: true
+        };
+      }
+*/
 /*
       var item = event.item;
       if (item.layer.title === "Video Flightline") {

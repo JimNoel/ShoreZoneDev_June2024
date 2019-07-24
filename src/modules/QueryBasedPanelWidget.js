@@ -87,6 +87,7 @@ define([
       };
 
       this.displayPlayButton = function(e) {
+        // TODO:  Make the popup moveable?  (Example for 3.x using Dojo is at http://jsfiddle.net/goldenlimit/gaz8ao8n)
         //debug("displayPlayButton");
         var infoWin = view.popup;
         if (popupsDocked) {
