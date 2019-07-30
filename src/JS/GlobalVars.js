@@ -111,6 +111,7 @@ var videoSnippetDownloadFolder = altMediaServer + VIDEO_FOLDER + "midres_mp4";
 var youtubeAspectRatio = 16/9;
 var photoAspectRatio = 4/3;
 
+let serviceLayers = null;
 var extentDependentWidgets = [];
 var szVideoWidget = null;
 var szPhotoWidget = null;
@@ -121,6 +122,8 @@ var ssWidget = null;
 var ssSpTableWidget = null;
 var offLineLink = null;
 var gp = null;      // for Geoprocessor
+var layerListWidget;
+var legend = null;
 
 //  When a graphic is hovered over, these point to the graphic and the widget controlling the graphic
 var minHoverTime = 500;     // Minimum hover time (ms) over a graphic before a new popup opens up
@@ -533,8 +536,38 @@ function layerFirstAncestorName(mapService, layer ) {
   }
 }
 
+function getSublayerServiceName(sublayer) {
+  let l = sublayer;
+  while (l.parent !== null)
+    l = l.parent;
+  return l.title;
+}
 
-function queryServer(url, returnJson, responseHandler/*, pars*/) {
+function getDescendentLayer(layer, name) {
+  if (layer.title === name)
+    return layer;
+  if (layer.children !== null) {
+    let items = layer.children.items;
+    for (var i=0; i<items.length; i++) {
+      let l = getDescendentLayer(items[i], name);
+      if (l !== null)
+        return l;
+    }
+    return null;
+  }
+
+  let l = layer;
+  while (l.children !== null) {
+    let items = l.children.items;
+    for (var i=0; i<items.length; i++) {
+      if (items[i].title === name)
+        return items[i];
+    }
+  }
+  return null;
+}
+
+function queryServer(url, returnJson, responseHandler) {
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
@@ -549,6 +582,36 @@ function queryServer(url, returnJson, responseHandler/*, pars*/) {
     completeUrl += "?f=pjson"
   xmlhttp.open("GET", completeUrl, true);
   xmlhttp.send();
+}
+
+function getLegendHtml_allServices() {
+  getLegendHtml(serviceLayers[3]);
+}
+
+function getLegendHtml(serviceLayer) {
+  queryServer(serviceLayer.url + "/legend", true, function(R) {
+    for (let l=0; l<R.layers.length; l++) {
+      const layerInfo = R.layers[l];
+      const legendInfo = layerInfo.legend;
+      let theContent = '';
+      for (let row=0; row<legendInfo.length; row++) {
+        let rowInfo = legendInfo[row];
+        const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
+        const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
+        theContent += imgHtml + rowInfo.label + '<br>';
+      }
+
+
+      const llServiceIndex = layerListWidget.operationalItems.items.findIndex(obj => obj.title == this.title);
+      const llItems = layerListWidget.operationalItems.items[llServiceIndex];
+      let llItem = getDescendentLayer(llItems, layerInfo.layerName);
+      llItem.panel = {
+        content: makeHtmlElement("DIV",null,null,null,theContent),
+        open: true
+      };
+    }
+
+  }.bind(serviceLayer));
 }
 
 function makeSublayerIdTable(serviceUrl, idTable) {
@@ -746,10 +809,17 @@ var mapStuff;
 function test() {
   //map.layers.reorder(labelsLayer, map.layers.items.length-1);
   //alert("This is a test.");
+  for (var l=0; l<map.layers.items.length; l++)
+    console.log(map.layers.items[l].id);
+  const legendNode = legend.container;
+  const legendLabels = legendNode.getElementsByClassName("esri-legend__layer-caption");
   alert("Website last modified on  " + document.lastModified);
 }
 
-
+function logPoperties(obj) {
+  for (p in obj)
+    console.log(p + ":  " + (typeof obj[p]));
+}
 
 
 /* Unused functions

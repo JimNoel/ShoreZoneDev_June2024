@@ -19,7 +19,6 @@ siteTabs.sz = {};
 siteTabs.fa = {};
 siteTabs.ss = {};
 
-var layerListWidget;
 
 var mapLoading = false;
 
@@ -59,15 +58,16 @@ define([
   "esri/Graphic",
   "dojo/dom",
   "esri/core/Collection",
+  "esri/core/Accessor",
   "dojo/domReady!"
 ], function(declare, watchUtils, Map, View, MapImageLayer, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget,
-            Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection) {
+            Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
 
     function addServiceLayers() {
-    szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {"opacity" : 0.5});
-    szMapServiceLayer.when(function() {
+      szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {id: "szOpLayer", "opacity" : 0.5});
+      szMapServiceLayer.when(function() {
 
       szPhotoWidget = new PhotoPlaybackWidget({
         panelName: "szPhotosPanel",
@@ -193,10 +193,10 @@ define([
       /**/
 
     }, function(error){
-      debug("szMapServiceLayer failed to load:  " + error);
-    });
+        debug("szMapServiceLayer failed to load:  " + error);
+      });
 
-    ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {"opacity" : 0.5});
+    ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", "opacity" : 0.5});
     ssMapServiceLayer.when(function(resolvedVal) {
       console.log("Shore Station MapServiceLayer loaded.");
       ssMapServiceLayer.visible = false;
@@ -494,7 +494,7 @@ define([
       debug("Shore Station MapServiceLayer failed to load:  " + error);
     });
 
-    faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {"opacity" : 0.5});
+    faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", "opacity" : 0.5});
     faMapServiceLayer.when(function() {
       console.log("Fish Atlas MapServiceLayer loaded.");
       faMapServiceLayer.visible = false;
@@ -876,8 +876,9 @@ define([
       debug("Fish Atlas MapServiceLayer failed to load:  " + error);
     });
 
-    sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURL, {"opacity" : 0.5});
-    // *** end Map layer definitions ***
+    sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURL, {id: "sslOpLayer", "opacity" : 0.5});
+
+    serviceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
   }
 
 
@@ -1158,19 +1159,60 @@ define([
     // NOTE:  To prevent a layer from appearing in the LayerList, set the layer's "listMode" property to "hide"
     layerListWidget = new LayerList({
       //    container: "layerListDom",
-      container: makeWidgetDiv("layerListDiv"),     // document.createElement("div"),
+      container: makeWidgetDiv("layerListDiv"),
       view: view
     });
-
-    // layerListWidget.watch("operationalItems", function() {
-    //   alert("operationalItems changed");
-    // });
-
-    layerListWidget.listItemCreatedFunction = function(event) {
-      event.item.open = true;
+// TODO:  Get "legendDiv" element and extract legend elements
+/*
+     layerListWidget.watch("operationalItems", function() {
+       alert("operationalItems changed");
+     });
+*/
+/*
+    layerListWidget.when(function() {
+      console.log("layerListWidget loaded");
+    });
+*/
 
 /*
+    layerListWidget.postInitialize = function(event) {
+      console.log("layerListWidget initialized");
+    };
+*/
+
+    layerListWidget.listItemCreatedFunction = function(event) {
       const item = event.item;
+
+/*
+      if (item.title === "1s") {
+        item.visible = false;
+        return;
+      }
+*/
+      //logPoperties(item);
+
+      item.open = true;
+/*
+      item.layer.when(function() {
+        console.log(this.title);
+      });
+*/
+      let theContent = /*getSublayerServiceName(item.layer) + */"_" + item.title;
+
+      /*
+              if (item.title === "10s")
+                item.open = false;
+      */
+      // TODO:  Results of getLegendHtml function fills content (need unique IDs for each)
+/*
+      if (item.children.items.length === 0)
+        item.panel = {
+          content: makeHtmlElement("DIV",null,null,null,theContent),
+          open: true
+        };
+*/
+
+/*
       if (item.layer.type != "group") {
         // don't show legend twice
         item.panel = {
@@ -1221,18 +1263,70 @@ define([
     }
 */
 
+    // ESRI Legend widget.  This goes in the "legendDom" DIV, rather than the map
+    //var legendDom = document.createElement("div");
+    //legendDom.style.backgroundColor = "blueviolet";     //.className = "noaaWidget";
+    legend = new Legend({
+      container: makeWidgetDiv("legendDiv", "right"),     // "legendDom",
+      draggable: true,
+      view: view,
+      //declaredClass: "noaaWidget",
+      layerInfos: [
+        //{layer: szMapServiceLayer.sublayers.items[6], title: "stuff" }
+        { layer: szMapServiceLayer, title: "ShoreZone layers" },
+        { layer: faMapServiceLayer, title: "Fish Atlas layers" },
+        { layer: ssMapServiceLayer, title: "Shore Station layers" },
+        { layer: sslMapServiceLayer, title: "SSL layers" }
+      ]
+    });
+
+/*
+    // place the Legend in an Expand widget
+    var legendExpand = new Expand({
+      view: view,
+      content: wrapperWithOpacitySlider(legend.domNode, "Legend"),
+      expandIconClass: "esri-icon-layers",
+      expandTooltip: "Click here to see the legend",
+      collapseTooltip: "Hide legend",
+      expanded: false      // PUB: set to true
+    });
+    view.ui.add(legendExpand, "top-right");
+*/
+
+    /*
+        function newLegendCallBack (newValue, oldValue, property, object) {
+          console.log("New value: ", newValue,
+            "<br>Old value: ", oldValue,
+            "<br>Watched property: ", property,
+            "<br>Watched object: ", object);
+        };
+        var handle = map.watch('legend.content', newLegendCallBack);
+    */
+
+
+
+    var LLandLegendDiv = makeHtmlElement("DIV", null, null, "width: 600px");
+    var llWrapper = makeHtmlElement("DIV",null,null,"position: absolute; left: 0; width: 50%");
+    LLandLegendDiv.appendChild(llWrapper);
+    llWrapper.appendChild(layerListWidget.domNode);
+    var legendWrapper = makeHtmlElement("DIV",null,null,"position: absolute; left: 50%; width: 50%");
+    LLandLegendDiv.appendChild(legendWrapper);
+    legendWrapper.appendChild(legend.domNode);
+
 
     // place the LayerList in an Expand widget
     var llExpand = new Expand({
       view: view,
-      content: wrapperWithOpacitySlider(layerListWidget.domNode, "Layers"),
+      content: wrapperWithOpacitySlider(/*layerListWidget.domNode*/LLandLegendDiv, "Layers"),     //getEl("mapLayerListDiv_content"),    //
       expandIconClass: "esri-icon-layer-list",
       expandTooltip: "Click here to view and select layers",
       collapseTooltip: "Hide layer list",
-      expanded: false      // PUB: set to true
+      expanded: true      // PUB: set to true
     });
     view.ui.add({ component: llExpand, position: "top-left", index: 0});
     /**/
+
+    setTimeout(getLegendHtml_allServices, 1000);
 
     function drag_start(event) {
       var style = window.getComputedStyle(event.target, null);
@@ -1258,34 +1352,6 @@ define([
     view.container.ondrop = drop;
     //view.popup.container.ondragover = panel_drag_over;
     //view.popup.container.ondrop = panel_drop;
-
-
-    // ESRI Legend widget.  This goes in the "legendDom" DIV, rather than the map
-    //var legendDom = document.createElement("div");
-    //legendDom.style.backgroundColor = "blueviolet";     //.className = "noaaWidget";
-    var legend = new Legend({
-      container: makeWidgetDiv("legendDiv", "right"),     // "legendDom",
-      draggable: true,
-      view: view,
-      //declaredClass: "noaaWidget",
-      layerInfos: [
-        { layer: szMapServiceLayer, title: "ShoreZone layers" },
-        { layer: faMapServiceLayer, title: "Fish Atlas layers" },
-        { layer: ssMapServiceLayer, title: "Shore Station layers" },
-        { layer: sslMapServiceLayer, title: "SSL layers" }
-      ]
-    });
-
-        // place the Legend in an Expand widget
-        var legendExpand = new Expand({
-          view: view,
-          content: wrapperWithOpacitySlider(legend.domNode, "Legend"),
-          expandIconClass: "esri-icon-layers",
-          expandTooltip: "Click here to see the legend",
-          collapseTooltip: "Hide legend",
-          expanded: false      // PUB: set to true
-        });
-        view.ui.add(legendExpand, "top-right");
 
 
 
@@ -1384,6 +1450,29 @@ define([
   };
 
   function initMap() {
+
+/*
+    var jnColor = Accessor.createSubclass({
+      declaredClass: "esri.guide.Color",
+      constructor: function() {
+        this.r = 255;
+        this.g = 255;
+        this.b = 255;
+        this.a = 1;
+      },
+      properties: {
+        r: {},
+        g: {},
+        b: {},
+        a: {}
+      }
+    });
+    jnColor.watch("visible", function() {
+      alert("jnColor changed!");
+    });
+    jnColor.r = 100;
+*/
+
     gp = new Geoprocessor(gpUrl);
 
     addServiceLayers();
@@ -1391,7 +1480,7 @@ define([
     map = new Map({
       basemap: "hybrid",
       //ground: "world-elevation",      // Used only with SceneView
-      layers:  [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer]
+      layers: serviceLayers     //  [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer]
     });
 
     view = new View({
