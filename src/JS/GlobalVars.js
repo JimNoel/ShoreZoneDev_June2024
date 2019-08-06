@@ -124,6 +124,7 @@ var offLineLink = null;
 var gp = null;      // for Geoprocessor
 var layerListWidget;
 var legend = null;
+var legendInfo = {};
 
 //  When a graphic is hovered over, these point to the graphic and the widget controlling the graphic
 var minHoverTime = 500;     // Minimum hover time (ms) over a graphic before a new popup opens up
@@ -584,6 +585,7 @@ function queryServer(url, returnJson, responseHandler) {
   xmlhttp.send();
 }
 
+/*
 function getLegendHtml_allServices() {
   getLegendHtml(serviceLayers[3]);
 }
@@ -613,6 +615,7 @@ function getLegendHtml(serviceLayer) {
 
   }.bind(serviceLayer));
 }
+*/
 
 function makeSublayerIdTable(serviceUrl, idTable) {
   queryServer(serviceUrl, true, function(R) {

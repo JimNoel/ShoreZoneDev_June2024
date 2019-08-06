@@ -305,11 +305,19 @@
       });
 
       function splitterDragHandler(e) {
-        if (e.buttons === 1)
+        if (e.buttons === 1) {
+          resizeWidgets();
           resizeMedia();
+        }
+      }
+
+      function resizeWidgets() {
+        layerListWidget.container.style.maxHeight = (mapDiv.offsetHeight - 100) + "px";
       }
 
       function resizeMedia() {
+        if (!youtube_player)
+          return;
         var vDims = mediaDimensions("videoDiv", youtubeAspectRatio);
         youtube_player.setSize(vDims.width, vDims.height);
         var pDims = mediaDimensions("photoDiv", photoAspectRatio);

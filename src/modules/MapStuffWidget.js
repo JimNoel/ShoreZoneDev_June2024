@@ -1119,9 +1119,33 @@ define([
   function clearAllHoverGraphics() {
   }
 
+  function getLegendHtml_allServices() {
+    getLegendHtml_old(serviceLayers[3]);
+  }
+
+  function getLegendHtml_old(serviceLayer) {
+    queryServer(serviceLayer.url + "/legend", true, function(R) {
+      legendInfo = R.layers;
+      addMapWidgets();
+    }.bind(serviceLayer));
+  }
+
+  function getLegendHtml(n) {
+    if (n === serviceLayers.length) {
+      addMapWidgets();
+      return;
+    };
+    const serviceLayer = serviceLayers[n];
+    queryServer(serviceLayer.url + "/legend", true, function(R) {
+      legendInfo[this.title] = R.layers;
+      getLegendHtml(n+1);
+    }.bind(serviceLayer));
+  }
+
+
   function addMapWidgets() {
 
-    function makeWidgetDiv(divID, placement) {
+    function makeWidgetDiv(divID, placement, maxHeight) {
       if (placement === undefined)
         placement = "";
       var newDiv = document.createElement("div");
@@ -1133,6 +1157,7 @@ define([
         newDiv.style.right = "5px";
       newDiv.draggable = true;
       newDiv.ondragstart = drag_start;
+      newDiv.style.maxHeight = maxHeight;
       return newDiv;
     }
 
@@ -1159,84 +1184,43 @@ define([
     // NOTE:  To prevent a layer from appearing in the LayerList, set the layer's "listMode" property to "hide"
     layerListWidget = new LayerList({
       //    container: "layerListDom",
-      container: makeWidgetDiv("layerListDiv"),
+      container: makeWidgetDiv("layerListDiv","",(mapDiv.offsetHeight - 100) + "px"),     // Set max height of LayerListWidget to mapDiv height - 100
       view: view
     });
-// TODO:  Get "legendDiv" element and extract legend elements
-/*
-     layerListWidget.watch("operationalItems", function() {
-       alert("operationalItems changed");
-     });
-*/
-/*
-    layerListWidget.when(function() {
-      console.log("layerListWidget loaded");
-    });
-*/
 
-/*
-    layerListWidget.postInitialize = function(event) {
-      console.log("layerListWidget initialized");
-    };
-*/
 
     layerListWidget.listItemCreatedFunction = function(event) {
       const item = event.item;
-
-/*
-      if (item.title === "1s") {
-        item.visible = false;
-        return;
-      }
-*/
-      //logPoperties(item);
-
       item.open = true;
-/*
-      item.layer.when(function() {
-        console.log(this.title);
-      });
-*/
-      let theContent = /*getSublayerServiceName(item.layer) + */"_" + item.title;
-
-      /*
-              if (item.title === "10s")
-                item.open = false;
-      */
-      // TODO:  Results of getLegendHtml function fills content (need unique IDs for each)
-/*
-      if (item.children.items.length === 0)
-        item.panel = {
-          content: makeHtmlElement("DIV",null,null,null,theContent),
-          open: true
-        };
-*/
-
-/*
-      if (item.layer.type != "group") {
-        // don't show legend twice
-        item.panel = {
-          content: "legend",
-          open: true
-        };
+      const serviceName = getSublayerServiceName(item);
+      const layerId = item.layer.id;
+      if (serviceName === "ShoreZone") {
+        const l = legendInfo.findIndex(obj => obj.layerId === layerId );
+        if (l !== -1) {
+          const lInfo = legendInfo[l].legend;
+          let theContent = '';
+          for (let row=0; row<lInfo.length; row++) {
+            let rowInfo = lInfo[row];
+            const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
+            const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
+            theContent += imgHtml + rowInfo.label + '<br>';
+          }
+          item.panel = {
+            content: makeHtmlElement("DIV",null,null,null,theContent),
+            open: (item.visible /*&& item.visibleAtCurrentScale*/)
+          };
+          item.watch("visible", function() {
+            item.panel.open = item.visible;
+          });
+        }
       }
-*/
+
 /*
       var item = event.item;
       if (item.layer.title === "Video Flightline") {
         item.layer.listMode = "hide-children";
       }
-      if (item.layer.parent.title === undefined) {
-      //if (!item.layer.allSublayers) {
-        var leafLegend = new Legend({
-          view: view,
-          layerInfos: [{ layer: item.layer, title: "" }]
-        })
-        item.panel = {
-          content: /!*leafLegend,*!/         "legend",
-          open: true
-        };
-      }
+
       //  NOT SURE WHAT THIS WAS FOR?
       if (event.item.layer.title === "Derived ShoreZone Attributes")
         event.item.layer.visible = false;     // turn off layer display
@@ -1245,79 +1229,10 @@ define([
 */
     };
 
-
-/*  //OBS?
-//  Function to expand/collapse all nodes of the LayerList
-//   expands if expand=true, otherwise collapses
-    function layerList_ExpandAll(expand) {
-      //alert(layerListWidget.operationalItems.items[0].children.items[10].visible);
-      var ctSpans = document.getElementsByClassName("esri-layer-list__child-toggle");
-      if (ctSpans.length > 0) {
-        for (var i = 0; i < ctSpans.length; i++)
-          if (ctSpans[i].hasOwnProperty("data-item")) {
-            if (ctSpans[i]["data-item"].open)     // If root node already expanded, assume the rest is also expanded, and exit function
-              return;
-            ctSpans[i]["data-item"].open = expand;
-          }
-      }
-    }
-*/
-
-    // ESRI Legend widget.  This goes in the "legendDom" DIV, rather than the map
-    //var legendDom = document.createElement("div");
-    //legendDom.style.backgroundColor = "blueviolet";     //.className = "noaaWidget";
-    legend = new Legend({
-      container: makeWidgetDiv("legendDiv", "right"),     // "legendDom",
-      draggable: true,
-      view: view,
-      //declaredClass: "noaaWidget",
-      layerInfos: [
-        //{layer: szMapServiceLayer.sublayers.items[6], title: "stuff" }
-        { layer: szMapServiceLayer, title: "ShoreZone layers" },
-        { layer: faMapServiceLayer, title: "Fish Atlas layers" },
-        { layer: ssMapServiceLayer, title: "Shore Station layers" },
-        { layer: sslMapServiceLayer, title: "SSL layers" }
-      ]
-    });
-
-/*
-    // place the Legend in an Expand widget
-    var legendExpand = new Expand({
-      view: view,
-      content: wrapperWithOpacitySlider(legend.domNode, "Legend"),
-      expandIconClass: "esri-icon-layers",
-      expandTooltip: "Click here to see the legend",
-      collapseTooltip: "Hide legend",
-      expanded: false      // PUB: set to true
-    });
-    view.ui.add(legendExpand, "top-right");
-*/
-
-    /*
-        function newLegendCallBack (newValue, oldValue, property, object) {
-          console.log("New value: ", newValue,
-            "<br>Old value: ", oldValue,
-            "<br>Watched property: ", property,
-            "<br>Watched object: ", object);
-        };
-        var handle = map.watch('legend.content', newLegendCallBack);
-    */
-
-
-
-    var LLandLegendDiv = makeHtmlElement("DIV", null, null, "width: 600px");
-    var llWrapper = makeHtmlElement("DIV",null,null,"position: absolute; left: 0; width: 50%");
-    LLandLegendDiv.appendChild(llWrapper);
-    llWrapper.appendChild(layerListWidget.domNode);
-    var legendWrapper = makeHtmlElement("DIV",null,null,"position: absolute; left: 50%; width: 50%");
-    LLandLegendDiv.appendChild(legendWrapper);
-    legendWrapper.appendChild(legend.domNode);
-
-
     // place the LayerList in an Expand widget
     var llExpand = new Expand({
       view: view,
-      content: wrapperWithOpacitySlider(/*layerListWidget.domNode*/LLandLegendDiv, "Layers"),     //getEl("mapLayerListDiv_content"),    //
+      content: wrapperWithOpacitySlider(layerListWidget.domNode, "Layers"),
       expandIconClass: "esri-icon-layer-list",
       expandTooltip: "Click here to view and select layers",
       collapseTooltip: "Hide layer list",
@@ -1326,7 +1241,37 @@ define([
     view.ui.add({ component: llExpand, position: "top-left", index: 0});
     /**/
 
-    setTimeout(getLegendHtml_allServices, 1000);
+
+
+    /*
+        // (DISABLED) ESRI Legend widget.  This goes in the "legendDom" DIV, rather than the map
+        //var legendDom = document.createElement("div");
+        //legendDom.style.backgroundColor = "blueviolet";     //.className = "noaaWidget";
+        legend = new Legend({
+          container: makeWidgetDiv("legendDiv", "right"),     // "legendDom",
+          draggable: true,
+          view: view,
+          //declaredClass: "noaaWidget",
+          layerInfos: [
+            //{layer: szMapServiceLayer.sublayers.items[6], title: "stuff" }
+            { layer: szMapServiceLayer, title: "ShoreZone layers" },
+            { layer: faMapServiceLayer, title: "Fish Atlas layers" },
+            { layer: ssMapServiceLayer, title: "Shore Station layers" },
+            { layer: sslMapServiceLayer, title: "SSL layers" }
+          ]
+        });
+
+        // place the Legend in an Expand widget
+        var legendExpand = new Expand({
+          view: view,
+          content: wrapperWithOpacitySlider(legend.domNode, "Legend"),
+          expandIconClass: "esri-icon-layers",
+          expandTooltip: "Click here to see the legend",
+          collapseTooltip: "Hide legend",
+          expanded: false      // PUB: set to true
+        });
+        view.ui.add(legendExpand, "top-right");
+    */
 
     function drag_start(event) {
       var style = window.getComputedStyle(event.target, null);
@@ -1495,7 +1440,9 @@ define([
     });
 
     addMapWatchers();
-    addMapWidgets();
+
+    getLegendHtml_allServices();
+    //getLegendHtml(0);
 
     // This graphics layer will store the graphic used to display the user's location
     locateIconLayer = new GraphicsLayer();
