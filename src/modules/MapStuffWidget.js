@@ -1119,20 +1119,9 @@ define([
   function clearAllHoverGraphics() {
   }
 
-  function getLegendHtml_allServices() {
-    getLegendHtml_old(serviceLayers[3]);
-  }
-
-  function getLegendHtml_old(serviceLayer) {
-    queryServer(serviceLayer.url + "/legend", true, function(R) {
-      legendInfo = R.layers;
-      addMapWidgets();
-    }.bind(serviceLayer));
-  }
-
   function getLegendHtml(n) {
     if (n === serviceLayers.length) {
-      addMapWidgets();
+      makeLayerListWidget();
       return;
     };
     const serviceLayer = serviceLayers[n];
@@ -1142,44 +1131,61 @@ define([
     }.bind(serviceLayer));
   }
 
+  function makeWidgetDiv(divID, placement, maxHeight) {
+    if (placement === undefined)
+      placement = "";
+    var newDiv = document.createElement("div");
+    newDiv.id = divID;
+    newDiv.style.position = "absolute";
+    if (placement==="bottom")
+      newDiv.style.bottom = "5px";
+    if (placement==="right")
+      newDiv.style.right = "5px";
+    newDiv.draggable = true;
+    newDiv.ondragstart = drag_start;
+    newDiv.style.maxHeight = maxHeight;
+    return newDiv;
+  }
 
-  function addMapWidgets() {
+  function drag_start(event) {
+    var style = window.getComputedStyle(event.target, null);
+    var str = (parseInt(style.getPropertyValue("left")) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top")) - event.clientY)+ ',' + event.target.id;
+    event.dataTransfer.setData("Text",str);
+  }
 
-    function makeWidgetDiv(divID, placement, maxHeight) {
-      if (placement === undefined)
-        placement = "";
-      var newDiv = document.createElement("div");
-      newDiv.id = divID;
-      newDiv.style.position = "absolute";
-      if (placement==="bottom")
-        newDiv.style.bottom = "5px";
-      if (placement==="right")
-        newDiv.style.right = "5px";
-      newDiv.draggable = true;
-      newDiv.ondragstart = drag_start;
-      newDiv.style.maxHeight = maxHeight;
-      return newDiv;
-    }
+  function drop(event) {
+    var offset = event.dataTransfer.getData("Text").split(',');
+    var dm = getEl(offset[2]);
+    dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
+    dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
+    event.preventDefault();
+    return false;
+  }
 
-    function wrapperWithOpacitySlider(divNode, title) {
-      // Inserts a panel (divNode) into a wrapper DIV with a slider controlling the panel's opacity
-      // Returns a handle to the new wrapper DIV
-      var divID = divNode.id;
-      var newDiv = document.createElement("div");
-      newDiv.id = divID + "_wrapper";
-      var sliderDiv = document.createElement("div")
-      sliderDiv.innerHTML = '<input type="range" value="90" oninput="sliderHandler(\'' + divID + '\')" id="' + divID + '_slider" >';
-      sliderDiv.innerHTML += '<label style="position: absolute; top: 5px; left:20px; color: #76766e">' + title + '</label>';
-      var contentDiv = document.createElement("div")
-      contentDiv.id = divID + "_content";
-      contentDiv.appendChild(divNode);
-      newDiv.appendChild(sliderDiv);
-      newDiv.appendChild(contentDiv);
-      return newDiv;
-    }
+  function drag_over(event) {
+    event.preventDefault();
+    return false;
+  }
 
-//*  Remove one of the slashes to the left to temporarily disable LAYERLIST
+  function wrapperWithOpacitySlider(divNode, title) {
+    // Inserts a panel (divNode) into a wrapper DIV with a slider controlling the panel's opacity
+    // Returns a handle to the new wrapper DIV
+    var divID = divNode.id;
+    var newDiv = document.createElement("div");
+    newDiv.id = divID + "_wrapper";
+    var sliderDiv = document.createElement("div")
+    sliderDiv.innerHTML = '<input type="range" value="90" oninput="sliderHandler(\'' + divID + '\')" id="' + divID + '_slider" >';
+    sliderDiv.innerHTML += '<label style="position: absolute; top: 5px; left:20px; color: #76766e">' + title + '</label>';
+    var contentDiv = document.createElement("div")
+    contentDiv.id = divID + "_content";
+    contentDiv.appendChild(divNode);
+    newDiv.appendChild(sliderDiv);
+    newDiv.appendChild(contentDiv);
+    return newDiv;
+  }
 
+
+  function makeLayerListWidget() {
     // Add ESRI LayerList widget.  This goes in the "layerListDom" DIV, rather than the map
     // NOTE:  To prevent a layer from appearing in the LayerList, set the layer's "listMode" property to "hide"
     layerListWidget = new LayerList({
@@ -1194,45 +1200,58 @@ define([
       item.open = true;
       const serviceName = getSublayerServiceName(item);
       const layerId = item.layer.id;
-      if (serviceName === "ShoreZone") {
-        const l = legendInfo.findIndex(obj => obj.layerId === layerId );
-        if (l !== -1) {
-          const lInfo = legendInfo[l].legend;
-          let theContent = '';
-          for (let row=0; row<lInfo.length; row++) {
-            let rowInfo = lInfo[row];
-            const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
-            const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
-            theContent += imgHtml + rowInfo.label + '<br>';
-          }
-          item.panel = {
-            content: makeHtmlElement("DIV",null,null,null,theContent),
-            open: (item.visible /*&& item.visibleAtCurrentScale*/)
-          };
-          item.watch("visible", function() {
-            item.panel.open = item.visible;
-          });
+      const svcLegendInfo = legendInfo[serviceName];
+      const l = svcLegendInfo.findIndex(obj => obj.layerId === layerId );
+      if (l !== -1) {
+        const lInfo = svcLegendInfo[l].legend;
+        let theContent = '';
+        for (let row=0; row<lInfo.length; row++) {
+          let rowInfo = lInfo[row];
+          const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
+          const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
+          theContent += imgHtml + rowInfo.label + '<br>';
         }
+        item.panel = {
+          content: makeHtmlElement("DIV",null,null,null,theContent),
+          open: (item.visible && item.visibleAtCurrentScale)
+        };
+        item.watch("visible", function() {
+          item.panel.open = (item.visible && item.visibleAtCurrentScale);
+        });
+        item.watch("visibleAtCurrentScale", function() {
+          item.panel.open = (item.visible && item.visibleAtCurrentScale);
+        });
       }
 
-/*
-      var item = event.item;
-      if (item.layer.title === "Video Flightline") {
-        item.layer.listMode = "hide-children";
-      }
+      /*
+            var item = event.item;
+            if (item.layer.title === "Video Flightline") {
+              item.layer.listMode = "hide-children";
+            }
 
-      //  NOT SURE WHAT THIS WAS FOR?
-      if (event.item.layer.title === "Derived ShoreZone Attributes")
-        event.item.layer.visible = false;     // turn off layer display
-      if (event.item.layer.title === "Video Flightline")
-        event.item.visible = false;
-*/
+            //  NOT SURE WHAT THIS WAS FOR?
+            if (event.item.layer.title === "Derived ShoreZone Attributes")
+              event.item.layer.visible = false;     // turn off layer display
+            if (event.item.layer.title === "Video Flightline")
+              event.item.visible = false;
+      */
     };
 
+    llExpand.content = wrapperWithOpacitySlider(layerListWidget.domNode, "Layers");
+  }
+
+
+  function addMapWidgets() {
+
+    view.container.ondragover = drag_over;
+    view.container.ondrop = drop;
+
+    //makeLayerListWidget();
+
     // place the LayerList in an Expand widget
-    var llExpand = new Expand({
+    llExpand = new Expand({
       view: view,
-      content: wrapperWithOpacitySlider(layerListWidget.domNode, "Layers"),
+      //content: wrapperWithOpacitySlider(layerListWidget.domNode, "Layers"),
       expandIconClass: "esri-icon-layer-list",
       expandTooltip: "Click here to view and select layers",
       collapseTooltip: "Hide layer list",
@@ -1272,31 +1291,6 @@ define([
         });
         view.ui.add(legendExpand, "top-right");
     */
-
-    function drag_start(event) {
-      var style = window.getComputedStyle(event.target, null);
-      var str = (parseInt(style.getPropertyValue("left")) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top")) - event.clientY)+ ',' + event.target.id;
-      event.dataTransfer.setData("Text",str);
-    }
-
-    function drop(event) {
-      var offset = event.dataTransfer.getData("Text").split(',');
-      var dm = getEl(offset[2]);
-      dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
-      dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
-      event.preventDefault();
-      return false;
-    }
-
-    function drag_over(event) {
-      event.preventDefault();
-      return false;
-    }
-
-    view.container.ondragover = drag_over;
-    view.container.ondrop = drop;
-    //view.popup.container.ondragover = panel_drag_over;
-    //view.popup.container.ondrop = panel_drop;
 
 
 
@@ -1440,9 +1434,9 @@ define([
     });
 
     addMapWatchers();
+    addMapWidgets();
 
-    getLegendHtml_allServices();
-    //getLegendHtml(0);
+    getLegendHtml(0);
 
     // This graphics layer will store the graphic used to display the user's location
     locateIconLayer = new GraphicsLayer();
