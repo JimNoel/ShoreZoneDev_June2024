@@ -779,12 +779,6 @@ var mapStuff;
 
 // For debug purposes
 function test() {
-  //map.layers.reorder(labelsLayer, map.layers.items.length-1);
-  //alert("This is a test.");
-  for (var l=0; l<map.layers.items.length; l++)
-    console.log(map.layers.items[l].id);
-  const legendNode = legend.container;
-  const legendLabels = legendNode.getElementsByClassName("esri-legend__layer-caption");
   alert("Website last modified on  " + document.lastModified);
 }
 

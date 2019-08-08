@@ -1197,7 +1197,15 @@ define([
 
     layerListWidget.listItemCreatedFunction = function(event) {
       const item = event.item;
-      item.open = true;
+
+      // This option collapses groups when nothing under them is visible at the current extent
+      item.open = item.visibleAtCurrentScale;
+      item.watch("visibleAtCurrentScale", function() {
+        item.open = item.visibleAtCurrentScale;
+        if (item.panel)
+          item.panel.open = (item.visible && item.visibleAtCurrentScale);
+      });
+
       const serviceName = getSublayerServiceName(item);
       const layerId = item.layer.id;
       const svcLegendInfo = legendInfo[serviceName];
@@ -1216,9 +1224,6 @@ define([
           open: (item.visible && item.visibleAtCurrentScale)
         };
         item.watch("visible", function() {
-          item.panel.open = (item.visible && item.visibleAtCurrentScale);
-        });
-        item.watch("visibleAtCurrentScale", function() {
           item.panel.open = (item.visible && item.visibleAtCurrentScale);
         });
       }
