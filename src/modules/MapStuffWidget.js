@@ -1209,18 +1209,37 @@ define([
       const serviceName = getSublayerServiceName(item);
       const layerId = item.layer.id;
       const svcLegendInfo = legendInfo[serviceName];
+      let legendDivId = null;
       const l = svcLegendInfo.findIndex(obj => obj.layerId === layerId );
       if (l !== -1) {
-        const lInfo = svcLegendInfo[l].legend;
-        let theContent = '';
-        for (let row=0; row<lInfo.length; row++) {
-          let rowInfo = lInfo[row];
-          const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
-          const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
-          theContent += imgHtml + rowInfo.label + '<br>';
+        const lTitle = svcLegendInfo[l].layerName;
+        let fInfo = null;
+        const f = legendFilters.findIndex(obj => obj.layerTitle === lTitle);
+        if (f !== -1) {
+          fInfo = legendFilters[f];
+          legendDivId = 'swatch_'  + serviceName + '_' + fInfo.fieldName;
         }
+          const lInfo = svcLegendInfo[l].legend;
+          let theContent = '';
+          for (let row=0; row<lInfo.length; row++) {
+            let rowInfo = lInfo[row];
+            const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
+            const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
+            let idInsert = '';
+            if (f !== -1) {
+              let value = rowInfo.label;
+              if (fInfo.delimiter)
+                value = value.split(fInfo.delimiter)[0];
+              if (rowInfo.label !== '') {
+                const swatchId = legendDivId + '_' + value;
+                idInsert = ' id="' + swatchId + '"';
+              }
+            }
+            theContent += '<div' + idInsert + '>' + imgHtml + rowInfo.label + '</div>';     // + '<br>';
+          }
+        //}
         item.panel = {
-          content: makeHtmlElement("DIV",null,null,null,theContent),
+          content: makeHtmlElement("DIV",legendDivId,null,null,theContent),
           open: (item.visible && item.visibleAtCurrentScale)
         };
         item.watch("visible", function() {

@@ -64,6 +64,7 @@ define([
         // Create a dGrid table from returned data
         var tableColumns = [];
         var nonNullCount = new Object();
+        var nonNullList = new Object();       //JN0808:  Lists of unique values found
         var columnStyleCSS = "";
 
         for (var f in this.calcFields) {
@@ -101,6 +102,7 @@ define([
 
           columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
           nonNullCount[fields[i].name] = 0;
+          nonNullList[fields[i].name] = [];     //JN0808:  Lists of unique values found
         }
 
         // Create style-sheet for columns
@@ -140,6 +142,12 @@ define([
               }
               if (features[i].attributes[a]) {
                 nonNullCount[a] += 1;
+                const f = legendFilters.findIndex(obj => obj.fieldName === a);
+                if (f !== -1) {
+                  const v = features[i].attributes[a];
+                  if (!nonNullList[a].includes(v))
+                    nonNullList[a].push(v);
+                }
               }
           }
 
@@ -152,6 +160,9 @@ define([
 
           tableData.push(features[i].attributes);
         }
+
+        filterLegend(this.mapServiceLayer.title, nonNullList);
+
         this.store = new (declare([Memory, Trackable]))({
           data: tableData
         });

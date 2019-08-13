@@ -59,7 +59,30 @@ var locateIconLayer;     // GraphicsLayer for displaying user location.  Used by
 var layoutCode = "h2";     // default layout
 var initTab = "szTab";
 
-//var mapStuff;
+const legendFilters = [
+  {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","}
+];
+
+function filterLegend(serviceName, nonNullList) {
+  for (f of legendFilters)
+    if (f.serviceName === serviceName) {
+      let pId = "swatch_" + f.serviceName + "_" + f.fieldName;
+      let pDiv = getEl(pId);
+      for (d of pDiv.children) {
+        d.style.display = "none";
+        //setVisible(d, false);
+      }
+      for (v in nonNullList) {
+        if (nonNullList[v].length > 0) {
+          for  (f of nonNullList[v]) {
+            let d = getEl(pId + "_" + f);
+            d.style.display = "inline";
+          }
+        }
+      }
+    }
+}
+
 
 //* process site parameters
 var siteParsJSON = location.search.slice(1);
@@ -773,6 +796,7 @@ function formatNumber_Date(num) {
   var dateStr = new Date(num).toDateString();
   return dateStr.split(" ").slice(1).join(" ");
 }
+
 
 
 var mapStuff;
