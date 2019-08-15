@@ -196,7 +196,7 @@ define([
         debug("szMapServiceLayer failed to load:  " + error);
       });
 
-    ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", "opacity" : 0.5});
+    ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 0.5, listMode: "hide"});
     ssMapServiceLayer.when(function(resolvedVal) {
       console.log("Shore Station MapServiceLayer loaded.");
       ssMapServiceLayer.visible = false;
@@ -494,7 +494,7 @@ define([
       debug("Shore Station MapServiceLayer failed to load:  " + error);
     });
 
-    faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", "opacity" : 0.5});
+    faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "hide"});
     faMapServiceLayer.when(function() {
       console.log("Fish Atlas MapServiceLayer loaded.");
       faMapServiceLayer.visible = false;
@@ -1131,11 +1131,13 @@ define([
     }.bind(serviceLayer));
   }
 
-  function makeWidgetDiv(divID, placement, maxHeight) {
+  function makeWidgetDiv(divID, placement, maxHeight, theClass) {
     if (placement === undefined)
       placement = "";
     var newDiv = document.createElement("div");
     newDiv.id = divID;
+    if (theClass)
+      newDiv.setAttribute("class", theClass);
     newDiv.style.position = "absolute";
     if (placement==="bottom")
       newDiv.style.bottom = "5px";
@@ -1190,7 +1192,7 @@ define([
     // NOTE:  To prevent a layer from appearing in the LayerList, set the layer's "listMode" property to "hide"
     layerListWidget = new LayerList({
       //    container: "layerListDom",
-      container: makeWidgetDiv("layerListDiv","",(mapDiv.offsetHeight - 100) + "px"),     // Set max height of LayerListWidget to mapDiv height - 100
+      container: makeWidgetDiv("layerListDiv","",(mapDiv.offsetHeight - 100) + "px", "nowrap_ScrollX"),     // Set max height of LayerListWidget to mapDiv height - 100
       view: view
     });
 
@@ -1248,7 +1250,6 @@ define([
       }
 
       /*
-            var item = event.item;
             if (item.layer.title === "Video Flightline") {
               item.layer.listMode = "hide-children";
             }
@@ -1413,39 +1414,13 @@ define([
   };
 
   function initMap() {
-
-/*
-    var jnColor = Accessor.createSubclass({
-      declaredClass: "esri.guide.Color",
-      constructor: function() {
-        this.r = 255;
-        this.g = 255;
-        this.b = 255;
-        this.a = 1;
-      },
-      properties: {
-        r: {},
-        g: {},
-        b: {},
-        a: {}
-      }
-    });
-    jnColor.watch("visible", function() {
-      alert("jnColor changed!");
-    });
-    jnColor.r = 100;
-*/
-
     gp = new Geoprocessor(gpUrl);
-
     addServiceLayers();
-
     map = new Map({
       basemap: "hybrid",
       //ground: "world-elevation",      // Used only with SceneView
       layers: serviceLayers     //  [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer]
     });
-
     view = new View({
       container: "mapDiv",
       map: map,
@@ -1456,6 +1431,11 @@ define([
       //sliderOrientation : "horizontal",
       //sliderStyle: "large"
     });
+
+/*
+    mapMsgPanel = makeDraggablePanel("queryProgressDiv", "Querying features...", false, "draggableDivMsg");
+    setDisplay(mapMsgPanel.id, true);
+*/
 
     addMapWatchers();
     addMapWidgets();

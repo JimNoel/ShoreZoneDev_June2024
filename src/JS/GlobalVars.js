@@ -58,6 +58,7 @@ makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 var locateIconLayer;     // GraphicsLayer for displaying user location.  Used by Locate widget.
 var layoutCode = "h2";     // default layout
 var initTab = "szTab";
+//let mapMsgPanel = null;
 
 const legendFilters = [
   {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","}
@@ -76,7 +77,7 @@ function filterLegend(serviceName, nonNullList) {
         if (nonNullList[v].length > 0) {
           for  (f of nonNullList[v]) {
             let d = getEl(pId + "_" + f);
-            d.style.display = "inline";
+            d.style.display = "block";    // "inline";
           }
         }
       }
@@ -147,6 +148,8 @@ var offLineLink = null;
 var gp = null;      // for Geoprocessor
 var llExpand = null;
 var layerListWidget = null;
+var listItem_1s = null;
+var listItem_10s = null;
 var legend = null;
 var legendInfo = {};
 
@@ -364,7 +367,9 @@ function setDisabled(id, value) {
 
 function setDisplay(id, value) {
   // Show/hide HTML element   NOTE: If other visible elements are in the paranet element, these will shift to fill the missing space
-  el = getEl(id);
+  let el = id;
+  if ((typeof id) === "string")
+    el = getEl(id);
   if (!el)
     return;   // do nothing if el doesn't exist
   var display = "none";
@@ -511,7 +516,7 @@ function updateNoFeaturesMsg(widgets, status) {
   if (status === "zoomin")
     template = "Zoom in further to see {1}";
   else if (status === "querying")
-    template = "Looking for {1} ...";
+    template = "<b>Looking for {1} ...</b>";
   else if (status === "zoomout")
     template = "No {1} in this view.<br><br>Zoom out or pan to see {1}.";
   widgets.forEach(function(w, index, array) {
@@ -746,8 +751,11 @@ function isInViewport(el, scrollWindow) {
   return elementTop >= viewportTop && elementBottom <= viewportBottom;
 }
 
-function makeDraggablePanel(divID, headerText, hasOpacitySlider, /*theClass,*/ theStyle, theContent) {
-  var newDiv = makeHtmlElement("div", divID, "draggableDiv", theStyle, theContent);
+function makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theStyle, theContent) {
+  let divClass = "draggableDiv";
+  if (theClass)
+    divClass = theClass;
+  var newDiv = makeHtmlElement("div", divID, divClass, theStyle, theContent);
   if (headerText || hasOpacitySlider) {
     var headerDiv = makeHtmlElement("div", divID + "_header", "draggableDivHeader");
     headerDiv.title = headerText;
@@ -762,7 +770,9 @@ function makeDraggablePanel(divID, headerText, hasOpacitySlider, /*theClass,*/ t
   newDiv.ondragover = panel_drag_over;
   newDiv.ondrop = panel_drop;
   var contentDiv = makeHtmlElement("div", divID + "_content", "draggableDivContent");
-  contentDiv.innerHTML = "Hello!";
+  contentDiv.innerHTML = "";
+  if (theContent)
+    contentDiv.innerHTML = theContent;
   newDiv.appendChild(contentDiv);
   document.body.appendChild(newDiv);
   return newDiv;
@@ -803,6 +813,39 @@ var mapStuff;
 
 // For debug purposes
 function test() {
+  //  This will remove 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
+  // TODO:  Make .panel for Video Flightline, and add legends for 1s and 10s to it
+  let vf = layerListWidget.operationalItems.items[0].children.items[1];
+  let subLayers = vf.children.items;
+
+/*
+  listItem_1s = subLayers[0];
+  let content_1s = makeHtmlElement("DIV", "listItem_1s_panel", null, null, listItem_1s.panel.content.innerHTML);
+
+  listItem_10s = subLayers[1];
+  let content_10s = makeHtmlElement("DIV", "listItem_10s_panel", null, null, listItem_10s.panel.content.innerHTML);
+
+  let theContent = content_1s.innerHTML;
+  theContent += content_10s.innerHTML;
+*/
+
+  let theContent = subLayers[1].panel.content.innerHTML;
+  vf.children.removeAll();
+  vf.panel = {
+    content: makeHtmlElement("DIV","videoFlightlineDiv",null,null,theContent),
+    open: true    // (item.visible && item.visibleAtCurrentScale)
+  };
+
+/*
+  let current1sVisibility = listItem_1s.visibleAtCurrentScale;
+  setDisplay(content_1s, current1sVisibility);
+  setDisplay(content_10s, !current1sVisibility);
+
+  listItem_1s.watch("visibleAtCurrentScale", function(newValue, oldValue, property, object) {
+    alert("1s visibility has changed!");
+  });
+*/
+
   alert("Website last modified on  " + document.lastModified);
 }
 
