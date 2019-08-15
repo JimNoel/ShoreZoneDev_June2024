@@ -61,7 +61,9 @@ var initTab = "szTab";
 //let mapMsgPanel = null;
 
 const legendFilters = [
-  {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","}
+  {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","},
+  {serviceName: "ShoreZone", fieldName: "BC_CLASS", layerTitle: "Coastal Class", delimiter: ","},
+  {serviceName: "ShoreZone", fieldName: "ESI", layerTitle: "Environmental Sensitivity Index", delimiter: ","}
 ];
 
 function filterLegend(serviceName, nonNullList) {
