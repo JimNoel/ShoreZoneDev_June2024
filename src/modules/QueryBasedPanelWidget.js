@@ -490,6 +490,15 @@ define([
           return;
       this.clearGraphics();     // Clear any previously-existing graphics and associated stuff
       for (var n = 0; n < features.length; n++) {
+
+        /*JN*/
+        if ((features.length % 1000) === 0) {
+          if (prompt("More than " + features.length + " features.  Continue?") !== "y")
+            return;
+        }
+        /*JN*/
+
+
         var g = features[n];
         var a = {};
         for (i in g.attributes) {
@@ -551,6 +560,7 @@ define([
         }
 
       }
+      console.log(new Date() + "  makeClickableGraphics completed");
     },
 
     getClickableGraphicsCount: function() {

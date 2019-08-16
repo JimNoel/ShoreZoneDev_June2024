@@ -16,7 +16,7 @@ var startBasemap = "oceans";
 // SZ video parameters
 var minVideoLOD = 12;
 var maxSZFeatures = 1000;    // get from query?     see UnitsPanelWidget, line 107, for an example.  Get value from  A.maxRecordCount
-var maxExtentWidth = 100;     // maximal extent in kilometers for video
+var maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
 var highlightSize = 15;
 
 var aoosQueryBaseUrl = "https://servomatic9000.axiomalaska.com/spatial-imagery/alaska_shorezone/imageMetadata?callback=jQuery111107511455304335468_1552688607085&x={lon}&y={lat}&width=300&height=300&_=1552688607089";
@@ -67,23 +67,29 @@ const legendFilters = [
 ];
 
 function filterLegend(serviceName, nonNullList) {
-  for (f of legendFilters)
+  for (var i=0; i<legendFilters.length; i++) {
+    let f = legendFilters[i];
     if (f.serviceName === serviceName) {
       let pId = "swatch_" + f.serviceName + "_" + f.fieldName;
       let pDiv = getEl(pId);
       for (d of pDiv.children) {
         d.style.display = "none";
-        //setVisible(d, false);
       }
-      for (v in nonNullList) {
-        if (nonNullList[v].length > 0) {
-          for  (f of nonNullList[v]) {
-            let d = getEl(pId + "_" + f);
-            d.style.display = "block";    // "inline";
-          }
+      let fieldNonNulls = nonNullList[f.fieldName];
+      for  (v of fieldNonNulls) {
+        let d = getEl(pId + "_" + v);
+        d.style.display = "block";    // "inline";
+      }
+
+/*
+      for (fieldName in nonNullList) {
+        if (nonNullList[fieldName].length > 0) {
         }
       }
+*/
     }
+  }
+
 }
 
 

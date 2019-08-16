@@ -67,17 +67,18 @@ define([
         var nonNullList = new Object();       //JN0808:  Lists of unique values found
         var columnStyleCSS = "";
 
-        for (var f in this.calcFields) {
-          var p =0;
-          if (this.calcFields[f].afterField)
-            p = fields.findIndex(obj => obj.name == this.calcFields[f].afterField);
-          var newField = {
-            name: this.calcFields[f].name,
-            alias: this.calcFields[f].name,
-            type: "string"
-          };
-          fields.splice(p + 1, 0, newField);
-        }
+        if (this.calcFields)
+          for (var f in this.calcFields) {
+            var p =0;
+            if (this.calcFields[f].afterField)
+              p = fields.findIndex(obj => obj.name == this.calcFields[f].afterField);
+            var newField = {
+              name: this.calcFields[f].name,
+              alias: this.calcFields[f].name,
+              type: "string"
+            };
+            fields.splice(p + 1, 0, newField);
+          }
 
 
 
@@ -161,7 +162,7 @@ define([
           tableData.push(features[i].attributes);
         }
 
-        filterLegend(this.mapServiceLayer.title, nonNullList);
+        //filterLegend(this.mapServiceLayer.title, nonNullList);
 
         this.store = new (declare([Memory, Trackable]))({
           data: tableData
@@ -292,6 +293,7 @@ define([
         //console.log("processData: Table");
         var fields = results.fields;
         var features = results.features;
+        console.log(features.length + " " + this.baseName + " features");
         getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
         getEl(this.displayDivName).innerHTML = "";      // clear the DIV
         if (this.noFeatures(features))

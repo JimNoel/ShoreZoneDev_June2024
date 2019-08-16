@@ -253,12 +253,13 @@ define([
 
 
       this.processData = function(results) {
+        console.log(new Date() + "  start processData (video)");
         //this.processData.inherited(results);
         //QueryBasedPanelWidget.processData(results);
         //super.printInfo(this);
         //this.inherited(arguments);
         var features = results.features;
-        //debug(features.length + " features to process");
+        console.log(features.length + " video features");
         pausePlayback("video");
         if (this.noFeatures(features))
           return;
@@ -291,6 +292,7 @@ define([
             }
           }
         }
+        console.log(new Date() + "  end processData (video)");
 
     };
 
