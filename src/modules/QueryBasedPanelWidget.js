@@ -437,8 +437,8 @@ define([
 
 
       this.queryTask.execute(this.query).then(function(results){
-          if (results.features.length===maxSZFeatures) {
-              console.log(this.baseName + ":  maxSZFeatures (" + maxSZFeatures + ") returned.");
+          if (results.features.length > maxSZFeatures) {
+            updateNoFeaturesMsg(extentDependentWidgets, "toomany");
           } else {
             this.processData(results);
           }
@@ -491,9 +491,9 @@ define([
       this.clearGraphics();     // Clear any previously-existing graphics and associated stuff
       for (var n = 0; n < features.length; n++) {
 
-        /*JN*/
-        if ((features.length % 1000) === 0) {
-          if (prompt("More than " + features.length + " features.  Continue?") !== "y")
+        /*JN*
+        if ((n % 1000) === 999) {
+          if (!confirm("More than " + (n+1) + " " + this.baseName + " features.  Continue?"))
             return;
         }
         /*JN*/
@@ -560,7 +560,7 @@ define([
         }
 
       }
-      console.log(new Date() + "  makeClickableGraphics completed");
+      //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " completed, with " + this.clickableLayer.graphics.items.length + " items");
     },
 
     getClickableGraphicsCount: function() {

@@ -198,7 +198,7 @@ define([
 
     ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 0.5, listMode: "hide"});
     ssMapServiceLayer.when(function(resolvedVal) {
-      console.log("Shore Station MapServiceLayer loaded.");
+      //console.log("Shore Station MapServiceLayer loaded.");
       ssMapServiceLayer.visible = false;
 
       /*  ssWidget def */
@@ -496,7 +496,7 @@ define([
 
     faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "hide"});
     faMapServiceLayer.when(function() {
-      console.log("Fish Atlas MapServiceLayer loaded.");
+      //console.log("Fish Atlas MapServiceLayer loaded.");
       faMapServiceLayer.visible = false;
 
       faWidget = new QueryBasedTablePanelWidget({
@@ -1492,7 +1492,7 @@ define([
     constructor: function (kwArgs) {
       //lang.mixin(this, kwArgs);
       initMap();
-      console.log("MapStuff object created.");
+      //console.log("MapStuff object created.");
     },     // end of constructor
 
   });

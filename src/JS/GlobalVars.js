@@ -15,7 +15,7 @@ var startBasemap = "oceans";
 
 // SZ video parameters
 var minVideoLOD = 12;
-var maxSZFeatures = 1000;    // get from query?     see UnitsPanelWidget, line 107, for an example.  Get value from  A.maxRecordCount
+var maxSZFeatures = 2000;    // More than 2000 causes the browser to slow significantly  (for example, 5000 points causes 10-minute hang-up)
 var maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
 var highlightSize = 15;
 
@@ -156,8 +156,9 @@ var offLineLink = null;
 var gp = null;      // for Geoprocessor
 var llExpand = null;
 var layerListWidget = null;
-var listItem_1s = null;
-var listItem_10s = null;
+var listItem_1s_legendHtml = null;
+var listItem_10s_legendHtml = null;
+var listItem_VideoFlightline = null;
 var legend = null;
 var legendInfo = {};
 
@@ -525,6 +526,8 @@ function updateNoFeaturesMsg(widgets, status) {
     template = "Zoom in further to see {1}";
   else if (status === "querying")
     template = "<b>Looking for {1} ...</b>";
+  else if (status === "toomany")
+    template = "<b>Too many points.  Zoom in further.</b>";
   else if (status === "zoomout")
     template = "No {1} in this view.<br><br>Zoom out or pan to see {1}.";
   widgets.forEach(function(w, index, array) {
@@ -819,24 +822,10 @@ function formatNumber_Date(num) {
 
 var mapStuff;
 
-// For debug purposes
-function test() {
+function modify_LayerListItem_VideoFlightline() {
   //  This will remove 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
-  // TODO:  Make .panel for Video Flightline, and add legends for 1s and 10s to it
   let vf = layerListWidget.operationalItems.items[0].children.items[1];
   let subLayers = vf.children.items;
-
-/*
-  listItem_1s = subLayers[0];
-  let content_1s = makeHtmlElement("DIV", "listItem_1s_panel", null, null, listItem_1s.panel.content.innerHTML);
-
-  listItem_10s = subLayers[1];
-  let content_10s = makeHtmlElement("DIV", "listItem_10s_panel", null, null, listItem_10s.panel.content.innerHTML);
-
-  let theContent = content_1s.innerHTML;
-  theContent += content_10s.innerHTML;
-*/
-
   let theContent = subLayers[1].panel.content.innerHTML;
   vf.children.removeAll();
   vf.panel = {
@@ -844,16 +833,29 @@ function test() {
     open: true    // (item.visible && item.visibleAtCurrentScale)
   };
 
-/*
-  let current1sVisibility = listItem_1s.visibleAtCurrentScale;
-  setDisplay(content_1s, current1sVisibility);
-  setDisplay(content_10s, !current1sVisibility);
+  /*
+    listItem_1s = subLayers[0];
+    let content_1s = makeHtmlElement("DIV", "listItem_1s_panel", null, null, listItem_1s.panel.content.innerHTML);
 
-  listItem_1s.watch("visibleAtCurrentScale", function(newValue, oldValue, property, object) {
-    alert("1s visibility has changed!");
-  });
-*/
+    listItem_10s = subLayers[1];
+    let content_10s = makeHtmlElement("DIV", "listItem_10s_panel", null, null, listItem_10s.panel.content.innerHTML);
 
+    let theContent = content_1s.innerHTML;
+    theContent += content_10s.innerHTML;
+
+    let current1sVisibility = listItem_1s.visibleAtCurrentScale;
+    setDisplay(content_1s, current1sVisibility);
+    setDisplay(content_10s, !current1sVisibility);
+
+    listItem_1s.watch("visibleAtCurrentScale", function(newValue, oldValue, property, object) {
+      alert("1s visibility has changed!");
+    });
+  */
+}
+
+// For debug purposes
+function test() {
+  modify_LayerListItem_VideoFlightline();
   alert("Website last modified on  " + document.lastModified);
 }
 

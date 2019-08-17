@@ -253,7 +253,6 @@ define([
 
 
       this.processData = function(results) {
-        console.log(new Date() + "  start processData (video)");
         //this.processData.inherited(results);
         //QueryBasedPanelWidget.processData(results);
         //super.printInfo(this);
@@ -292,7 +291,6 @@ define([
             }
           }
         }
-        console.log(new Date() + "  end processData (video)");
 
     };
 

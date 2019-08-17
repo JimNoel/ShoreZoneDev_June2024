@@ -473,7 +473,6 @@ define([
       if (this.footerDivName)
         this.makeTableFooterHtml();
 */
-      /*JN*/ console.log("Looky here!  " + this.objName);
 
     },
 
@@ -506,7 +505,6 @@ define([
           }
         }
       }
-      console.log("QueryBasedPanelWidget:  makeFooterElements");
     }
 
     });
