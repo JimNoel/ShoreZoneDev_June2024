@@ -823,13 +823,11 @@ function formatNumber_Date(num) {
 var mapStuff;
 
 function modify_LayerListItem_VideoFlightline() {
-  //  This will remove 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
-  let vf = layerListWidget.operationalItems.items[0].children.items[1];
-  let subLayers = vf.children.items;
-  let theContent = subLayers[1].panel.content.innerHTML;
-  vf.children.removeAll();
-  vf.panel = {
-    content: makeHtmlElement("DIV","videoFlightlineDiv",null,null,theContent),
+  // A hack to hide the 1s & 10s layers in the LayerList
+  let subLayers = listItem_VideoFlightline.children.items;
+  listItem_VideoFlightline.children.removeAll();    //  This removes 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
+  listItem_VideoFlightline.panel = {
+    content: makeHtmlElement("DIV","videoFlightlineDiv",null,null, listItem_10s_legendHtml),
     open: true    // (item.visible && item.visibleAtCurrentScale)
   };
 
@@ -855,7 +853,7 @@ function modify_LayerListItem_VideoFlightline() {
 
 // For debug purposes
 function test() {
-  modify_LayerListItem_VideoFlightline();
+  //modify_LayerListItem_VideoFlightline();
   alert("Website last modified on  " + document.lastModified);
 }
 

@@ -1249,11 +1249,16 @@ define([
         });
       }
 
-      /*
-            if (item.layer.title === "Video Flightline") {
-              item.layer.listMode = "hide-children";
-            }
+      if (item.layer.title === "Video Flightline") {
+        listItem_VideoFlightline = item;
+        //item.layer.listMode = "hide-children";
+      }
+      if (item.layer.title === "10s") {
+        listItem_10s_legendHtml = item.panel.content.innerHTML;
+        modify_LayerListItem_VideoFlightline();
+      }
 
+      /*
             //  NOT SURE WHAT THIS WAS FOR?
             if (event.item.layer.title === "Derived ShoreZone Attributes")
               event.item.layer.visible = false;     // turn off layer display
