@@ -302,25 +302,12 @@
       splitterInfo.forEach(function(item) {
         var lSplitter = dijit.registry.byId(item.id).getSplitter(item.region);
         lSplitter.on("mouseover", splitterDragHandler);
-/*
-        lSplitter.on("mousedown", function() {
-          leftMouseDown = true;
-        });
-        lSplitter.on("mouseup", function() {
-          //leftMouseDown = false;
-        });
-*/
       });
 
       function splitterDragHandler(e) {
-        // TODO:  set draggingSplitter=true, and set timer to reset to false after a short interval?
-        //  Or is there a "mousedown" variable/property that can be checked before handling an extent change?
         if (e.buttons === 1) {
-          //draggingSplitter = true;
           resizeWidgets();
           resizeMedia();
-        } else {
-          //draggingSplitter = false;
         }
       }
 

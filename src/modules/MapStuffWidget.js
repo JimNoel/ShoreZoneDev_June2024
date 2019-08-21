@@ -1001,7 +1001,7 @@ define([
 */
 
     view.watch("extent", function(newExtent, oldExtent, property, theView) {
-      if (theView.interacting)    // Bypass if panning or using mouse wheel.  In this case, the watch on "interacting" (below) will kick in when the interaction is complete
+      if (theView.interacting || theView.resizing)    // Bypass if panning or using mouse wheel.  In this case, the watch on "interacting" (below) will kick in when the interaction is complete
         return;
       if (theView.animation && theView.animation.state==="running")      // Wait until extent change is complete
         return;

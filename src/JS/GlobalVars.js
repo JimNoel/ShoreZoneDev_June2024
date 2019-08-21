@@ -58,8 +58,6 @@ makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 var locateIconLayer;     // GraphicsLayer for displaying user location.  Used by Locate widget.
 var layoutCode = "h2";     // default layout
 var initTab = "szTab";
-//let leftMouseDown = false;
-//let draggingSplitter = false;
 
 const legendFilters = [
   {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","},
