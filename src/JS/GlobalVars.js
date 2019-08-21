@@ -58,28 +58,39 @@ makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 var locateIconLayer;     // GraphicsLayer for displaying user location.  Used by Locate widget.
 var layoutCode = "h2";     // default layout
 var initTab = "szTab";
-//let mapMsgPanel = null;
+//let leftMouseDown = false;
+//let draggingSplitter = false;
 
 const legendFilters = [
   {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","},
   {serviceName: "ShoreZone", fieldName: "BC_CLASS", layerTitle: "Coastal Class", delimiter: ","},
-  {serviceName: "ShoreZone", fieldName: "ESI", layerTitle: "Environmental Sensitivity Index", delimiter: ","}
+  {serviceName: "ShoreZone", fieldName: "ESI", layerTitle: "Environmental Sensitivity Index (ESI)", delimiter: ","}
 ];
 
+let nonNullList = null;
+
 function filterLegend(serviceName, nonNullList) {
+  if (!nonNullList)
+    return;
   for (var i=0; i<legendFilters.length; i++) {
     let f = legendFilters[i];
+    let fieldNonNulls = nonNullList[f.fieldName];
     if (f.serviceName === serviceName) {
       let pId = "swatch_" + f.serviceName + "_" + f.fieldName;
-      let pDiv = getEl(pId);
-      for (d of pDiv.children) {
-        d.style.display = "none";
+      //let pDiv = getEl(pId);
+      for (d of f.contentDiv.children) {
+        let A = d.id.split("_");
+        if (fieldNonNulls.includes(A[A.length-1]))
+          d.style.display = "block";    // "inline";
+        else
+          d.style.display = "none";
       }
-      let fieldNonNulls = nonNullList[f.fieldName];
+/*
       for  (v of fieldNonNulls) {
         let d = getEl(pId + "_" + v);
         d.style.display = "block";    // "inline";
       }
+*/
 
 /*
       for (fieldName in nonNullList) {
@@ -152,14 +163,12 @@ var faWidget = null;
 var faSpTableWidget = null;
 var ssWidget = null;
 var ssSpTableWidget = null;
-var offLineLink = null;
 var gp = null;      // for Geoprocessor
 var llExpand = null;
 var layerListWidget = null;
-var listItem_1s_legendHtml = null;
+//var listItem_1s_legendHtml = null;
 var listItem_10s_legendHtml = null;
 var listItem_VideoFlightline = null;
-var legend = null;
 var legendInfo = {};
 
 //  When a graphic is hovered over, these point to the graphic and the widget controlling the graphic
@@ -375,10 +384,8 @@ function setDisabled(id, value) {
 }
 
 function setDisplay(id, value) {
-  // Show/hide HTML element   NOTE: If other visible elements are in the paranet element, these will shift to fill the missing space
-  let el = id;
-  if ((typeof id) === "string")
-    el = getEl(id);
+  // Show/hide HTML element   NOTE: If other visible elements are in the parent element, these will shift to fill the missing space
+  let el = getEl(id);
   if (!el)
     return;   // do nothing if el doesn't exist
   var display = "none";
@@ -410,7 +417,12 @@ function isVisible(id) {
 }
 
 function getEl(id) {
-  return document.getElementById(id);
+  // If the arguent is a string, returns the element whose id is equal to the argument
+  // If not a string, assume the argument is already an element, and return it
+  if ((typeof id) === "object")
+    return id;
+  else
+    return document.getElementById(id);
 }
 
 function showPanelContents(panelNames, show, disabledMsg) {
@@ -827,20 +839,11 @@ function modify_LayerListItem_VideoFlightline() {
   let subLayers = listItem_VideoFlightline.children.items;
   listItem_VideoFlightline.children.removeAll();    //  This removes 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
   listItem_VideoFlightline.panel = {
-    content: makeHtmlElement("DIV","videoFlightlineDiv",null,null, listItem_10s_legendHtml),
+    content: makeHtmlElement("DIV", "videoFlightlineDiv", null, null, listItem_10s_legendHtml),
     open: true    // (item.visible && item.visibleAtCurrentScale)
   };
-
-  /*
-    listItem_1s = subLayers[0];
-    let content_1s = makeHtmlElement("DIV", "listItem_1s_panel", null, null, listItem_1s.panel.content.innerHTML);
-
-    listItem_10s = subLayers[1];
-    let content_10s = makeHtmlElement("DIV", "listItem_10s_panel", null, null, listItem_10s.panel.content.innerHTML);
-
-    let theContent = content_1s.innerHTML;
-    theContent += content_10s.innerHTML;
-
+}
+  /*    // Code stub (for above function) for including legends for both 1s and 10s, and hiding one of them depending on current visibilities of these layers
     let current1sVisibility = listItem_1s.visibleAtCurrentScale;
     setDisplay(content_1s, current1sVisibility);
     setDisplay(content_10s, !current1sVisibility);
@@ -849,11 +852,10 @@ function modify_LayerListItem_VideoFlightline() {
       alert("1s visibility has changed!");
     });
   */
-}
+
 
 // For debug purposes
 function test() {
-  //modify_LayerListItem_VideoFlightline();
   alert("Website last modified on  " + document.lastModified);
 }
 

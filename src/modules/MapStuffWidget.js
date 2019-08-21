@@ -936,6 +936,10 @@ define([
 
 
     //OBS?  lastExtent = newExtent;
+/*
+    if (draggingSplitter)      // Don't do if splitter is being dragged
+      return;
+*/
     featureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
     if (lock_points)      // If point set is locked,
       return;             //    then don't reset or query new points
@@ -1217,35 +1221,45 @@ define([
         const lTitle = svcLegendInfo[l].layerName;
         let fInfo = null;
         const f = legendFilters.findIndex(obj => obj.layerTitle === lTitle);
+
         if (f !== -1) {
           fInfo = legendFilters[f];
           legendDivId = 'swatch_'  + serviceName + '_' + fInfo.fieldName;
         }
-          const lInfo = svcLegendInfo[l].legend;
-          let theContent = '';
-          for (let row=0; row<lInfo.length; row++) {
-            let rowInfo = lInfo[row];
-            const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
-            const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
-            let idInsert = '';
-            if (f !== -1) {
-              let value = rowInfo.label;
-              if (fInfo.delimiter)
-                value = value.split(fInfo.delimiter)[0];
-              if (rowInfo.label !== '') {
-                const swatchId = legendDivId + '_' + value;
-                idInsert = ' id="' + swatchId + '"';
-              }
+
+        const lInfo = svcLegendInfo[l].legend;
+        let theContentHtml = '';
+        for (let row=0; row<lInfo.length; row++) {
+          let rowInfo = lInfo[row];
+          const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
+          const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
+          let idInsert = '';
+
+          if (fInfo) {
+            let value = rowInfo.values[0];      // label;
+            if (fInfo.delimiter)
+              value = value.split(fInfo.delimiter)[0];
+            if (rowInfo.label !== '') {
+              const swatchId = legendDivId + '_' + value;
+              idInsert = ' id="' + swatchId + '"';
             }
-            theContent += '<div' + idInsert + '>' + imgHtml + rowInfo.label + '</div>';     // + '<br>';
           }
-        //}
+
+          theContentHtml += '<div' + idInsert + '>' + imgHtml + rowInfo.label + '</div>';     // + '<br>';
+        }
+        let contentDiv = makeHtmlElement("DIV",legendDivId,null,null,theContentHtml);
+        if (fInfo)
+          fInfo.contentDiv = contentDiv;
         item.panel = {
-          content: makeHtmlElement("DIV",legendDivId,null,null,theContent),
+          content: contentDiv,
           open: (item.visible && item.visibleAtCurrentScale)
         };
         item.watch("visible", function() {
           item.panel.open = (item.visible && item.visibleAtCurrentScale);
+/*
+          if (item.panel.open)
+            filterLegend(item.title, nonNullList);
+*/
         });
       }
 
@@ -1436,11 +1450,6 @@ define([
       //sliderOrientation : "horizontal",
       //sliderStyle: "large"
     });
-
-/*
-    mapMsgPanel = makeDraggablePanel("queryProgressDiv", "Querying features...", false, "draggableDivMsg");
-    setDisplay(mapMsgPanel.id, true);
-*/
 
     addMapWatchers();
     addMapWidgets();

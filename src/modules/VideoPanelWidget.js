@@ -266,7 +266,6 @@ define([
         //showPanelContents("video,photo", true);
 
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
-        //offLineLink.featureCount = features.length;
         this.makeClickableGraphics(features);
         //OBS lastPhotoSec = -100;      // Reset photo filter counter
         var photoFeatures = features.filter(function(f){
