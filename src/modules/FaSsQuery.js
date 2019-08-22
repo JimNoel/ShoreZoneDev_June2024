@@ -27,35 +27,35 @@ define([
 
 
     makeTableIdList: function(w) {
-      var theUrl = w.serviceUrl + "/layers?f=pjson";
+      let theUrl = w.serviceUrl + "/layers?f=pjson";
       esriRequest(theUrl, {
         responseType: "json"
       }).when(function(response){
-        var data = response.data;
+        let data = response.data;
 
         w.tableIDs = new Object();      // Make associative array of table IDs that can be accessed via w.tableIDs["<table name>"]
         for (i in data.tables) {
-          var o = data.tables[i];
+          let o = data.tables[i];
           w.tableIDs[o.name] = o.id;
         }
 
         w.sublayerIDs = new Object();      // Make associative array of sublayer IDs that can be accessed via w.sublayerIDs["<sublayer name>"]
         for (i in data.layers) {
-          var o = data.layers[i];
+          let o = data.layers[i];
           w.sublayerIDs[o.name] = o.id;
         }
 
         w.layers = new Object();
-        for (var i=0; i< w.areaOptions.length; i++) {
-          var a = w.areaOptions[i];
+        for (let i=0; i< w.areaOptions.length; i++) {
+          let a = w.areaOptions[i];
           if (w[a]) {
-            var slName = w[a].subLayerName;
-            var slId = w.sublayerIDs[slName];
-            var slInfo = data.layers[slId];
+            let slName = w[a].subLayerName;
+            let slId = w.sublayerIDs[slName];
+            let slInfo = data.layers[slId];
             w[a].subLayerInfo = slInfo;
-            var rend = jsonUtil.fromJSON(slInfo.drawingInfo.renderer);
-            var graphics = new Collection();
-            var f = new FeatureLayer({
+            let rend = jsonUtil.fromJSON(slInfo.drawingInfo.renderer);
+            let graphics = new Collection();
+            let f = new FeatureLayer({
               fields: slInfo.fields,
               objectIdField: w.getObjectIdField(slInfo.fields),
               geometryType: slInfo.geometryType,
@@ -72,13 +72,13 @@ define([
       },
 
     createLegend: function(layerInfo) {
-      var rend = jsonUtil.fromJSON(layerInfo.drawingInfo.renderer);
+      let rend = jsonUtil.fromJSON(layerInfo.drawingInfo.renderer);
     },
 
     queryAreaOptionInfo: function(w, areaOption) {
       if (!w[areaOption])
         return;                 // only run function if w has an areaOption property
-      var theUrl = w.serviceUrl + "/" + w.sublayerIDs[w[areaOption].subLayerName] + "?f=pjson";
+      let theUrl = w.serviceUrl + "/" + w.sublayerIDs[w[areaOption].subLayerName] + "?f=pjson";
 
       esriRequest(theUrl, {
         //callbackParamName: 'callback',
@@ -88,9 +88,9 @@ define([
       queryServer(theUrl, true, function(jsonResponse) {
         w[areaOption].subLayerInfo = jsonResponse;
         //w[areaOption].fields = jsonResponse.fields;
-        var rend = jsonUtil.fromJSON(jsonResponse.drawingInfo.renderer);
-        var sli = w[areaOption].subLayerInfo;
-        var graphics = new Collection();
+        let rend = jsonUtil.fromJSON(jsonResponse.drawingInfo.renderer);
+        let sli = w[areaOption].subLayerInfo;
+        let graphics = new Collection();
         w.layers[areaOption] = new FeatureLayer({
           fields: sli.fields,
           objectIdField: w.getObjectIdField(sli.fields),
@@ -106,7 +106,7 @@ define([
 
     getObjectIdField: function(fields) {
       for(f in fields) {
-        var field = fields[f];
+        let field = fields[f];
         if (field.type === "esriFieldTypeOID")
           return field.name;
       }

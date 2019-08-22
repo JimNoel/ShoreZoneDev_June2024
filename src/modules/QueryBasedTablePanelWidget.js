@@ -12,8 +12,8 @@
  */
 
 
-var selectColor = "#DCEEFF";
-var unselectColor = "";   // "white";
+let selectColor = "#DCEEFF";
+let unselectColor = "";   // "white";
 
 
 define([
@@ -41,8 +41,8 @@ define([
 
 /*OBS
     replaceNamesWithValues: function(template, attrs) {
-      var a = template.split("@");
-      for (var i=0; i<a.length; i++)
+      let a = template.split("@");
+      for (let i=0; i<a.length; i++)
         if (a[i] in attrs) {
           a[i] = attrs[a[i]];
         }
@@ -62,17 +62,17 @@ define([
 
       this.makeTable = function(fields, features) {
         // Create a dGrid table from returned data
-        var tableColumns = [];
-        var nonNullCount = new Object();
+        let tableColumns = [];
+        let nonNullCount = new Object();
         nonNullList = new Object();       //Lists of unique values found
-        var columnStyleCSS = "";
+        let columnStyleCSS = "";
 
         if (this.calcFields)
-          for (var f in this.calcFields) {
-            var p =0;
+          for (let f in this.calcFields) {
+            let p =0;
             if (this.calcFields[f].afterField)
               p = fields.findIndex(obj => obj.name == this.calcFields[f].afterField);
-            var newField = {
+            let newField = {
               name: this.calcFields[f].name,
               alias: this.calcFields[f].name,
               type: "string"
@@ -82,9 +82,9 @@ define([
 
 
 
-        for (var i=0; i<fields.length; i++) {
+        for (let i=0; i<fields.length; i++) {
           // Use supplied title for column name
-          var title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
+          let title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
           if (title === null)
             title = fields[i].alias;
 
@@ -97,7 +97,7 @@ define([
           });
 
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
-          var colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
+          let colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
           if (!colWidth)
             colWidth = (title.length) * 15;
 
@@ -107,35 +107,35 @@ define([
         }
 
         // Create style-sheet for columns
-        var sheet = document.createElement('style');
+        let sheet = document.createElement('style');
         sheet.innerHTML = columnStyleCSS;
         document.body.appendChild(sheet);
 
-        var tableData = [];
+        let tableData = [];
 
 
-        for (var i=0; i<features.length; i++) {
+        for (let i=0; i<features.length; i++) {
 
           for (f in this.calcFields)      // Make duplicate fields:  Value is the same, attribute name has '2' added to end
             features[i].attributes[this.calcFields[f].name] = "0";      //Insert new attribute with dummy value for calculated field
 
-          var origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
+          let origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
           for (a in features[i].attributes)
             if (features[i].attributes[a]) {
-              var useCommas = getIfExists(this,"specialFormatting." + a + ".useCommas");
+              let useCommas = getIfExists(this,"specialFormatting." + a + ".useCommas");
               if (useCommas)
                 features[i].attributes[a] = formatNumber_Commas(features[i].attributes[a]);
-              var dateFormat = getIfExists(this,"specialFormatting." + a + ".dateFormat");
+              let dateFormat = getIfExists(this,"specialFormatting." + a + ".dateFormat");
               if (dateFormat)
                 features[i].attributes[a] = formatNumber_Date(features[i].attributes[a]);
-              var numDecimals = getIfExists(this,"specialFormatting." + a + ".numDecimals");
+              let numDecimals = getIfExists(this,"specialFormatting." + a + ".numDecimals");
               if (numDecimals)
                 features[i].attributes[a] = features[i].attributes[a].toFixed(numDecimals);
-              var template = getIfExists(this,"specialFormatting." + a + ".html");
+              let template = getIfExists(this,"specialFormatting." + a + ".html");
               if (template) {     // If template exists, use this to replace attribute value with HTML code
-                var fmtInfo = this.specialFormatting[a];
+                let fmtInfo = this.specialFormatting[a];
                 if (fmtInfo.plugInFields) {
-                  var args = fmtInfo.args;
+                  let args = fmtInfo.args;
                   for (p in fmtInfo.plugInFields)
                     args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
                   features[i].attributes[a] = template.replace("{args}", args);
@@ -153,7 +153,7 @@ define([
           }
 
           if (this.idField) {     // For idField, insert span for identifying original row number, so correct feature is identified regardless of current table order
-            var idFieldValue = features[i].attributes[this.idField];
+            let idFieldValue = features[i].attributes[this.idField];
             features[i].attributes[this.idField] = idFieldValue + "<span id='" + this.baseName + "@" + i + "@'></span>";
             // For identifying the equivalent row in the table, on feature click
             // "@" used for easy splitting out of values
@@ -168,8 +168,8 @@ define([
           data: tableData
         });
 
-        for (var c=0; c<tableColumns.length; c++) {
-          var col = tableColumns[c];
+        for (let c=0; c<tableColumns.length; c++) {
+          let col = tableColumns[c];
           col.hidden = (nonNullCount[col.field]===0);       // TODO: sometimes can't show column subsequently?
         }
 
@@ -185,14 +185,14 @@ define([
         this.grid.renderArray(tableData);   // If using Grid, include this
 
         this.grid.on('dgrid-error', function(event) {
-          debug('dgrid-error:  ' + event.error.message);
+          console.log('dgrid-error:  ' + event.error.message);
         });
 
         // This doesn't work when using Grid instead of OnDemandGrid
         // TODO: Implement SingleQuery, to get dgrid-refresh-complete?  (Tried once, didn't work.)
         this.grid.on('dgrid-refresh-complete', function(event) {
-          var rows = event.grid._rows;
-          for (var r=0; r<rows.length; r++)
+          let rows = event.grid._rows;
+          for (let r=0; r<rows.length; r++)
             rows[r].setAttribute("id", "tableRow" + r);
           this.repositionTotalLabels(event.grid.columns);
         }.bind(this));
@@ -215,11 +215,11 @@ define([
         this.grid.on('.dgrid-content .dgrid-row:mouseover', function (event) {
           if (this.noGeometry)
             return;
-          var row = this.grid.row(event);
-          var rowIndex = event.selectorTarget.rowIndex;
-          var gObjFieldHtml = this.store.data[rowIndex][this.idField];
-          var gObjIndex = event.selectorTarget.innerHTML.split("@")[1];
-          var associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
+          let row = this.grid.row(event);
+          let rowIndex = event.selectorTarget.rowIndex;
+          let gObjFieldHtml = this.store.data[rowIndex][this.idField];
+          let gObjIndex = event.selectorTarget.innerHTML.split("@")[1];
+          let associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
           this.showGridTooltip(event, rowIndex, associatedGraphic);
           if (this.clickableLayer.visible) {
             this.displayPlayButton(associatedGraphic);
@@ -244,11 +244,11 @@ define([
         this.repositionTotalLabels = function(columns) {
           if (!this.totalOutFields)
             return;
-          var posTop = $(this.footerWrapper).position().top + 2;
+          let posTop = $(this.footerWrapper).position().top + 2;
           for (f in this.totalLabels) {
-            var label = this.totalLabels[f];
-            var column = columns[label.colNum];
-            var colPos = $(column.headerNode.contents).position().left;
+            let label = this.totalLabels[f];
+            let column = columns[label.colNum];
+            let colPos = $(column.headerNode.contents).position().left;
             if (this.baseName === "faSpTable")    //TODO:  This is not working correctly for draggable panels
               colPos = colPos - 300;              // Temporary HACK
             label.node.style.left = colPos + "px";
@@ -256,23 +256,23 @@ define([
         };
 
         this.showHeaderTooltip = function(event){
-          var fieldName = event.selectorTarget.field;
-          var description = this.attrName(fieldName);
+          let fieldName = event.selectorTarget.field;
+          let description = this.attrName(fieldName);
           if (description !== fieldName) {
-            var toolTipText = description;
-            var cell=this.grid.cell(event);
+            let toolTipText = description;
+            let cell=this.grid.cell(event);
             dijit.showTooltip(toolTipText, cell.element);
           }
         };
 
         this.showGridTooltip = function(event, r, associatedGraphic){
           try {     //JN
-            var cell = this.grid.cell(event);
+            let cell = this.grid.cell(event);
             if (cell.column) {
-              var fieldName = cell.column.field;
-              var fieldValueDescr = this.attrValDescription(fieldName, associatedGraphic.attributes);
+              let fieldName = cell.column.field;
+              let fieldValueDescr = this.attrValDescription(fieldName, associatedGraphic.attributes);
               if (fieldValueDescr !== associatedGraphic.attributes[fieldName]) {
-                var toolTipText = fieldValueDescr;
+                let toolTipText = fieldValueDescr;
                 dijit.showTooltip(toolTipText, cell.element);
               }
             }
@@ -283,7 +283,7 @@ define([
         };
 
         this.hideGridTooltip = function(event){
-          var cell=this.grid.cell(event);
+          let cell=this.grid.cell(event);
           dijit.hideTooltip(cell.element);
         };
 
@@ -291,8 +291,8 @@ define([
 
       this.processData = function(results) {
         //console.log("processData: Table");
-        var fields = results.fields;
-        var features = results.features;
+        let fields = results.fields;
+        let features = results.features;
         console.log(features.length + " " + this.baseName + " features");
         getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
         getEl(this.displayDivName).innerHTML = "";      // clear the DIV
@@ -315,12 +315,12 @@ define([
               this.totalLabels[l].node.innerHTML = "0";
             return;
           }
-          //var totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
+          //let totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
           this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.totalsLayerName].toString();
           this.query.outFields = this.totalOutFields;
           this.query.orderByFields = null;
           this.queryTask.execute(this.query).then(function(results){
-            var totalValues = results.features[0].attributes;
+            let totalValues = results.features[0].attributes;
             for (a in totalValues)
               this.totalLabels[a].node.innerHTML = totalValues[a];
             this.repositionTotalLabels(this.grid.columns);
@@ -334,10 +334,10 @@ define([
 
 
       this.getDropDownOptions = function(ddNum, headerContent) {
-        var ddItem = this.dropDownInfo[ddNum];
-        var subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
-        var queryTask = new QueryTask(subLayerURL);
-        var query = new Query();
+        let ddItem = this.dropDownInfo[ddNum];
+        let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
+        let queryTask = new QueryTask(subLayerURL);
+        let query = new Query();
         with (query) {
           outFields = ddItem.ddOutFields;
           orderByFields = ddItem.orderByFields;
@@ -345,12 +345,12 @@ define([
         }
         queryTask.query = query;
         queryTask.execute(query).then(function(results){
-          var options = ddItem.options;
-          var ddFields = ddItem.ddOutFields;
-          for (var i=0;  i<results.features.length; i++) {
-            var a = results.features[i].attributes;
-            var v = a[ddFields[1]];
-            var extentStr = null;
+          let options = ddItem.options;
+          let ddFields = ddItem.ddOutFields;
+          for (let i=0;  i<results.features.length; i++) {
+            let a = results.features[i].attributes;
+            let v = a[ddFields[1]];
+            let extentStr = null;
             if (a["Envelope"])
               extentStr = a["Envelope"];
               //v += ":" + a["Envelope"];
@@ -368,11 +368,11 @@ define([
 
 
       this.makeDropdownOptionsHtml = function(ddNum, domId) {
-        var ddItem = this.dropDownInfo[ddNum];
-        var options = ddItem.options;
-        var theHtml = '';
+        let ddItem = this.dropDownInfo[ddNum];
+        let options = ddItem.options;
+        let theHtml = '';
         for (i in options) {
-          var extentStr = '';
+          let extentStr = '';
           if (options[i].extent)
             extentStr = 'extent="' + options[i].extent + '" ';
           theHtml += '<option ' + extentStr + 'value="' + options[i].value + '">' + options[i].label + '</option>';
@@ -387,7 +387,7 @@ define([
 
 /*
       this.makeTableFooterHtml = function() {
-        var footerDivNode = getEl(this.footerDivName);
+        let footerDivNode = getEl(this.footerDivName);
         this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
         footerDivNode.appendChild(this.footerWrapper);
       };
@@ -395,8 +395,8 @@ define([
 
 
       this.makeTableHeaderHtml = function() {
-        var headerDivNode = getEl(this.headerDivName);
-        var headerContent = document.createElement("SPAN");
+        let headerDivNode = getEl(this.headerDivName);
+        let headerContent = document.createElement("SPAN");
         this.headerContent = headerContent;
         headerDivNode.appendChild(headerContent);
 
@@ -405,11 +405,11 @@ define([
 
         if (this.dropDownInfo) {
           for (d in this.dropDownInfo) {
-            var ddItem = this.dropDownInfo[d];
+            let ddItem = this.dropDownInfo[d];
             ddItem.domId = this.baseName + "Dropdown_" + ddItem.ddName;
-            var ddSpanId = ddItem.domId.replace("_","Span_");
-            var ddHtml = '&emsp;<LABEL class="boldLabel">' + ddItem.ddName + ': </LABEL>';
-            var args = this.objName + ',' + d + ',' + ddItem.domId;
+            let ddSpanId = ddItem.domId.replace("_","Span_");
+            let ddHtml = '&emsp;<LABEL class="boldLabel">' + ddItem.ddName + ': </LABEL>';
+            let args = this.objName + ',' + d + ',' + ddItem.domId;
             ddHtml += '<select id="' + ddItem.domId + '" onchange="dropdownSelectHandler(' + args + ')" ></select>&emsp;';
             headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';
             ddItem.dom = getEl(ddItem.domId);
@@ -421,33 +421,33 @@ define([
           }
         }
 
-        var fCtID = this.baseName + 'Label_featureCount';
+        let fCtID = this.baseName + 'Label_featureCount';
         this.featureCountElId = fCtID;
-        var fCtSpanId = fCtID.replace("_","Span_");
-        var fCtHtml = '&emsp;<LABEL class="boldLabel" id="' + fCtID + '"></LABEL>&emsp;';
-        var spanHtml = '<span id="' + fCtSpanId + '">' + fCtHtml + '</span>';
+        let fCtSpanId = fCtID.replace("_","Span_");
+        let fCtHtml = '&emsp;<LABEL class="boldLabel" id="' + fCtID + '"></LABEL>&emsp;';
+        let spanHtml = '<span id="' + fCtSpanId + '">' + fCtHtml + '</span>';
         headerContent.innerHTML += spanHtml;
 
         if (this.clickableLayer) {
-          var cbID = this.baseName + 'Checkbox_showFeatures';
-          var cbSpanId = cbID.replace("_","Span_");
-          var args = this.objName + '.clickableLayer,' + cbID;
-          var cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
+          let cbID = this.baseName + 'Checkbox_showFeatures';
+          let cbSpanId = cbID.replace("_","Span_");
+          let args = this.objName + '.clickableLayer,' + cbID;
+          let cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
           headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           getEl(cbID).checked = this.clickableLayer.visible;
         }
 
         // Total Species Data
         if (this.speciesTableInfo) {
-          var spTableSpanId = this.baseName + 'IconSpeciesTable';
-          var spTableHtml = '&emsp;<LABEL class="boldLabel">' + this.speciesTableInfo.iconLabel + '</LABEL>&ensp;';
+          let spTableSpanId = this.baseName + 'IconSpeciesTable';
+          let spTableHtml = '&emsp;<LABEL class="boldLabel">' + this.speciesTableInfo.iconLabel + '</LABEL>&ensp;';
           spTableHtml += "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable(" + this.speciesTableInfo.args + ")' height='15' width='15' alt=''>";
           headerContent.innerHTML += '<span id="' + spTableSpanId + '">' + spTableHtml + '</span>';
         }
       };
 
       this.setHeaderItemVisibility = function() {
-        for (var c=0; c< this.headerContent.children.length; c++)
+        for (let c=0; c< this.headerContent.children.length; c++)
           this.headerContent.children[c].style.display = "none";
         for (c in this.visibleHeaderElements)
           getEl(this.visibleHeaderElements[c]).style.display = "inline";
@@ -455,8 +455,8 @@ define([
 
       this.highlightAssociatedRow = function(graphic) {
         this.unHighlightCurrentRow();
-        var r = graphic.attributes.item;
-        var rowId = this.baseName + "@" + r + "@";      // Embedded in idField at feature creation
+        let r = graphic.attributes.item;
+        let rowId = this.baseName + "@" + r + "@";      // Embedded in idField at feature creation
         this.selectedRow = getEl(rowId).parentNode.parentNode;
         this.selectedRow.style.backgroundColor = selectColor;
         if (!isInViewport(this.selectedRow,this.grid.bodyNode))
@@ -480,7 +480,7 @@ define([
        if (!this.inherited(arguments))     // Run inherited code from QueryBasedPanelWidget
          return;      // If no footer created, then don't execute the rest of the function
 /*
-      var footerDivNode = getEl(this.footerDivName);
+      let footerDivNode = getEl(this.footerDivName);
       footerDivNode.innerHTML = "";
       this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
       footerDivNode.appendChild(this.footerWrapper);
@@ -488,12 +488,12 @@ define([
       // make LABEL elements for totals
       if (this.totalOutFields) {
         this.footerWrapper.innerHTML = "";
-        var fields = this.totalOutFields;
+        let fields = this.totalOutFields;
         this.totalLabels = {};
         for (f in fields) {
-          var fieldName = fields[f];
-//         var colNum = this.tabInfo[this.currTab].featureOutFields.indexOf(fields[f]);
-          var colNum = this.featureOutFields.indexOf(fields[f]);
+          let fieldName = fields[f];
+//         let colNum = this.tabInfo[this.currTab].featureOutFields.indexOf(fields[f]);
+          let colNum = this.featureOutFields.indexOf(fields[f]);
           if (colNum === -1)
             this.totalLabels[fieldName] = null;
           else {

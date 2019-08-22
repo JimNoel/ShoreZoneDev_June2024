@@ -6,21 +6,21 @@
 
 
 
-var map;
-var view;
+let map;
+let view;
 
-var szMapServiceLayer;
-var faMapServiceLayer;
-var ssMapServiceLayer;
-var sslMapServiceLayer;
+let szMapServiceLayer;
+let faMapServiceLayer;
+let ssMapServiceLayer;
+let sslMapServiceLayer;
 
-var siteTabs = new Object({tabs: ["sz", "fa", "ss"], currTab: "sz"});
+let siteTabs = new Object({tabs: ["sz", "fa", "ss"], currTab: "sz"});
 siteTabs.sz = {};
 siteTabs.fa = {};
 siteTabs.ss = {};
 
 
-var mapLoading = false;
+let mapLoading = false;
 
 define([
   "dojo/_base/declare",
@@ -183,9 +183,9 @@ define([
 */
 
       /*  TRY:  attempt to catch sublayer visibility change event
-      var subLayers = szMapServiceLayer.allSublayers;
+      let subLayers = szMapServiceLayer.allSublayers;
       alert(subLayers.length);
-      for (var L=0; L<subLayers.length; L++) {
+      for (let L=0; L<subLayers.length; L++) {
         subLayers.items[L].watch("visible", function(newValue, oldValue, property, subLayer) {
           alert(subLayer.title + " visibility changed");
         });
@@ -193,7 +193,7 @@ define([
       /**/
 
     }, function(error){
-        debug("szMapServiceLayer failed to load:  " + error);
+        console.log("szMapServiceLayer failed to load:  " + error);
       });
 
     ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 0.5, listMode: "hide"});
@@ -491,7 +491,7 @@ define([
 
 
     }, function(error){
-      debug("Shore Station MapServiceLayer failed to load:  " + error);
+      console.log("Shore Station MapServiceLayer failed to load:  " + error);
     });
 
     faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "hide"});
@@ -873,7 +873,7 @@ define([
 
 
     }, function(error){
-      debug("Fish Atlas MapServiceLayer failed to load:  " + error);
+      console.log("Fish Atlas MapServiceLayer failed to load:  " + error);
     });
 
     sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURL, {id: "sslOpLayer", "opacity" : 0.5});
@@ -892,20 +892,20 @@ define([
     if (m === undefined)
       m = 0;
     //console.log(view.extent);
-    var maxX = view.container.offsetWidth;
-    var maxY = view.container.offsetHeight;
-    var screenPoints = [[m,m], [maxX-m,m], [maxX-m,maxY-m], [m,maxY-m]];
-    var mapPoints = [];
-    for (var p=0; p<screenPoints.length; p++) {
-      var screenPoint = new Point({x: screenPoints[p][0], y: screenPoints[p][1]});
-      var mapPoint = view.toMap(screenPoint);     // These are the points I want to use to get true extent
+    let maxX = view.container.offsetWidth;
+    let maxY = view.container.offsetHeight;
+    let screenPoints = [[m,m], [maxX-m,m], [maxX-m,maxY-m], [m,maxY-m]];
+    let mapPoints = [];
+    for (let p=0; p<screenPoints.length; p++) {
+      let screenPoint = new Point({x: screenPoints[p][0], y: screenPoints[p][1]});
+      let mapPoint = view.toMap(screenPoint);     // These are the points I want to use to get true extent
       if (!mapPoint)
         return null;
-      var geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);
+      let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);
       mapPoints.push([mapPoint.x, mapPoint.y, mapPoint.z]);
     }
     mapPoints.push(mapPoints[0]);
-    var newPolygon = new Polygon(mapPoints);
+    let newPolygon = new Polygon(mapPoints);
     return newPolygon;
   }
 */
@@ -913,8 +913,8 @@ define([
   function handleExtentChange(newExtent) {
     // For 3D, change newExtent to Polygon of tilted view extent
     // If using MapView (2D), comment out these lines
-    //var extent3d = sceneViewExtent(view, 200);
-    //var extent3d_geog = webMercatorUtils.webMercatorToGeographic(extent3d);
+    //let extent3d = sceneViewExtent(view, 200);
+    //let extent3d_geog = webMercatorUtils.webMercatorToGeographic(extent3d);
 
 
 /*
@@ -963,8 +963,8 @@ define([
       bookmarkSelected = false;
       return;
     }
-    var km = Math.round(newExtent.width/1000) + " km";
-    var bookmark = new Bookmark({name: savedExtentsWidget.bookmarks.items.length + ":" + km, extent: newExtent});
+    let km = Math.round(newExtent.width/1000) + " km";
+    let bookmark = new Bookmark({name: savedExtentsWidget.bookmarks.items.length + ":" + km, extent: newExtent});
     //bookmark.thumbnail = "assets/images/noaa_wb.png";
     savedExtentsWidget.bookmarks.add(bookmark);       // TODO: Successfully initializes with initial extent, but this is lost because bookmarks array is subsequently reset
     currentBookmarkNumber = savedExtentsWidget.bookmarks.length -1;
@@ -973,8 +973,8 @@ define([
   function addMapWatchers() {
     view.when(function() {
       map.basemap = startBasemap;   //HACK:  Because inital basemap setting of "oceans" messes up initial extent and zooming
-      var moveButtonAction = {title: "Move the camera", id: "move-camera"};
-      var p = view.popup;     // new Popup();
+      let moveButtonAction = {title: "Move the camera", id: "move-camera"};
+      let p = view.popup;     // new Popup();
       if (popupsDocked) {
         p.dockEnabled = true;
         p.dockOptions = {position: "bottom-right" };
@@ -1029,7 +1029,7 @@ define([
 
     // Handle click events:  Check for mouse over graphic features
     // Create a symbol for rendering the graphic
-    var zoomRectFillSymbol = {
+    let zoomRectFillSymbol = {
       type: "simple-fill", // autocasts as new SimpleFillSymbol()
       color: [227, 0, 0, 0.2],
       outline: { // autocasts as new SimpleLineSymbol()
@@ -1038,8 +1038,8 @@ define([
       }
     };
 
-    var extentGraphic = null;
-    var origin = null;
+    let extentGraphic = null;
+    let origin = null;
     view.on('drag', [], function(e){
       if (panning)
         return;
@@ -1049,7 +1049,7 @@ define([
         origin = view.toMap(e);
       } else if (e.action === 'update'){
         if (extentGraphic) view.graphics.remove(extentGraphic)
-        var p = view.toMap(e);
+        let p = view.toMap(e);
         extentGraphic = new Graphic({
           geometry: new Extent({
             xmin: Math.min(p.x, origin.x),
@@ -1070,21 +1070,21 @@ define([
 
       // Handle click events:  Check for mouse over graphic features
     view.on('click', [], function(e){
-      var screenPoint = {x: e.x, y: e.y};
+      let screenPoint = {x: e.x, y: e.y};
       view.hitTest(screenPoint).then(handleGraphicHits);
     });
 
 
     // Handle mouse-move events:  Update map coordinate display, and check for mouse over graphic features
     view.on('pointer-move', [], function(e){
-      var screenPoint = {x: e.x, y: e.y};
-      var mapPoint = view.toMap(screenPoint);
+      let screenPoint = {x: e.x, y: e.y};
+      let mapPoint = view.toMap(screenPoint);
 
       if (!mapPoint) {
-        debug("3D point is outside globe");
+        console.log("3D point is outside globe");
         return;
       }
-      var geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);    //szVideoWidget._webMercatorToGeographic(mapPoint);
+      let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);    //szVideoWidget._webMercatorToGeographic(mapPoint);
       dom.byId("coordinates").innerHTML = decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y);
 
       view.hitTest(screenPoint).then(handleGraphicHits);
@@ -1105,7 +1105,7 @@ define([
     //   alert("More than 1 hit!")
     // };
 
-    var i=0;      // Respond only to hits on "_Clickable" layers
+    let i=0;      // Respond only to hits on "_Clickable" layers
     while (i<response.results.length && response.results[i].graphic.layer.id.slice(-10)!=="_Clickable")
       i++;
     if (i === response.results.length) {
@@ -1143,7 +1143,7 @@ define([
   function makeWidgetDiv(divID, placement, maxHeight, theClass) {
     if (placement === undefined)
       placement = "";
-    var newDiv = document.createElement("div");
+    let newDiv = document.createElement("div");
     newDiv.id = divID;
     if (theClass)
       newDiv.setAttribute("class", theClass);
@@ -1159,14 +1159,14 @@ define([
   }
 
   function drag_start(event) {
-    var style = window.getComputedStyle(event.target, null);
-    var str = (parseInt(style.getPropertyValue("left")) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top")) - event.clientY)+ ',' + event.target.id;
+    let style = window.getComputedStyle(event.target, null);
+    let str = (parseInt(style.getPropertyValue("left")) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top")) - event.clientY)+ ',' + event.target.id;
     event.dataTransfer.setData("Text",str);
   }
 
   function drop(event) {
-    var offset = event.dataTransfer.getData("Text").split(',');
-    var dm = getEl(offset[2]);
+    let offset = event.dataTransfer.getData("Text").split(',');
+    let dm = getEl(offset[2]);
     dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
     dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
     event.preventDefault();
@@ -1181,13 +1181,13 @@ define([
   function wrapperWithOpacitySlider(divNode, title) {
     // Inserts a panel (divNode) into a wrapper DIV with a slider controlling the panel's opacity
     // Returns a handle to the new wrapper DIV
-    var divID = divNode.id;
-    var newDiv = document.createElement("div");
+    let divID = divNode.id;
+    let newDiv = document.createElement("div");
     newDiv.id = divID + "_wrapper";
-    var sliderDiv = document.createElement("div")
+    let sliderDiv = document.createElement("div")
     sliderDiv.innerHTML = '<input type="range" value="90" oninput="sliderHandler(\'' + divID + '\')" id="' + divID + '_slider" >';
     sliderDiv.innerHTML += '<label style="position: absolute; top: 5px; left:20px; color: #76766e">' + title + '</label>';
-    var contentDiv = document.createElement("div")
+    let contentDiv = document.createElement("div")
     contentDiv.id = divID + "_content";
     contentDiv.appendChild(divNode);
     newDiv.appendChild(sliderDiv);
@@ -1313,7 +1313,7 @@ define([
 
     /*
         // (DISABLED) ESRI Legend widget.  This goes in the "legendDom" DIV, rather than the map
-        //var legendDom = document.createElement("div");
+        //let legendDom = document.createElement("div");
         //legendDom.style.backgroundColor = "blueviolet";     //.className = "noaaWidget";
         legend = new Legend({
           container: makeWidgetDiv("legendDiv", "right"),     // "legendDom",
@@ -1330,7 +1330,7 @@ define([
         });
 
         // place the Legend in an Expand widget
-        var legendExpand = new Expand({
+        let legendExpand = new Expand({
           view: view,
           content: wrapperWithOpacitySlider(legend.domNode, "Legend"),
           expandIconClass: "esri-icon-layers",
@@ -1343,19 +1343,19 @@ define([
 
 
 
-    var homeWidget = new Home({
+    let homeWidget = new Home({
       view: view
     });
     view.ui.add({ component: homeWidget, position: "top-left", index: 1});
 
-    var locateWidget = new Locate({
+    let locateWidget = new Locate({
       view: view,   // Attaches the Locate button to the view
       graphicsLayer: locateIconLayer  // The layer the locate graphic is assigned to
     });
     view.ui.add({ component: locateWidget, position: "top-left", index: 2});
 
     // Add ESRI basemap gallery widget to map, inside an Expand widget
-    var basemapGallery = new BasemapGallery({
+    let basemapGallery = new BasemapGallery({
       view: view,
       container: makeWidgetDiv("basemapDiv", "bottom")    // document.createElement("div")
     });
@@ -1365,7 +1365,7 @@ define([
       console.log(event.mapPoint);
     });
 */
-    var bgExpand = new Expand({
+    let bgExpand = new Expand({
       view: view,
       content: wrapperWithOpacitySlider(basemapGallery.domNode, "Basemaps"),
       expandIconClass: "esri-icon-basemap",
@@ -1376,7 +1376,7 @@ define([
 
 
     // NOAA offline app link
-    var olExpand = new Expand({
+    let olExpand = new Expand({
       view: view,
       content: makeWidgetDiv("offlineAppPanel", "right")   ,
       expandIconClass: "esri-icon-download",
@@ -1388,7 +1388,7 @@ define([
 
 
     // Settings widget
-    var settingsExpand = new Expand({
+    let settingsExpand = new Expand({
       view: view,
       content: makeWidgetDiv("settingsPanel", "right")   ,
       expandIconClass: "esri-icon-settings",
@@ -1400,10 +1400,10 @@ define([
 
 
     // Add ESRI search widget to map
-    var searchWidget = new Search({ view: view });
+    let searchWidget = new Search({ view: view });
     view.ui.add(searchWidget, "bottom-right");
 
-    var prevNextBtnsDiv = document.createElement("DIV");
+    let prevNextBtnsDiv = document.createElement("DIV");
     prevNextBtnsDiv.innerHTML = prevNextBtnsHtml;
     view.ui.add(prevNextBtnsDiv, "top-right");
 
@@ -1411,7 +1411,7 @@ define([
       //bookmarks: new Collection(),      // In 4.12, needed to get past bug
       view: view
     });
-    var savedExtentsExpand = new Expand({
+    let savedExtentsExpand = new Expand({
       expandIconClass: "esri-icon-collection",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
       expandTooltip: "Show extents history", // optional, defaults to "Expand" for English locale
       view: view,
@@ -1426,11 +1426,11 @@ define([
       bookmarkSelected = true;
     });
 
-    var panZoomDiv = document.createElement("DIV");
+    let panZoomDiv = document.createElement("DIV");
     panZoomDiv.innerHTML = panZoomHtml;
     view.ui.add(panZoomDiv, "top-left");
 
-    var refreshFeaturesDiv = document.createElement("DIV");
+    let refreshFeaturesDiv = document.createElement("DIV");
     refreshFeaturesDiv.innerHTML = refreshFeaturesHtml;
     view.ui.add(refreshFeaturesDiv, "top-right");
 
@@ -1471,8 +1471,8 @@ define([
   return declare(null, {
 
     gotoExtent: function(extText) {
-      var a = extText.split(",");
-      var newExtent = new Extent({
+      let a = extText.split(",");
+      let newExtent = new Extent({
         xmin: a[0],
         xmax: a[2],
         ymin: a[1],
@@ -1484,14 +1484,14 @@ define([
     },
 
     selectAndZoom: function(w, id, extText) {
-      var newTab = parseInt(w.currTab) + 1;
-      var currTabInfo = w.tabInfo[w.currTab];
-      var ddName = currTabInfo.subTableDD;
-      var ddIndex = w.dropDownInfo.findIndex(function(f){
+      let newTab = parseInt(w.currTab) + 1;
+      let currTabInfo = w.tabInfo[w.currTab];
+      let ddName = currTabInfo.subTableDD;
+      let ddIndex = w.dropDownInfo.findIndex(function(f){
         return f.ddName === ddName;
       });
-      var ddInfo = w.dropDownInfo[ddIndex];
-      var ddDom = getEl(ddInfo.domId);
+      let ddInfo = w.dropDownInfo[ddIndex];
+      let ddDom = getEl(ddInfo.domId);
       ddDom.value = id;
       ddInfo.SelectedOption = ddDom.value;
       w.setActiveTab(newTab);

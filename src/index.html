@@ -52,21 +52,21 @@
     ], function(on, dom, registry, BorderContainer, ContentPane, TabContainer, ExpandoPane, FloatingPane, MapStuffWidget){
 
 
-      var regions = {
+      let regions = {
         l: {name: "left", dim: "width"},
         r: {name: "right", dim: "width"},
         t: {name: "top", dim: "height"},
         b: {name: "bottom", dim: "height"}
       };
 
-      var containers = {
+      let containers = {
         BC: BorderContainer,
         CP: ContentPane,
         TC: TabContainer,
         EP: ExpandoPane
       };
 
-      var layouts = {};     //new Object();     // Define the layout options
+      let layouts = {};     //new Object();     // Define the layout options
       layouts["v2"] = {
         id: "layoutV2",
         //buildOrder: ["root", "mvp", "m", "vp", "v", "p", "qt", "q", "t"],
@@ -123,42 +123,42 @@
                 faT:      ["t",  "c", "CP", {id: "faDiv", class: "tablePanelDiv fa"}]
       };
 
-      var splitterInfo = [];    // To hold info used in accessing splitters, to handle drag events
+      let splitterInfo = [];    // To hold info used in accessing splitters, to handle drag events
 
       function makeContainer(layoutInfo, info, id) {
-        var regionVal = "center";
-        var dimStr = "padding :0; ";
-        var parentId = info[0];
-        var locInfo = info[1];
-        var typeInfo = info[2];
-        var addlProps = {};
+        let regionVal = "center";
+        let dimStr = "padding :0; ";
+        let parentId = info[0];
+        let locInfo = info[1];
+        let typeInfo = info[2];
+        let addlProps = {};
         if (info.length > 3)
           addlProps = info[3];
         if (locInfo !== "c") {
-          var a = locInfo.split(":");
+          let a = locInfo.split(":");
           if (a.length > 1) {
             regionVal = regions[a[0]].name;
             dimStr += regions[a[0]].dim + ":" + a[1] + ";";
           }
         }
-        var bcArgs = {
+        let bcArgs = {
           region: regionVal,
           splitter: true,
           style: dimStr,
           id: addlProps.id,
           class: addlProps.class
         };
-        var b = typeInfo.split(":");
-        var contCode = b[0];
-        var container = containers[contCode];
+        let b = typeInfo.split(":");
+        let contCode = b[0];
+        let container = containers[contCode];
         if (contCode === "CP") {
         }
         else if (contCode === "EP") {
           //console.log("ExpandoPane: " + id);
         }
         else if (contCode === "BC") {
-          var orient = b[1];
-          var designVal = "headline";
+          let orient = b[1];
+          let designVal = "headline";
           if (orient === "v")
             designVal = "sidebar";
           bcArgs.liveSplitters = true;
@@ -167,7 +167,7 @@
         info.layoutElement = new container(bcArgs);
         customizeContainerHtml(info, b[1]);
         if (parentId) {
-          var parentEl = layoutInfo[parentId].layoutElement;
+          let parentEl = layoutInfo[parentId].layoutElement;
           parentEl.addChild(info.layoutElement);
           if (bcArgs.region !== "center")
             splitterInfo.push({id: parentEl.id, region: bcArgs.region})
@@ -178,25 +178,25 @@
       function buildLayout(layoutInfo) {
         splitterInfo = [];
         // If these are not built in the correct order, then will have to add buildOrder to object, and use that
-        for (var el in layoutInfo)
+        for (let el in layoutInfo)
           if (el !== "id") {
-            var id = el;
-            var info = layoutInfo[id];
+            let id = el;
+            let info = layoutInfo[id];
             makeContainer(layoutInfo, info, id);
           }
         return layoutInfo.root.layoutElement;
       }
 
       function customizeContainerHtml(info, header) {
-        var container = info.layoutElement;
+        let container = info.layoutElement;
         if (container.baseClass === "dijitExpandoPane") {
           if (!header)
             return;
-          var iconNode = container.domNode.getElementsByClassName("dojoxExpandoIcon")[0];
-          var customClassName = "noaaExpandoTitle";
-          var region = container.region;
+          let iconNode = container.domNode.getElementsByClassName("dojoxExpandoIcon")[0];
+          let customClassName = "noaaExpandoTitle";
+          let region = container.region;
           if (region==="left" || region==="right") {
-            var regionClassName = "noaaExpandoIcon" + region.charAt(0).toUpperCase() + region.slice(1);
+            let regionClassName = "noaaExpandoIcon" + region.charAt(0).toUpperCase() + region.slice(1);
             iconNode.className = "noaaExpandoIconVertical " + regionClassName;
             customClassName = "noaaExpandoTitleVertical";
           }
@@ -225,8 +225,8 @@
 
       function changeLayout(parentBC, layoutCode) {
         // TODO:  Figure out how to do this and preserve current content
-        //var tempBC = new BorderContainer();
-        //var mapDivCP = dom.byId("mapDiv");
+        //let tempBC = new BorderContainer();
+        //let mapDivCP = dom.byId("mapDiv");
         //mapDivCP.placeAt(tempBC);
         parentBC.removeChild(currLayout);
         currLayout.destroyDescendants();
@@ -240,7 +240,7 @@
         addContent('mapDiv', '<span id="coordinates" ></span>');
       }
 
-      var linksContent = '';
+      let linksContent = '';
 /*  //Add buttons to change layout.  So far, this isn't working post-load, so disabled for now.
       linksContent += '<img src="assets/images/layoutH2.png" id="btn_h2" class="layoutImg" >';
       linksContent += '<img src="assets/images/layoutV2.png" id="btn_v2" class="layoutImg" style="left: 40px;" >';
@@ -258,24 +258,24 @@
 
 
       // Tabs for ShoreZone/FishAtlas/ShoreStation
-      var szTab = new ContentPane({id: "szTab", title: "ShoreZone"}),
+      let szTab = new ContentPane({id: "szTab", title: "ShoreZone"}),
           faTab = new ContentPane({id: "faTab", title: "Fish Atlas"}),
           ssTab = new ContentPane({id: "ssTab", title: "Shore Station"}),
           szUnitsTab = new ContentPane({id: "szUnitsTab", title: "ShoreZone 3D Units demo"});
 
-      var stateNavigator = new TabContainer({id: "stateNavigator", region: "left", style: "width: 500px"});
+      let stateNavigator = new TabContainer({id: "stateNavigator", region: "left", style: "width: 500px"});
         stateNavigator.addChild( szTab );
         stateNavigator.addChild( faTab );
         stateNavigator.addChild( ssTab );
         stateNavigator.addChild( szUnitsTab );
-      var linksCP = new ContentPane({id: "linksPane", region: "center", content: linksContent});
+      let linksCP = new ContentPane({id: "linksPane", region: "center", content: linksContent});
 
-      var bannerBC = new BorderContainer({id: "bannerDiv", region: "top", style: "height: 30px"});
+      let bannerBC = new BorderContainer({id: "bannerDiv", region: "top", style: "height: 30px"});
       bannerBC.addChild(stateNavigator);
       bannerBC.addChild(linksCP);
 
-      var outerBC = new BorderContainer({id: "outerBC", style: "border-style: solid;", design: "headline"});
-      var currLayout = null;
+      let outerBC = new BorderContainer({id: "outerBC", style: "border-style: solid;", design: "headline"});
+      let currLayout = null;
       buildOuterBC(layoutCode);
       document.body.appendChild(outerBC.domNode);
       setPanelsContent();
@@ -300,7 +300,7 @@
             (Move some of the code used in processPicasaData for this purpose to the new function.)
 */
       splitterInfo.forEach(function(item) {
-        var lSplitter = dijit.registry.byId(item.id).getSplitter(item.region);
+        let lSplitter = dijit.registry.byId(item.id).getSplitter(item.region);
         lSplitter.on("mouseover", splitterDragHandler);
       });
 
@@ -314,23 +314,23 @@
       function resizeMedia() {
         if (!youtube_player)
           return;
-        var vDims = mediaDimensions("videoDiv", youtubeAspectRatio);
+        let vDims = mediaDimensions("videoDiv", youtubeAspectRatio);
         youtube_player.setSize(vDims.width, vDims.height);
-        var pDims = mediaDimensions("photoDiv", photoAspectRatio);
-        var photoEl = $("#photoImage")[0];
+        let pDims = mediaDimensions("photoDiv", photoAspectRatio);
+        let photoEl = $("#photoImage")[0];
         photoEl.width = pDims.width;
         photoEl.height = pDims.height;
-        var vDiv = dijit.registry.byId("videoDiv");
-        var pDiv = dijit.registry.byId("photoDiv");
+        let vDiv = dijit.registry.byId("videoDiv");
+        let pDiv = dijit.registry.byId("photoDiv");
         console.log("videoDiv:  " + vDiv.w + "x" + vDiv.h + "     photoDiv:  " + pDiv.w + "x" + pDiv.h);
 
       }
 
       // TODO:  Move this to QueryBasedPanelWidget
       function mediaDimensions(panelName, aspect) {
-        var mediaDiv = dijit.registry.byId(panelName);
-        var d = {width: mediaDiv.w, height: mediaDiv.h} ;
-        var divAspect = d.width/d.height;
+        let mediaDiv = dijit.registry.byId(panelName);
+        let d = {width: mediaDiv.w, height: mediaDiv.h} ;
+        let divAspect = d.width/d.height;
         if (aspect < divAspect)
           d.width = parseInt(d.height*aspect);
         else
@@ -341,10 +341,10 @@
 
       mapStuff = new MapStuffWidget();
 
-      var FaSsMsg = "Sorry, @ has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.";
+      let FaSsMsg = "Sorry, @ has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.";
       siteTabs.visManager = makeClassArrayVisibilityObject( {classNames: siteTabs.tabs, currClassName: siteTabs.currTab} );
-      var flexSiteURL = "https://alaskafisheries.noaa.gov/mapping/szflex/index.html?L=B";
-      var SZ3dUnitsSiteURL = "https://alaskafisheries.noaa.gov/mapping/jstest/szunits3d.html";
+      let flexSiteURL = "https://alaskafisheries.noaa.gov/mapping/szflex/index.html?L=B";
+      let SZ3dUnitsSiteURL = "https://alaskafisheries.noaa.gov/mapping/jstest/szunits3d.html";
 
       changeState(initTab);
 
@@ -364,7 +364,7 @@
                   if (confirm(FaSsMsg.replace(/@/g,"Shore Station")))
                     window.open(flexSiteURL + "@T=SS");
         */
-        var className = tabID.slice(0,2);
+        let className = tabID.slice(0,2);
         switchTo(className);
       }
 
@@ -372,7 +372,7 @@
         if (!siteTabs[className].widgets)
           return;
         siteTabs.visManager.promoteClass(className);
-        var widgets = siteTabs[className].widgets;
+        let widgets = siteTabs[className].widgets;
         for (i in widgets) {    // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
           if (widgets[i].tabInfo)
             widgets[i].setActiveTab(0);
@@ -381,10 +381,10 @@
       }
 
       function setGraphicsLayersVisibilities(className) {
-        var classNames = siteTabs.tabs;
+        let classNames = siteTabs.tabs;
         for (i in classNames) {
-          var isVisible = (classNames[i] === className);
-          var widgets = siteTabs[classNames[i]].widgets;
+          let isVisible = (classNames[i] === className);
+          let widgets = siteTabs[classNames[i]].widgets;
           for (j in widgets) {
             //widgets[j].clickableLayer.visible = isVisible;
             with (widgets[j]) {

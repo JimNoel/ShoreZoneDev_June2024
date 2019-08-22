@@ -7,13 +7,13 @@
  */
 
 
-var youtube_player = false;
-var youtube_timer = false;
-var youtube_id = false;
-var youtube_player_ready = false;
-var youtube_progress_memory = false;
-var youtube_playback_memory = 2;
-var iOS_playedOnce = false;
+let youtube_player = false;
+let youtube_timer = false;
+let youtube_id = false;
+let youtube_player_ready = false;
+let youtube_progress_memory = false;
+let youtube_playback_memory = 2;
+let iOS_playedOnce = false;
 
 
 
@@ -40,10 +40,7 @@ function onPlayerError(event) {
 
 function onPlayerStateChange(event) {
 
-  //debug("onPlayerStateChange: " + youtube_player.getPlayerState());
-
-
-  var state = youtube_player.getPlayerState();
+  let state = youtube_player.getPlayerState();
 
   if (state === 1 && !youtube_timer) {
 
@@ -61,11 +58,8 @@ function onPlayerStateChange(event) {
 
   } else if (state === 0) {      // YT.PlayerState.ENDED
   } else if (state === 2) {      // YT.PlayerState.PAUSED
-      //debug("Video paused")
   } else if (state === 3) {      // YT.PlayerState.BUFFERING
-      //debug("Video buffering");
   } else if (state === 5) {      // YT.PlayerState.CUED
-      //debug("Video cued");
   }
 
   if (state !== 1 && youtube_timer) {
@@ -75,7 +69,7 @@ function onPlayerStateChange(event) {
 }
 
 function CheckVideoProgress() {
-  var duration = youtube_player.getDuration();
+  let duration = youtube_player.getDuration();
   szVideoWidget.update_track(szVideoWidget.getVideoPosition(), duration);
 }
 
@@ -83,9 +77,9 @@ function changePlaybackSpeed(p) {
   // Change the playback speed of the video player to p. p should be a value between 0 and 100. 0 will indicate the lowest possible playback speed, 100 the highest
   if (!youtube_player)
     return;
-  var avail_rates = youtube_player.getAvailablePlaybackRates();
+  let avail_rates = youtube_player.getAvailablePlaybackRates();
   index = getProportionalInt(p, 0, avail_rates.length-1);
-  var new_rate = avail_rates[index]
+  let new_rate = avail_rates[index]
   // Ensure that the produced value is within possible bounds.
   console.assert(index>=0 && index<Math.max(avail_rates.length), {'index': index, 'min-index': 0, 'max-index': avail_rates.length - 1,'msg': 'Index is outside of the acceptable range.'});
   // Set the playback rate to the appropriate rate
@@ -110,6 +104,5 @@ function onYouTubeIframeAPIReady() {
      "onStateChange": onPlayerStateChange
      }
    });
-   //debug("YouTube API set up");
 }
 

@@ -13,14 +13,14 @@
 
 /*
 function getFieldInfo(id) {
-  var xmlhttp = new XMLHttpRequest();
+  let xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
-      var A = JSON.parse(this.responseText);
+      let A = JSON.parse(this.responseText);
       //window.open(offlineAppURL + "?" + A.jobId, "Shorezone Offline");
     }
   };
-  var baseURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZoneFlexMapService/MapServer/"
+  let baseURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZoneFlexMapService/MapServer/"
   xmlhttp.open("GET", baseURL + id + "?f=pjson", true);
   xmlhttp.send();
 };
@@ -46,11 +46,11 @@ define([
       this.UnitAttrsInfo = [];
 
       this.tableColumns = [];
-      var colPos = 1;     // Used to place columns in proper order.  Starts with 1, because PHY_IDENT is already in the array at position 0
-      var subLayers = szMapServiceLayer.allSublayers.items;
-      for (var i=subLayers.length-1; i>0; i--) {
+      let colPos = 1;     // Used to place columns in proper order.  Starts with 1, because PHY_IDENT is already in the array at position 0
+      let subLayers = szMapServiceLayer.allSublayers.items;
+      for (let i=subLayers.length-1; i>0; i--) {
         if (!subLayers[i].sublayers) {
-          var pTitle = layerFirstAncestorName(szMapServiceLayer, subLayers[i]);      // subLayers[i].parent.title;
+          let pTitle = layerFirstAncestorName(szMapServiceLayer, subLayers[i]);      // subLayers[i].parent.title;
           if (pTitle==="Derived ShoreZone Attributes" || pTitle==="Response Attributes" || pTitle==="Biological Attributes") {
             if (subLayers[i].title !=="Salt Marsh (all regions)") {     // This sublayer is created in the map file, hence not available in AK_Unit_Lines_wAttrs
               this.getUnitAttrInfo(subLayers[i].id, this, colPos);
@@ -62,7 +62,7 @@ define([
 
 
       this.findAttrInfoObj = function(a) {
-        for (var i=0; i<this.UnitAttrsInfo.length; i++) {
+        for (let i=0; i<this.UnitAttrsInfo.length; i++) {
           if (this.UnitAttrsInfo[i] && this.UnitAttrsInfo[i].field1 === a)
             return this.UnitAttrsInfo[i];
         }
@@ -71,7 +71,7 @@ define([
 
       // This method overrides the original method in QueryBasedPanelWidget.js
       this.attrName = function(a) {
-        var o = this.findAttrInfoObj(a);
+        let o = this.findAttrInfoObj(a);
         if (o) {
           return o.name;
         } else {
@@ -81,7 +81,7 @@ define([
 
       // This method overrides the original method in QueryBasedPanelWidget.js
       this.attrValDescription = function(a, attrs) {
-        var o = this.findAttrInfoObj(a);
+        let o = this.findAttrInfoObj(a);
         if (o) {
           return o.descrLookup[attrs[a]];
         } else {
@@ -92,21 +92,21 @@ define([
     },
 
     getUnitAttrInfo: function (id, w, colPos) {
-      var xmlhttp = new XMLHttpRequest();
+      let xmlhttp = new XMLHttpRequest();
       xmlhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
-          var A = JSON.parse(this.responseText);
-          var o = new Object();
+          let A = JSON.parse(this.responseText);
+          let o = new Object();
           o.id = id;
           o.name = A.name;
-          var r = A.drawingInfo.renderer;
+          let r = A.drawingInfo.renderer;
           o.field1 = r.field1;
           o.field2 = r.field2;
 
-          var valueInfos = r.uniqueValueInfos;
-          var descrLookup = new Object();
+          let valueInfos = r.uniqueValueInfos;
+          let descrLookup = new Object();
           for (vi in valueInfos) {
-            var value = valueInfos[vi].value;
+            let value = valueInfos[vi].value;
             if (o.field2)
               value = value.split(",")[0];
             descrLookup[value] = valueInfos[vi].label;
@@ -121,7 +121,7 @@ define([
           //unitAttrsInfo[id] = o;
         }
       };      //.bind(unitAttrsInfo);
-      var baseURL = szMapServiceLayerURL + "/";
+      let baseURL = szMapServiceLayerURL + "/";
       xmlhttp.open("GET", baseURL + id + "?f=pjson", true);
       xmlhttp.send();
     }

@@ -2,62 +2,62 @@
  * Created by Jim on 4/15/2016.
  */
 
-var debug_mode = "console";     // Possible values:  null (no debug message), "alert" (use alert dialog), [anything else] (use console)
-var justAK = false;
+let debug_mode = "console";     // Possible values:  null (no debug message), "alert" (use alert dialog), [anything else] (use console)
+let justAK = false;
 
-var popupsDocked = false;
+let popupsDocked = false;
 
 /* Initial basemap.  Can be one of:
       streets, satellite, hybrid, topo, gray, dark-gray, oceans, national-geographic, terrain, osm,
       dark-gray-vector, gray-vector, streets-vector, topo-vector, streets-night-vector, streets-relief-vector, streets-navigation-vector     */
-var startBasemap = "oceans";
+let startBasemap = "oceans";
 
 
 // SZ video parameters
-var minVideoLOD = 12;
-var maxSZFeatures = 2000;    // More than 2000 causes the browser to slow significantly  (for example, 5000 points causes 10-minute hang-up)
-var maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
-var highlightSize = 15;
+let minVideoLOD = 12;
+let maxSZFeatures = 2000;    // More than 2000 causes the browser to slow significantly  (for example, 5000 points causes 10-minute hang-up)
+let maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
+let highlightSize = 15;
 
-var aoosQueryBaseUrl = "https://servomatic9000.axiomalaska.com/spatial-imagery/alaska_shorezone/imageMetadata?callback=jQuery111107511455304335468_1552688607085&x={lon}&y={lat}&width=300&height=300&_=1552688607089";
-var aoosPhotosBaseUrl = "https://servomatic9000.axiomalaska.com/photo-server/";
+let aoosQueryBaseUrl = "https://servomatic9000.axiomalaska.com/spatial-imagery/alaska_shorezone/imageMetadata?callback=jQuery111107511455304335468_1552688607085&x={lon}&y={lat}&width=300&height=300&_=1552688607089";
+let aoosPhotosBaseUrl = "https://servomatic9000.axiomalaska.com/photo-server/";
 
-var gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
+let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
 
-var offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
+let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
 
 //Map service URLs
 // Pacific States server URLs
-var szServerURLps = "https://geo.psmfc.org";
-var szRestServicesURLps = szServerURLps + "/arcgis/rest/services";
-var szMapServiceLayerURLps = szRestServicesURLps + "/NOAA/ShoreZoneFlexMapService/MapServer";
+let szServerURLps = "https://geo.psmfc.org";
+let szRestServicesURLps = szServerURLps + "/arcgis/rest/services";
+let szMapServiceLayerURLps = szRestServicesURLps + "/NOAA/ShoreZoneFlexMapService/MapServer";
 
 // NOAA server URLs
-var szServerURLnoaa = "https://alaskafisheries.noaa.gov";
-var szRestServicesURLnoaa = szServerURLnoaa + "/arcgis/rest/services";
-var szMapServiceLayerURLnoaa = szRestServicesURLnoaa + "/ShoreZoneFlexMapService/MapServer";
-var szMapServiceLayerURLnoaaNew = szRestServicesURLnoaa + "/ShoreZone/MapServer";
-//var szMapServiceLayerURLnoaaNew = szRestServicesURLnoaa + "/ShoreZoneMapService/MapServer";
+let szServerURLnoaa = "https://alaskafisheries.noaa.gov";
+let szRestServicesURLnoaa = szServerURLnoaa + "/arcgis/rest/services";
+let szMapServiceLayerURLnoaa = szRestServicesURLnoaa + "/ShoreZoneFlexMapService/MapServer";
+let szMapServiceLayerURLnoaaNew = szRestServicesURLnoaa + "/ShoreZone/MapServer";
+//let szMapServiceLayerURLnoaaNew = szRestServicesURLnoaa + "/ShoreZoneMapService/MapServer";
 
 // Set default server URLs
-var szServerURL = szServerURLnoaa;
-var szRestServicesURL = szRestServicesURLnoaa;
-var szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
-var szSublayerIDs = {};
+let szServerURL = szServerURLnoaa;
+let szRestServicesURL = szRestServicesURLnoaa;
+let szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
+let szSublayerIDs = {};
 
 
-var ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";        // ShoreStation gives CORS error for some reason
-var ssSublayerIDs = {};
+let ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";        // ShoreStation gives CORS error for some reason
+let ssSublayerIDs = {};
 makeSublayerIdTable(ssMapServiceLayerURL, ssSublayerIDs);
 
-var faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer";
-var faSublayerIDs = {};
+let faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer";
+let faSublayerIDs = {};
 makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 
 
-var locateIconLayer;     // GraphicsLayer for displaying user location.  Used by Locate widget.
-var layoutCode = "h2";     // default layout
-var initTab = "szTab";
+let locateIconLayer;     // GraphicsLayer for displaying user location.  Used by Locate widget.
+let layoutCode = "h2";     // default layout
+let initTab = "szTab";
 
 const legendFilters = [
   {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","},
@@ -70,12 +70,10 @@ let nonNullList = null;
 function filterLegend(serviceName, nonNullList) {
   if (!nonNullList)
     return;
-  for (var i=0; i<legendFilters.length; i++) {
+  for (let i=0; i<legendFilters.length; i++) {
     let f = legendFilters[i];
     let fieldNonNulls = nonNullList[f.fieldName];
     if (f.serviceName === serviceName) {
-      let pId = "swatch_" + f.serviceName + "_" + f.fieldName;
-      //let pDiv = getEl(pId);
       for (d of f.contentDiv.children) {
         let A = d.id.split("_");
         if (fieldNonNulls.includes(A[A.length-1]))
@@ -83,31 +81,17 @@ function filterLegend(serviceName, nonNullList) {
         else
           d.style.display = "none";
       }
-/*
-      for  (v of fieldNonNulls) {
-        let d = getEl(pId + "_" + v);
-        d.style.display = "block";    // "inline";
-      }
-*/
-
-/*
-      for (fieldName in nonNullList) {
-        if (nonNullList[fieldName].length > 0) {
-        }
-      }
-*/
     }
   }
-
 }
 
 
 //* process site parameters
-var siteParsJSON = location.search.slice(1);
+let siteParsJSON = location.search.slice(1);
 if (siteParsJSON !== "") {
   siteParsJSON = siteParsJSON.toLowerCase().replace(/&/g,'","').replace(/=/g,'":"');
   siteParsJSON = '{"' + siteParsJSON + '"}';
-  var sitePars = JSON.parse(siteParsJSON);
+  let sitePars = JSON.parse(siteParsJSON);
 
   // for comparing performance of old and new SZ map services
   if (sitePars["db"] === "sql") {
@@ -136,60 +120,60 @@ if (siteParsJSON !== "") {
 
 makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
 
-var sslMapServiceLayerURL = szRestServicesURL + "/Ports_SSL/MapServer";
+let sslMapServiceLayerURL = szRestServicesURL + "/Ports_SSL/MapServer";
 
-var altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
-var VIDEO_SERVER = altMediaServer;
-var PHOTO_SERVER = altMediaServer;
-var VIDEO_FOLDER = "video/";
+let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
+let VIDEO_SERVER = altMediaServer;
+let PHOTO_SERVER = altMediaServer;
+let VIDEO_FOLDER = "video/";
 
-var current_photo_sub = "stillphotos_lowres";
-var current_photo_prefix = "280_";
-var current_video_file_prefix = "360_";
-var current_video_path_prefix = "midres_";
+let current_photo_sub = "stillphotos_lowres";
+let current_photo_prefix = "280_";
+let current_video_file_prefix = "360_";
+let current_video_path_prefix = "midres_";
 
-var videoSnippetDownloadFolder = altMediaServer + VIDEO_FOLDER + "midres_mp4";
-var youtubeAspectRatio = 16/9;
-var photoAspectRatio = 4/3;
+let videoSnippetDownloadFolder = altMediaServer + VIDEO_FOLDER + "midres_mp4";
+let youtubeAspectRatio = 16/9;
+let photoAspectRatio = 4/3;
 
 let serviceLayers = null;
-var extentDependentWidgets = [];
-var szVideoWidget = null;
-var szPhotoWidget = null;
-var szUnitsWidget = null;
-var faWidget = null;
-var faSpTableWidget = null;
-var ssWidget = null;
-var ssSpTableWidget = null;
-var gp = null;      // for Geoprocessor
-var llExpand = null;
-var layerListWidget = null;
-//var listItem_1s_legendHtml = null;
-var listItem_10s_legendHtml = null;
-var listItem_VideoFlightline = null;
-var legendInfo = {};
+let extentDependentWidgets = [];
+let szVideoWidget = null;
+let szPhotoWidget = null;
+let szUnitsWidget = null;
+let faWidget = null;
+let faSpTableWidget = null;
+let ssWidget = null;
+let ssSpTableWidget = null;
+let gp = null;      // for Geoprocessor
+let llExpand = null;
+let layerListWidget = null;
+//let listItem_1s_legendHtml = null;
+let listItem_10s_legendHtml = null;
+let listItem_VideoFlightline = null;
+let legendInfo = {};
 
 //  When a graphic is hovered over, these point to the graphic and the widget controlling the graphic
-var minHoverTime = 500;     // Minimum hover time (ms) over a graphic before a new popup opens up
-//var hitTestStartTime = null;
-//var candidateGraphic = null;
-var currentHoveredGraphic = null;
-var currentWidgetController = null;
-var hoverTimeout;
+let minHoverTime = 500;     // Minimum hover time (ms) over a graphic before a new popup opens up
+//let hitTestStartTime = null;
+//let candidateGraphic = null;
+let currentHoveredGraphic = null;
+let currentWidgetController = null;
+let hoverTimeout;
 
-var image_message_timeout = false;
+let image_message_timeout = false;
 
-var sync_photos = true;
-var lock_points = false;
+let sync_photos = true;
+let lock_points = false;
 
 // width was 20, trying larger values for iPad Mini
-var playbackControlTemplate = '<img id="{0}" class="playbackControl" title="{1}" src="assets/images/{2} " width="24" onclick="mediaControl_clickHandler({3},\'{4}\')" />';
+let playbackControlTemplate = '<img id="{0}" class="playbackControl" title="{1}" src="assets/images/{2} " width="24" onclick="mediaControl_clickHandler({3},\'{4}\')" />';
 
-var settings = {
+let settings = {
   autoRefresh: true,
   photoGap: 100
 };
-var settingsHtml = '<h3>Settings</h3>';
+let settingsHtml = '<h3>Settings</h3>';
 settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
@@ -202,7 +186,7 @@ function autoRefreshInputHandler(isAutoRefresh) {
 }
 
 function setRefreshButtonVisibility(isVisible) {
-  var btnClass = "btn_refresh_inactive";
+  let btnClass = "btn_refresh_inactive";
   if (isVisible)
     btnClass = "btn_refresh_active";
   getEl("btn_refresh").setAttribute("class", btnClass)
@@ -216,7 +200,7 @@ function photoGapInputHandler() {
 
 // Returns string identifying the device type
 function getDeviceType() {
-  var agent = navigator.userAgent;
+  let agent = navigator.userAgent;
   if (agent.match(/Android/i))
     return "Android";
   if (agent.match(/BlackBerry/i))
@@ -234,53 +218,14 @@ function getDeviceType() {
   return "UNKNOWN";
 };
 
-var deviceType = getDeviceType();
-//debug("Device: " + deviceType);
+let deviceType = getDeviceType();
 
 
 /* General utilities */
 
-function debug(txt, append, br, key_counter) {
-  /*!
-   * Debugging helper
-   * \param string txt Text to display
-   * \param bool append Append to text output
-   * \param bool br Break lines
-   */
-  if (!debug_mode) return;      // No debug message if null
-
-  if (typeof append === "undefined") append = true;
-  if (typeof br === "undefined") br = true;
-  if (typeof key_counter === "undefined") key_counter = 0;
-
-  if (debug_mode==="alert")
-    alert(txt);
-  else if (window.console) {
-    console.log(txt)
-  } else { // emulate debug console on older browsers
-    if ($("#debug").size() === 0) {
-      $("body").append("<div id='debug' style='position:absolute; bottom: 5px; right: 5px; background-color: #FFF; opacity: 0.7; padding: 5px; max-height: 250px; overflow: auto; width: 300px; text-align: left;'></div>");
-    }
-
-    if (!append) $("#debug").html("");
-
-    if (typeof txt === "object") {
-      $.each(txt, function( key, value ) {
-        debug(key + ": ", true, true, key_counter+1); debug(value, true, true, key_counter+1);
-      });
-
-      if (key_counter === 0) $("#debug").append("<br>");
-    } else {
-      $("#debug").append(txt + (br ? "<br>":" "));
-    }
-
-    $("#debug").scrollTop($("#debug")[0].scrollHeight);
-  }
-}
-
 function asyncLoader(scriptName) {
   //  Javascript loader.
-  var d=document,
+  let d=document,
     h=d.getElementsByTagName('head')[0],
     s=d.createElement('script');
   s.type='text/javascript';
@@ -291,12 +236,12 @@ function asyncLoader(scriptName) {
 
 function decDeg_to_DegMinSec(decDeg, axis) {
 // axis is either "NS" for Lat or "EW" for Lon
-  var dir = (decDeg<0 ? axis[0] : axis[1]);
+  let dir = (decDeg<0 ? axis[0] : axis[1]);
   decDeg = Math.abs(decDeg);
-  var d = Math.floor(decDeg);
-  var decMin = 60*(decDeg - d);
-  var m = Math.floor(decMin);
-  var s = Math.round(60*(decMin - m));
+  let d = Math.floor(decDeg);
+  let decMin = 60*(decDeg - d);
+  let m = Math.floor(decMin);
+  let s = Math.round(60*(decMin - m));
   return ( d + "&deg;" + m + "' " + s + "\" " + dir);
 }
 
@@ -307,12 +252,12 @@ function decDegCoords_to_DegMinSec(decLon, decLat) {
 
 
 function makeHtmlFromTemplate(theTemplate, parameters) {
-  var outHTML = '';
-  for (var i=0; i<parameters.length; i++) {
-    var A = parameters[i];
-    var S = theTemplate;
-    for (var j=0; j<A.length; j++) {
-      var srch = '{' + j + '}';
+  let outHTML = '';
+  for (let i=0; i<parameters.length; i++) {
+    let A = parameters[i];
+    let S = theTemplate;
+    for (let j=0; j<A.length; j++) {
+      let srch = '{' + j + '}';
       S = S.replace(srch, A[j]);
     }
     outHTML += S;
@@ -321,10 +266,10 @@ function makeHtmlFromTemplate(theTemplate, parameters) {
 }
 
 function setContent(elName, text, append) {
-  var el = getEl(elName);
+  let el = getEl(elName);
   if (!el)
     return;
-  var newContent = "";
+  let newContent = "";
   if (append)
     newContent = el.innerHTML;
   newContent += text;
@@ -333,7 +278,7 @@ function setContent(elName, text, append) {
 
 function setMessage(elName, text, visible, fade) {
   // Show message in "elName"
-  var el = getEl(elName);
+  let el = getEl(elName);
   if (!el)
     return;
   if (visible === undefined)
@@ -386,7 +331,7 @@ function setDisplay(id, value) {
   let el = getEl(id);
   if (!el)
     return;   // do nothing if el doesn't exist
-  var display = "none";
+  let display = "none";
   if (value)
     display = "block";
   el.style.display = display;
@@ -397,7 +342,7 @@ function setVisible(id, value) {
   el = getEl(id);
   if (!el)
     return;   // do nothing if el doesn't exist
-  var visibility = "hidden";
+  let visibility = "hidden";
   if (value)
     visibility = "visible";
   el.style.visibility = visibility;
@@ -430,14 +375,14 @@ function showPanelContents(panelNames, show, disabledMsg) {
    and another DIV named:                "panelDisabled_" + name
    When "show" is true, the "disabled" DIV is displayed and the "enabled" DIV is hidden
    */
-  var names = panelNames.split(",");
-  for (var i=0; i<names.length; i++) {
-    var panelDisabledDiv = getEl("panelDisabled_" + names[i]);
-    var panelEnabledDiv = getEl("panelEnabled_" + names[i]);
+  let names = panelNames.split(",");
+  for (let i=0; i<names.length; i++) {
+    let panelDisabledDiv = getEl("panelDisabled_" + names[i]);
+    let panelEnabledDiv = getEl("panelEnabled_" + names[i]);
     if (!panelDisabledDiv || !panelEnabledDiv)
       return;
-    var panelDisabledDivStyle =panelDisabledDiv.style;
-    var panelEnabledDivStyle = panelEnabledDiv.style;
+    let panelDisabledDivStyle =panelDisabledDiv.style;
+    let panelEnabledDivStyle = panelEnabledDiv.style;
     if (show) {
       panelDisabledDivStyle.visibility = "hidden";
       panelEnabledDivStyle.visibility = "visible";
@@ -470,15 +415,15 @@ function sliderHandler(divID) {
 }
 
 function setDropdownValue(ddInfo, value) {
-  var ddDom = getEl(ddInfo.domId);
+  let ddDom = getEl(ddInfo.domId);
   ddDom.value = value;
   ddInfo.SelectedOption = value;
 }
 
 function dropdownSelectHandler(w, index, ddElement) {
-  var ddInfo = w.dropDownInfo[index];
+  let ddInfo = w.dropDownInfo[index];
   ddInfo.SelectedOption = ddElement.value;
-  var newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
+  let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
   if (newExtent)
     mapStuff.gotoExtent(newExtent);
   w.runQuery(view.extent);
@@ -495,10 +440,10 @@ function findAndChangePlaybackSpeed() {
 
 // If parentObject has property indicated in propertyChain, returns the value of that property.  Otherwise, returns null
 function getIfExists(parentObject, propertyChain) {
-  var props = propertyChain.split(".");
-  var lastIndex = props.length-1;
-  var obj = parentObject;
-  for (var p=0; p<lastIndex; p++) {
+  let props = propertyChain.split(".");
+  let lastIndex = props.length-1;
+  let obj = parentObject;
+  for (let p=0; p<lastIndex; p++) {
     obj = obj[props[p]];
     if (typeof(obj) !== "object")
       return null;
@@ -518,7 +463,7 @@ function makeMediaPlaybackHtml(controlsTemplate, controlsParameters, id, style) 
     id = ""
   if (style === undefined)
     style = ""
-  var outHTML = '';
+  let outHTML = '';
   outHTML += '';
   outHTML += '<div class="playbackControlContainer" id="' + id +'" style="' + style + '">';
   outHTML += makeHtmlFromTemplate(controlsTemplate, controlsParameters);
@@ -531,7 +476,7 @@ function clearGraphicFeatures() {
 
 function updateNoFeaturesMsg(widgets, status) {
   // Sets messages to display in panels when no content is available to display.  Messages will be visible whenever zoomed out or zoomed in too far, or when waiting on query results
-  var template = "";
+  let template = "";
   if (status === "zoomin")
     template = "Zoom in further to see {1}";
   else if (status === "querying")
@@ -599,7 +544,7 @@ function getDescendentLayer(layer, name) {
     return layer;
   if (layer.children !== null) {
     let items = layer.children.items;
-    for (var i=0; i<items.length; i++) {
+    for (let i=0; i<items.length; i++) {
       let l = getDescendentLayer(items[i], name);
       if (l !== null)
         return l;
@@ -610,7 +555,7 @@ function getDescendentLayer(layer, name) {
   let l = layer;
   while (l.children !== null) {
     let items = l.children.items;
-    for (var i=0; i<items.length; i++) {
+    for (let i=0; i<items.length; i++) {
       if (items[i].title === name)
         return items[i];
     }
@@ -619,16 +564,16 @@ function getDescendentLayer(layer, name) {
 }
 
 function queryServer(url, returnJson, responseHandler) {
-  var xmlhttp = new XMLHttpRequest();
+  let xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
-      var R = this.responseText;
+      let R = this.responseText;
       if (returnJson)
         R = JSON.parse(R);
       responseHandler(R);
     }
   };
-  var completeUrl = url;
+  let completeUrl = url;
   if (returnJson)
     completeUrl += "?f=pjson"
   xmlhttp.open("GET", completeUrl, true);
@@ -637,12 +582,12 @@ function queryServer(url, returnJson, responseHandler) {
 
 function makeSublayerIdTable(serviceUrl, idTable) {
   queryServer(serviceUrl, true, function(R) {
-    for (l in R.layers) {
-      var o = R.layers[l];
+    for (let l in R.layers) {
+      let o = R.layers[l];
       idTable[o.name] = o.id.toString();
     }
-    for (t in R.tables) {
-      var o = R.tables[t];
+    for (let t in R.tables) {
+      let o = R.tables[t];
       idTable[o.name] = o.id.toString();
     }
   });
@@ -655,7 +600,7 @@ function makeClassArrayVisibilityObject(/*Object*/ obj) {  // Initialize obj wit
 
   obj.promoteClass = function(newClassName) {
     with (this) {
-      var s = "";
+      let s = "";
       for (c in classNames) {
         s += "." + classNames[c] + " {display: ";
         if (classNames[c]===newClassName)
@@ -679,7 +624,7 @@ function openNewTab(url) {
 }
 
 function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
-  var el = document.createElement(tagName);
+  let el = document.createElement(tagName);
   if (theId)
     el.setAttribute("id", theId);
   if (theClass)
@@ -691,19 +636,19 @@ function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
   return el;
 }
 
-var featureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
-var refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' src='assets/images/refresh24x24.png' onclick='refreshFeatures()' height='32px' width='32px' title='Click to refresh features' />";
+let featureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
+let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' src='assets/images/refresh24x24.png' onclick='refreshFeatures()' height='32px' width='32px' title='Click to refresh features' />";
 
 
 /* For pan/zoom-to-rectangle toggle */
-var panning = true;      // If not panning, then zooms to drawn rectangle
-var panZoomHtml = "<img id='btn_pan' src='assets/images/i_pan.png' onclick='togglePanZoom(true)' height='32px' width='32px' title='Click to enable panning' /><br>";
+let panning = true;      // If not panning, then zooms to drawn rectangle
+let panZoomHtml = "<img id='btn_pan' src='assets/images/i_pan.png' onclick='togglePanZoom(true)' height='32px' width='32px' title='Click to enable panning' /><br>";
 panZoomHtml += "<img id='btn_zoomRect' src='assets/images/i_zoomin.png' onclick='togglePanZoom(false)' height='32px' width='32px' title='Click to enable zoom-in to drawn rectangle' style='opacity: 0.2' />";
 
 function togglePanZoom(mode) {
   panning = mode;
-  var panningOpacity = 1;
-  var zoomingOpacity = 1;
+  let panningOpacity = 1;
+  let zoomingOpacity = 1;
   if (panning)
     zoomingOpacity = 0.2;
   else
@@ -715,27 +660,27 @@ function togglePanZoom(mode) {
 /* For pan/zoom-to-rectangle toggle */
 
 /* For extent history and prev/next extent navigation*/
-var prevNextBtnsHtml = "<img id='btn_prevExtent' src='assets/images/backward.png' onclick='gotoSavedExtent(-1)' title='Click to go to previous extent' height='32px' width='32px' /><br>";
+let prevNextBtnsHtml = "<img id='btn_prevExtent' src='assets/images/backward.png' onclick='gotoSavedExtent(-1)' title='Click to go to previous extent' height='32px' width='32px' /><br>";
 prevNextBtnsHtml += "<img id='btn_nextExtent' src='assets/images/forward.png' onclick='gotoSavedExtent(1)' title='Click to go to next extent in history' height='32px' width='32px' style='opacity: 0.2' />";
 
-var savedExtentsWidget = null;
-var bookmarkSelected = false;
-var currentBookmarkNumber = -1;
+let savedExtentsWidget = null;
+let bookmarkSelected = false;
+let currentBookmarkNumber = -1;
 
 function gotoSavedExtent(offset) {
-  var l = savedExtentsWidget.bookmarks.length;
+  let l = savedExtentsWidget.bookmarks.length;
   if (currentBookmarkNumber === -1)
     currentBookmarkNumber = l - 1;
-  var n = currentBookmarkNumber + offset;
+  let n = currentBookmarkNumber + offset;
   if (n>=0 && n<l) {
     //TODO: handle this:  Uncaught Error: li had a span child removed, but there is now more than one. You must add unique key properties to make them distinguishable.
     //savedExtentsWidget.bookmarks.items[currentBookmarkNumber].thumbnail = "";
     //savedExtentsWidget.bookmarks.items[n].thumbnail = "assets/images/w_right_green.png";
-    var currentBookmark = savedExtentsWidget.bookmarks.items[n];
+    let currentBookmark = savedExtentsWidget.bookmarks.items[n];
     //currentBookmark.thumbnail.url = "assets/images/w_right_green.png";
     savedExtentsWidget.goTo(currentBookmark);
-    var prevButton = getEl("btn_prevExtent");
-    var nextButton = getEl("btn_nextExtent");
+    let prevButton = getEl("btn_prevExtent");
+    let nextButton = getEl("btn_nextExtent");
     prevButton.style.opacity = 1;
     nextButton.style.opacity = 1;
     if (n === 0)
@@ -749,12 +694,12 @@ function gotoSavedExtent(offset) {
 
 
 function simulateMouseEvent(el, evType) {
-  var event = new MouseEvent(evType, {
+  let event = new MouseEvent(evType, {
     view: window,
     bubbles: true,
     cancelable: true
   });
-  var cancelled = !el.dispatchEvent(event);
+  let cancelled = !el.dispatchEvent(event);
   if (cancelled) {
     // A handler called preventDefault.
     console.log("cancelled");
@@ -765,10 +710,10 @@ function simulateMouseEvent(el, evType) {
 }
 
 function isInViewport(el, scrollWindow) {
-  var elementTop = $(el).offset().top;
-  var elementBottom = elementTop + $(el).outerHeight();
-  var viewportTop = $(scrollWindow).offset().top;
-  var viewportBottom = viewportTop + $(scrollWindow).height();
+  let elementTop = $(el).offset().top;
+  let elementBottom = elementTop + $(el).outerHeight();
+  let viewportTop = $(scrollWindow).offset().top;
+  let viewportBottom = viewportTop + $(scrollWindow).height();
   return elementTop >= viewportTop && elementBottom <= viewportBottom;
 }
 
@@ -776,13 +721,13 @@ function makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theSt
   let divClass = "draggableDiv";
   if (theClass)
     divClass = theClass;
-  var newDiv = makeHtmlElement("div", divID, divClass, theStyle, theContent);
+  let newDiv = makeHtmlElement("div", divID, divClass, theStyle, theContent);
   if (headerText || hasOpacitySlider) {
-    var headerDiv = makeHtmlElement("div", divID + "_header", "draggableDivHeader");
+    let headerDiv = makeHtmlElement("div", divID + "_header", "draggableDivHeader");
     headerDiv.title = headerText;
     headerDiv.innerHTML = '<b id="' + divID + '_headerText" style="position:absolute;left:10px; top:0px">' + headerText + '</b>';
     headerDiv.innerHTML += '<input type="range" value="90" class="opacitySlider" oninput="sliderHandler(\'' + divID + '\')" id="' + divID + '_slider" >';
-    var onClickFunction = "setDisplay('" + divID + "',false);";
+    let onClickFunction = "setDisplay('" + divID + "',false);";
     headerDiv.innerHTML += '<span class="close" title="Close panel" onclick=' + onClickFunction + '>&times;</span>';
     newDiv.appendChild(headerDiv);
   }
@@ -790,7 +735,7 @@ function makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theSt
   newDiv.ondragstart = panel_drag_start;
   newDiv.ondragover = panel_drag_over;
   newDiv.ondrop = panel_drop;
-  var contentDiv = makeHtmlElement("div", divID + "_content", "draggableDivContent");
+  let contentDiv = makeHtmlElement("div", divID + "_content", "draggableDivContent");
   contentDiv.innerHTML = "";
   if (theContent)
     contentDiv.innerHTML = theContent;
@@ -800,14 +745,14 @@ function makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theSt
 }
 
 function panel_drag_start(event) {
-  var style = window.getComputedStyle(event.target, null);
-  var str = (parseInt(style.getPropertyValue("left")) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top")) - event.clientY)+ ',' + event.target.id;
+  let style = window.getComputedStyle(event.target, null);
+  let str = (parseInt(style.getPropertyValue("left")) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top")) - event.clientY)+ ',' + event.target.id;
   event.dataTransfer.setData("Text",str);
 }
 
 function panel_drop(event) {
-  var offset = event.dataTransfer.getData("Text").split(',');
-  var dm = getEl(offset[2]);
+  let offset = event.dataTransfer.getData("Text").split(',');
+  let dm = getEl(offset[2]);
   dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
   dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
   event.preventDefault();
@@ -824,7 +769,7 @@ function formatNumber_Commas(num) {
 }
 
 function formatNumber_Date(num) {
-  var dateStr = new Date(num).toDateString();
+  let dateStr = new Date(num).toDateString();
   return dateStr.split(" ").slice(1).join(" ");
 }
 
@@ -834,7 +779,7 @@ function resizeWidgets() {
 
 
 
-var mapStuff;
+let mapStuff;
 
 function modify_LayerListItem_VideoFlightline() {
   // A hack to hide the 1s & 10s layers in the LayerList
@@ -870,9 +815,9 @@ function logPoperties(obj) {
 /* Unused functions
 
  function distinct(theArray) {
- var L = "/";
- for (var i=0; i<theArray.length; i++) {
- var S = theArray[i];
+ let L = "/";
+ for (let i=0; i<theArray.length; i++) {
+ let S = theArray[i];
  if (L.indexOf("/" + S + "/") === -1)
  L += S + "/";
  }
@@ -885,8 +830,8 @@ function logPoperties(obj) {
 
  function padString(str, len, mode) {
  // "mode" can be "left", "right" or "both"
- var outstr = str;
- var leftSide = false;
+ let outstr = str;
+ let leftSide = false;
  if (mode==="left")
  leftSide = true;
  while (outstr.length < len) {
@@ -901,8 +846,8 @@ function logPoperties(obj) {
  }
 
 function getSubLayerID(mapImageLayer, subLayerName) {
-  var li = mapImageLayer.allSublayers;
-  for (var i=0; i<li.length; i++) {
+  let li = mapImageLayer.allSublayers;
+  for (let i=0; i<li.length; i++) {
     //if (li.items[i].title.indexOf(subLayerName) !== -1)      // option to find when layer has DB prefixes
     if (li.items[i].title === subLayerName)
       return li.items[i].id;

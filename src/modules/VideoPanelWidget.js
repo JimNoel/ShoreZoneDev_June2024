@@ -20,20 +20,20 @@ define([
 
   // private vars and functions here
 
-  var imageUrl = "";
-  var last_video_name = null;
-  var startPointData;
-  var latest_startPointData;
-  var cur_vid_pt = null;
-  var nxt_vid_pt = null;
-  var videos = false;
-  var video_message_timeout = false;
+  let imageUrl = "";
+  let last_video_name = null;
+  let startPointData;
+  let latest_startPointData;
+  let cur_vid_pt = null;
+  let nxt_vid_pt = null;
+  let videos = false;
+  let video_message_timeout = false;
 
 
   function measurePhotoDownloadTime() {
     if (szPhotoWidget.last_photo_point["DATE_TIME"] = szPhotoWidget.beforeLast_photo_point["DATE_TIME"])
       return;
-    var next_photo_percent = (szPhotoWidget.last_photo_point["MP4_Seconds"]-currentTime)/(szPhotoWidget.last_photo_point["DATE_TIME"]-szPhotoWidget.beforeLast_photo_point["DATE_TIME"])*1000;
+    let next_photo_percent = (szPhotoWidget.last_photo_point["MP4_Seconds"]-currentTime)/(szPhotoWidget.last_photo_point["DATE_TIME"]-szPhotoWidget.beforeLast_photo_point["DATE_TIME"])*1000;
 
     if (!szPhotoWidget.latest_photo_loaded() && next_photo_percent>0.3)
       setPlaybackRate(next_photo_percent);
@@ -43,7 +43,7 @@ define([
 	timeToNextPhoto = (szPhotoWidget.next_photo_point["DATE_TIME"] - szPhotoWidget.beforeLast_photo_point["DATE_TIME"])/1000;
 
     if (!szPhotoWidget.latest_photo_loaded()) {
-      debug("onVideoProgress: last photo did not load in time. ");
+      console.log("onVideoProgress: last photo did not load in time. ");
       //get_video()[0].playbackRate = 0.0;
     } else {
         get_video()[0].playbackRate = 1;
@@ -53,14 +53,14 @@ define([
   function onVideoProgress(e) {
 
     try {
-      var currentTime = e.target.currentTime
-      var duration = e.target.duration
-      var current_progress = currentTime/duration
+      let currentTime = e.target.currentTime
+      let duration = e.target.duration
+      let current_progress = currentTime/duration
 
       //#### PHOTOS ####
 
       if (sync_photos && szPhotoWidget.szPhotosVisible) {
-          var currPhotoPoint = szPhotoWidget.getClickableGraphicAttributes(szPhotoWidget.counter);
+          let currPhotoPoint = szPhotoWidget.getClickableGraphicAttributes(szPhotoWidget.counter);
           if ((currentTime > currPhotoPoint.MP4_Seconds) && (szPhotoWidget.counter < szPhotoWidget.getClickableGraphicsCount() - 1)) {
 
               szPhotoWidget.beforeLast_photo_point = szPhotoWidget.last_photo_point ? szPhotoWidget.last_photo_point : currPhotoPoint;
@@ -72,7 +72,7 @@ define([
               //measurePhotoDownloadTime();
 
               //photo_cur_index = szPhotoWidget.next_photo_point["photo_index"];
-              //debug("photo widget counter = " + szPhotoWidget.counter);
+              //console.log("photo widget counter = " + szPhotoWidget.counter);
               szPhotoWidget.update_photo(szPhotoWidget.next_photo_point);
           }
       }
@@ -86,7 +86,7 @@ define([
         szVideoWidget.counter += 1;
         if (szVideoWidget.counter < szVideoWidget.getClickableGraphicsCount())  {
           nxt_vid_pt = szVideoWidget.getClickableGraphicAttributes(szVideoWidget.counter);
-          //debug("video widget counter = " + szVideoWidget.counter);
+          //console.log("video widget counter = " + szVideoWidget.counter);
           szVideoWidget.moveToFeature(nxt_vid_pt);
           if (nxt_vid_pt.VIDEOTAPE !== last_video_name) {
             setVideoSource(nxt_vid_pt);
@@ -97,7 +97,7 @@ define([
           }
         } else {
           szVideoWidget.setPlaybackOn(false);
-          debug("Pause due to end of points.");
+          console.log("Pause due to end of points.");
         }
       }
 
@@ -109,8 +109,8 @@ define([
 
         t = 1000*(szVideoWidget.getVideoPosition() - cur_vid_pt["MP4_Seconds"]) / (nxt_vid_pt["DATE_TIME"]-cur_vid_pt["DATE_TIME"])
 
-        var nxt_lat = nxt_vid_pt["LAT_DDEG"];
-        var nxt_lng = nxt_vid_pt["LON_DDEG"];
+        let nxt_lat = nxt_vid_pt["LAT_DDEG"];
+        let nxt_lng = nxt_vid_pt["LON_DDEG"];
 
         if (cur_vid_pt && nxt_vid_pt) {
           nxt_lat = cur_vid_pt["LAT_DDEG"] * (1.0-t) + nxt_vid_pt["LAT_DDEG"] * (t)
@@ -126,7 +126,7 @@ define([
 
 
     } catch(e) {
-      debug(e.message);
+      console.log(e.message);
     }
 
   }
@@ -145,9 +145,9 @@ define([
         if (youtube_id && youtube_player && startPointData["YouTubeID"] !== youtube_id) {
           youtube_playback_memory = youtube_player.getPlayerState()
           youtube_id = startPointData["YouTubeID"];
-          //debug("before YT.loadVideoById");
+          //console.log("before YT.loadVideoById");
           youtube_player.loadVideoById({'videoId': youtube_id});
-          //debug("after YT.loadVideoById");
+          //console.log("after YT.loadVideoById");
         }
       }
     }
@@ -159,27 +159,26 @@ define([
   function pausePlayback(/*String*/ player) {
     // Pause playback of specified player.  If arg is null, both players will be paused.
     if (!player || player==="video") {
-      //debug("Pause video");
       szVideoWidget.setPlaybackOn(false);
       szPhotoWidget.next_photo_point = null;
     }
     if (!player || player==="photo") {
-      debug("Pause photo");
+      console.log("Pause photo");
     }
   }
 
 
   function getDownloadVideoUrls(FS) {
-    var maxSecondsOutside = 300;
-    var theUrls = "";
+    let maxSecondsOutside = 300;
+    let theUrls = "";
     if (FS.length === 0)
       return "";
-    var Videotape = "";
-    var firstSeconds = 0;
-    var lastSeconds = 0;
-    var totalSeconds = 0;
-    var secondsOut = 0;
-    for (var i=0; i<FS.length; i++) {
+    let Videotape = "";
+    let firstSeconds = 0;
+    let lastSeconds = 0;
+    let totalSeconds = 0;
+    let secondsOut = 0;
+    for (let i=0; i<FS.length; i++) {
       f = FS[i].attributes;
       secondsOut = f.MP4_Seconds - lastSeconds;
       if ((f.VIDEOTAPE!==Videotape) || (secondsOut>maxSecondsOutside)) {
@@ -210,7 +209,6 @@ define([
         play ? youtube_player.playVideo() : youtube_player.pauseVideo();
         if (play) setMessage_Mario("videoNoImageMessage",{"visible": true, "text": "Loading video..."});
       } else {
-        // debug("YouTube not enabled yet.");
         //play ? get_video()[0].play() : get_video()[0].pause();
       }
     },
@@ -257,7 +255,7 @@ define([
         //QueryBasedPanelWidget.processData(results);
         //super.printInfo(this);
         //this.inherited(arguments);
-        var features = results.features;
+        let features = results.features;
         console.log(features.length + " video features");
         pausePlayback("video");
         if (this.noFeatures(features))
@@ -268,7 +266,7 @@ define([
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
         this.makeClickableGraphics(features);
         //OBS lastPhotoSec = -100;      // Reset photo filter counter
-        var photoFeatures = features.filter(function(f){
+        let photoFeatures = features.filter(function(f){
           return f.attributes.StillPhoto_FileName
         });
         szPhotoWidget.makeClickableGraphics(photoFeatures);
@@ -294,7 +292,6 @@ define([
     };
 
       this.setVideoPosition = function(progress) {
-        //debug("setVideoPosition:progress " + progress);
         if (youtube_id) {
           if (youtube_ready()) {
             youtube_player.seekTo(progress, true);
@@ -369,7 +366,7 @@ define([
       };
 
       this.setPlaybackRate = function(playbackRate, lowest, highest) {
-        debug("setPlaybackRate: " + playbackRate);
+        console.log("setPlaybackRate: " + playbackRate);
         this.playbackRate = playbackRate;
         if (youtube_id) {
           youtube_player.setPlaybackRate(playbackRate);
@@ -378,11 +375,11 @@ define([
 
       this.setLockPoints = function(locked) {
         lock_points = locked;
-        var lockSrc = "assets/images/unlock_24x24.png";
+        let lockSrc = "assets/images/unlock_24x24.png";
         if (lock_points) {
           lockSrc = "assets/images/lock_24x24.png";
         }
-        var lockImage = getEl("lockImage");
+        let lockImage = getEl("lockImage");
         if (lockImage)
           lockImage.src = lockSrc;
       };
@@ -393,7 +390,7 @@ define([
         //photoToolsDivStyle = getEl("photoToolsDiv").style;
         photoToolsStyle = getEl("photoTools").style;
         photoTools = getEl("photoTools");
-        var linkSrc = "assets/images/link.png";
+        let linkSrc = "assets/images/link.png";
         if (sync_photos) {
           latest_img_src = false;
           szPhotoWidget.update_photo(szPhotoWidget.next_photo_point)
@@ -409,15 +406,15 @@ define([
           photoTools.title = "Photo playback controls."
           linkSrc = "assets/images/link_break.png";
         }
-        var linkImage = getEl("linkImage");
+        let linkImage = getEl("linkImage");
         if (linkImage)
           linkImage.src = linkSrc;
       };
 
       this.firstVideoAvail = function(inReverse) {
-            var p = 0;
-            var incr = 1;
-            var L = this.getClickableGraphicsCount();
+            let p = 0;
+            let incr = 1;
+            let L = this.getClickableGraphicsCount();
             if (inReverse) {
                 p = L - 1;
                 incr = -1;
@@ -431,14 +428,14 @@ define([
       };
 
       function getPlaybackControlHTML() {
-        var html = "<div class=\"playback_speed_div\"><span style='position: absolute; right: 30px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span><div id=\"slider_value\" class=\"slider_value\" style=\"float: right\"></div></div>";
+        let html = "<div class=\"playback_speed_div\"><span style='position: absolute; right: 30px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span><div id=\"slider_value\" class=\"slider_value\" style=\"float: right\"></div></div>";
         return html
       }
 
 
       this.setSyncPhotos(true);
 
-      var controlData_video = [
+      let controlData_video = [
         ['video_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'szVideoWidget', 'toStart'],
         ['video_backwardButton', 'Play Backwards', 'w_left.png', 'szVideoWidget', 'playBackward'],
         ['video_pauseButton', 'Pause', 'w_close_red.png', 'szVideoWidget', 'pause'],
@@ -448,8 +445,8 @@ define([
 
       speedHTML = getPlaybackControlHTML()//"<span style='position: absolute; right: 10px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span>"
 
-      var lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()'/>"
-      var leftToolsHTML = "<span style='position: absolute; left: 10px'>" + lockHTML + "</span>";
+      let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()'/>"
+      let leftToolsHTML = "<span style='position: absolute; left: 10px'>" + lockHTML + "</span>";
 
       videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, controlData_video, 'videoTools') + speedHTML + lockHTML;
       //videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, controlData_video, 'videoTools', 'position: relative; float: left') + speedHTML + lockHTML;

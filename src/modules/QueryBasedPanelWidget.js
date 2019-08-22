@@ -39,7 +39,7 @@ define([
 ], function(declare, lang, on, dom, registry, /*BorderContainer, ContentPane, TabContainer, */Query, QueryTask, GraphicsLayer, SimpleRenderer, UniqueValueRenderer,
               PictureMarkerSymbol, SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, TextSymbol, Extent, Point, webMercatorUtils, Graphic){
 
-  var queryComplete = true;
+  let queryComplete = true;
 
   return declare(null, {
 
@@ -88,8 +88,7 @@ define([
 
       this.displayPlayButton = function(e) {
         // TODO:  Make the popup moveable?  (Example for 3.x using Dojo is at http://jsfiddle.net/goldenlimit/gaz8ao8n)
-        //debug("displayPlayButton");
-        var infoWin = view.popup;
+        let infoWin = view.popup;
         if (popupsDocked) {
           infoWin.dockEnabled = true;
           infoWin.dockOptions = {position: "bottom-right" };
@@ -127,7 +126,6 @@ define([
         infoWin.open();
         this.clearAllHighlights();
         this.highlightFeature(e.highlightGeometry);          // geometry);
-        //debug("displayPlayButton complete");
       };
 
     },
@@ -188,7 +186,7 @@ define([
         this.trackingLayer.id = this.panelName + "_Tracking";
         this.trackingLayer.title = this.trackingLayer.id;
         this.trackingLayer.visible = true;
-        var symbolArgs = this.trackingSymbolInfo.split(":");
+        let symbolArgs = this.trackingSymbolInfo.split(":");
         this.trackingImageURL = symbolArgs[0];
         this.trackingSymbol = new PictureMarkerSymbol(symbolArgs[0], symbolArgs[1], symbolArgs[2]);
         this.trackingLayer.renderer = new SimpleRenderer(this.trackingSymbol);
@@ -201,9 +199,9 @@ define([
       if (!this.noQuery) {
         if (!this.orderByFields)
           this.orderByFields = [];      // If orderByFields hasn't been specified in MapStuffWidget, then default to empty array
-        var subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
+        let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         this.queryTask = new QueryTask(subLayerURL);
-        var q = new Query();
+        let q = new Query();
         q.returnGeometry = true;
         q.spatialRelationship = this.spatialRelationship;      //"contains";
         q.orderByFields = this.orderByFields;
@@ -259,7 +257,7 @@ define([
 
     setActiveTab: function(index) {
       this.prevTab = this.currTab;
-      var tabId = this.tabInfo[this.prevTab].tabId;
+      let tabId = this.tabInfo[this.prevTab].tabId;
       getEl(tabId).className = "";
 //      getEl(tabId).className.replace(" active", "");
       this.currTab = index;
@@ -291,42 +289,42 @@ define([
 
     addPanelHtml: function() {
       // Get DOM node of panel
-      var panelDiv = dom.byId(this.contentPaneId);
-      var classType = this.panelType;
-      var name = this.baseName;
-      var tabInfo = this.tabInfo;
+      let panelDiv = dom.byId(this.contentPaneId);
+      let classType = this.panelType;
+      let name = this.baseName;
+      let tabInfo = this.tabInfo;
 
       // Add "panel disabled" DIV.  (Visible when not zoomed in far enough to see features.)
-      var S = '';
+      let S = '';
       S = '<div id="panelDisabled_' + name + '" class="PanelDisabled" >\n';
       S += '  <label id="disabledMsg_' + name + '" class="MsgDisabled" >Zoom in further to see ' + name + '</label>\n';
       S += '</div>\n';
       panelDiv.innerHTML = S;
 
       // Make container for displaying feature info
-      var theContainer = makeHtmlElement("div", "panelEnabled_" + name, classType + "PanelEnabled");
-      var panelTabs = null;
+      let theContainer = makeHtmlElement("div", "panelEnabled_" + name, classType + "PanelEnabled");
+      let panelTabs = null;
 
       // Header panel.  Optionally includes tabs if tabInfo is specified
       if (tabInfo) {
         panelTabs = makeHtmlElement("div", "panelTabs_" + name, "tableHeaderTabs");
-        for (var t in tabInfo) {
-          var item = tabInfo[t];
+        for (let t in tabInfo) {
+          let item = tabInfo[t];
           item.tabId = this.baseName + "Tab" + item.tabName;
-          var buttonHtml = '<button id="' + item.tabId + '">' + item.tabTitle + '</button>';
+          let buttonHtml = '<button id="' + item.tabId + '">' + item.tabTitle + '</button>';
           panelTabs.innerHTML += buttonHtml + "&emsp;";
         }
         theContainer.appendChild(panelTabs);
       }
 
-      var headerPanel = makeHtmlElement("div", name + "HeaderDiv", classType + "HeaderDiv");
+      let headerPanel = makeHtmlElement("div", name + "HeaderDiv", classType + "HeaderDiv");
       theContainer.appendChild(headerPanel);
 
       // Main panel content
-      var midContent = '';
+      let midContent = '';
       this.footerPanel = null;
       if (classType === 'media') {
-        var imgHtml = '    <img id="photoImage" class="imageContainer" src="" alt="">\n';
+        let imgHtml = '    <img id="photoImage" class="imageContainer" src="" alt="">\n';
         if (name === 'video')
           imgHtml = '    <div id="videoImageContainer" class="imageContainer"></div>\n';
         midContent = '<div id="' + name + 'NoImageMessage" class="mediaMessageDiv" style="padding: 0" ><b>No ' + name + '</b></div>' + imgHtml;
@@ -337,7 +335,7 @@ define([
         }
       }
 
-      var centerPanel = makeHtmlElement("div", name + "Container", classType + "ContainerDiv");
+      let centerPanel = makeHtmlElement("div", name + "Container", classType + "ContainerDiv");
       centerPanel.innerHTML = midContent;
       theContainer.appendChild(centerPanel);
 
@@ -372,7 +370,7 @@ define([
 
     runQuery: function(extent, queryPars) {
       if (extent) {
-        var pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
+        let pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
         this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
         if (this.query.spatialRelationship) {
           this.query.geometry = new Extent({
@@ -384,7 +382,7 @@ define([
           });
         }
       }
-      var theWhere = "";
+      let theWhere = "";
       this.query.outFields = this.featureOutFields;
       if (this.extraOutFields)                                                       // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
         this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
@@ -408,12 +406,12 @@ define([
 
       } else {    // Do this only when query parameters are not already specified in the argument
         if (this.dropDownInfo) {
-          var ddInfo = this.dropDownInfo;
+          let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
-            var item = ddInfo[d];
-            var spanName = item.domId.replace("_","Span_");     // Name of associated SPAN element -- If span not visible, don't include in where clause
+            let item = ddInfo[d];
+            let spanName = item.domId.replace("_","Span_");     // Name of associated SPAN element -- If span not visible, don't include in where clause
             if ((this.visibleHeaderElements.includes(spanName)) && (item.SelectedOption !== "All")) {
-              var selOption = item.SelectedOption;
+              let selOption = item.SelectedOption;
               if (item.isAlpha)
                 selOption = "'" + selOption + "'";
               this.ddLayerNameAddOn += item.LayerNameAddOn;
@@ -452,7 +450,7 @@ define([
       if (newIndex<0 || newIndex>=this.getClickableGraphicsCount())
         return null;     // Do nothing: out of range
       this.counter = newIndex;
-      var attrs = this.getClickableGraphicAttributes(this.counter);
+      let attrs = this.getClickableGraphicAttributes(this.counter);
       this.moveToFeature(attrs);
       this.updateMedia(attrs);
     },
@@ -461,12 +459,12 @@ define([
       // if (!mapVisible)
       //   return;
       this.trackingLayer.removeAll();
-      var projPoint = new Point(attrs.x, attrs.y);
-      var markerPoint = webMercatorUtils.webMercatorToGeographic(projPoint);
-      var newFeature = new Graphic(markerPoint, this.trackingSymbol);
+      let projPoint = new Point(attrs.x, attrs.y);
+      let markerPoint = webMercatorUtils.webMercatorToGeographic(projPoint);
+      let newFeature = new Graphic(markerPoint, this.trackingSymbol);
       this.trackingLayer.add(newFeature);
       if (this.headerDivName) {
-        var headerDiv = getEl(this.headerDivName);
+        let headerDiv = getEl(this.headerDivName);
         if (attrs.Caption)
           headerDiv.innerHTML = attrs.Caption;
         else
@@ -481,7 +479,7 @@ define([
 
     highlightFeature: function(g) {
       this.highlightLayer.removeAll();
-      var newFeature = new Graphic(g, this.highlightSymbol);
+      let newFeature = new Graphic(g, this.highlightSymbol);
       this.highlightLayer.add(newFeature);
     },
 
@@ -489,7 +487,7 @@ define([
       if (!this.clickableSymbol)
           return;
       this.clearGraphics();     // Clear any previously-existing graphics and associated stuff
-      for (var n = 0; n < features.length; n++) {
+      for (let n = 0; n < features.length; n++) {
 
         /*JN*
         if ((n % 1000) === 999) {
@@ -499,29 +497,29 @@ define([
         /*JN*/
 
 
-        var g = features[n];
-        var a = {};
+        let g = features[n];
+        let a = {};
         for (i in g.attributes) {
             a[i] = g.attributes[i];
         }
         a.item = n;
 
-        var geom = g.geometry;
+        let geom = g.geometry;
         if (g.geometry.type === "polyline")
           geom = g.geometry.extent;
-        var centroid = g.geometry;
+        let centroid = g.geometry;
 
-        var skipFeature = false;
+        let skipFeature = false;
       // If feature is not a point, use center of feature extent for "x" and "y" attributes
         if (g.geometry.type !== "point") {
           centroid = g.geometry.extent.center;
         } else if (this.clickableSymbolGap) {
-          var gArray = this.clickableLayer.graphics.items;
-          var l = gArray.length;
+          let gArray = this.clickableLayer.graphics.items;
+          let l = gArray.length;
           if (l > 0) {
-            var sp1 = view.toScreen(gArray[l-1].geometry);
-            var sp2 = view.toScreen(geom);
-            var dist_pixels = Math.sqrt(Math.pow(sp2.x-sp1.x,2) + Math.pow(sp2.y-sp1.y,2));
+            let sp1 = view.toScreen(gArray[l-1].geometry);
+            let sp2 = view.toScreen(geom);
+            let dist_pixels = Math.sqrt(Math.pow(sp2.x-sp1.x,2) + Math.pow(sp2.y-sp1.y,2));
             if (dist_pixels < this.clickableSymbolGap)
               skipFeature = true;
           }
@@ -530,16 +528,16 @@ define([
         a.y = centroid.y;
 
         if (!skipFeature) {
-          var mapFeature = webMercatorUtils.webMercatorToGeographic(geom);      //projPoint);   //this._webMercatorToGeographic(projPoint);
-          var mapFeatureCenter = webMercatorUtils.webMercatorToGeographic(centroid);
+          let mapFeature = webMercatorUtils.webMercatorToGeographic(geom);      //projPoint);   //this._webMercatorToGeographic(projPoint);
+          let mapFeatureCenter = webMercatorUtils.webMercatorToGeographic(centroid);
           a.Caption = decDegCoords_to_DegMinSec(mapFeatureCenter.x, mapFeatureCenter.y);
 
-          var currSymbol = this.clickableSymbol.clone();
+          let currSymbol = this.clickableSymbol.clone();
           if (this.renderingInfo) {
-            var v = a[this.renderingInfo.field];
+            let v = a[this.renderingInfo.field];
             currSymbol.color = this.renderingInfo.uniqueColors[v];
           }
-          var graphic = new Graphic({
+          let graphic = new Graphic({
             geometry: mapFeature,
             symbol: currSymbol,   // this.clickableSymbol,
             attributes: a,
@@ -549,9 +547,9 @@ define([
 
           // add text?
           if (this.textOverlayPars) {
-            var overlayPars = this.textOverlayPars;
+            let overlayPars = this.textOverlayPars;
             overlayPars.text = a[this.textOverlayField];
-            var textGraphic = new Graphic({
+            let textGraphic = new Graphic({
               geometry: mapFeature,
               symbol: overlayPars
             });
@@ -572,7 +570,7 @@ define([
     },
 
     indexFirstFeatureGreaterThan: function(attrName, attrValue) {
-      for (var n = 0; n < this.getClickableGraphicsCount(); n++) {
+      for (let n = 0; n < this.getClickableGraphicsCount(); n++) {
         if (this.getClickableGraphicAttributes(n)[attrName] >= attrValue)
           return n;
       }

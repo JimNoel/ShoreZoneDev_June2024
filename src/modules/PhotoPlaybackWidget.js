@@ -18,35 +18,35 @@ define([
 ], function(declare, lang, QueryBasedPanelWidget){
 
 // private vars and functions here
-  var picasaOffline = false;
-  var latest_img_src = false;
-  var photoSource1 = null;
-  var photoSource2 = null;
-  var prev_photo_DT = 0;
-  var next_photo_DT = 0;
-  var secs_to_next_photo = null;
-  var photo_play_delay = 1500;      // Wait time between photos, when in photo playback.  Set to -1 to require hitting playback buttons to advance individual photos?
-//  var photo_play_timer = false;
-  var photo_play_direction = 0;
-  //var photo_cur_index = null;
-  var photo_load_times = {};
-  var photo_load_times_sort = [];
-  var photo_load_average = null;		// photo_play_delay;
-  var photo_enlarged = false;
+  let picasaOffline = false;
+  let latest_img_src = false;
+  let photoSource1 = null;
+  let photoSource2 = null;
+  let prev_photo_DT = 0;
+  let next_photo_DT = 0;
+  let secs_to_next_photo = null;
+  let photo_play_delay = 1500;      // Wait time between photos, when in photo playback.  Set to -1 to require hitting playback buttons to advance individual photos?
+//  let photo_play_timer = false;
+  let photo_play_direction = 0;
+  //let photo_cur_index = null;
+  let photo_load_times = {};
+  let photo_load_times_sort = [];
+  let photo_load_average = null;		// photo_play_delay;
+  let photo_enlarged = false;
 
   function photoLoadStartHandler() {
-    //debug("photoLoadStartHandler");
+    //console.log("photoLoadStartHandler");
   }
 
   function photoLoadCompleteHandler(orig_img_src) {
-    //debug("photoLoadCompleteHandler");
+    //console.log("photoLoadCompleteHandler");
   }
 
   function on_image_error(e) {
     // Called on image load error   param object e Event object
     if ( $("#photoImage").attr("src") === '')
       return;
-    debug("on_image_error");
+    console.log("on_image_error");
     //PHOTO_SERVER = alternateImageBaseDir;
     //update_photo(update_photo_latest_params);
     if (e.target.src.includes("alaskafisheries.noaa.gov")) {    // Tried NOOA server and failed
@@ -61,8 +61,6 @@ define([
   function on_image_load() {
     // Called on image load success   param object e Event object
 
-    //debug("on_image_load");
-
     if (typeof photo_load_times[this.src] !== "undefined") {
 
       photoLoadCompleteHandler(orig_img_src);
@@ -75,7 +73,7 @@ define([
 
     /*
     photo_load_times_sort = $.map(photo_load_times, function(n){return n}).sort(function(a, b){return ((a["load_start"] < b["load_start"]) ? -1 : ((a["load_start"] > b["load_start"]) ? 1 : 0));});
-    var photo_load_times_sort_durations = [photo_play_delay].concat($.map(photo_load_times_sort, function(n){return n.load_duration}));
+    let photo_load_times_sort_durations = [photo_play_delay].concat($.map(photo_load_times_sort, function(n){return n.load_duration}));
     if (photo_load_times_sort_durations.length >= 5)
       photo_load_average = Math.round( photo_load_times_sort_durations.slice(photo_load_times_sort_durations.length-5).average() );
       */
@@ -84,7 +82,7 @@ define([
 
   function on_image_abort() {
     // Called on image load cancel   param object e Event object
-    //debug("on_image_abort");
+    //console.log("on_image_abort");
   }
 
   function load_Photo(new_img_src) {
@@ -107,7 +105,7 @@ define([
       //load_NOAA_Photo(NOAA_img_src);      // Currently trying NOAA first, then AOOS.
       return;
     }
-    var aoosURL = aoosPhotosBaseUrl + userID + "/" + albumID + "/" + photoID + "/thumbnail";     // photo
+    let aoosURL = aoosPhotosBaseUrl + userID + "/" + albumID + "/" + photoID + "/thumbnail";     // photo
     load_Photo(aoosURL);
   }
 
@@ -135,8 +133,8 @@ define([
       load_NOAA_Photo(NOAA_img_src);
       return;
     }
-    var queryURL = aoosQueryBaseUrl.replace("{lon}",photoPoint.LON_DDEG).replace("{lat}",photoPoint.LAT_DDEG);
-    var xmlhttp = new XMLHttpRequest();
+    let queryURL = aoosQueryBaseUrl.replace("{lon}",photoPoint.LON_DDEG).replace("{lat}",photoPoint.LAT_DDEG);
+    let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange=function() {
       if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         processAoosData(xmlhttp.responseText);
@@ -151,19 +149,19 @@ define([
   }
 
   function processAoosData(response) {
-    var data = JSON.parse(response);
-    var s = data.feed.media$group.media$content[0].url;
-    var p = s.lastIndexOf("/");
-    var imageUrl = s.slice(0,p) + "/s{0}" + s.slice(p);
+    let data = JSON.parse(response);
+    let s = data.feed.media$group.media$content[0].url;
+    let p = s.lastIndexOf("/");
+    let imageUrl = s.slice(0,p) + "/s{0}" + s.slice(p);
     origHeight = data.feed.gphoto$height.$t;      // Original height in pixels of image stored in Picasa
     origWidth = data.feed.gphoto$width.$t;        // Original width in pixels of image stored in Picasa
 
     photoAspectRatio = origWidth / origHeight;
-    //var pDims = mediaDimensions("photoDiv", photoAspectRatio);
-    var photoPanel = getEl("photoContainer");
-    var requestWidth = $(photoPanel).width();   // This will be the requested width in pixels of the photo, for the panel
-    var panelHeight = $(photoPanel).height();
-    var widthFromAspect = parseInt(panelHeight*photoAspectRatio);
+    //let pDims = mediaDimensions("photoDiv", photoAspectRatio);
+    let photoPanel = getEl("photoContainer");
+    let requestWidth = $(photoPanel).width();   // This will be the requested width in pixels of the photo, for the panel
+    let panelHeight = $(photoPanel).height();
+    let widthFromAspect = parseInt(panelHeight*photoAspectRatio);
     if(requestWidth > widthFromAspect) {      // Given the panel height, widthFromAspect is the maximum allowable width
       requestWidth = widthFromAspect;         //   so reset requestWidth to widthFromAspect if it is greater
     }
@@ -179,13 +177,13 @@ define([
 /*
   // Picasa API has been deprecated
   function preload_Picasa_Photo(userID, albumID, photoID, NOAA_img_src) {
-    var picasaDeprecated = false;
+    let picasaDeprecated = false;
     if ((albumID===null) || (photoID===null) || picasaDeprecated) {
       load_NOAA_Photo(NOAA_img_src);
       return;
     }
-    var picasaURL = "https://picasaweb.google.com/data/feed/api/user/" + userID + "/albumid/" + albumID + "/photoid/" + photoID + "?alt=json&deprecation-extension=true";
-    var xmlhttp = new XMLHttpRequest();
+    let picasaURL = "https://picasaweb.google.com/data/feed/api/user/" + userID + "/albumid/" + albumID + "/photoid/" + photoID + "?alt=json&deprecation-extension=true";
+    let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange=function() {
       if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         processPicasaData(xmlhttp.responseText);
@@ -198,19 +196,19 @@ define([
   }
 
   function processPicasaData(response) {
-    var data = JSON.parse(response);
-    var s = data.feed.media$group.media$content[0].url;
-    var p = s.lastIndexOf("/");
-    var imageUrl = s.slice(0,p) + "/s{0}" + s.slice(p);
+    let data = JSON.parse(response);
+    let s = data.feed.media$group.media$content[0].url;
+    let p = s.lastIndexOf("/");
+    let imageUrl = s.slice(0,p) + "/s{0}" + s.slice(p);
     origHeight = data.feed.gphoto$height.$t;      // Original height in pixels of image stored in Picasa
     origWidth = data.feed.gphoto$width.$t;        // Original width in pixels of image stored in Picasa
 
     photoAspectRatio = origWidth / origHeight;
-    //var pDims = mediaDimensions("photoDiv", photoAspectRatio);
-    var photoPanel = getEl("photoContainer");
-    var requestWidth = $(photoPanel).width();   // This will be the requested width in pixels of the photo, for the panel
-    var panelHeight = $(photoPanel).height();
-    var widthFromAspect = parseInt(panelHeight*photoAspectRatio);
+    //let pDims = mediaDimensions("photoDiv", photoAspectRatio);
+    let photoPanel = getEl("photoContainer");
+    let requestWidth = $(photoPanel).width();   // This will be the requested width in pixels of the photo, for the panel
+    let panelHeight = $(photoPanel).height();
+    let widthFromAspect = parseInt(panelHeight*photoAspectRatio);
     if(requestWidth > widthFromAspect) {      // Given the panel height, widthFromAspect is the maximum allowable width
       requestWidth = widthFromAspect;         //   so reset requestWidth to widthFromAspect if it is greater
     }
@@ -224,14 +222,14 @@ define([
 
   function photoPlayer() {
     // Manage timed playback of photos
-    var wait_for_current_photo = false;
-    debug(photo_load_times_sort[photo_load_times_sort.length-1]);
+    let wait_for_current_photo = false;
+    console.log(photo_load_times_sort[photo_load_times_sort.length-1]);
     if (!latest_photo_loaded()) {
-      debug("photoPlayer: last photo did not load in time. Waiting.");
+      console.log("photoPlayer: last photo did not load in time. Waiting.");
       wait_for_current_photo = true;
     }
-    var current_photo_load_delay = photo_play_delay;
-    debug("photoPlayer: photo_play_delay=" + photo_play_delay + ", photo_load_average=" + photo_load_average + ", current_photo_load_delay="+current_photo_load_delay);
+    let current_photo_load_delay = photo_play_delay;
+    console.log("photoPlayer: photo_play_delay=" + photo_play_delay + ", photo_load_average=" + photo_load_average + ", current_photo_load_delay="+current_photo_load_delay);
     return setTimeout(function() {
       if (sync_photos) return;
       if (this.counter === null) {
@@ -280,7 +278,7 @@ define([
       update_photo_latest_params = next_photo_point;
       if (!next_photo_point)
         return;
-      var new_img_src = PHOTO_SERVER + next_photo_point["RelPath"] + "/" + current_photo_sub + "/" + current_photo_prefix + next_photo_point["StillPhoto_FileName"];
+      let new_img_src = PHOTO_SERVER + next_photo_point["RelPath"] + "/" + current_photo_sub + "/" + current_photo_prefix + next_photo_point["StillPhoto_FileName"];
       if (new_img_src.indexOf(".jpeg")<0 && new_img_src.indexOf(".jpg")<0)
         new_img_src += ".jpg";
       if (!latest_img_src || latest_img_src !== new_img_src) {
@@ -302,15 +300,13 @@ define([
 
       this.clickableSymbolGap = settings.photoGap;
       
-      //debug("PhotoPlaybackWidget created");
-
       photo_load_times = {}
       $("#photoImage").bind('load', on_image_load);
       $("#photoImage").bind('abort', on_image_abort);
       $("#photoImage").bind('error', on_image_error);
 
 
-      var controlData_photo = [
+      let controlData_photo = [
         ['photo_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'szPhotoWidget', 'toStart'],
         ['photo_backwardButton', 'Play Backwards', 'w_left.png', 'szPhotoWidget', 'playBackward'],
         ['photo_pauseButton', 'Pause', 'w_close_red.png', 'szPhotoWidget', 'pause'],
@@ -318,7 +314,7 @@ define([
         ['photo_resetForwardButton', 'Reset to End', 'w_collapse.png', 'szPhotoWidget', 'toEnd']
       ];
 
-      var linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>"
+      let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>"
       photoToolsDiv.innerHTML = linkHTML + makeMediaPlaybackHtml(playbackControlTemplate, controlData_photo, 'photoTools', 'position: relative; float: left');
       //getEl('photoTools').style.position = "relative";
       //getEl('photoTools').style.float = "left";
