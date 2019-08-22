@@ -1014,6 +1014,11 @@ define([
       handleExtentChange(view.extent);
     });
 
+    view.watch("resizing", function(isResizing, oldValue, property, object) {
+      if (isResizing)
+        resizeWidgets();
+    });
+
     /* Suggestion for repositioning map popup
     view.popup.watch("visible", function() {
       setTimeout(function(){

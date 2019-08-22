@@ -828,6 +828,10 @@ function formatNumber_Date(num) {
   return dateStr.split(" ").slice(1).join(" ");
 }
 
+function resizeWidgets() {
+  layerListWidget.container.style.maxHeight = (mapDiv.offsetHeight - 100) + "px";
+}
+
 
 
 var mapStuff;
