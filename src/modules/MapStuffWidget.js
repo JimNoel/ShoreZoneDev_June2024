@@ -24,12 +24,14 @@ let mapLoading = false;
 
 define([
   "dojo/_base/declare",
+  "esri/Basemap",
   "esri/core/watchUtils",
   "esri/Map",
   "esri/views/MapView",
   //"esri/views/SceneView",
   // SceneView produces this error:  GET http://localhost:63342/FDFA6052-1C12-4655-B658-0DBF2414422D/253/aHR0cDovL2pzLmFyY2dpcy5jb20vNC4zL2Vzcmkvd29ya2Vycy9tdXRhYmxlV29ya2VyLmpz 404 (Not Found)
   "esri/layers/MapImageLayer",
+  "esri/portal/PortalItem",
   "esri/webmap/Bookmark",
   "esri/widgets/Bookmarks",
   "esri/widgets/Expand",
@@ -60,7 +62,7 @@ define([
   "esri/core/Collection",
   "esri/core/Accessor",
   "dojo/domReady!"
-], function(declare, watchUtils, Map, View, MapImageLayer, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, Geoprocessor, Query, QueryTask,
+], function(declare, Basemap, watchUtils, Map, View, MapImageLayer, PortalItem, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget,
             Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
@@ -1354,9 +1356,40 @@ define([
     });
     view.ui.add({ component: locateWidget, position: "top-left", index: 2});
 
+    let nauticalLayer = new MapImageLayer({
+      url: "https://seamlessrnc.nauticalcharts.noaa.gov/ArcGIS/rest/services/RNC/NOAA_RNC/MapServer"
+    });
+
+    let nauticalBaseLayer = new Basemap({
+      baseLayers: nauticalLayer,
+      title: "NOAA Nautical Charts",
+      id: "noaaNautical",
+      thumbnailUrl:
+        "assets/images/thumbnail_noaaNautical.png"
+    });
+
+/*    Attempt to add USA Topo Maps to Basemap Gallery
+    // https://www.arcgis.com/home/webmap/viewer.html?webmap=931d892ac7a843d7ba29d085e0433465
+    let item = new PortalItem({
+      id: "931d892ac7a843d7ba29d085e0433465"
+    });
+
+    let newBaseLayer = new Basemap({
+      baseLayers: item
+    });
+*/
+
+
+    let basemapSource = [nauticalBaseLayer];
+    //basemapSource.push(newBaseLayer);
+    for (bId of basemapIds) {
+      basemapSource.push(Basemap.fromId(bId));
+    }
+
     // Add ESRI basemap gallery widget to map, inside an Expand widget
     let basemapGallery = new BasemapGallery({
       view: view,
+      source: basemapSource,
       container: makeWidgetDiv("basemapDiv", "bottom")    // document.createElement("div")
     });
 /*

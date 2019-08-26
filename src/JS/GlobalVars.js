@@ -45,6 +45,16 @@ let szRestServicesURL = szRestServicesURLnoaa;
 let szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
 let szSublayerIDs = {};
 
+let settings = {
+  autoRefresh: true,
+  photoGap: 50
+};
+let settingsHtml = '<h3>Settings</h3>';
+settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
+settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
+settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
+settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
+
 
 let ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";        // ShoreStation gives CORS error for some reason
 let ssSublayerIDs = {};
@@ -54,6 +64,25 @@ let faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer"
 let faSublayerIDs = {};
 makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 
+let basemapIds = [
+  "oceans",
+  "satellite",
+  "hybrid",
+  "topo",
+  //"topo-vector",
+  "streets",
+  //"streets-vector",
+  "national-geographic",
+  "osm",
+  "terrain",
+  "dark-gray",
+  //"dark-gray-vector",
+  "gray",
+  //"gray-vector",
+  "streets-navigation-vector",
+  "streets-relief-vector",
+  "streets-night-vector"
+];
 
 let locateIconLayer;     // GraphicsLayer for displaying user location.  Used by Locate widget.
 let layoutCode = "h2";     // default layout
@@ -122,6 +151,7 @@ makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
 
 let sslMapServiceLayerURL = szRestServicesURL + "/Ports_SSL/MapServer";
 
+let mainMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let VIDEO_SERVER = altMediaServer;
 let PHOTO_SERVER = altMediaServer;
@@ -168,16 +198,6 @@ let lock_points = false;
 
 // width was 20, trying larger values for iPad Mini
 let playbackControlTemplate = '<img id="{0}" class="playbackControl" title="{1}" src="assets/images/{2} " width="24" onclick="mediaControl_clickHandler({3},\'{4}\')" />';
-
-let settings = {
-  autoRefresh: true,
-  photoGap: 100
-};
-let settingsHtml = '<h3>Settings</h3>';
-settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
-settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
-settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
-settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
 
 function autoRefreshInputHandler(isAutoRefresh) {
   settings.autoRefresh = isAutoRefresh;
