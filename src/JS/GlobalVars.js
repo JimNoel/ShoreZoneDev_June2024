@@ -54,7 +54,8 @@ settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
 settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
-
+settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
+settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
 
 let ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";        // ShoreStation gives CORS error for some reason
 let ssSublayerIDs = {};
@@ -167,6 +168,7 @@ let youtubeAspectRatio = 16/9;
 let photoAspectRatio = 4/3;
 
 let serviceLayers = null;
+let llServiceLayers = null;
 let extentDependentWidgets = [];
 let szVideoWidget = null;
 let szPhotoWidget = null;
@@ -216,6 +218,18 @@ function photoGapInputHandler() {
   settings.photoGap = parseInt(getEl("input_photoGap").value);
   szPhotoWidget.clickableSymbolGap = settings.photoGap;
   //refreshFeatures();
+}
+
+function cbShowMediaHandler(w, isPhotos) {
+  let cbId = "cb_showVideoMarkers";
+  if (isPhotos)
+    cbId = "cb_showPhotoMarkers";
+  //let isChecked = getEl(cbId).checked;
+  let a = 0;
+  if (getEl(cbId).checked)
+    a = 1;
+  w.clickableSymbol.color.a = a;
+
 }
 
 // Returns string identifying the device type
@@ -591,6 +605,7 @@ function queryServer(url, returnJson, responseHandler) {
       if (returnJson)
         R = JSON.parse(R);
       responseHandler(R);
+    } else {
     }
   };
   let completeUrl = url;
@@ -662,26 +677,25 @@ let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' sr
 
 /* For pan/zoom-to-rectangle toggle */
 let panning = true;      // If not panning, then zooms to drawn rectangle
-let panZoomHtml = "<img id='btn_pan' src='assets/images/i_pan.png' onclick='togglePanZoom(true)' height='32px' width='32px' title='Click to enable panning' /><br>";
-panZoomHtml += "<img id='btn_zoomRect' src='assets/images/i_zoomin.png' onclick='togglePanZoom(false)' height='32px' width='32px' title='Click to enable zoom-in to drawn rectangle' style='opacity: 0.2' />";
+let panZoomHtml = "<div class='iconDiv'><img id='btn_pan' src='assets/images/i_pan.png' onclick='togglePanZoom(true)' height='24px' width='24px' title='Click to enable panning' class='icon_Active' /></div>";
+panZoomHtml += "<div class='iconDiv'><img id='btn_zoomRect' src='assets/images/i_zoomin.png' onclick='togglePanZoom(false)' height='24px' width='24px' title='Click to enable zoom-in to drawn rectangle' class='icon_Inactive' /></div>";
 
 function togglePanZoom(mode) {
   panning = mode;
-  let panningOpacity = 1;
-  let zoomingOpacity = 1;
-  if (panning)
-    zoomingOpacity = 0.2;
-  else
-    panningOpacity = 0.2;
-  getEl("btn_pan").style.opacity = panningOpacity;
-  getEl("btn_zoomRect").style.opacity = zoomingOpacity;
-
+  let panningClass = "icon_Active";
+  let zoomRectClass = "icon_Inactive";
+  if (!panning) {
+    panningClass = "icon_Inactive";
+    zoomRectClass = "icon_Active";
+  }
+  getEl("btn_pan").className = panningClass;
+  getEl("btn_zoomRect").className = zoomRectClass;
 }
 /* For pan/zoom-to-rectangle toggle */
 
 /* For extent history and prev/next extent navigation*/
-let prevNextBtnsHtml = "<img id='btn_prevExtent' src='assets/images/backward.png' onclick='gotoSavedExtent(-1)' title='Click to go to previous extent' height='32px' width='32px' /><br>";
-prevNextBtnsHtml += "<img id='btn_nextExtent' src='assets/images/forward.png' onclick='gotoSavedExtent(1)' title='Click to go to next extent in history' height='32px' width='32px' style='opacity: 0.2' />";
+let prevNextBtnsHtml = "<div class='iconDiv'><img id='btn_prevExtent' src='assets/images/backward.png' onclick='gotoSavedExtent(-1)' title='Click to go to previous extent' height='24px' width='24px' /></div>";
+prevNextBtnsHtml += "<div class='iconDiv'><img id='btn_nextExtent' src='assets/images/forward.png' onclick='gotoSavedExtent(1)' title='Click to go to next extent in history' height='24px' width='24px' style='opacity: 0.2' /></div>";
 
 let savedExtentsWidget = null;
 let bookmarkSelected = false;
@@ -794,7 +808,7 @@ function formatNumber_Date(num) {
 }
 
 function resizeWidgets() {
-  layerListWidget.container.style.maxHeight = (mapDiv.offsetHeight - 100) + "px";
+  layerListWidget.container.style.maxHeight = (mapDiv.offsetHeight - 120) + "px";
 }
 
 

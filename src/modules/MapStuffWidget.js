@@ -83,8 +83,8 @@ define([
         noQuery: true,
         trackingSymbolInfo: "assets/images/Camera24X24.png:24:24",
         clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":8},
-        //  "outline": {color: [ 0, 0, 255, 1.0 ] }},
+        clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":8,     // invisible if 4th value in "color" is 0
+          "outline": {color: [ 0, 0, 255, 0 ] }},
         popupTitle: "Photo Point",
         clickableMsg: "Move camera to this location",
         map: map,
@@ -110,7 +110,7 @@ define([
         orderByFields: ["Date_Time"],
         trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,
+        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,0], "size":3,      //  invisible if 4th value in "color" is 0
           "outline": {color: [ 128, 128, 128, 0 ] }},
         popupTitle: "Video Point",
         clickableMsg: "Move camera to this location",
@@ -881,6 +881,7 @@ define([
     sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURL, {id: "sslOpLayer", "opacity" : 0.5});
 
     serviceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
+    llServiceLayers = [sslMapServiceLayer, szMapServiceLayer];
   }
 
 
@@ -1131,11 +1132,17 @@ define([
   }
 
   function getLegendHtml(n) {
-    if (n === serviceLayers.length) {
+    if (n === llServiceLayers.length) {
       makeLayerListWidget();
       return;
     };
-    const serviceLayer = serviceLayers[n];
+    const serviceLayer = llServiceLayers[n];
+
+    let legendQueryTimeout = setTimeout(function() {    // In case service is not running, this bypasses
+      if (!legendInfo[this.title])
+        getLegendHtml(n+1);
+    }.bind({title: serviceLayer.title, n: n}), 5000);
+
     queryServer(serviceLayer.url + "/legend", true, function(R) {
       legendInfo[this.title] = R.layers;
       getLegendHtml(n+1);
@@ -1203,7 +1210,7 @@ define([
     // NOTE:  To prevent a layer from appearing in the LayerList, set the layer's "listMode" property to "hide"
     layerListWidget = new LayerList({
       //    container: "layerListDom",
-      container: makeWidgetDiv("layerListDiv","",(mapDiv.offsetHeight - 100) + "px", "nowrap_ScrollX"),     // Set max height of LayerListWidget to mapDiv height - 100
+      container: makeWidgetDiv("layerListDiv","right",(mapDiv.offsetHeight - 100) + "px", "nowrap_ScrollX"),     // Set max height of LayerListWidget to mapDiv height - 100
       view: view
     });
 
@@ -1297,24 +1304,154 @@ define([
     view.container.ondragover = drag_over;
     view.container.ondrop = drop;
 
+/*  Upper-left widgets  */
+    let homeWidget = new Home({
+      view: view
+    });
+    view.ui.add({ component: homeWidget, position: "top-left", index: 0});    // Specify index=0, so this widget appears before the (default) Zoom +/- widget
+
+    let panZoomDiv = document.createElement("DIV");
+    panZoomDiv.innerHTML = panZoomHtml;
+    view.ui.add(panZoomDiv, "top-left");
+
+    let prevNextBtnsDiv = document.createElement("DIV");
+    prevNextBtnsDiv.innerHTML = prevNextBtnsHtml;
+    view.ui.add(prevNextBtnsDiv, "top-left");
+
+    savedExtentsWidget = new Bookmarks({
+      //bookmarks: new Collection(),      // In 4.12, needed to get past bug
+      view: view
+    });
+    let savedExtentsExpand = new Expand({
+      expandIconClass: "esri-icon-collection",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
+      expandTooltip: "Show extents history", // optional, defaults to "Expand" for English locale
+      view: view,
+      content: savedExtentsWidget
+    });
+    view.ui.add(savedExtentsExpand, {
+      position: "top-left"
+    });
+
+    savedExtentsWidget.on("select-bookmark", function(event){
+      currentBookmarkNumber = parseInt(event.target.activeBookmark.name.split(":")[0]);
+      bookmarkSelected = true;
+    });
+
+/*  Upper-left widgets  */
+
+
+/*  Upper-right widgets  */
+
     //makeLayerListWidget();
 
     // place the LayerList in an Expand widget
     llExpand = new Expand({
       view: view,
-      //content: wrapperWithOpacitySlider(layerListWidget.domNode, "Layers"),
+      //content is added later, after querying server for legend info
       expandIconClass: "esri-icon-layer-list",
       expandTooltip: "Click here to view and select layers",
       collapseTooltip: "Hide layer list",
       expanded: true      // PUB: set to true
     });
-    view.ui.add({ component: llExpand, position: "top-left", index: 0});
-    /**/
+    view.ui.add({ component: llExpand, position: "top-right", index: 0});
+
+    // NOAA offline app link
+    let olExpand = new Expand({
+      view: view,
+      content: makeWidgetDiv("offlineAppPanel", "right")   ,
+      expandIconClass: "esri-icon-download",
+      expandTooltip: "Click here to download data in the current extent and use with the offline app",
+      collapseTooltip: "Hide the offline app widget"
+    });
+    olExpand.content.innerHTML = download_notZoomedInEnoughContent;
+    view.ui.add(olExpand, "top-right");
 
 
+    // Settings widget
+    let settingsExpand = new Expand({
+      view: view,
+      content: makeWidgetDiv("settingsPanel", "right")   ,
+      expandIconClass: "esri-icon-settings",
+      expandTooltip: "Click here to go to website settings.",
+      collapseTooltip: "Hide settings widget"
+    });
+    settingsExpand.content.innerHTML = settingsHtml;
+    view.ui.add(settingsExpand, "top-right");
 
+
+    /*  Upper-right widgets  */
+
+
+/*  Bottom widgets  */
+    let nauticalLayer = new MapImageLayer({
+      url: "https://seamlessrnc.nauticalcharts.noaa.gov/ArcGIS/rest/services/RNC/NOAA_RNC/MapServer"
+    });
+
+    let nauticalBaseLayer = new Basemap({
+      baseLayers: nauticalLayer,
+      title: "NOAA Nautical Charts",
+      id: "noaaNautical",
+      thumbnailUrl:
+        "assets/images/thumbnail_noaaNautical.png"
+    });
+
+    /*    Attempt to add USA Topo Maps to Basemap Gallery
+        // https://www.arcgis.com/home/webmap/viewer.html?webmap=931d892ac7a843d7ba29d085e0433465
+        let item = new PortalItem({
+          id: "931d892ac7a843d7ba29d085e0433465"
+        });
+
+        let newBaseLayer = new Basemap({
+          baseLayers: item
+        });
+    */
+
+
+    let basemapSource = [nauticalBaseLayer];
+    //basemapSource.push(newBaseLayer);
+    for (bId of basemapIds) {
+      basemapSource.push(Basemap.fromId(bId));
+    }
+
+    // Add ESRI basemap gallery widget to map, inside an Expand widget
+    let basemapGallery = new BasemapGallery({
+      view: view,
+      source: basemapSource,
+      container: makeWidgetDiv("basemapDiv", "bottom")    // document.createElement("div")
+    });
     /*
-        // (DISABLED) ESRI Legend widget.  This goes in the "legendDom" DIV, rather than the map
+        basemapGallery.on("selection-change", function(event){
+          // event is the event handle returned after the event fires.
+          console.log(event.mapPoint);
+        });
+    */
+    let bgExpand = new Expand({
+      view: view,
+      content: wrapperWithOpacitySlider(basemapGallery.domNode, "Basemaps"),
+      expandIconClass: "esri-icon-basemap",
+      expandTooltip: "Click here to use a different base map!",
+      collapseTooltip: "Hide base maps"
+    });
+    view.ui.add(bgExpand, "bottom-left");
+
+    // Add ESRI search widget to map
+    let searchWidget = new Search({ view: view, maxSuggestions: 5 });
+    view.ui.add(searchWidget, "bottom-right");
+
+    //searchWidget.on("search-complete", function(event) {});
+
+    /*  Bottom widgets  */
+
+
+/*  Disabled widgets  *
+
+        let locateWidget = new Locate({
+          view: view,   // Attaches the Locate button to the view
+          graphicsLayer: locateIconLayer  // The layer the locate graphic is assigned to
+        });
+        view.ui.add({ component: locateWidget, position: "top-left", index: 2});
+
+        // ESRI Legend widget.  This goes in the "legendDom" DIV, rather than the map
         //let legendDom = document.createElement("div");
         //legendDom.style.backgroundColor = "blueviolet";     //.className = "noaaWidget";
         legend = new Legend({
@@ -1341,127 +1478,11 @@ define([
           expanded: false      // PUB: set to true
         });
         view.ui.add(legendExpand, "top-right");
-    */
+
+/*  Disabled widgets  */
 
 
 
-    let homeWidget = new Home({
-      view: view
-    });
-    view.ui.add({ component: homeWidget, position: "top-left", index: 1});
-
-    let locateWidget = new Locate({
-      view: view,   // Attaches the Locate button to the view
-      graphicsLayer: locateIconLayer  // The layer the locate graphic is assigned to
-    });
-    view.ui.add({ component: locateWidget, position: "top-left", index: 2});
-
-    let nauticalLayer = new MapImageLayer({
-      url: "https://seamlessrnc.nauticalcharts.noaa.gov/ArcGIS/rest/services/RNC/NOAA_RNC/MapServer"
-    });
-
-    let nauticalBaseLayer = new Basemap({
-      baseLayers: nauticalLayer,
-      title: "NOAA Nautical Charts",
-      id: "noaaNautical",
-      thumbnailUrl:
-        "assets/images/thumbnail_noaaNautical.png"
-    });
-
-/*    Attempt to add USA Topo Maps to Basemap Gallery
-    // https://www.arcgis.com/home/webmap/viewer.html?webmap=931d892ac7a843d7ba29d085e0433465
-    let item = new PortalItem({
-      id: "931d892ac7a843d7ba29d085e0433465"
-    });
-
-    let newBaseLayer = new Basemap({
-      baseLayers: item
-    });
-*/
-
-
-    let basemapSource = [nauticalBaseLayer];
-    //basemapSource.push(newBaseLayer);
-    for (bId of basemapIds) {
-      basemapSource.push(Basemap.fromId(bId));
-    }
-
-    // Add ESRI basemap gallery widget to map, inside an Expand widget
-    let basemapGallery = new BasemapGallery({
-      view: view,
-      source: basemapSource,
-      container: makeWidgetDiv("basemapDiv", "bottom")    // document.createElement("div")
-    });
-/*
-    basemapGallery.on("selection-change", function(event){
-      // event is the event handle returned after the event fires.
-      console.log(event.mapPoint);
-    });
-*/
-    let bgExpand = new Expand({
-      view: view,
-      content: wrapperWithOpacitySlider(basemapGallery.domNode, "Basemaps"),
-      expandIconClass: "esri-icon-basemap",
-      expandTooltip: "Click here to use a different base map!",
-      collapseTooltip: "Hide base maps"
-    });
-    view.ui.add(bgExpand, "bottom-left");
-
-
-    // NOAA offline app link
-    let olExpand = new Expand({
-      view: view,
-      content: makeWidgetDiv("offlineAppPanel", "right")   ,
-      expandIconClass: "esri-icon-download",
-      expandTooltip: "Click here to download data in the current extent and use with the offline app",
-      collapseTooltip: "Hide the offline app widget"
-    });
-    olExpand.content.innerHTML = download_notZoomedInEnoughContent;
-    view.ui.add(olExpand, "top-right");
-
-
-    // Settings widget
-    let settingsExpand = new Expand({
-      view: view,
-      content: makeWidgetDiv("settingsPanel", "right")   ,
-      expandIconClass: "esri-icon-settings",
-      expandTooltip: "Click here to go to website settings.",
-      collapseTooltip: "Hide settings widget"
-    });
-    settingsExpand.content.innerHTML = settingsHtml;
-    view.ui.add(settingsExpand, "top-right");
-
-
-    // Add ESRI search widget to map
-    let searchWidget = new Search({ view: view });
-    view.ui.add(searchWidget, "bottom-right");
-
-    let prevNextBtnsDiv = document.createElement("DIV");
-    prevNextBtnsDiv.innerHTML = prevNextBtnsHtml;
-    view.ui.add(prevNextBtnsDiv, "top-right");
-
-    savedExtentsWidget = new Bookmarks({
-      //bookmarks: new Collection(),      // In 4.12, needed to get past bug
-      view: view
-    });
-    let savedExtentsExpand = new Expand({
-      expandIconClass: "esri-icon-collection",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
-      expandTooltip: "Show extents history", // optional, defaults to "Expand" for English locale
-      view: view,
-      content: savedExtentsWidget
-    });
-    view.ui.add(savedExtentsExpand, {
-      position: "top-right"
-    });
-
-    savedExtentsWidget.on("select-bookmark", function(event){
-      currentBookmarkNumber = parseInt(event.target.activeBookmark.name.split(":")[0]);
-      bookmarkSelected = true;
-    });
-
-    let panZoomDiv = document.createElement("DIV");
-    panZoomDiv.innerHTML = panZoomHtml;
-    view.ui.add(panZoomDiv, "top-left");
 
     let refreshFeaturesDiv = document.createElement("DIV");
     refreshFeaturesDiv.innerHTML = refreshFeaturesHtml;

@@ -487,6 +487,7 @@ define([
       if (!this.clickableSymbol)
           return;
       this.clearGraphics();     // Clear any previously-existing graphics and associated stuff
+      //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " started... ");
       for (let n = 0; n < features.length; n++) {
 
         /*JN*

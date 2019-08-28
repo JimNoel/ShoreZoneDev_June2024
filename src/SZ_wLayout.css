@@ -359,6 +359,11 @@ cursor: pointer;
     /*overflow-x: auto;     doesn't work at this level? */
 }
 
+.iconDiv  {height: 24px;}
+
+.icon_Active  {background-color: #6884B3;}
+.icon_Inactive  {background-color: white;}
+
 
 /*  This is the class for Layer headers (including Group layers)
 .esri-layer-list__item-title
