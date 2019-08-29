@@ -12,9 +12,9 @@ download_ZoomedInEnoughContent += "&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='" + 
 download_ZoomedInEnoughContent += "&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='" + onlineSetVisibleHTML + "'>Use Offline App</button>";
 
 
-let dlDataContent = "<div id='dlDataContent' style='visibility: hidden; position: absolute; top: 120px;'>Select which images to include<br>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='downloadData()'>Submit</button></div>";
+let dlDataContent = "<div id='dlDataContent' style='visibility: hidden; position: absolute; top: 135px;'>Select which images to include<br>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='downloadData()'>Submit</button></div>";
 
-let offlineAppContent = "<div id='offlineAppContent' style='visibility: hidden; position: absolute; top: 120px;'>Do you want to download data and open the offline app? Note that it will take some time to download the data, and your device may not have enough storage.<br>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='openOfflineApp()'>Go offline!</button></div>";
+let offlineAppContent = "<div id='offlineAppContent' style='visibility: hidden; position: absolute; top: 135px;'>Do you want to download data and open the offline app? Note that it will take some time to download the data, and your device may not have enough storage.<br>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='openOfflineApp()'>Go offline!</button></div>";
 
 download_ZoomedInEnoughContent += dlDataContent + offlineAppContent;
 
@@ -27,9 +27,11 @@ let videoClipInfo = [];
 function updateDownloadDialog(vidCapCount, photoCount) {
   let dlDataDialog = '<b>Select which images to include</b><br>';
   dlDataDialog += '<input type="checkbox" id="cb_StillPhotos">&nbsp;&nbsp;Still Photos (' + photoCount + ' images targeted)<br>';
-  dlDataDialog += '<input type="checkbox" id="cb_LowResVidCap">&nbsp;&nbsp;Low resolution video captures (' + vidCapCount + ' images targeted)<br>';
-  dlDataDialog += '<input type="checkbox" id="cb_HighResVidCap">&nbsp;&nbsp;High resolution video captures (' + vidCapCount + ' images targeted)<br>';
-  dlDataDialog += 'Description:&nbsp;&nbsp;<input type="text" id="text_Description" value="Spatial Data Extraction" size="30"><br>';
+  if (vidCapCount>0) {
+    dlDataDialog += '<input type="checkbox" id="cb_LowResVidCap">&nbsp;&nbsp;Low resolution video captures (' + vidCapCount + ' images targeted)<br>';
+    dlDataDialog += '<input type="checkbox" id="cb_HighResVidCap">&nbsp;&nbsp;High resolution video captures (' + vidCapCount + ' images targeted)<br>';
+  }
+  //dlDataDialog += 'Description:&nbsp;&nbsp;<input type="text" id="text_Description" value="Spatial Data Extraction" size="30"><br>';
   dlDataDialog += '&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="downloadData();">Submit</button>';
   setContent("dlDataContent", dlDataDialog);
 }
@@ -60,9 +62,9 @@ function openOfflineApp() {
 function getResultData(result) {
   console.log(result);
   let jobId = result.jobId;
-  gp.getResultData(jobId, "Output_Zip_File_zip").when(function(result) {
+  gp.getResultData(jobId, "Output_Zip_File_zip").then(function(result) {
     zipURL = result.value.url.replace("/scratch/","/scratch/GroupDataExtract_output/");     // HACK: add GroupDataExtract_output subdirectory
-    gp.getResultData(jobId, "outJSON").when(function(result) {
+    gp.getResultData(jobId, "outJSON").then(function(result) {
       let a = result.value.split(";");
       zipSizeText = a[0];
       videoClipInfo = a[1].split("@");
@@ -121,5 +123,5 @@ function downloadData() {
     params.Get_HighRes = "1";
   outZipFileName = text_Description.value;
   setContent("dlDataContent", "Submitting query ..");
-  gp.submitJob(params).when(getResultData, processError, logProgress);
+  gp.submitJob(params).then(getResultData, processError, logProgress);
 }

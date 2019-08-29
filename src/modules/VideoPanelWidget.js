@@ -271,7 +271,11 @@ define([
         });
         szPhotoWidget.makeClickableGraphics(photoFeatures);
 
-        updateDownloadDialog(features.length, photoFeatures.length);
+        let vidcapFeatures = features.filter(function(f){
+          return f.attributes.VidCap_FileName_HighRes
+        });
+
+        updateDownloadDialog(vidcapFeatures.length, photoFeatures.length);
 
         imageUrl = getDownloadVideoUrls(features);
 

@@ -993,16 +993,6 @@ define([
       //view.popup = p;     // if using new popup
     });
 
-/*  //OBS?
-    // When layer view is available, expand the LayerList
-    view.whenLayerView(szMapServiceLayer).then(function(lyrView){
-      //view.extent = szMapServiceLayer.fullExtent;
-      watchUtils.whenFalseOnce(lyrView, "updating").when(function(){
-        layerList_ExpandAll(true);
-      });
-    });
-*/
-
     view.watch("extent", function(newExtent, oldExtent, property, theView) {
       if (theView.interacting || theView.resizing)    // Bypass if panning or using mouse wheel.  In this case, the watch on "interacting" (below) will kick in when the interaction is complete
         return;
