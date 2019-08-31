@@ -114,7 +114,7 @@
           vp:    ["root",  "c",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
               szV:      ["vp",  "t:45%",  "CP", {id: "videoDiv", class: "mediaPanelDiv sz"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
               szP:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv sz"}],
-          qtEP:    ["root", "r:300px",  "EP", "Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
+          qtEP:    ["root", "r:300px",  "EP:Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
             qt:    ["qtEP", "c",        "BC:h"],
               //q:  ["qt",  "t:200px",    "CP"],        // set query panel height
               t:  ["qt",  "c",    "BC:h", {id: "tableDiv"}],
@@ -200,7 +200,8 @@
             iconNode.className = "noaaExpandoIconVertical " + regionClassName;
             customClassName = "noaaExpandoTitleVertical";
           }
-          iconNode.innerHTML += '<div class="' + customClassName + '">' + header + '</div>';
+          let id = info[3].id + "_Title";
+          iconNode.innerHTML += '<div id="' + id + '" class="' + customClassName + '">' + header + '</div>';
         }
       }
 

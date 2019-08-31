@@ -438,6 +438,10 @@ define([
           if (results.features.length > maxSZFeatures) {
             updateNoFeaturesMsg(extentDependentWidgets, "toomany");
           } else {
+/*
+            if (this.widgetName === "szUnitsWidget")
+              setDisplay("showUnitsDiv", true);     // Show secondary unit features checkbox
+*/
             this.processData(results);
           }
       }.bind(this), function(error) {

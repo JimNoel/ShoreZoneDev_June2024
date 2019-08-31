@@ -464,7 +464,12 @@ function dropdownSelectHandler(w, index, ddElement) {
 }
 
 function checkbox_showFeatures_clickHandler(clickableLayer, cb) {
-  clickableLayer.visible = cb.checked;
+  let isChecked = cb.checked;
+  clickableLayer.visible = isChecked;
+  if (clickableLayer.widgetController.widgetName === "szUnitsWidget") {   // If for SZ Units, ensure both boxes are checked the same
+    unitsCheckbox_showFeatures.checked = isChecked;
+    unitsCheckbox2_showFeatures.checked = isChecked;
+  }
 }
 
 function findAndChangePlaybackSpeed() {
@@ -522,6 +527,7 @@ function updateNoFeaturesMsg(widgets, status) {
   widgets.forEach(function(w, index, array) {
     setMessage(w.disabledMsgDivName, template.replace(/\{1\}/g, w.disabledMsgInfix));
   });
+  //setDisplay("showUnitsDiv", false);      // Hide secondary unit features checkbox
 }
 
 function refreshFeatures() {
@@ -674,6 +680,8 @@ function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
 let featureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
 let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' src='assets/images/refresh24x24.png' onclick='refreshFeatures()' height='32px' width='32px' title='Click to refresh features' />";
 
+let showUnitsCheckbox2 = '<input id="unitsCheckbox2_showFeatures" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget.clickableLayer,unitsCheckbox2_showFeatures)"><span style="background-color: #ff6060; opacity: 0.25">&emsp;&emsp;</span>'
+//let showUnitsCheckbox2 = '&emsp;<input id="unitsCheckbox2_showFeatures" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget.clickableLayer,unitsCheckbox2_showFeatures)">Show markers&emsp;'
 
 /* For pan/zoom-to-rectangle toggle */
 let panning = true;      // If not panning, then zooms to drawn rectangle

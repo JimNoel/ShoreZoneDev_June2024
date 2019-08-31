@@ -426,6 +426,9 @@ define([
         let fCtSpanId = fCtID.replace("_","Span_");
         let fCtHtml = '&emsp;<LABEL class="boldLabel" id="' + fCtID + '"></LABEL>&emsp;';
         let spanHtml = '<span id="' + fCtSpanId + '">' + fCtHtml + '</span>';
+
+        //let titleEl = getEl("tableQueryExpando_Title");
+        //titleEl.innerHTML = spanHtml;
         headerContent.innerHTML += spanHtml;
 
         if (this.clickableLayer) {
@@ -433,6 +436,7 @@ define([
           let cbSpanId = cbID.replace("_","Span_");
           let args = this.objName + '.clickableLayer,' + cbID;
           let cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
+          //titleEl.innerHTML = '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           getEl(cbID).checked = this.clickableLayer.visible;
         }

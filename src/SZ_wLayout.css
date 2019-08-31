@@ -178,13 +178,13 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
   animation-direction: alternate;
   animation-play-state: running;
 }
+.btn_refresh_inactive  {display: none}
+
 
 @keyframes flash {
   from {background-color: red;}
   to {background-color: black;}
 }
-
-.btn_refresh_inactive  {display: none}
 
 .esri-view-width-xlarge .esri-popup__main-container,
 .esri-view-width-large .esri-popup__main-container,

@@ -151,8 +151,9 @@ define([
         hideMarkersAtStart: true,
         clickableSymbolType: "extent",
         clickableSymbolInfo: {
-          color: [ 51, 51, 204, 0.05 ],
-          style: "solid"
+          color: [ 255, 96, 96, 0.25 ],
+          style: "solid",
+          outline: null
         },
         highlightSymbolType: "polyline",
         highlightSymbolInfo: {
@@ -1368,6 +1369,10 @@ define([
     settingsExpand.content.innerHTML = settingsHtml;
     view.ui.add(settingsExpand, "top-right");
 
+    let refreshFeaturesDiv = document.createElement("DIV");
+    refreshFeaturesDiv.innerHTML = refreshFeaturesHtml;
+    view.ui.add(refreshFeaturesDiv, "top-right");
+
 
     /*  Upper-right widgets  */
 
@@ -1424,6 +1429,10 @@ define([
     });
     view.ui.add(bgExpand, "bottom-left");
 
+    let showUnitsDiv = document.createElement("DIV");
+    showUnitsDiv.innerHTML = showUnitsCheckbox2;
+    view.ui.add(showUnitsDiv, "bottom-left");
+
     // Add ESRI search widget to map
     let searchWidget = new Search({ view: view, maxSuggestions: 5 });
     view.ui.add(searchWidget, "bottom-right");
@@ -1470,14 +1479,6 @@ define([
         view.ui.add(legendExpand, "top-right");
 
 /*  Disabled widgets  */
-
-
-
-
-    let refreshFeaturesDiv = document.createElement("DIV");
-    refreshFeaturesDiv.innerHTML = refreshFeaturesHtml;
-    view.ui.add(refreshFeaturesDiv, "top-right");
-
 
   };
 
