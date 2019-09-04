@@ -242,12 +242,12 @@ define([
       if (!wait_for_current_photo) {
           this.counter = this.counter + photo_play_direction;
 //          if (this.counter < 0 || this.counter >= szPhotoWidget.points_photos[last_photo_video_name].length) {
-        if (this.counter < 0 || this.counter >= this.getClickableGraphicsCount()) {
+        if (this.counter < 0 || this.counter >= this.getFeatureCount()) {
           clearTimeout(photo_play_timer);
           photo_play_timer = false;
             this.counter = this.counter - photo_play_direction;
         }
-        update_photo(this.getClickableGraphicAttributes(this.counter));
+        update_photo(this.getFeatureAttributes(this.counter));
       }
       if (photo_play_timer)
         photo_play_timer = photoPlayer();
@@ -351,7 +351,7 @@ define([
       this.toEnd = function() {
         if (sync_photos)
           return;             // Not allowed if syncing with video
-        this.changeCurrentFeature(this.getClickableGraphicsCount()-1);
+        this.changeCurrentFeature(this.getFeatureCount()-1);
       };
 
       this.updateMedia = function(attrs) {

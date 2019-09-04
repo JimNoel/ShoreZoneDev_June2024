@@ -60,14 +60,14 @@ define([
       //#### PHOTOS ####
 
       if (sync_photos && szPhotoWidget.szPhotosVisible) {
-          let currPhotoPoint = szPhotoWidget.getClickableGraphicAttributes(szPhotoWidget.counter);
-          if ((currentTime > currPhotoPoint.MP4_Seconds) && (szPhotoWidget.counter < szPhotoWidget.getClickableGraphicsCount() - 1)) {
+          let currPhotoPoint = szPhotoWidget.getFeatureAttributes(szPhotoWidget.counter);
+          if ((currentTime > currPhotoPoint.MP4_Seconds) && (szPhotoWidget.counter < szPhotoWidget.getFeatureCount() - 1)) {
 
               szPhotoWidget.beforeLast_photo_point = szPhotoWidget.last_photo_point ? szPhotoWidget.last_photo_point : currPhotoPoint;
               szPhotoWidget.last_photo_point = currPhotoPoint;
 
               szPhotoWidget.counter += 1;
-              szPhotoWidget.next_photo_point = szPhotoWidget.getClickableGraphicAttributes(szPhotoWidget.counter);
+              szPhotoWidget.next_photo_point = szPhotoWidget.getFeatureAttributes(szPhotoWidget.counter);
 
               //measurePhotoDownloadTime();
 
@@ -79,13 +79,13 @@ define([
 
       //#### VIDEOS ####
 
-      cur_vid_pt = szVideoWidget.getClickableGraphicAttributes(szVideoWidget.counter);
+      cur_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
 
       // Check if playback has gone beyond current point
       if (currentTime - cur_vid_pt.MP4_Seconds >= 1) {      // Check if enough time has passed to go to the next point
         szVideoWidget.counter += 1;
-        if (szVideoWidget.counter < szVideoWidget.getClickableGraphicsCount())  {
-          nxt_vid_pt = szVideoWidget.getClickableGraphicAttributes(szVideoWidget.counter);
+        if (szVideoWidget.counter < szVideoWidget.getFeatureCount())  {
+          nxt_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
           //console.log("video widget counter = " + szVideoWidget.counter);
           szVideoWidget.moveToFeature(nxt_vid_pt);
           if (nxt_vid_pt.VIDEOTAPE !== last_video_name) {
@@ -256,6 +256,7 @@ define([
         //super.printInfo(this);
         //this.inherited(arguments);
         let features = results.features;
+        this.features = features;
         console.log(features.length + " video features");
         pausePlayback("video");
         if (this.noFeatures(features))
@@ -266,16 +267,16 @@ define([
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
         this.makeClickableGraphics(features);
         //OBS lastPhotoSec = -100;      // Reset photo filter counter
-        let photoFeatures = features.filter(function(f){
+        szPhotoWidget.features = features.filter(function(f){
           return f.attributes.StillPhoto_FileName
         });
-        szPhotoWidget.makeClickableGraphics(photoFeatures);
+        szPhotoWidget.makeClickableGraphics(szPhotoWidget.features);
 
         let vidcapFeatures = features.filter(function(f){
           return f.attributes.VidCap_FileName_HighRes
         });
 
-        updateDownloadDialog(vidcapFeatures.length, photoFeatures.length);
+        updateDownloadDialog(vidcapFeatures.length, szPhotoWidget.features.length);
 
         imageUrl = getDownloadVideoUrls(features);
 
@@ -285,9 +286,9 @@ define([
           this.counter = 0;
         } else {
           showCurrentFeatures();
-          startPointData = this.getClickableGraphicAttributes(this.counter);
+          startPointData = this.getFeatureAttributes(this.counter);
           if (startPointData["hasVideo"]) {
-            if (this.getClickableGraphicsCount() > 0) {
+            if (this.getFeatureCount() > 0) {
               this.updateMedia(startPointData);
             }
           }
@@ -307,7 +308,7 @@ define([
 
       this.toStart = function() {
         this.counter = 0;
-        attrs = this.getClickableGraphicAttributes(this.counter);
+        attrs = this.getFeatureAttributes(this.counter);
         this.updateMedia(attrs);
         this.moveToFeature(attrs);
       };
@@ -326,8 +327,8 @@ define([
       };
 
       this.toEnd = function() {
-        this.counter = this.getClickableGraphicsCount() -1;
-        attrs = this.getClickableGraphicAttributes(this.counter);
+        this.counter = this.getFeatureCount() -1;
+        attrs = this.getFeatureAttributes(this.counter);
         this.updateMedia(attrs);
         this.moveToFeature(attrs);
       };
@@ -349,7 +350,7 @@ define([
         if (szPhotoWidget && sync_photos) {
           szPhotoWidget.counter = szPhotoWidget.indexFirstFeatureGreaterThan("DATE_TIME", startPointData.DATE_TIME);
           if (szPhotoWidget.counter >= 0) {
-            szPhotoWidget.next_photo_point = szPhotoWidget.getClickableGraphicAttributes(szPhotoWidget.counter);
+            szPhotoWidget.next_photo_point = szPhotoWidget.getFeatureAttributes(szPhotoWidget.counter);
             szPhotoWidget.update_photo(szPhotoWidget.next_photo_point);
           }
         }
@@ -418,12 +419,12 @@ define([
       this.firstVideoAvail = function(inReverse) {
             let p = 0;
             let incr = 1;
-            let L = this.getClickableGraphicsCount();
+            let L = this.getFeatureCount();
             if (inReverse) {
                 p = L - 1;
                 incr = -1;
             }
-            while ((p>=0) && (p<L) && (!this.getClickableGraphicAttributes(p)["hasVideo"]))
+            while ((p>=0) && (p<L) && (!this.getFeatureAttributes(p)["hasVideo"]))
                 p = p + incr;
             if  ((p===-1) || (p===L))
                 return -1;

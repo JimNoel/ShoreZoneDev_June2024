@@ -451,10 +451,10 @@ define([
     },
 
     changeCurrentFeature: function(newIndex) {
-      if (newIndex<0 || newIndex>=this.getClickableGraphicsCount())
+      if (newIndex<0 || newIndex>=this.getFeatureCount())
         return null;     // Do nothing: out of range
       this.counter = newIndex;
-      let attrs = this.getClickableGraphicAttributes(this.counter);
+      let attrs = this.getFeatureAttributes(this.counter);
       this.moveToFeature(attrs);
       this.updateMedia(attrs);
     },
@@ -503,11 +503,6 @@ define([
 
 
         let g = features[n];
-        let a = {};
-        for (i in g.attributes) {
-            a[i] = g.attributes[i];
-        }
-        a.item = n;
 
         let geom = g.geometry;
         if (g.geometry.type === "polyline")
@@ -529,14 +524,23 @@ define([
               skipFeature = true;
           }
         }
-        a.x = centroid.x;
-        a.y = centroid.y;
+
+        let mapFeature = webMercatorUtils.webMercatorToGeographic(geom);      //projPoint);   //this._webMercatorToGeographic(projPoint);
+        let mapFeatureCenter = webMercatorUtils.webMercatorToGeographic(centroid);
+
+        // Added attributes
+        g.attributes.item = n;
+        g.attributes.x = centroid.x;
+        g.attributes.y = centroid.y;
+        g.attributes.Caption = decDegCoords_to_DegMinSec(mapFeatureCenter.x, mapFeatureCenter.y);
+
+        // Make "clone" of g.attributes, to attach to graphic
+        let a = {};
+        for (i in g.attributes) {
+          a[i] = g.attributes[i];
+        }
 
         if (!skipFeature) {
-          let mapFeature = webMercatorUtils.webMercatorToGeographic(geom);      //projPoint);   //this._webMercatorToGeographic(projPoint);
-          let mapFeatureCenter = webMercatorUtils.webMercatorToGeographic(centroid);
-          a.Caption = decDegCoords_to_DegMinSec(mapFeatureCenter.x, mapFeatureCenter.y);
-
           let currSymbol = this.clickableSymbol.clone();
           if (this.renderingInfo) {
             let v = a[this.renderingInfo.field];
@@ -566,17 +570,19 @@ define([
       //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " completed, with " + this.clickableLayer.graphics.items.length + " items");
     },
 
-    getClickableGraphicsCount: function() {
-      return this.clickableLayer.graphics.length;
+    getFeatureCount: function() {
+      return this.features.length;
+      //return this.clickableLayer.graphics.length;
     },
 
-    getClickableGraphicAttributes: function(p) {
-      return this.clickableLayer.graphics.items[p].attributes;
+    getFeatureAttributes: function(p) {
+      return this.features[p].attributes;
+      //return this.clickableLayer.graphics.items[p].attributes;
     },
 
     indexFirstFeatureGreaterThan: function(attrName, attrValue) {
-      for (let n = 0; n < this.getClickableGraphicsCount(); n++) {
-        if (this.getClickableGraphicAttributes(n)[attrName] >= attrValue)
+      for (let n = 0; n < this.getFeatureCount(); n++) {
+        if (this.getFeatureAttributes(n)[attrName] >= attrValue)
           return n;
       }
       return -1;
