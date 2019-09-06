@@ -19,7 +19,6 @@ siteTabs.sz = {};
 siteTabs.fa = {};
 siteTabs.ss = {};
 
-
 let mapLoading = false;
 
 define([
@@ -976,6 +975,8 @@ define([
 
   function addMapWatchers() {
     view.when(function() {
+      //searchWidget.activeSource.filter = {geometry: view.extent};
+      //homeExtent = view.extent;
       map.basemap = startBasemap;   //HACK:  Because inital basemap setting of "oceans" messes up initial extent and zooming
       let moveButtonAction = {title: "Move the camera", id: "move-camera"};
       let p = view.popup;     // new Popup();
@@ -1434,10 +1435,38 @@ define([
     view.ui.add(showUnitsDiv, "bottom-left");
 
     // Add ESRI search widget to map
-    let searchWidget = new Search({ view: view, maxSuggestions: 5 });
+    let searchWidget = new Search({ view: view, maxSuggestions: 4 });
     view.ui.add(searchWidget, "bottom-right");
 
-    //searchWidget.on("search-complete", function(event) {});
+    // Default source:  https://developers.arcgis.com/rest/geocode/api-reference/overview-world-geocoding-service.htm
+    searchWidget.on("suggest-start", function(event){
+      console.log("suggest-start", event);
+      this.activeSource.filter = {
+        geometry: view.extent
+        //where: "countryCode='USA'"
+      };
+      this.activeSource.countryCode = "US";
+    });
+
+/*    // This filters search suggestions to initial extent
+    searchWidget.watch("activeSource", function() {
+      this.activeSource.filter = {
+        geometry: view.extent
+        //where: "name like '*Alaska*'"
+      };
+    });
+
+    // Code to handle search results with improper extents
+    searchWidget.goToOverride = function(view, goToParams) {
+      let type =  this.results[0].results[0].feature.geometry.type;
+      let tgt = goToParams.target.target;
+      let goToTarget = tgt;
+      return view.goTo({
+        center: tgt.center,
+        zoom: 8
+      }, goToParams.options);
+    };
+*/
 
     /*  Bottom widgets  */
 

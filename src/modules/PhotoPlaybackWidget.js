@@ -128,6 +128,7 @@ define([
   }
 
 /*
+// dropping AOOS
   function preload_AOOS_Photo(photoPoint, NOAA_img_src) {
     if ((photoPoint.LAT_DDEG===null) || (photoPoint.LON_DDEG===null)) {
       load_NOAA_Photo(NOAA_img_src);
