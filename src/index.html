@@ -390,7 +390,13 @@
             //widgets[j].clickableLayer.visible = isVisible;
             with (widgets[j]) {
               setLayerVisibility(mapServiceLayer, isVisible);
-              setLayerVisibility(clickableLayer, isVisible);
+
+              // Go back to initial clickableLayer visibility
+              let cVisibility = isVisible;
+              if (widgets[j].hideMarkersAtStart)
+                cVisibility = false;
+              setLayerVisibility(clickableLayer, cVisibility);
+
               setLayerVisibility(highlightLayer, isVisible);
               setLayerVisibility(trackingLayer, isVisible);
             }

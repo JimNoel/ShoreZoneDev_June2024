@@ -434,7 +434,7 @@ define([
         if (this.clickableLayer) {
           let cbID = this.baseName + 'Checkbox_showFeatures';
           let cbSpanId = cbID.replace("_","Span_");
-          let args = this.objName + '.clickableLayer,' + cbID;
+          let args = this.objName + ',' + cbID;
           let cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
           //titleEl.innerHTML = '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
