@@ -63,12 +63,12 @@ define([
 
     if (typeof photo_load_times[this.src] !== "undefined") {
 
-      photoLoadCompleteHandler(orig_img_src);
+      //photoLoadCompleteHandler(orig_img_src);
 
       photo_load_times[this.src]["load_end"] = Date.now();
       photo_load_times[this.src]["load_duration"] = photo_load_times[this.src]["load_end"] - photo_load_times[this.src]["load_start"];
       photo_load_times[this.src]["src"] = this.src;
-
+      console.log("photo load time:  "  + photo_load_times[this.src]["load_duration"])
     }
 
     /*
@@ -97,6 +97,7 @@ define([
 */
     //setMessage("photoNoImageMessage",  "Image not found on Picasa.  Trying the NOAA server...", true, 1000);    // For now, trying from NOAA server first
     latest_img_src = new_img_src;
+    photo_load_times[latest_img_src] = {"load_start": Date.now()};
     $("#photoImage").attr("src", latest_img_src);
   }
 

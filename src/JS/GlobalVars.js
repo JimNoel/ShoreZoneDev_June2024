@@ -152,10 +152,11 @@ makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
 
 let sslMapServiceLayerURL = szRestServicesURL + "/Ports_SSL/MapServer";
 
-let mainMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
+let mainMediaServer = "https://maps.psmfc.org/shorezonedata/";
 let VIDEO_SERVER = altMediaServer;
-let PHOTO_SERVER = altMediaServer;
+let PHOTO_SERVER = mainMediaServer;
+console.log(PHOTO_SERVER);
 let VIDEO_FOLDER = "video/";
 
 let current_photo_sub = "stillphotos_lowres";
@@ -683,7 +684,8 @@ function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
 let featureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
 let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' src='assets/images/refresh24x24.png' onclick='refreshFeatures()' height='32px' width='32px' title='Click to refresh features' />";
 
-let showUnitsCheckbox2 = '<input id="unitsCheckbox2_showFeatures" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget,unitsCheckbox2_showFeatures)"><span style="background-color: #ff6060; opacity: 0.25">&emsp;&emsp;</span>'
+let unitsCb2_Id = "unitsCheckbox2_showFeatures";
+let showUnitsCheckbox2 = '<input id="' + unitsCb2_Id  + '" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget,unitsCheckbox2_showFeatures)"><span style="background-color: #ff6060; opacity: 0.25">&emsp;&emsp;</span>'
 
 /* For pan/zoom-to-rectangle toggle */
 let panning = true;      // If not panning, then zooms to drawn rectangle

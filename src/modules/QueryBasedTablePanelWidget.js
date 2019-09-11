@@ -432,13 +432,13 @@ define([
         headerContent.innerHTML += spanHtml;
 
         if (this.clickableLayer) {
-          let cbID = this.baseName + 'Checkbox_showFeatures';
-          let cbSpanId = cbID.replace("_","Span_");
-          let args = this.objName + ',' + cbID;
-          let cbHtml = '&emsp;<input id="' + cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
+          this.cbID = this.baseName + 'Checkbox_showFeatures';
+          let cbSpanId = this.cbID.replace("_","Span_");
+          let args = this.objName + ',' + this.cbID;
+          let cbHtml = '&emsp;<input id="' + this.cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
           //titleEl.innerHTML = '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
-          getEl(cbID).checked = this.clickableLayer.visible;
+          getEl(this.cbID).checked = this.clickableLayer.visible;
         }
 
         // Total Species Data
