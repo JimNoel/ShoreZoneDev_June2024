@@ -15,7 +15,7 @@ let startBasemap = "oceans";
 
 // SZ video parameters
 let minVideoLOD = 12;
-let maxSZFeatures = 2000;    // More than 2000 causes the browser to slow significantly  (for example, 5000 points causes 10-minute hang-up)
+let maxSZFeatures = 6000;    // More than 2000 causes the browser to slow significantly  (for example, 5000 points causes 10-minute hang-up)
 let maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
 let highlightSize = 15;
 

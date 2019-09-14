@@ -383,6 +383,10 @@ define([
         }
       }
       let theWhere = "";
+
+      if (this.initWhere)
+        theWhere = this.initWhere;
+
       this.query.outFields = this.featureOutFields;
       if (this.extraOutFields)                                                       // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
         this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
@@ -466,6 +470,7 @@ define([
       let projPoint = new Point(attrs.x, attrs.y);
       let markerPoint = webMercatorUtils.webMercatorToGeographic(projPoint);
       let newFeature = new Graphic(markerPoint, this.trackingSymbol);
+      //console.log(this.baseName + ":  " + newFeature.geometry.x + "," + newFeature.geometry.y)
       this.trackingLayer.add(newFeature);
       if (this.headerDivName) {
         let headerDiv = getEl(this.headerDivName);
@@ -493,17 +498,7 @@ define([
       this.clearGraphics();     // Clear any previously-existing graphics and associated stuff
       //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " started... ");
       for (let n = 0; n < features.length; n++) {
-
-        /*JN*
-        if ((n % 1000) === 999) {
-          if (!confirm("More than " + (n+1) + " " + this.baseName + " features.  Continue?"))
-            return;
-        }
-        /*JN*/
-
-
         let g = features[n];
-
         let geom = g.geometry;
         if (g.geometry.type === "polyline")
           geom = g.geometry.extent;
@@ -567,6 +562,7 @@ define([
         }
 
       }
+      console.log(this.clickableLayer.graphics.items.length + " " + this.baseName + " markers");
       //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " completed, with " + this.clickableLayer.graphics.items.length + " items");
     },
 

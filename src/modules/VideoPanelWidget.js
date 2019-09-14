@@ -80,9 +80,13 @@ define([
       //#### VIDEOS ####
 
       cur_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
+      //let msg = youtube_player.getVideoUrl().split("=")[2] + ":  " + youtube_player.getCurrentTime();
+      //console.log(msg);
+      //console.log(cur_vid_pt);
 
       // Check if playback has gone beyond current point
-      if (currentTime - cur_vid_pt.MP4_Seconds >= 1) {      // Check if enough time has passed to go to the next point
+      //console.log("onVideoProgress:  VIDEOS:  " + currentTime + ", " + cur_vid_pt.MP4_Seconds);
+      if (currentTime - cur_vid_pt.MP4_Seconds >= 1) {      // Check if enough time has passed to go to the next point    // initWhere: (for example, change 1 to 10)
         szVideoWidget.counter += 1;
         if (szVideoWidget.counter < szVideoWidget.getFeatureCount())  {
           nxt_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
@@ -145,15 +149,31 @@ define([
         if (youtube_id && youtube_player && startPointData["YouTubeID"] !== youtube_id) {
           youtube_playback_memory = youtube_player.getPlayerState()
           youtube_id = startPointData["YouTubeID"];
-          //console.log("before YT.loadVideoById");
-          youtube_player.loadVideoById({'videoId': youtube_id});
-          //console.log("after YT.loadVideoById");
+          console.log("before YT.loadVideoById");
+          try {
+            youtube_player.loadVideoById({'videoId': youtube_id});
+          } catch(e) {
+            console.log(e.message);
+          }
+          if (!youtube_player.getVideoUrl()) {    // HACK -- because loadVideoById is not working on the first try
+            let ytLoadTO = setTimeout(function(){
+              youtube_progress_memory = progress;
+              reloadVideo(startPointData.MP4_Seconds);
+              }, 1000);
+            console.log("retrying video load...");
+          }
+          console.log("video loaded");
         }
       }
     }
 
     currentTime = 0;
     return last_video_name;
+  }
+
+  function reloadVideo(position) {
+    youtube_player.loadVideoById({'videoId': youtube_id});
+    szVideoWidget.setVideoPosition(position);
   }
 
   function pausePlayback(/*String*/ player) {
@@ -228,23 +248,8 @@ define([
         
       lang.mixin(this, kwArgs);
 
-/*
-      this.query.outFields = [
-      "VidCap_FileName_LowRes",
-      "VidCap_FileName_HighRes",
-      "DATE_TIME",
-      "LAT_DDEG",
-      "LON_DDEG",
-      "RelPath",
-      "StillPhoto_FileName",
-      "VIDEOTAPE",
-      "MP4_Seconds",
-      "hasVideo",
-      "YouTubeID",
-      "Picasa_AlbumID",
-      "Picasa_PhotoID"
-      ];
-*/
+      this.clickableSymbolGap = settings.photoGap/2;
+
       this.query.where = "(MP4_Seconds IS NOT NULL) AND (MP4_Seconds >= -1)";
       this.playbackRate = 1.0;
       this.noFeaturesPanels.push(szPhotoWidget);
@@ -266,7 +271,6 @@ define([
 
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
         this.makeClickableGraphics(features);
-        //OBS lastPhotoSec = -100;      // Reset photo filter counter
         szPhotoWidget.features = features.filter(function(f){
           return f.attributes.StillPhoto_FileName
         });
@@ -298,8 +302,13 @@ define([
 
       this.setVideoPosition = function(progress) {
         if (youtube_id) {
-          if (youtube_ready()) {
-            youtube_player.seekTo(progress, true);
+          if (youtube_ready() /*&& youtube_player.getVideoUrl()*/) {
+            console.log("https://www.youtube.com/watch?v=" + youtube_id + "&feature=youtu.be&t=" + progress);
+            try {
+              youtube_player.seekTo(progress, true);
+            } catch(e) {
+              console.log(e.message);
+            }
           } else {
             youtube_progress_memory = progress;
           }

@@ -104,12 +104,16 @@ define([
         mapServiceLayer: szMapServiceLayer,
         layerName: "1s",
         layerPath: "Video Flightline/1s",
+
+        // TODO:  Set up filter to query subset of points, when full set is greater than the service limit
+        //initWhere:  "DateTime_str like '%0'",
+
         spatialRelationship: "contains",
         featureOutFields: ["*"],
         orderByFields: ["Date_Time"],
         trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,0], "size":3,      //  invisible if 4th value in "color" is 0
+        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,      //  invisible if 4th value in "color" is 0
           "outline": {color: [ 128, 128, 128, 0 ] }},
         popupTitle: "Video Point",
         clickableMsg: "Move camera to this location",
@@ -921,20 +925,19 @@ define([
 
 
 /*
-    //JN  This doesn't work.  Make custom prequery function using XMLHttpRequest, with setting for resultRecordCount?
-    // or: Dissolve 10s on VideoTapeID, assume each 10s feature represents up to 4000 points (a little more than an hour of video), run executeForCount on 10s and use 4000*Count as estimated # of point in view
-    if (!this.prequeryTask)
-      return;
-    this.prequeryTask.geometry = map.extent;
-    this.prequeryTask.executeForCount({ where: "1=1"}).then(function(results){
-      if (results.features.length===maxSZFeatures) {
-        console.log(this.baseName + ":  maxSZFeatures (" + maxSZFeatures + ") returned.");
-      } else {
-        console.log("< maxSZFeatures returned");
-      }
-    }.bind(this), function(error) {
-      console.log(this.baseName + ":  QueryTask failed.");
-    }.bind(this));
+    //JN  This doesn't limit to current extent.
+      if (!this.prequeryTask)
+        return;
+      //this.prequeryTask.geometry = view.extent;   // This doesn't work?  Use nonspatial query on POINT_X, POINT_Y instead?
+      this.prequeryTask.executeForCount({ where: "OBJECTID < 100"}).then(function(results){
+        if (results===maxSZFeatures) {
+          console.log(this.baseName + ":  maxSZFeatures (" + maxSZFeatures + ") returned.");
+        } else {
+          console.log("< maxSZFeatures returned");
+        }
+      }.bind(this), function(error) {
+        console.log(this.baseName + ":  QueryTask failed.");
+      }.bind(this));
 */
 
 
@@ -1440,7 +1443,6 @@ define([
 
     // Default source:  https://developers.arcgis.com/rest/geocode/api-reference/overview-world-geocoding-service.htm
     searchWidget.on("suggest-start", function(event){
-      console.log("suggest-start", event);
       this.activeSource.filter = {
         geometry: view.extent
         //where: "countryCode='USA'"
