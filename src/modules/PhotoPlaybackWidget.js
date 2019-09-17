@@ -68,7 +68,7 @@ define([
       photo_load_times[this.src]["load_end"] = Date.now();
       photo_load_times[this.src]["load_duration"] = photo_load_times[this.src]["load_end"] - photo_load_times[this.src]["load_start"];
       photo_load_times[this.src]["src"] = this.src;
-      console.log("photo load time:  "  + photo_load_times[this.src]["load_duration"])
+      //console.log("photo load time:  "  + photo_load_times[this.src]["load_duration"])
     }
 
     /*

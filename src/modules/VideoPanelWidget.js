@@ -149,7 +149,7 @@ define([
         if (youtube_id && youtube_player && startPointData["YouTubeID"] !== youtube_id) {
           youtube_playback_memory = youtube_player.getPlayerState()
           youtube_id = startPointData["YouTubeID"];
-          console.log("before YT.loadVideoById");
+          //console.log("before YT.loadVideoById");
           try {
             youtube_player.loadVideoById({'videoId': youtube_id});
           } catch(e) {
@@ -162,7 +162,7 @@ define([
               }, 1000);
             console.log("retrying video load...");
           }
-          console.log("video loaded");
+          //console.log("video loaded");
         }
       }
     }

@@ -106,7 +106,7 @@ define([
         layerPath: "Video Flightline/1s",
 
         // TODO:  Set up filter to query subset of points, when full set is greater than the service limit
-        //initWhere:  "DateTime_str like '%0'",
+        //initWhere:  "DateTime_str like '%0'",    // example:  "n*(MP4_Seconds/n)=MP4_Seconds" returns just multiples of n
 
         spatialRelationship: "contains",
         featureOutFields: ["*"],
@@ -175,18 +175,6 @@ define([
 
       siteTabs.sz.widgets = [szPhotoWidget, szVideoWidget, szUnitsWidget];
 
-
-/*
-      this.prequeryTask = new QueryTask(szMapServiceLayerURL + "/2");
-      this.prequery = new Query();
-      with (this.prequery) {
-        returnGeometry = false;
-        where = "1=1";
-        returnCountOnly = true;
-        num = 1000;
-        start = 0;
-      }
-*/
 
       /*  TRY:  attempt to catch sublayer visibility change event
       let subLayers = szMapServiceLayer.allSublayers;
@@ -925,18 +913,23 @@ define([
 
 
 /*
-    //JN  This doesn't limit to current extent.
-      if (!this.prequeryTask)
-        return;
-      //this.prequeryTask.geometry = view.extent;   // This doesn't work?  Use nonspatial query on POINT_X, POINT_Y instead?
-      this.prequeryTask.executeForCount({ where: "OBJECTID < 100"}).then(function(results){
-        if (results===maxSZFeatures) {
-          console.log(this.baseName + ":  maxSZFeatures (" + maxSZFeatures + ") returned.");
+    //JN  Works, times out at 60s (~1M records).
+      this.prequeryTask = new QueryTask(szMapServiceLayerURL + "/2");
+      let maxNum = 6000;
+      console.log(new Date() + ":  Getting count of video points...");
+      this.prequeryTask.executeForCount({
+        spatialRelationship: "contains",
+        geometry: view.extent,
+        num: maxNum
+      }).then(function(results){
+        console.log(new Date() + ":  Received response (video point count)");
+        if (results===maxNum) {
+          console.log(this.baseName + ":  max features (" + maxNum + ") returned.");
         } else {
-          console.log("< maxSZFeatures returned");
+          console.log(results + " features returned");
         }
       }.bind(this), function(error) {
-        console.log(this.baseName + ":  QueryTask failed.");
+        console.log(new Date() + ":  QueryTask failed.");
       }.bind(this));
 */
 
