@@ -18,8 +18,9 @@ define([
 ], function(declare, lang, QueryBasedPanelWidget){
 
 // private vars and functions here
-  let picasaOffline = false;
+  //let picasaOffline = false;
   let latest_img_src = false;
+  let latest_img_subPath = false;
   let photoSource1 = null;
   let photoSource2 = null;
   let prev_photo_DT = 0;
@@ -47,12 +48,14 @@ define([
     if ( $("#photoImage").attr("src") === '')
       return;
     console.log("on_image_error");
-    //PHOTO_SERVER = alternateImageBaseDir;
+    //PHOTO_SERVER = altMediaServer;
     //update_photo(update_photo_latest_params);
-    if (e.target.src.includes("alaskafisheries.noaa.gov")) {    // Tried NOOA server and failed
-      load_AOOS_Photo(update_photo_latest_params["Picasa_UserID"], update_photo_latest_params["Picasa_AlbumID"], update_photo_latest_params["Picasa_PhotoID"], "");
+    if (e.target.src.includes(PHOTO_SERVER)) {    // Tried NOOA server and failed
+      let new_img_src = altMediaServer + latest_img_subPath;
+      load_Photo(new_img_src);
+      //load_AOOS_Photo(update_photo_latest_params["Picasa_UserID"], update_photo_latest_params["Picasa_AlbumID"], update_photo_latest_params["Picasa_PhotoID"], "");
     } else {    // Tried AOOS, also failed
-      setMessage("photoNoImageMessage", "Unable to find image.");
+      setMessage(szPhotoWidget.disabledMsgDivName, "Unable to find image.");
     }
     //$("#photoImage").unbind('error');     // OBS: Was handling error only once, then switching to GINA server
     return true;
@@ -280,16 +283,17 @@ define([
       update_photo_latest_params = next_photo_point;
       if (!next_photo_point)
         return;
-      let new_img_src = PHOTO_SERVER + next_photo_point["RelPath"] + "/" + current_photo_sub + "/" + current_photo_prefix + next_photo_point["StillPhoto_FileName"];
-      if (new_img_src.indexOf(".jpeg")<0 && new_img_src.indexOf(".jpg")<0)
-        new_img_src += ".jpg";
+      latest_img_subPath = next_photo_point["RelPath"] + "/" + current_photo_sub + "/" + current_photo_prefix + next_photo_point["StillPhoto_FileName"];
+      if (latest_img_subPath.indexOf(".jpeg")<0 && latest_img_subPath.indexOf(".jpg")<0)
+        latest_img_subPath += ".jpg";
+      let new_img_src = PHOTO_SERVER + latest_img_subPath;
       if (!latest_img_src || latest_img_src !== new_img_src) {
         next_photo_DT = next_photo_point["DATE_TIME"]/1000;
         //secs_to_next_photo = next_photo_DT - prev_photo_DT;
         prev_photo_DT = next_photo_DT;
         photoSource1 = new_img_src;
         photoSource2 = make_PhotoUrl_AOOS(next_photo_point);
-        load_NOAA_Photo(new_img_src);
+        load_Photo(new_img_src);
         //load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
         //photoLoadStartHandler();
         this.moveToFeature(next_photo_point);
