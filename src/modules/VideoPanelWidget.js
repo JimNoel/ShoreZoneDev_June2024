@@ -20,7 +20,6 @@ define([
 
   // private vars and functions here
 
-  let imageUrl = "";
   let last_video_name = null;
   let startPointData;
   let latest_startPointData;
@@ -208,7 +207,7 @@ define([
         }
         Videotape = f.VIDEOTAPE;
         firstSeconds = f.MP4_Seconds;
-        theUrls += videoSnippetDownloadFolder + "360_" + Videotape + ".mp4?start=" + firstSeconds + "&end=";
+        theUrls += videoSnippetDownloadFolder + "/360_" + Videotape + ".mp4?start=" + firstSeconds + "&end=";
       }
       lastSeconds = f.MP4_Seconds;
     }
@@ -282,7 +281,7 @@ define([
 
         updateDownloadDialog(vidcapFeatures.length, szPhotoWidget.features.length);
 
-        imageUrl = getDownloadVideoUrls(features);
+        videoClipURLs = getDownloadVideoUrls(features);
 
         this.counter = this.firstVideoAvail();
 

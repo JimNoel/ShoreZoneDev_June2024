@@ -78,8 +78,16 @@
           mvp:   ["root", "c",  "BC:h"],      // set width of map and media panels in pixels, query/table panels get remainder    min. 600px to display map correctly
             m:     ["mvp",  "c",  "CP", {id: "mapDiv"}],
             vp:    ["mvp",  "b:30%",  "BC:v", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
+              szVP:   ["vp", "c", "BC:h", {id: "szMediaBC", class: "sz"}],
+                szV:      ["szVP",  "l:50%",  "CP", {id: "videoDiv", class: "mediaPanelDiv"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+                szP:      ["szVP",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+              ssCP:   ["vp", "c", "BC:h", {id: "ssMediaBC", class: "ss"}],
+                ssC:      ["ssCP",  "l:50%", "CP", {id: "ssChartsDiv", class: "mediaPanelDiv"}],
+                ssP:      ["ssCP",  "c", "CP", {id: "ssPhotosDiv", class: "mediaPanelDiv"}],
+/*    // old stuff
               szV:      ["vp",  "l:50%",  "CP", {id: "videoDiv", class: "mediaPanelDiv sz"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
               szP:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv sz"}],
+*/
           qtEP:    ["root", "r:50%",  "EP:Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
             qt:    ["qtEP", "c",        "BC:h"],
               //q:  ["qt",  "t:200px",    "CP"],        // set query panel height
@@ -96,8 +104,8 @@
               vp:    ["mvp",  "r:500px",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
                 szV:      ["vp",  "c",     "CP", {id: "videoDiv", class: "mediaPanelDiv sz"}],  // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
                 szP:      ["vp",  "b:50%", "CP", {id: "photoDiv", class: "mediaPanelDiv sz"}],
-//                faC:      ["vp",  "c", "CP", {id: "faChartsDiv", class: "mediaPanelDiv fa"}],
-//                faP:      ["vp",  "b:50%", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv fa"}],
+//                ssC:      ["vp",  "c", "CP", {id: "faChartsDiv", class: "mediaPanelDiv fa"}],
+//                ssP:      ["vp",  "b:50%", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv fa"}],
             qtEP:    ["root", "b:250px",  "EP:", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
               qt:       ["qtEP", "c",   "BC:v"],
                 //q:  ["qt",  "l:200px",    "CP"],        // set query panel height
@@ -355,6 +363,7 @@
 
       // Switch between ShoreZone/FishAtlas/ShoreStation states
       function changeState(tabID, oldTabID) {
+        view.popup.close();
         // 3D units demo site
         if (tabID === "szUnitsTab") {
           if (confirm("Open the ShoreZone 3D Units demo site?"))

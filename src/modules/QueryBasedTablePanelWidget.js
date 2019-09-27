@@ -235,11 +235,22 @@ define([
           this.hideGridTooltip(event);
         }.bind(this));
 
-/*
-        this.grid.watch("_rows", function() {
-          alert("Hey!");
-        });
-*/
+        // If any row-associated wigets, update them when the row is clicked
+        this.grid.on('.dgrid-content .dgrid-row:click', function (event) {
+          let theWidgets = this.tabInfo[this.currTab].rowWidgets;
+          if (theWidgets) {
+            console.log("update row-associated widgets");
+            for (let i=0; i<theWidgets.length; i++) {
+              theWidgets[i].runQuery();
+            }
+          }
+        }.bind(this));
+
+        /*
+                this.grid.watch("_rows", function() {
+                  alert("Hey!");
+                });
+        */
 
         this.repositionTotalLabels = function(columns) {
           if (!this.totalOutFields)

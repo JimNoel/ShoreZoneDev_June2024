@@ -45,6 +45,8 @@ let szRestServicesURL = szRestServicesURLnoaa;
 let szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
 let szSublayerIDs = {};
 
+let videoClipURLs = "";    // For download of video clips for currnt extent
+
 let settings = {
   autoRefresh: true,
   photoGap: 50
@@ -171,6 +173,8 @@ let photoAspectRatio = 4/3;
 let serviceLayers = null;
 let llServiceLayers = null;
 let extentDependentWidgets = [];
+
+// QueryBasedPanelWidget declarations
 let szVideoWidget = null;
 let szPhotoWidget = null;
 let szUnitsWidget = null;
@@ -178,6 +182,8 @@ let faWidget = null;
 let faSpTableWidget = null;
 let ssWidget = null;
 let ssSpTableWidget = null;
+let ssPhotoWidget = null;
+
 let gp = null;      // for Geoprocessor
 let llExpand = null;
 let layerListWidget = null;

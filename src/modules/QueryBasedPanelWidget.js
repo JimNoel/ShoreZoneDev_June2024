@@ -45,6 +45,10 @@ define([
 
     constructor: function(/*Object*/ kwArgs){
       lang.mixin(this, kwArgs);
+/*
+      if (this.objName === "ssPhotoWidget")
+        return;
+*/
       this.initFeatureHandling();
       this.addPanelHtml();
 //      this.makeFooterElements();

@@ -71,6 +71,7 @@ define([
       szMapServiceLayer.when(function() {
 
       szPhotoWidget = new PhotoPlaybackWidget({
+        objName: "szPhotoWidget",
         panelName: "szPhotosPanel",
         panelType: "media",
         contentPaneId: "photoDiv",
@@ -195,6 +196,7 @@ define([
       //console.log("Shore Station MapServiceLayer loaded.");
       ssMapServiceLayer.visible = false;
 
+
       /*  ssWidget def */
       ssWidget = new QueryBasedTablePanelWidget({
         objName: "ssWidget",
@@ -287,6 +289,7 @@ define([
           },
           {
             tabName: 'Stations',
+            rowWidgets: [ssPhotoWidget],
             tabTitle: 'Shore Stations Stations',
             popupTitle: "Shore Stations Stations",
             LayerNameAddOn: 'Field Stations',
@@ -482,6 +485,26 @@ define([
         spatialRelationship: null,      // Using null as a flag to not filter spatially
         noGeometry: true
       });
+
+      // Shore Station photos
+      ssPhotoWidget = new PhotoPlaybackWidget({
+        objName: "ssPhotoWidget",
+        sublayerIDs: ssSublayerIDs,
+        panelName: "ssPhotosPanel",
+        panelType: "media",
+        contentPaneId: "ssPhotosDiv",
+        baseName: "ssPhoto",
+        headerDivName:  "ssPhotoHeaderDiv",
+        disabledMsgInfix: "photo points",
+        disabledMsgDivName: "disabledMsg_ssPhoto",
+        mapServiceLayer: ssMapServiceLayer,
+        layerName: "GVDATA_STNPHOTOS",
+//        popupTitle: "Photo Point",
+//        map: map,
+//        view: view
+      });
+
+
 
 
     }, function(error){
