@@ -289,13 +289,13 @@ define([
           },
           {
             tabName: 'Stations',
-            rowWidgets: [ssPhotoWidget],
+            subWidgetInfo: ["ssPhotoWidget:station"],
             tabTitle: 'Shore Stations Stations',
             popupTitle: "Shore Stations Stations",
             LayerNameAddOn: 'Field Stations',
             parentAreaType: 'Regions',
             visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
-            featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_"],
+            featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos"],
             //calcFields:  [{name: "SpTableBtn", afterField: "Region"}],
             specialFormatting: {      // Special HTML formatting for field values
 /*
@@ -327,6 +327,10 @@ define([
                 title:  "Date Sampled",
                 colWidth:  20,
                 dateFormat: true
+              },
+              hasPhotos: {
+                title:  "Photos",
+                colWidth:  20
               },
 /*
               SpTableBtn: {

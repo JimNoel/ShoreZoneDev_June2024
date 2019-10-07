@@ -829,6 +829,16 @@ function resizeWidgets() {
   layerListWidget.container.style.maxHeight = (mapDiv.offsetHeight - 120) + "px";
 }
 
+function stripHtml(inStr) {
+  let s = inStr;
+  let p1 = s.indexOf("<");
+  while (p1 !== -1) {
+    let p2 = s.indexOf(">");
+    s = s.slice(0,p1) + s.slice(p2+1);
+    p1 = s.indexOf("<");
+  }
+  return s;
+}
 
 
 let mapStuff;

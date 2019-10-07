@@ -55,7 +55,7 @@ define([
       load_Photo(new_img_src);
       //load_AOOS_Photo(update_photo_latest_params["Picasa_UserID"], update_photo_latest_params["Picasa_AlbumID"], update_photo_latest_params["Picasa_PhotoID"], "");
     } else {    // Tried AOOS, also failed
-      setMessage(szPhotoWidget.disabledMsgDivName, "Unable to find image.");
+      setMessage(this.disabledMsgDivName, "Unable to find image.");
     }
     //$("#photoImage").unbind('error');     // OBS: Was handling error only once, then switching to GINA server
     return true;
@@ -246,7 +246,7 @@ define([
       }
       if (!wait_for_current_photo) {
           this.counter = this.counter + photo_play_direction;
-//          if (this.counter < 0 || this.counter >= szPhotoWidget.points_photos[last_photo_video_name].length) {
+//          if (this.counter < 0 || this.counter >= this.points_photos[last_photo_video_name].length) {
         if (this.counter < 0 || this.counter >= this.getFeatureCount()) {
           clearTimeout(photo_play_timer);
           photo_play_timer = false;
@@ -313,15 +313,15 @@ define([
 
 
       let controlData_photo = [
-        ['photo_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'szPhotoWidget', 'toStart'],
-        ['photo_backwardButton', 'Play Backwards', 'w_left.png', 'szPhotoWidget', 'playBackward'],
-        ['photo_pauseButton', 'Pause', 'w_close_red.png', 'szPhotoWidget', 'pause'],
-        ['photo_ForwardButton', 'Play Forwards', 'w_right.png', 'szPhotoWidget', 'playForward'],
-        ['photo_resetForwardButton', 'Reset to End', 'w_collapse.png', 'szPhotoWidget', 'toEnd']
+        ['photo_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', this.objName, 'toStart'],
+        ['photo_backwardButton', 'Play Backwards', 'w_left.png', this.objName, 'playBackward'],
+        ['photo_pauseButton', 'Pause', 'w_close_red.png', this.objName, 'pause'],
+        ['photo_ForwardButton', 'Play Forwards', 'w_right.png', this.objName, 'playForward'],
+        ['photo_resetForwardButton', 'Reset to End', 'w_collapse.png', this.objName, 'toEnd']
       ];
 
       let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>"
-      photoToolsDiv.innerHTML = linkHTML + makeMediaPlaybackHtml(playbackControlTemplate, controlData_photo, 'photoTools', 'position: relative; float: left');
+      this.footerPanel.innerHTML = linkHTML + makeMediaPlaybackHtml(playbackControlTemplate, controlData_photo, 'photoTools', 'position: relative; float: left');
       //getEl('photoTools').style.position = "relative";
       //getEl('photoTools').style.float = "left";
 

@@ -237,11 +237,23 @@ define([
 
         // If any row-associated wigets, update them when the row is clicked
         this.grid.on('.dgrid-content .dgrid-row:click', function (event) {
-          let theWidgets = this.tabInfo[this.currTab].rowWidgets;
-          if (theWidgets) {
+          let subWidgetInfo = this.tabInfo[this.currTab].subWidgetInfo;
+          if (subWidgetInfo) {
             console.log("update row-associated widgets");
-            for (let i=0; i<theWidgets.length; i++) {
-              theWidgets[i].runQuery();
+            let row = this.grid.row(event);
+/*
+            let rowIndex = event.selectorTarget.rowIndex;
+            let gObjFieldHtml = this.store.data[rowIndex][this.idField];
+            let gObjIndex = event.selectorTarget.innerHTML.split("@")[1];
+            let associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
+*/
+            for (let i=0; i<subWidgetInfo.length; i++) {
+              let A = subWidgetInfo[i].split(":");
+              let w = eval(A[0]);
+              let whereField = A[1];
+              let theValue = stripHtml(row.data[whereField]);
+              let theWhere = whereField + "='" + theValue + "'";
+              w.runQuery(null, {theWhere});
             }
           }
         }.bind(this));

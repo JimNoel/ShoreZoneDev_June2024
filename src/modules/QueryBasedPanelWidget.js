@@ -400,7 +400,8 @@ define([
       this.ddTotalsLayerNameAddOn = "";
 
       if (queryPars) {
-        this.layerName = queryPars.tableName;
+        if (queryPars.tableName)
+          this.layerName = queryPars.tableName;
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         this.totalsLayerName = null;
         if (queryPars.totalsTableName)
