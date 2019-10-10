@@ -139,6 +139,11 @@ define([
                   for (p in fmtInfo.plugInFields)
                     args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
                   features[i].attributes[a] = template.replace("{args}", args);
+                } else if (fmtInfo.showWhen) {
+                  if (features[i].attributes[a] === fmtInfo.showWhen)
+                    features[i].attributes[a] = template;
+                  else
+                    features[i].attributes[a] = "";
                 }
               }
               if (features[i].attributes[a]) {
@@ -249,11 +254,18 @@ define([
 */
             for (let i=0; i<subWidgetInfo.length; i++) {
               let A = subWidgetInfo[i].split(":");
-              let w = eval(A[0]);
-              let whereField = A[1];
-              let theValue = stripHtml(row.data[whereField]);
-              let theWhere = whereField + "='" + theValue + "'";
-              w.runQuery(null, {theWhere});
+              let dataPresentField = A[2];
+              if (row.data[dataPresentField] !== "") {
+                let w = eval(A[0]);
+                let whereField = A[1];
+                let theValue = stripHtml(row.data[whereField]);
+                let theWhere = whereField + "='" + theValue + "'";
+                console.log(event);
+                if (!w.queryPending) {
+                  w.queryPending = true;
+                  w.runQuery(null, {theWhere});
+                }
+              }
             }
           }
         }.bind(this));

@@ -444,19 +444,20 @@ define([
 
 
       this.queryTask.execute(this.query).then(function(results){
-          if (results.features.length > maxSZFeatures) {
-            updateNoFeaturesMsg(extentDependentWidgets, "toomany");
-          } else {
+        this.queryPending = false;
+        if (results.features.length > maxSZFeatures) {
+          updateNoFeaturesMsg(extentDependentWidgets, "toomany");
+        } else {
 /*
-            if (this.widgetName === "szUnitsWidget")
-              setDisplay("showUnitsDiv", true);     // Show secondary unit features checkbox
+          if (this.widgetName === "szUnitsWidget")
+            setDisplay("showUnitsDiv", true);     // Show secondary unit features checkbox
 */
-            this.processData(results);
-          }
+          this.processData(results);
+        }
       }.bind(this), function(error) {
-          console.log(this.baseName + ":  QueryTask failed.");
+        this.queryPending = false;
+        console.log(this.baseName + ":  QueryTask failed.");
       }.bind(this));
-
     },
 
     changeCurrentFeature: function(newIndex) {

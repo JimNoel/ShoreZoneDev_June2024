@@ -328,6 +328,15 @@ define([
       setVisible("photo_pauseButton", false);
 
       this.processData = function(results) {
+        let features = results.features;
+        this.features = features;
+        console.log(features.length + " " + this.baseName + " features");
+        //pausePlayback("video");
+        if (this.noFeatures(features))
+          return;
+        if (!this.noGeometry)
+          this.makeClickableGraphics(features);
+        this.toStart();
       };
 
       this.toStart = function() {

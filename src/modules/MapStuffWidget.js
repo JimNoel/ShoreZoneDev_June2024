@@ -289,7 +289,7 @@ define([
           },
           {
             tabName: 'Stations',
-            subWidgetInfo: ["ssPhotoWidget:station"],
+            subWidgetInfo: ["ssPhotoWidget:station:hasPhotos"],     // name of subwidget : filter field : column to check before running query
             tabTitle: 'Shore Stations Stations',
             popupTitle: "Shore Stations Stations",
             LayerNameAddOn: 'Field Stations',
@@ -330,7 +330,9 @@ define([
               },
               hasPhotos: {
                 title:  "Photos",
-                colWidth:  20
+                colWidth:  20,
+                html:   "<img src='assets/images/Camera24X24.png' height='15' width='15' alt=''>",
+                showWhen: "1"
               },
 /*
               SpTableBtn: {
@@ -503,9 +505,7 @@ define([
         disabledMsgDivName: "disabledMsg_ssPhoto",
         mapServiceLayer: ssMapServiceLayer,
         layerName: "GVDATA_STNPHOTOS",
-//        popupTitle: "Photo Point",
-//        map: map,
-//        view: view
+        noGeometry: true
       });
 
 
