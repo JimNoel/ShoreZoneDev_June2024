@@ -87,6 +87,7 @@ define([
           "outline": {color: [ 0, 0, 255, 0 ] }},
         popupTitle: "Photo Point",
         clickableMsg: "Move camera to this location",
+        sync_photos: true,
         map: map,
         view: view
       });
@@ -118,6 +119,7 @@ define([
           "outline": {color: [ 128, 128, 128, 0 ] }},
         popupTitle: "Video Point",
         clickableMsg: "Move camera to this location",
+        syncTo: szPhotoWidget,
         map: map,
         view: view
       });

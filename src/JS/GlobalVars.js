@@ -202,7 +202,6 @@ let hoverTimeout;
 
 let image_message_timeout = false;
 
-let sync_photos = true;
 let lock_points = false;
 
 // width was 20, trying larger values for iPad Mini
@@ -444,7 +443,7 @@ function lockImage_clickHandler() {
 }
 
 function linkImage_clickHandler() {
-   szVideoWidget.setSyncPhotos(!sync_photos);
+   szVideoWidget.setSyncPhotos(!szVideoWidget.syncTo.sync_photos);
 }
 
 function mediaControl_clickHandler(theWidget, action) {

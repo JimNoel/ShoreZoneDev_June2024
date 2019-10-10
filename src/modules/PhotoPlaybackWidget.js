@@ -236,7 +236,7 @@ define([
     let current_photo_load_delay = photo_play_delay;
     console.log("photoPlayer: photo_play_delay=" + photo_play_delay + ", photo_load_average=" + photo_load_average + ", current_photo_load_delay="+current_photo_load_delay);
     return setTimeout(function() {
-      if (sync_photos) return;
+      if (this.sync_photos) return;
       if (this.counter === null) {
         if (next_photo_point !== null) {
             this.counter = next_photo_point["item"]
@@ -340,13 +340,13 @@ define([
       };
 
       this.toStart = function() {
-        if (sync_photos)
+        if (this.sync_photos)
           return;             // Not allowed if syncing with video
         this.changeCurrentFeature(0);
       };
 
       this.playBackward = function() {
-        if (sync_photos)
+        if (this.sync_photos)
           return;             // Not allowed if syncing with video
         this.playDir = -1;
         this.changeCurrentFeature(this.counter + this.playDir);
@@ -357,14 +357,14 @@ define([
       };
 
       this.playForward = function() {
-        if (sync_photos)
+        if (this.sync_photos)
           return;             // Not allowed if syncing with video
         this.playDir = 1;
         this.changeCurrentFeature(this.counter + this.playDir);
       };
 
       this.toEnd = function() {
-        if (sync_photos)
+        if (this.sync_photos)
           return;             // Not allowed if syncing with video
         this.changeCurrentFeature(this.getFeatureCount()-1);
       };

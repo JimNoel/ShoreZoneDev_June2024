@@ -29,25 +29,28 @@ define([
   let video_message_timeout = false;
 
 
+/*    // Currently unused
   function measurePhotoDownloadTime() {
-    if (szPhotoWidget.last_photo_point["DATE_TIME"] = szPhotoWidget.beforeLast_photo_point["DATE_TIME"])
+    let pWidget = this.syncTo;
+    if (pWidget.last_photo_point["DATE_TIME"] = pWidget.beforeLast_photo_point["DATE_TIME"])
       return;
-    let next_photo_percent = (szPhotoWidget.last_photo_point["MP4_Seconds"]-currentTime)/(szPhotoWidget.last_photo_point["DATE_TIME"]-szPhotoWidget.beforeLast_photo_point["DATE_TIME"])*1000;
+    let next_photo_percent = (pWidget.last_photo_point["MP4_Seconds"]-currentTime)/(pWidget.last_photo_point["DATE_TIME"]-pWidget.beforeLast_photo_point["DATE_TIME"])*1000;
 
-    if (!szPhotoWidget.latest_photo_loaded() && next_photo_percent>0.3)
+    if (!pWidget.latest_photo_loaded() && next_photo_percent>0.3)
       setPlaybackRate(next_photo_percent);
     else
       setPlaybackRate(1);
 
-	timeToNextPhoto = (szPhotoWidget.next_photo_point["DATE_TIME"] - szPhotoWidget.beforeLast_photo_point["DATE_TIME"])/1000;
+	timeToNextPhoto = (pWidget.next_photo_point["DATE_TIME"] - pWidget.beforeLast_photo_point["DATE_TIME"])/1000;
 
-    if (!szPhotoWidget.latest_photo_loaded()) {
+    if (!pWidget.latest_photo_loaded()) {
       console.log("onVideoProgress: last photo did not load in time. ");
       //get_video()[0].playbackRate = 0.0;
     } else {
         get_video()[0].playbackRate = 1;
     }
   }
+*/
 
   function onVideoProgress(e) {
 
@@ -58,21 +61,23 @@ define([
 
       //#### PHOTOS ####
 
-      if (sync_photos && szPhotoWidget.szPhotosVisible) {
-          let currPhotoPoint = szPhotoWidget.getFeatureAttributes(szPhotoWidget.counter);
-          if ((currentTime > currPhotoPoint.MP4_Seconds) && (szPhotoWidget.counter < szPhotoWidget.getFeatureCount() - 1)) {
+      let vWidget = e.w;
+      let pWidget = vWidget.syncTo;
+      if (pWidget.sync_photos && pWidget.szPhotosVisible) {
+          let currPhotoPoint = pWidget.getFeatureAttributes(pWidget.counter);
+          if ((currentTime > currPhotoPoint.MP4_Seconds) && (pWidget.counter < pWidget.getFeatureCount() - 1)) {
 
-              szPhotoWidget.beforeLast_photo_point = szPhotoWidget.last_photo_point ? szPhotoWidget.last_photo_point : currPhotoPoint;
-              szPhotoWidget.last_photo_point = currPhotoPoint;
+              pWidget.beforeLast_photo_point = pWidget.last_photo_point ? pWidget.last_photo_point : currPhotoPoint;
+              pWidget.last_photo_point = currPhotoPoint;
 
-              szPhotoWidget.counter += 1;
-              szPhotoWidget.next_photo_point = szPhotoWidget.getFeatureAttributes(szPhotoWidget.counter);
+              pWidget.counter += 1;
+              pWidget.next_photo_point = pWidget.getFeatureAttributes(pWidget.counter);
 
               //measurePhotoDownloadTime();
 
-              //photo_cur_index = szPhotoWidget.next_photo_point["photo_index"];
-              //console.log("photo widget counter = " + szPhotoWidget.counter);
-              szPhotoWidget.update_photo(szPhotoWidget.next_photo_point);
+              //photo_cur_index = pWidget.next_photo_point["photo_index"];
+              //console.log("photo widget counter = " + pWidget.counter);
+              pWidget.update_photo(pWidget.next_photo_point);
           }
       }
 
@@ -179,7 +184,7 @@ define([
     // Pause playback of specified player.  If arg is null, both players will be paused.
     if (!player || player==="video") {
       szVideoWidget.setPlaybackOn(false);
-      szPhotoWidget.next_photo_point = null;
+      szVideoWidget.syncTo.next_photo_point = null;
     }
     if (!player || player==="photo") {
       console.log("Pause photo");
@@ -238,7 +243,7 @@ define([
     },
 
     update_track: function(currentTime, duration) {
-    onVideoProgress({"target": {"currentTime": currentTime, "duration": duration}});
+    onVideoProgress({"target": {"currentTime": currentTime, "duration": duration}, w: this});
   },
 
 
@@ -251,7 +256,7 @@ define([
 
       this.query.where = "(MP4_Seconds IS NOT NULL) AND (MP4_Seconds >= -1)";
       this.playbackRate = 1.0;
-      this.noFeaturesPanels.push(szPhotoWidget);
+      this.noFeaturesPanels.push(this.syncTo);
 
 
       this.processData = function(results) {
@@ -270,16 +275,17 @@ define([
 
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
         this.makeClickableGraphics(features);
-        szPhotoWidget.features = features.filter(function(f){
+        let pWidget = this.syncTo;
+        pWidget.features = features.filter(function(f){
           return f.attributes.StillPhoto_FileName
         });
-        szPhotoWidget.makeClickableGraphics(szPhotoWidget.features);
+        pWidget.makeClickableGraphics(pWidget.features);
 
         let vidcapFeatures = features.filter(function(f){
           return f.attributes.VidCap_FileName_HighRes
         });
 
-        updateDownloadDialog(vidcapFeatures.length, szPhotoWidget.features.length);
+        updateDownloadDialog(vidcapFeatures.length, pWidget.features.length);
 
         videoClipURLs = getDownloadVideoUrls(features);
 
@@ -355,11 +361,12 @@ define([
           nxt_vid_pt = null;
         }
 
-        if (szPhotoWidget && sync_photos) {
-          szPhotoWidget.counter = szPhotoWidget.indexFirstFeatureGreaterThan("DATE_TIME", startPointData.DATE_TIME);
-          if (szPhotoWidget.counter >= 0) {
-            szPhotoWidget.next_photo_point = szPhotoWidget.getFeatureAttributes(szPhotoWidget.counter);
-            szPhotoWidget.update_photo(szPhotoWidget.next_photo_point);
+        let pWidget = this.syncTo;
+        if (pWidget && pWidget.sync_photos) {
+          pWidget.counter = pWidget.indexFirstFeatureGreaterThan("DATE_TIME", startPointData.DATE_TIME);
+          if (pWidget.counter >= 0) {
+            pWidget.next_photo_point = pWidget.getFeatureAttributes(pWidget.counter);
+            pWidget.update_photo(pWidget.next_photo_point);
           }
         }
 
@@ -398,15 +405,17 @@ define([
       };
 
       this.setSyncPhotos = function(synced) {
-        sync_photos = synced;
-        if (sync_photos && szPhotoWidget.photo_play_timer) clearTimeout(szPhotoWidget.photo_play_timer);
+        let pWidget = this.syncTo;
+        pWidget.sync_photos = synced;
+        if (pWidget.sync_photos && pWidget.photo_play_timer)
+          clearTimeout(pWidget.photo_play_timer);
         //photoToolsDivStyle = getEl("photoToolsDiv").style;
         photoToolsStyle = getEl("photoTools").style;
         photoTools = getEl("photoTools");
         let linkSrc = "assets/images/link.png";
-        if (sync_photos) {
+        if (pWidget.sync_photos) {
           latest_img_src = false;
-          szPhotoWidget.update_photo(szPhotoWidget.next_photo_point)
+          pWidget.update_photo(pWidget.next_photo_point)
           //photoToolsDivStyle.visibility = "hidden";
           photoToolsStyle.disabled = true;
           photoToolsStyle.opacity = 0.5;
