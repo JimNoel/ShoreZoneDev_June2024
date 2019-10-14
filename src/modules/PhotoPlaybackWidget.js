@@ -22,9 +22,6 @@ define([
   let latest_img_src = false;
   let latest_img_subPath = false;
   let photoSource1 = null;
-  let photoSource2 = null;
-  let prev_photo_DT = 0;
-  let next_photo_DT = 0;
   let secs_to_next_photo = null;
   let photo_play_delay = 1500;      // Wait time between photos, when in photo playback.  Set to -1 to require hitting playback buttons to advance individual photos?
 //  let photo_play_timer = false;
@@ -283,19 +280,16 @@ define([
       update_photo_latest_params = next_photo_point;
       if (!next_photo_point)
         return;
-      latest_img_subPath = next_photo_point["RelPath"] + "/" + current_photo_sub + "/" + current_photo_prefix + next_photo_point["StillPhoto_FileName"];
+      latest_img_subPath = next_photo_point[this.relPathField] + "/" + this.photoResInsert + next_photo_point[this.fileNameField];
       if (latest_img_subPath.indexOf(".jpeg")<0 && latest_img_subPath.indexOf(".jpg")<0)
         latest_img_subPath += ".jpg";
-      let new_img_src = PHOTO_SERVER + latest_img_subPath;
+      let photoServer = PHOTO_SERVER;     // TODO:  Will probably set this.photoServer for szPhotoWidget as well
+      if (this.photoServer)
+        photoServer = this.photoServer;
+      let new_img_src = photoServer + latest_img_subPath;
       if (!latest_img_src || latest_img_src !== new_img_src) {
-        next_photo_DT = next_photo_point["DATE_TIME"]/1000;
-        //secs_to_next_photo = next_photo_DT - prev_photo_DT;
-        prev_photo_DT = next_photo_DT;
         photoSource1 = new_img_src;
-        photoSource2 = make_PhotoUrl_AOOS(next_photo_point);
         load_Photo(new_img_src);
-        //load_AOOS_Photo(next_photo_point["Picasa_UserID"], next_photo_point["Picasa_AlbumID"], next_photo_point["Picasa_PhotoID"], new_img_src);
-        //photoLoadStartHandler();
         this.moveToFeature(next_photo_point);
       }
     },
@@ -305,6 +299,9 @@ define([
       lang.mixin(this, kwArgs);
 
       this.clickableSymbolGap = settings.photoGap;
+
+      if (!this.photoResInsert)     // If not specified in the parameters, then set to blank string
+        this.photoResInsert = "";
       
       photo_load_times = {}
       $("#photoImage").bind('load', on_image_load);

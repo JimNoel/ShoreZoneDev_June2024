@@ -88,6 +88,9 @@ define([
         popupTitle: "Photo Point",
         clickableMsg: "Move camera to this location",
         sync_photos: true,
+        photoResInsert: "stillphotos_lowres/280_",
+        relPathField: "RelPath",
+        fileNameField: "StillPhoto_FileName",
         map: map,
         view: view
       });
@@ -507,6 +510,10 @@ define([
         disabledMsgDivName: "disabledMsg_ssPhoto",
         mapServiceLayer: ssMapServiceLayer,
         layerName: "GVDATA_STNPHOTOS",
+        featureOutFields: ["*"],
+        photoServer: "https://alaskafisheries.noaa.gov/mapping/shorestationdata/",      // TODO: Set up so this info appears near top of GlobarVars.js
+        relPathField: "FileLocation",
+        fileNameField: "ImageFileName",
         noGeometry: true
       });
 

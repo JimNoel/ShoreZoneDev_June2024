@@ -470,8 +470,8 @@ define([
     },
 
     moveToFeature: function (attrs) {
-      // if (!mapVisible)
-      //   return;
+       if (this.noGeometry)
+         return;
       this.trackingLayer.removeAll();
       let projPoint = new Point(attrs.x, attrs.y);
       let markerPoint = webMercatorUtils.webMercatorToGeographic(projPoint);
