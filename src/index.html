@@ -320,34 +320,6 @@
         }
       }
 
-      function resizeMedia() {
-        if (!youtube_player)
-          return;
-        let vDims = mediaDimensions("videoDiv", youtubeAspectRatio);
-        youtube_player.setSize(vDims.width, vDims.height);
-        let pDims = mediaDimensions("photoDiv", photoAspectRatio);
-        let photoEl = $("#photoImage")[0];
-        photoEl.width = pDims.width;
-        photoEl.height = pDims.height;
-        let vDiv = dijit.registry.byId("videoDiv");
-        let pDiv = dijit.registry.byId("photoDiv");
-        console.log("videoDiv:  " + vDiv.w + "x" + vDiv.h + "     photoDiv:  " + pDiv.w + "x" + pDiv.h);
-
-      }
-
-      // TODO:  Move this to QueryBasedPanelWidget
-      function mediaDimensions(panelName, aspect) {
-        let mediaDiv = dijit.registry.byId(panelName);
-        let d = {width: mediaDiv.w, height: mediaDiv.h} ;
-        let divAspect = d.width/d.height;
-        if (aspect < divAspect)
-          d.width = parseInt(d.height*aspect);
-        else
-          d.height = parseInt(d.width/aspect);
-        return d;
-      }
-
-
       mapStuff = new MapStuffWidget();
 
       let FaSsMsg = "Sorry, @ has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.";

@@ -328,7 +328,8 @@ define([
       let midContent = '';
       this.footerPanel = null;
       if (classType === 'media') {
-        let imgHtml = '    <img id="photoImage" class="imageContainer" src="" alt="">\n';
+        this.photoImageId = this.baseName + 'Image';
+        let imgHtml = '    <img id="' + this.photoImageId + '" class="imageContainer" src="" alt="">\n';
         if (name === 'video')
           imgHtml = '    <div id="videoImageContainer" class="imageContainer"></div>\n';
         midContent = '<div id="' + name + 'NoImageMessage" class="mediaMessageDiv" style="padding: 0" ><b>No ' + name + '</b></div>' + imgHtml;
@@ -598,9 +599,20 @@ define([
         case "playForward":   this.playForward(); break;
         case "toEnd":         this.toEnd(); break;
       }
-    }
+    },
 
-  });
+    mediaDimensions: function(aspect) {
+      let mediaDiv = dijit.registry.byId(this.contentPaneId);
+      let d = {width: mediaDiv.w, height: mediaDiv.h} ;
+      let divAspect = d.width/d.height;
+      if (aspect < divAspect)
+        d.width = parseInt(d.height*aspect);
+      else
+        d.height = parseInt(d.width/aspect);
+      return d;
+  }
+
+});
 });
 
 

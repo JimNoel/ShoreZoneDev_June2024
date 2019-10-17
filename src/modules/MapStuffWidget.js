@@ -95,6 +95,7 @@ define([
         view: view
       });
       extentDependentWidgets.push(szPhotoWidget);
+      photoWidgets.push(szPhotoWidget);
 
       szVideoWidget = new VideoPanelWidget({
         panelName: "szVideoPanel",
@@ -516,6 +517,7 @@ define([
         fileNameField: "ImageFileName",
         noGeometry: true
       });
+      photoWidgets.push(ssPhotoWidget);
 
 
 

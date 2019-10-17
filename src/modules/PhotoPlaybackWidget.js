@@ -40,65 +40,11 @@ define([
     //console.log("photoLoadCompleteHandler");
   }
 
-  function on_image_error(e) {
-    // Called on image load error   param object e Event object
-    if ( $("#photoImage").attr("src") === '')
-      return;
-    console.log("on_image_error");
-    //PHOTO_SERVER = altMediaServer;
-    //update_photo(update_photo_latest_params);
-    if (e.target.src.includes(PHOTO_SERVER)) {    // Tried NOOA server and failed
-      let new_img_src = altMediaServer + latest_img_subPath;
-      load_Photo(new_img_src);
-      //load_AOOS_Photo(update_photo_latest_params["Picasa_UserID"], update_photo_latest_params["Picasa_AlbumID"], update_photo_latest_params["Picasa_PhotoID"], "");
-    } else {    // Tried AOOS, also failed
-      setMessage(this.disabledMsgDivName, "Unable to find image.");
-    }
-    //$("#photoImage").unbind('error');     // OBS: Was handling error only once, then switching to GINA server
-    return true;
-  }
-
-  function on_image_load() {
-    // Called on image load success   param object e Event object
-
-    if (typeof photo_load_times[this.src] !== "undefined") {
-
-      //photoLoadCompleteHandler(orig_img_src);
-
-      photo_load_times[this.src]["load_end"] = Date.now();
-      photo_load_times[this.src]["load_duration"] = photo_load_times[this.src]["load_end"] - photo_load_times[this.src]["load_start"];
-      photo_load_times[this.src]["src"] = this.src;
-      //console.log("photo load time:  "  + photo_load_times[this.src]["load_duration"])
-    }
-
-    /*
-    photo_load_times_sort = $.map(photo_load_times, function(n){return n}).sort(function(a, b){return ((a["load_start"] < b["load_start"]) ? -1 : ((a["load_start"] > b["load_start"]) ? 1 : 0));});
-    let photo_load_times_sort_durations = [photo_play_delay].concat($.map(photo_load_times_sort, function(n){return n.load_duration}));
-    if (photo_load_times_sort_durations.length >= 5)
-      photo_load_average = Math.round( photo_load_times_sort_durations.slice(photo_load_times_sort_durations.length-5).average() );
-      */
-    return true;
-  }
-
-  function on_image_abort() {
-    // Called on image load cancel   param object e Event object
-    //console.log("on_image_abort");
-  }
-
-  function load_Photo(new_img_src) {
-    latest_img_src = new_img_src;
-    $("#photoImage").attr("src", latest_img_src);
-  }
-
+/*
   function load_NOAA_Photo(new_img_src) {
-/*    // Normally, photos from NOAA server are not available from the national site
-    if (!justAK)
-      return;
-*/
-    //setMessage("photoNoImageMessage",  "Image not found on Picasa.  Trying the NOAA server...", true, 1000);    // For now, trying from NOAA server first
     latest_img_src = new_img_src;
     photo_load_times[latest_img_src] = {"load_start": Date.now()};
-    $("#photoImage").attr("src", latest_img_src);
+    this.photoImage.attr("src", latest_img_src);
   }
 
   function load_AOOS_Photo(userID, albumID, photoID, NOAA_img_src) {
@@ -107,14 +53,10 @@ define([
       return;
     }
     let aoosURL = aoosPhotosBaseUrl + userID + "/" + albumID + "/" + photoID + "/thumbnail";     // photo
-    load_Photo(aoosURL);
+    this.load_Photo(aoosURL);
   }
 
   function make_PhotoUrl_NOAA(pt) {
-/*  // Normally, photos from NOAA server are not available from the national site
-        if (!justAK)
-          return null;
-*/
     if ((pt.userID===null) || (pt.albumID===null) || (pt.photoID===null))
       return null;
     else
@@ -128,7 +70,7 @@ define([
       return (aoosPhotosBaseUrl + pt.userID + "/" + pt.albumID + "/" + pt.photoID + "/thumbnail");     // photo
   }
 
-/*
+
 // dropping AOOS
   function preload_AOOS_Photo(photoPoint, NOAA_img_src) {
     if ((photoPoint.LAT_DDEG===null) || (photoPoint.LON_DDEG===null)) {
@@ -170,7 +112,7 @@ define([
     latest_img_src = imageUrl.replace("{0}", requestWidth);  // Set image URL to return image sized to the panel
 
     orig_img_src = imageUrl.replace("{0}",origWidth);     // For downloads, set image URL to return maximum resolution
-    $("#photoImage").attr("src", latest_img_src);
+    this.photoImage.attr("src", latest_img_src);
     photo_load_times[latest_img_src] = {"load_start": Date.now()}
   }
 */
@@ -217,7 +159,7 @@ define([
     latest_img_src = imageUrl.replace("{0}", requestWidth);  // Set image URL to return image sized to the panel
 
     orig_img_src = imageUrl.replace("{0}",origWidth);     // For downloads, set image URL to return maximum resolution
-    $("#photoImage").attr("src", latest_img_src);
+    this.photoImage.attr("src", latest_img_src);
     photo_load_times[latest_img_src] = {"load_start": Date.now()}
   }
 */
@@ -289,7 +231,7 @@ define([
       let new_img_src = photoServer + latest_img_subPath;
       if (!latest_img_src || latest_img_src !== new_img_src) {
         photoSource1 = new_img_src;
-        load_Photo(new_img_src);
+        this.load_Photo(new_img_src);
         this.moveToFeature(next_photo_point);
       }
     },
@@ -302,12 +244,10 @@ define([
 
       if (!this.photoResInsert)     // If not specified in the parameters, then set to blank string
         this.photoResInsert = "";
-      
-      photo_load_times = {}
-      $("#photoImage").bind('load', on_image_load);
-      $("#photoImage").bind('abort', on_image_abort);
-      $("#photoImage").bind('error', on_image_error);
 
+      this.photoImage = $("#" + this.photoImageId);
+
+      photo_load_times = {}
 
       let controlData_photo = [
         ['photo_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', this.objName, 'toStart'],
@@ -323,6 +263,61 @@ define([
       //getEl('photoTools').style.float = "left";
 
       setVisible("photo_pauseButton", false);
+
+      this.on_image_error = function(e) {
+        // Called on image load error   param object e Event object
+        if ( this.photoImage.attr("src") === '')
+          return;
+        console.log("on_image_error");
+        //PHOTO_SERVER = altMediaServer;
+        //update_photo(update_photo_latest_params);
+        if (e.target.src.includes(PHOTO_SERVER)) {    // Tried NOOA server and failed
+          let new_img_src = altMediaServer + latest_img_subPath;
+          this.load_Photo(new_img_src);
+          //load_AOOS_Photo(update_photo_latest_params["Picasa_UserID"], update_photo_latest_params["Picasa_AlbumID"], update_photo_latest_params["Picasa_PhotoID"], "");
+        } else {    // Tried AOOS, also failed
+          setMessage(this.disabledMsgDivName, "Unable to find image.");
+        }
+        //this.photoImage.unbind('error');     // OBS: Was handling error only once, then switching to GINA server
+        return true;
+      }
+
+      this.on_image_load = function() {
+        // Called on image load success   param object e Event object
+
+        if (typeof photo_load_times[this.src] !== "undefined") {
+
+          //photoLoadCompleteHandler(orig_img_src);
+
+          photo_load_times[this.src]["load_end"] = Date.now();
+          photo_load_times[this.src]["load_duration"] = photo_load_times[this.src]["load_end"] - photo_load_times[this.src]["load_start"];
+          photo_load_times[this.src]["src"] = this.src;
+          //console.log("photo load time:  "  + photo_load_times[this.src]["load_duration"])
+        }
+
+        /*
+        photo_load_times_sort = $.map(photo_load_times, function(n){return n}).sort(function(a, b){return ((a["load_start"] < b["load_start"]) ? -1 : ((a["load_start"] > b["load_start"]) ? 1 : 0));});
+        let photo_load_times_sort_durations = [photo_play_delay].concat($.map(photo_load_times_sort, function(n){return n.load_duration}));
+        if (photo_load_times_sort_durations.length >= 5)
+          photo_load_average = Math.round( photo_load_times_sort_durations.slice(photo_load_times_sort_durations.length-5).average() );
+          */
+        return true;
+      }
+
+      this.on_image_abort = function() {
+        // Called on image load cancel   param object e Event object
+        //console.log("on_image_abort");
+      }
+
+      this.photoImage.bind('load', this.on_image_load);
+      this.photoImage.bind('abort', this.on_image_abort);
+      this.photoImage.bind('error', this.on_image_error);
+
+      this.load_Photo = function(new_img_src) {
+        latest_img_src = new_img_src;
+        this.photoImage.attr("src", latest_img_src);
+      }
+
 
       this.processData = function(results) {
         let features = results.features;

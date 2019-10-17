@@ -155,7 +155,6 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
     .mediaMessageDiv  {position: absolute; top:50%; left: 40%}
 /*    .imageContainer  {width: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; vertical-align: middle; margin: auto; display: block}    */
     .imageContainer  {position: absolute; top: 0; left: 0; right: 0; bottom: 0; vertical-align: middle; margin: auto; display: block}
-      .photoImage  {width: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; vertical-align: middle; margin: auto; display: block}
     .playbackControlContainer  {position:absolute; left:35%; width:150px; height:24px; border-radius: 7px; background-color: #76766e;}
       .playbackControl  {padding: 2px}
 

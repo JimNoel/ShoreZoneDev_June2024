@@ -173,6 +173,7 @@ let photoAspectRatio = 4/3;
 let serviceLayers = null;
 let llServiceLayers = null;
 let extentDependentWidgets = [];
+let photoWidgets = [];
 
 // QueryBasedPanelWidget declarations
 let szVideoWidget = null;
@@ -839,6 +840,18 @@ function stripHtml(inStr) {
   return s;
 }
 
+function resizeMedia() {
+  photoWidgets.forEach(function(w, index, array) {
+    let pDims = w.mediaDimensions(photoAspectRatio);
+    let photoEl = w.photoImage[0];
+    photoEl.width = pDims.width;
+    photoEl.height = pDims.height;
+  });
+  if (!youtube_player)
+    return;
+  let vDims = szVideoWidget.mediaDimensions(youtubeAspectRatio);
+  youtube_player.setSize(vDims.width, vDims.height);
+}
 
 let mapStuff;
 
