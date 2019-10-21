@@ -206,7 +206,7 @@ let image_message_timeout = false;
 let lock_points = false;
 
 // width was 20, trying larger values for iPad Mini
-let playbackControlTemplate = '<img id="{0}" class="playbackControl" title="{1}" src="assets/images/{2} " width="24" onclick="mediaControl_clickHandler({3},\'{4}\')" />';
+let playbackControlTemplate = '<img id="{0}" class="playbackControl" title="{1}" src="assets/images/{2} " width="24" onclick="mediaControl_clickHandler({w},\'{3}\')" />';
 
 function autoRefreshInputHandler(isAutoRefresh) {
   settings.autoRefresh = isAutoRefresh;
@@ -292,7 +292,7 @@ function decDegCoords_to_DegMinSec(decLon, decLat) {
 }
 
 
-function makeHtmlFromTemplate(theTemplate, parameters) {
+function makeHtmlFromTemplate(theTemplate, parameters, widgetId) {
   let outHTML = '';
   for (let i=0; i<parameters.length; i++) {
     let A = parameters[i];
@@ -301,6 +301,7 @@ function makeHtmlFromTemplate(theTemplate, parameters) {
       let srch = '{' + j + '}';
       S = S.replace(srch, A[j]);
     }
+    S = S.replace('{w}', widgetId);
     outHTML += S;
   }
   return outHTML;
@@ -507,7 +508,7 @@ function getIfExists(parentObject, propertyChain) {
 
 /* Global SZ functions */
 
-function makeMediaPlaybackHtml(controlsTemplate, controlsParameters, id, style) {
+function makeMediaPlaybackHtml(controlsTemplate, controlsParameters, id, style, widgetId) {
   if (id === undefined)
     id = ""
   if (style === undefined)
@@ -515,7 +516,7 @@ function makeMediaPlaybackHtml(controlsTemplate, controlsParameters, id, style) 
   let outHTML = '';
   outHTML += '';
   outHTML += '<div class="playbackControlContainer" id="' + id +'" style="' + style + '">';
-  outHTML += makeHtmlFromTemplate(controlsTemplate, controlsParameters);
+  outHTML += makeHtmlFromTemplate(controlsTemplate, controlsParameters, widgetId);
   outHTML += '</div>';
   return outHTML;
 }
@@ -842,10 +843,7 @@ function stripHtml(inStr) {
 
 function resizeMedia() {
   photoWidgets.forEach(function(w, index, array) {
-    let pDims = w.mediaDimensions(photoAspectRatio);
-    let photoEl = w.photoImage[0];
-    photoEl.width = pDims.width;
-    photoEl.height = pDims.height;
+    w.resizeImg();
   });
   if (!youtube_player)
     return;

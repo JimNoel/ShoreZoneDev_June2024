@@ -279,7 +279,7 @@ define([
         pWidget.features = features.filter(function(f){
           return f.attributes.StillPhoto_FileName
         });
-        pWidget.makeClickableGraphics(pWidget.features);
+        pWidget.makeClickableGraphics(pWidget.features);    // TODO: replace with pWidget.processData (or some equivalent)
 
         let vidcapFeatures = features.filter(function(f){
           return f.attributes.VidCap_FileName_HighRes
@@ -454,24 +454,14 @@ define([
         return html
       }
 
-
       this.setSyncPhotos(true);
-
-      let controlData_video = [
-        ['video_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'szVideoWidget', 'toStart'],
-        ['video_backwardButton', 'Play Backwards', 'w_left.png', 'szVideoWidget', 'playBackward'],
-        ['video_pauseButton', 'Pause', 'w_close_red.png', 'szVideoWidget', 'pause'],
-        ['video_ForwardButton', 'Play Forwards', 'w_right.png', 'szVideoWidget', 'playForward'],
-        ['video_resetForwardButton', 'Reset to End', 'w_collapse.png', 'szVideoWidget', 'toEnd']
-      ];
 
       speedHTML = getPlaybackControlHTML()//"<span style='position: absolute; right: 10px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span>"
 
       let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()'/>"
       let leftToolsHTML = "<span style='position: absolute; left: 10px'>" + lockHTML + "</span>";
 
-      videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, controlData_video, 'videoTools') + speedHTML + lockHTML;
-      //videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, controlData_video, 'videoTools', 'position: relative; float: left') + speedHTML + lockHTML;
+      videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'videoTools', '', this.objName) + speedHTML + lockHTML;
 
       $("#playback_speed_range").on("input", function(val){
         $("#slider_value").html(val.target.value)

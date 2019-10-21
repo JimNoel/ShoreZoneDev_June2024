@@ -91,13 +91,22 @@ define([
         photoResInsert: "stillphotos_lowres/280_",
         relPathField: "RelPath",
         fileNameField: "StillPhoto_FileName",
+        controlData: [
+          ['szPhoto_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
+          ['szPhoto_backwardButton', 'Play Backwards', 'w_left.png', 'playBackward'],
+          ['szPhoto_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
+          ['szPhoto_ForwardButton', 'Play Forwards', 'w_right.png', 'playForward'],
+          ['szPhoto_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
+        ],
         map: map,
         view: view
       });
       extentDependentWidgets.push(szPhotoWidget);
+      szPhotoWidget.resizeImg();
       photoWidgets.push(szPhotoWidget);
 
       szVideoWidget = new VideoPanelWidget({
+        objName: "szVideoWidget",
         panelName: "szVideoPanel",
         sublayerIDs: szSublayerIDs,
         panelType: "media",
@@ -124,6 +133,13 @@ define([
         popupTitle: "Video Point",
         clickableMsg: "Move camera to this location",
         syncTo: szPhotoWidget,
+        controlData: [
+          ['video_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
+          ['video_backwardButton', 'Play Backwards', 'w_left.png', 'playBackward'],
+          ['video_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
+          ['video_ForwardButton', 'Play Forwards', 'w_right.png', 'playForward'],
+          ['video_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
+        ],
         map: map,
         view: view
       });
@@ -197,722 +213,727 @@ define([
         console.log("szMapServiceLayer failed to load:  " + error);
       });
 
-    ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 0.5, listMode: "hide"});
-    ssMapServiceLayer.when(function(resolvedVal) {
-      //console.log("Shore Station MapServiceLayer loaded.");
-      ssMapServiceLayer.visible = false;
+      ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 0.5, listMode: "hide"});
+      ssMapServiceLayer.when(function(resolvedVal) {
+        //console.log("Shore Station MapServiceLayer loaded.");
+        ssMapServiceLayer.visible = false;
 
 
-      /*  ssWidget def */
-      ssWidget = new QueryBasedTablePanelWidget({
-        objName: "ssWidget",
-        //gotoFlexMsg: "Sorry, Shore Stations has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.",
-        title: "Shore Stations",
-        sublayerIDs: ssSublayerIDs,
-        panelName: "ssPanel",
-        panelType: "table",
-        contentPaneId: "ssDiv",
-        baseName: "ss",
-        headerDivName:  "ssHeaderDiv",
-        footerDivName:  "ssFooterDiv",
-        tableHeaderTitle: "All Regions",
-        displayDivName: "ssContainer",
-        disabledMsgDivName: "disabledMsg_ss",
-        mapServiceLayer: ssMapServiceLayer,
-        dynamicLayerName: true,
-        dropDownInfo: [
-          { ddName: "Region",
-            LayerNameAddOn: "",
-            subLayerName: "Regions",
-            ddOutFields: ["Region", "RegionalID", "Envelope"],
-            orderByFields: ["Region"],
-            options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
-            SelectedOption: "All",
-            whereField: "RegionalID",
-            isAlpha: true
-          }
-        ],
-        speciesTableInfo : {
-          iconLabel: 'Total Species Data',
-          args: 'ssSpTableWidget,"vw_AlaskaSpecies",null,null,"All Regions"'
-        },
-        currTab: 0,
-        tabInfo: [
-          {
-            tabName: 'Regions',
-            tabTitle: 'Shore Stations Regions',
-            popupTitle: "Shore Stations Region",
-            LayerNameAddOn: 'Regions',
-            parentAreaType: '',
-            visibleHeaderElements: ['ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
-            featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
-            calcFields:  [{name: "SpTableBtn", afterField: "Region"}, {name: "SelRegionBtn", afterField: "SpTableBtn"}],
-            specialFormatting: {      // Special HTML formatting for field values
-              Envelope: {
-                title:  "",
-                colWidth:  20,
-                plugInFields: ["Envelope"],
-                args: '"{0}"',
-                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
-              },
-              RegionNumID: {
-                title:  "Region Id",
-                colWidth:  20
-              },
-              RegionalID: {
-                title:  "Regional Id",
-                colWidth:  20
-              },
-              Region: {
-                title:  "Region Name",
-                colWidth:  20
-              },
-              SpTableBtn: {
-                title:  "Species Data",
-                colWidth:  30,
-                plugInFields: ["RegionalID", "Region"],
-                args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
-                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
-              },
-              SelRegionBtn: {
-                title:  "Stations",
-                colWidth:  20,
-                plugInFields: ["RegionalID", "Envelope"],
-                args: 'ssWidget,"{0}","{1}"',
-                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
-              }
-            },
-            idField: 'Region',
-            subTableDD: "Region",
-            //resetDDs:  ["Region", "Locale"],
-            clickableSymbolType: "extent",
-            clickableSymbolInfo: {
-              color: [ 51,51, 204, 0.1 ],
-              style: "solid",
-              width: "2px"
-            },
-            //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
+        /*  ssWidget def */
+        ssWidget = new QueryBasedTablePanelWidget({
+          objName: "ssWidget",
+          //gotoFlexMsg: "Sorry, Shore Stations has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.",
+          title: "Shore Stations",
+          sublayerIDs: ssSublayerIDs,
+          panelName: "ssPanel",
+          panelType: "table",
+          contentPaneId: "ssDiv",
+          baseName: "ss",
+          headerDivName:  "ssHeaderDiv",
+          footerDivName:  "ssFooterDiv",
+          tableHeaderTitle: "All Regions",
+          displayDivName: "ssContainer",
+          disabledMsgDivName: "disabledMsg_ss",
+          mapServiceLayer: ssMapServiceLayer,
+          dynamicLayerName: true,
+          dropDownInfo: [
+            { ddName: "Region",
+              LayerNameAddOn: "",
+              subLayerName: "Regions",
+              ddOutFields: ["Region", "RegionalID", "Envelope"],
+              orderByFields: ["Region"],
+              options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+              SelectedOption: "All",
+              whereField: "RegionalID",
+              isAlpha: true
+            }
+          ],
+          speciesTableInfo : {
+            iconLabel: 'Total Species Data',
+            args: 'ssSpTableWidget,"vw_AlaskaSpecies",null,null,"All Regions"'
           },
-          {
-            tabName: 'Stations',
-            subWidgetInfo: ["ssPhotoWidget:station:hasPhotos"],     // name of subwidget : filter field : column to check before running query
-            tabTitle: 'Shore Stations Stations',
-            popupTitle: "Shore Stations Stations",
-            LayerNameAddOn: 'Field Stations',
-            parentAreaType: 'Regions',
-            visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
-            featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos"],
-            //calcFields:  [{name: "SpTableBtn", afterField: "Region"}],
-            specialFormatting: {      // Special HTML formatting for field values
-/*
-              Envelope: {
-                title:  "",
-                colWidth:  20,
-                plugInFields: ["Envelope"],
-                args: '"{0}"',
-                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+          currTab: 0,
+          tabInfo: [
+            {
+              tabName: 'Regions',
+              tabTitle: 'Shore Stations Regions',
+              popupTitle: "Shore Stations Region",
+              LayerNameAddOn: 'Regions',
+              parentAreaType: '',
+              visibleHeaderElements: ['ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
+              featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
+              calcFields:  [{name: "SpTableBtn", afterField: "Region"}, {name: "SelRegionBtn", afterField: "SpTableBtn"}],
+              specialFormatting: {      // Special HTML formatting for field values
+                Envelope: {
+                  title:  "",
+                  colWidth:  20,
+                  plugInFields: ["Envelope"],
+                  args: '"{0}"',
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                },
+                RegionNumID: {
+                  title:  "Region Id",
+                  colWidth:  20
+                },
+                RegionalID: {
+                  title:  "Regional Id",
+                  colWidth:  20
+                },
+                Region: {
+                  title:  "Region Name",
+                  colWidth:  20
+                },
+                SpTableBtn: {
+                  title:  "Species Data",
+                  colWidth:  30,
+                  plugInFields: ["RegionalID", "Region"],
+                  args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                },
+                SelRegionBtn: {
+                  title:  "Stations",
+                  colWidth:  20,
+                  plugInFields: ["RegionalID", "Envelope"],
+                  args: 'ssWidget,"{0}","{1}"',
+                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
+                }
               },
-*/
-              LocaleConcat: {
-                title:  "Geographic Name",
-                colWidth:  50
+              idField: 'Region',
+              subTableDD: "Region",
+              //resetDDs:  ["Region", "Locale"],
+              clickableSymbolType: "extent",
+              clickableSymbolInfo: {
+                color: [ 51,51, 204, 0.1 ],
+                style: "solid",
+                width: "2px"
               },
-              station: {
-                title:  "Station Id",
-                colWidth:  20
-              },
-              ExpBio: {
-                title:  "EXP BIO",
-                colWidth:  20
-              },
-              CoastalClass: {
-                title:  "Coastal Class",
-                colWidth:  20
-              },
-              date_: {
-                title:  "Date Sampled",
-                colWidth:  20,
-                dateFormat: true
-              },
-              hasPhotos: {
-                title:  "Photos",
-                colWidth:  20,
-                html:   "<img src='assets/images/Camera24X24.png' height='15' width='15' alt=''>",
-                showWhen: "1"
-              },
-/*
-              SpTableBtn: {
-                title:  "Species Data",
-                colWidth:  30,
-                plugInFields: ["RegionalID", "Region"],
-                args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
-                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
-              },
-*/
+              //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
             },
-            idField: 'station',
-            //subTableDD: "Region",
-            //resetDDs:  ["Region", "Locale"],
-            clickableSymbolType: "point",
-            clickableSymbolInfo: {
-              "style":"circle",
-              "color":[255,255,255,1.0],
-              outline: {  // autocasts as new SimpleLineSymbol()
-                color: [ 0, 0, 0, 1.0 ],
-                width: "0.5px"
+            {
+              tabName: 'Stations',
+              subWidgetInfo: ["ssPhotoWidget:station:hasPhotos"],     // name of subwidget : filter field : column to check before running query
+              tabTitle: 'Shore Stations Stations',
+              popupTitle: "Shore Stations Stations",
+              LayerNameAddOn: 'Field Stations',
+              parentAreaType: 'Regions',
+              visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
+              featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos"],
+              //calcFields:  [{name: "SpTableBtn", afterField: "Region"}],
+              specialFormatting: {      // Special HTML formatting for field values
+  /*
+                Envelope: {
+                  title:  "",
+                  colWidth:  20,
+                  plugInFields: ["Envelope"],
+                  args: '"{0}"',
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                },
+  */
+                LocaleConcat: {
+                  title:  "Geographic Name",
+                  colWidth:  50
+                },
+                station: {
+                  title:  "Station Id",
+                  colWidth:  20
+                },
+                ExpBio: {
+                  title:  "EXP BIO",
+                  colWidth:  20
+                },
+                CoastalClass: {
+                  title:  "Coastal Class",
+                  colWidth:  20
+                },
+                date_: {
+                  title:  "Date Sampled",
+                  colWidth:  20,
+                  dateFormat: true
+                },
+                hasPhotos: {
+                  title:  "Photos",
+                  colWidth:  20,
+                  html:   "<img src='assets/images/Camera24X24.png' height='15' width='15' alt=''>",
+                  showWhen: "1"
+                },
+  /*
+                SpTableBtn: {
+                  title:  "Species Data",
+                  colWidth:  30,
+                  plugInFields: ["RegionalID", "Region"],
+                  args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                },
+  */
               },
-              "size":4
-            },
-/*
-            clickableSymbolInfo: {
-              color: [ 51,51, 204, 0.0 ],   // Transparency is 0 -- i.e. not visible
-              style: "solid",
-              width: "2px"
-            },
-*/
-            //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
-          }
-
-        ],
-
-        layerBaseName: "",      // Blank for Shore Stations, since there are no group queries
-        // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
-        //   using the current panel info and dropdown info for any dropdowns that have something selected.
-
-        spatialRelationship: null,      // Using null as a flag to not filter spatially
-        showFieldsInPopup: "*",
-
-        // TODO: Remove, and use something like setActiveTab in constructor
-        clickableSymbolType: "extent",
-        clickableSymbolInfo: {
-          color: [ 51,51, 204, 0.1 ],
-          style: "solid",
-          width: "2px"
-        },
-
-        hasTextOverlayLayer: true,
-        clickableMsg: null
-      });
-      /* end szWidget def*/
-
-      siteTabs.ss.widgets = [ssWidget];
-
-      ssSpTableWidget = new QueryBasedTablePanelWidget({
-        objName: "ssSpTableWidget",
-        title: "Species Data",       // "Shore Stations",
-        sublayerIDs: ssSublayerIDs,
-        panelName: "ssSpTablePanel",
-        panelType: "table",
-        draggablePanelId: "ssSpTableDiv",
-        contentPaneId: "ssSpTableDiv_content",
-        baseName: "ssSpTable",
-        headerDivName:  "ssSpTableHeaderDiv",
-        footerDivName:  "ssSpTableFooterDiv",
-        featureOutFields: ["SppNameHtml", "Common_name"],
-        tableHeaderTitle: "All Regions",
-        displayDivName: "ssSpTableContainer",
-        mapServiceLayer: ssMapServiceLayer,
-        dynamicLayerName: true,
-        dropDownInfo: [
-          /*
-                    { ddName: "Region",
-                      LayerNameAddOn: "",
-                      totalsLayerNameAddOn: "Regions",
-                      subLayerName: "Regions",
-                      ddOutFields: ["RegionName", "RegionID", "Envelope"],
-                      orderByFields: ["RegionName"],
-                      options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
-                      SelectedOption: "All",
-                      whereField: "RegionID"
-                    },
-                    { ddName: "Locale",
-                      LayerNameAddOn: "",
-                      totalsLayerNameAddOn: "Locales",
-                      subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
-                      ddOutFields: ["Locale", "LocaleID", "Envelope"],
-                      orderByFields: ["Locale"],
-                      options: [ { label: "[All]", value: "All" } ],
-                      SelectedOption: "All",
-                      whereField: "LocaleID"
-                    },
-                    { ddName: "Species",
-                      LayerNameAddOn: "Species",
-                      totalsLayerNameAddOn: "Species",
-                      subLayerName: "vw_SpCatch_allAK",
-                      ddOutFields: ["Sp_CommonName", "SpCode"],
-                      orderByFields: ["Sp_CommonName"],
-                      options: [ { label: "[All]", value: "All" } ],
-                      SelectedOption: "All",
-                      whereField: "SpCode",
-                      isAlpha: true
-                    }
-          */
-        ],
-        currTab: 0,
-        tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
-        orderByFields: ["SppNameHtml"],
-        visibleHeaderElements: ['ssSpTableLabelSpan_featureCount'],
-        specialFormatting: {      // Special HTML formatting for field values
-          SppNameHtml: {
-            title: "Species",
-            colWidth: 200
-          },
-          Common_name: {
-            title: "Common Name",
-            colWidth: 100
-          }
-        },
-        /*
-                tabInfo: [
-                  {
-                    tabName: 'Regions',
-                    tabTitle: 'Fish Atlas Regions',
-                    LayerNameAddOn: 'Regions',
-                    visibleHeaderElements: [],
-                    specialFormatting: {      // Special HTML formatting for field values
-                    },
-                    idField: 'Region'
-                  },
-                  {
-                    tabName: 'Locales',
-                    tabTitle: 'Fish Atlas Locales',
-                    LayerNameAddOn: 'Locales',
-                    visibleHeaderElements: [],
-                    specialFormatting: {      // Special HTML formatting for field values
-                    },
-                    idField: 'Locale'
-                  },
-                  {
-                    tabName: 'Sites',
-                    tabTitle: 'Fish Atlas Sites',
-                    LayerNameAddOn: 'Sites',
-                    visibleHeaderElements: [],
-                    idField: 'Site'
-                  }
-                  ],
-        */
-        layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
-        //   using the current panel info and dropdown info for any dropdowns that have something selected.
-        //totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
-        spatialRelationship: null,      // Using null as a flag to not filter spatially
-        noGeometry: true
-      });
-
-      // Shore Station photos
-      ssPhotoWidget = new PhotoPlaybackWidget({
-        objName: "ssPhotoWidget",
-        sublayerIDs: ssSublayerIDs,
-        panelName: "ssPhotosPanel",
-        panelType: "media",
-        contentPaneId: "ssPhotosDiv",
-        baseName: "ssPhoto",
-        headerDivName:  "ssPhotoHeaderDiv",
-        disabledMsgInfix: "photo points",
-        disabledMsgDivName: "disabledMsg_ssPhoto",
-        mapServiceLayer: ssMapServiceLayer,
-        layerName: "GVDATA_STNPHOTOS",
-        featureOutFields: ["*"],
-        photoServer: "https://alaskafisheries.noaa.gov/mapping/shorestationdata/",      // TODO: Set up so this info appears near top of GlobarVars.js
-        relPathField: "FileLocation",
-        fileNameField: "ImageFileName",
-        noGeometry: true
-      });
-      photoWidgets.push(ssPhotoWidget);
-
-
-
-
-    }, function(error){
-      console.log("Shore Station MapServiceLayer failed to load:  " + error);
-    });
-
-    faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "hide"});
-    faMapServiceLayer.when(function() {
-      //console.log("Fish Atlas MapServiceLayer loaded.");
-      faMapServiceLayer.visible = false;
-
-      faWidget = new QueryBasedTablePanelWidget({
-        objName: "faWidget",
-        //gotoFlexMsg: "Sorry, Fish Atlas has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.",
-        title: "Fish Atlas",
-        sublayerIDs: faSublayerIDs,
-        panelName: "faPanel",
-        panelType: "table",
-        contentPaneId: "faDiv",
-        baseName: "fa",
-        headerDivName:  "faHeaderDiv",
-        footerDivName:  "faFooterDiv",
-        totalOutFields: ["Hauls", "Species", "Catch"],
-        tableHeaderTitle: "All Regions",
-        displayDivName: "faContainer",
-        disabledMsgDivName: "disabledMsg_fa",
-        mapServiceLayer: faMapServiceLayer,
-        mapServiceSublayers: ["Regions", "Locales", "Sites"],
-        dynamicLayerName: true,
-        dropDownInfo: [
-          { ddName: "Region",
-            LayerNameAddOn: "",
-            totalsLayerNameAddOn: "Regions",
-            subLayerName: "Regions",
-            ddOutFields: ["RegionName", "RegionID", "Envelope"],
-            orderByFields: ["RegionName"],
-            options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
-            SelectedOption: "All",
-            whereField: "RegionID"
-          },
-          { ddName: "Locale",
-            LayerNameAddOn: "",
-            totalsLayerNameAddOn: "Locales",
-            subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
-            ddOutFields: ["Locale", "LocaleID", "Envelope"],
-            orderByFields: ["Locale"],
-            options: [ { label: "[All]", value: "All" } ],
-            SelectedOption: "All",
-            whereField: "LocaleID"
-          },
-          { ddName: "Habitat",
-            LayerNameAddOn: "Habitats",
-            totalsLayerNameAddOn: "Habitats",
-            options: [
-              { label: "All", value: "All" },
-              { label: "Bedrock", value: "Bedrock" },
-              { label: "Eelgrass", value: "Eelgrass" },
-              { label: "Kelp", value: "Kelp" },
-              { label: "Sand-Gravel", value: "Sand-Gravel" }
-            ],
-            SelectedOption: "All",
-            whereField: "Habitat",
-            isAlpha: true
-          },
-          { ddName: "Species",
-            LayerNameAddOn: "Species",
-            totalsLayerNameAddOn: "Species",
-            subLayerName: "vw_SpCatch_allAK",
-            ddOutFields: ["Sp_CommonName", "SpCode"],
-            orderByFields: ["Sp_CommonName"],
-            options: [ { label: "[All]", value: "All" } ],
-            SelectedOption: "All",
-            whereField: "SpCode",
-            isAlpha: true
-          }
-        ],
-        speciesTableInfo : {
-          iconLabel: 'Total Fish Catch',
-          args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions"'
-        },
-        currTab: 0,
-        featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
-        tabInfo: [
-          {
-            tabName: 'Regions',
-            tabTitle: 'Fish Atlas Regions',
-            popupTitle: "Fish Atlas Region",
-            LayerNameAddOn: 'Regions',
-            parentAreaType: '',
-            visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
-            featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
-            calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
-            orderByFields: ["Region"],
-            specialFormatting: {      // Special HTML formatting for field values
-              Envelope: {
-                title:  "",
-                colWidth:  20,
-                plugInFields: ["Envelope"],
-                args: '"{0}"',
-                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+              idField: 'station',
+              //subTableDD: "Region",
+              //resetDDs:  ["Region", "Locale"],
+              clickableSymbolType: "point",
+              clickableSymbolInfo: {
+                "style":"circle",
+                "color":[255,255,255,1.0],
+                outline: {  // autocasts as new SimpleLineSymbol()
+                  color: [ 0, 0, 0, 1.0 ],
+                  width: "0.5px"
+                },
+                "size":4
               },
-              RegionID: {
-                title:  "Fish Catch",
-                colWidth:  30,
-                plugInFields: ["RegionID", "Region"],
-                args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
-                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+  /*
+              clickableSymbolInfo: {
+                color: [ 51,51, 204, 0.0 ],   // Transparency is 0 -- i.e. not visible
+                style: "solid",
+                width: "2px"
               },
-              SelRegionBtn: {
-                title:  "Locales",
-                colWidth:  20,
-                plugInFields: ["RegionID", "Envelope"],
-                args: 'faWidget,{0},"{1}"',
-                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
-              }
-            },
-            idField: 'Region',
-            subTableDD: "Region",
-            //resetDDs: [0, 1],      //["Region", "Locale"],
-            clickableSymbolType: "extent",
-            clickableSymbolInfo: {
-              color: [ 51,51, 204, 0.1 ],
-              style: "solid",
-              width: "2px"
-            },
-            mapServiceSublayerVisibility: [false, false, true]
-            //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
-          },
-          {
-            tabName: 'Locales',
-            tabTitle: 'Fish Atlas Locales',
-            popupTitle: "Fish Atlas Locale",
-            LayerNameAddOn: 'Locales',
-            parentAreaType: 'Regions',
-            visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-            featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
-            calcFields:  [{name: "SelLocaleBtn", afterField: "LocaleID"}],
-            orderByFields: ["Region", "Locale"],
-            specialFormatting: {      // Special HTML formatting for field values
-              Envelope: {
-                title:  "",
-                colWidth:  20,
-                plugInFields: ["Envelope"],
-                args: '"{0}"',
-                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
-              },
-              LocaleID: {
-                title:  "Fish Catch",
-                colWidth:  30,
-                plugInFields: ["LocaleID", "Locale"],
-                args: 'faSpTableWidget,"vw_CatchStats_LocalesSpecies","vw_CatchStats_Locales","LocaleID={0}","{1}"',
-                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
-              },
-              SelLocaleBtn: {
-                title:  "Sites",
-                colWidth:  20,
-                plugInFields: ["LocaleID", "Envelope"],
-                args: 'faWidget,{0},"{1}"',
-                html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
-              }
-            },
-            idField: 'Locale',
-            subTableDD: "Locale",
-            //resetDDs: [1],      //["Region", "Locale"],
-            clickableSymbolType: "point",
-            clickableSymbolInfo: {
-              style:"square",
-              color:[255,255,255,1.0],
-              outline: {  // autocasts as new SimpleLineSymbol()
-                color: [ 128, 128, 128, 1.0 ],
-                width: "0.5px"
-              },
-              size:12
-            },
-            textOverlayPars: {
-              type: "text",  // autocasts as new TextSymbol()
-              color: "black",
-              verticalAlignment: "middle",
-              font: {  // autocast as new Font()
-                size: 8,
-                family: "arial",
-                //weight: "bolder"
-              }
-            },
-            textOverlayField: "MapID",
-          },
-          {
-            tabName: 'Sites',
-            tabTitle: 'Fish Atlas Sites',
-            popupTitle: "Fish Atlas Site",
-            LayerNameAddOn: 'Sites',
-            parentAreaType: 'Locales',
-            visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-            featureOutFields: ["Envelope", "Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID"],
-            orderByFields: ["Region", "Locale", "Site"],
-            specialFormatting: {      // Special HTML formatting for field values
-              Envelope: {     //TODO:  For Sites, Envelope is null.  Replace with set-sized envelope centered on the point
-                title:  "",
-                colWidth:  20,
-                plugInFields: ["Envelope"],
-                args: '"{0}"',
-                html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
-              },
-              SiteID: {
-                title:  "Fish Catch",
-                colWidth:  30,
-                plugInFields: ["SiteID", "Site"],
-                args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
-                html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
-              }
-            },
-            idField: 'Site',
-            clickableSymbolType: "point",
-            clickableSymbolInfo: {
-              "style":"circle",
-              "color":[255,255,255,1.0],
-              outline: {  // autocasts as new SimpleLineSymbol()
-                color: [ 0, 0, 0, 1.0 ],
-                width: "0.5px"
-              },
-              "size":4
-            },
-            renderingInfo: {
-              field: "Habitat",
-              uniqueColors: {
-                "Bedrock": "blue",
-                "Eelgrass": "green",
-                "Kelp": "red",
-                "Sand-Gravel": "yellow"
-              },
+  */
+              //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
             }
 
-          },
-          {
-            tabName: 'Temperature',
-            tabTitle: 'Temperature Data',
-            popupTitle: "Thermograph",
-            LayerNameAddOn: 'Temperature',
-            featureOutFields: ["Region", "Hauls", "Species", "Catch"],
-            idField: 'Region'
-          },
-          {
-            tabName: 'Eelgrass',
-            tabTitle: 'Eelgrass Data',
-            popupTitle: "Eelgrass Bed",
-            LayerNameAddOn: 'Eelgrass',
-            featureOutFields: ["Region", "Hauls", "Species", "Catch"],
-            idField: 'Region'
-          }
-        ],
-        layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
-                                              //   using the current panel info and dropdown info for any dropdowns that have something selected.
-        spatialRelationship: null,      // Using null as a flag to not filter spatially
-        showFieldsInPopup: "*",
-
-        // TODO: Remove, and use something like setActiveTab in constructor
-        clickableSymbolType: "extent",
-        clickableSymbolInfo: {
-          color: [ 51,51, 204, 0.1 ],
-          style: "solid",
-          width: "2px"
-        },
-
-        hasTextOverlayLayer: true,
-        clickableMsg: null
-      });
-
-      siteTabs.fa.widgets = [faWidget];
-
-      faSpTableWidget = new QueryBasedTablePanelWidget({
-        objName: "faSpTableWidget",
-        title: "Fish Catch",
-        sublayerIDs: faSublayerIDs,
-        panelName: "faSpTablePanel",
-        panelType: "table",
-        draggablePanelId: "faSpTableDiv",
-        contentPaneId: "faSpTableDiv_content",
-        baseName: "faSpTable",
-        headerDivName:  "faSpTableHeaderDiv",
-        footerDivName:  "faSpTableFooterDiv",
-        featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
-        totalOutFields: ["Catch", "Count_measured"],
-        tableHeaderTitle: "All Regions",
-        displayDivName: "faSpTableContainer",
-        mapServiceLayer: faMapServiceLayer,
-        dynamicLayerName: true,
-        dropDownInfo: [
-          /*
-                    { ddName: "Region",
-                      LayerNameAddOn: "",
-                      totalsLayerNameAddOn: "Regions",
-                      subLayerName: "Regions",
-                      ddOutFields: ["RegionName", "RegionID", "Envelope"],
-                      orderByFields: ["RegionName"],
-                      options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
-                      SelectedOption: "All",
-                      whereField: "RegionID"
-                    },
-                    { ddName: "Locale",
-                      LayerNameAddOn: "",
-                      totalsLayerNameAddOn: "Locales",
-                      subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
-                      ddOutFields: ["Locale", "LocaleID", "Envelope"],
-                      orderByFields: ["Locale"],
-                      options: [ { label: "[All]", value: "All" } ],
-                      SelectedOption: "All",
-                      whereField: "LocaleID"
-                    },
-                    { ddName: "Species",
-                      LayerNameAddOn: "Species",
-                      totalsLayerNameAddOn: "Species",
-                      subLayerName: "vw_SpCatch_allAK",
-                      ddOutFields: ["Sp_CommonName", "SpCode"],
-                      orderByFields: ["Sp_CommonName"],
-                      options: [ { label: "[All]", value: "All" } ],
-                      SelectedOption: "All",
-                      whereField: "SpCode",
-                      isAlpha: true
-                    }
-          */
-        ],
-        currTab: 0,
-        tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
-        orderByFields: ["Catch DESC"],
-        visibleHeaderElements: ['faSpTableLabelSpan_featureCount'],
-        specialFormatting: {      // Special HTML formatting for field values
-          Sp_CommonName: {
-            title: "Species",
-            colWidth: 200
-          },
-          Catch: {
-            title: "Catch",
-            colWidth: 100,
-            useCommas: true
-          },
-          AvgFL: {
-            title: "Average Length",
-            colWidth: 150,
-            numDecimals: 1
-          },
-          Count_measured: {
-            title: "# Measured",
-            colWidth: 150,
-            useCommas: true
-          },
-        },
-/*
-        tabInfo: [
-          {
-            tabName: 'Regions',
-            tabTitle: 'Fish Atlas Regions',
-            LayerNameAddOn: 'Regions',
-            visibleHeaderElements: [],
-            specialFormatting: {      // Special HTML formatting for field values
-            },
-            idField: 'Region'
-          },
-          {
-            tabName: 'Locales',
-            tabTitle: 'Fish Atlas Locales',
-            LayerNameAddOn: 'Locales',
-            visibleHeaderElements: [],
-            specialFormatting: {      // Special HTML formatting for field values
-            },
-            idField: 'Locale'
-          },
-          {
-            tabName: 'Sites',
-            tabTitle: 'Fish Atlas Sites',
-            LayerNameAddOn: 'Sites',
-            visibleHeaderElements: [],
-            idField: 'Site'
-          }
           ],
-*/
-        layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
-        //   using the current panel info and dropdown info for any dropdowns that have something selected.
-        //totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
-        spatialRelationship: null,      // Using null as a flag to not filter spatially
-        noGeometry: true
+
+          layerBaseName: "",      // Blank for Shore Stations, since there are no group queries
+          // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+          //   using the current panel info and dropdown info for any dropdowns that have something selected.
+
+          spatialRelationship: null,      // Using null as a flag to not filter spatially
+          showFieldsInPopup: "*",
+
+          // TODO: Remove, and use something like setActiveTab in constructor
+          clickableSymbolType: "extent",
+          clickableSymbolInfo: {
+            color: [ 51,51, 204, 0.1 ],
+            style: "solid",
+            width: "2px"
+          },
+
+          hasTextOverlayLayer: true,
+          clickableMsg: null
+        });
+        /* end szWidget def*/
+
+        siteTabs.ss.widgets = [ssWidget];
+
+        ssSpTableWidget = new QueryBasedTablePanelWidget({
+          objName: "ssSpTableWidget",
+          title: "Species Data",       // "Shore Stations",
+          sublayerIDs: ssSublayerIDs,
+          panelName: "ssSpTablePanel",
+          panelType: "table",
+          draggablePanelId: "ssSpTableDiv",
+          contentPaneId: "ssSpTableDiv_content",
+          baseName: "ssSpTable",
+          headerDivName:  "ssSpTableHeaderDiv",
+          footerDivName:  "ssSpTableFooterDiv",
+          featureOutFields: ["SppNameHtml", "Common_name"],
+          tableHeaderTitle: "All Regions",
+          displayDivName: "ssSpTableContainer",
+          mapServiceLayer: ssMapServiceLayer,
+          dynamicLayerName: true,
+          dropDownInfo: [
+            /*
+                      { ddName: "Region",
+                        LayerNameAddOn: "",
+                        totalsLayerNameAddOn: "Regions",
+                        subLayerName: "Regions",
+                        ddOutFields: ["RegionName", "RegionID", "Envelope"],
+                        orderByFields: ["RegionName"],
+                        options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+                        SelectedOption: "All",
+                        whereField: "RegionID"
+                      },
+                      { ddName: "Locale",
+                        LayerNameAddOn: "",
+                        totalsLayerNameAddOn: "Locales",
+                        subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
+                        ddOutFields: ["Locale", "LocaleID", "Envelope"],
+                        orderByFields: ["Locale"],
+                        options: [ { label: "[All]", value: "All" } ],
+                        SelectedOption: "All",
+                        whereField: "LocaleID"
+                      },
+                      { ddName: "Species",
+                        LayerNameAddOn: "Species",
+                        totalsLayerNameAddOn: "Species",
+                        subLayerName: "vw_SpCatch_allAK",
+                        ddOutFields: ["Sp_CommonName", "SpCode"],
+                        orderByFields: ["Sp_CommonName"],
+                        options: [ { label: "[All]", value: "All" } ],
+                        SelectedOption: "All",
+                        whereField: "SpCode",
+                        isAlpha: true
+                      }
+            */
+          ],
+          currTab: 0,
+          tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
+          orderByFields: ["SppNameHtml"],
+          visibleHeaderElements: ['ssSpTableLabelSpan_featureCount'],
+          specialFormatting: {      // Special HTML formatting for field values
+            SppNameHtml: {
+              title: "Species",
+              colWidth: 200
+            },
+            Common_name: {
+              title: "Common Name",
+              colWidth: 100
+            }
+          },
+          /*
+                  tabInfo: [
+                    {
+                      tabName: 'Regions',
+                      tabTitle: 'Fish Atlas Regions',
+                      LayerNameAddOn: 'Regions',
+                      visibleHeaderElements: [],
+                      specialFormatting: {      // Special HTML formatting for field values
+                      },
+                      idField: 'Region'
+                    },
+                    {
+                      tabName: 'Locales',
+                      tabTitle: 'Fish Atlas Locales',
+                      LayerNameAddOn: 'Locales',
+                      visibleHeaderElements: [],
+                      specialFormatting: {      // Special HTML formatting for field values
+                      },
+                      idField: 'Locale'
+                    },
+                    {
+                      tabName: 'Sites',
+                      tabTitle: 'Fish Atlas Sites',
+                      LayerNameAddOn: 'Sites',
+                      visibleHeaderElements: [],
+                      idField: 'Site'
+                    }
+                    ],
+          */
+          layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+          //   using the current panel info and dropdown info for any dropdowns that have something selected.
+          //totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
+          spatialRelationship: null,      // Using null as a flag to not filter spatially
+          noGeometry: true
+        });
+
+        // Shore Station photos
+        ssPhotoWidget = new PhotoPlaybackWidget({
+          objName: "ssPhotoWidget",
+          sublayerIDs: ssSublayerIDs,
+          panelName: "ssPhotosPanel",
+          panelType: "media",
+          contentPaneId: "ssPhotosDiv",
+          baseName: "ssPhoto",
+          headerDivName:  "ssPhotoHeaderDiv",
+          disabledMsgInfix: "photo points",
+          disabledMsgDivName: "disabledMsg_ssPhoto",
+          mapServiceLayer: ssMapServiceLayer,
+          layerName: "GVDATA_STNPHOTOS",
+          featureOutFields: ["*"],
+          photoServer: "https://alaskafisheries.noaa.gov/mapping/shorestationdata/",      // TODO: Set up so this info appears near top of GlobarVars.js
+          relPathField: "FileLocation",
+          fileNameField: "ImageFileName",
+          noGeometry: true,
+          controlData: [
+            ['ssPhoto_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
+            ['ssPhoto_backwardButton', 'Previous Photo', 'backward.png', 'playBackward'],
+            ['ssPhoto_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
+            ['ssPhoto_ForwardButton', 'Next Photo', 'forward.png', 'playForward'],
+            ['ssPhoto_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
+          ]
+        });
+        ssPhotoWidget.resizeImg();
+        photoWidgets.push(ssPhotoWidget);
+
+      }, function(error){
+        console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
 
+      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "hide"});
+      faMapServiceLayer.when(function() {
+        //console.log("Fish Atlas MapServiceLayer loaded.");
+        faMapServiceLayer.visible = false;
+
+        faWidget = new QueryBasedTablePanelWidget({
+          objName: "faWidget",
+          //gotoFlexMsg: "Sorry, Fish Atlas has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.",
+          title: "Fish Atlas",
+          sublayerIDs: faSublayerIDs,
+          panelName: "faPanel",
+          panelType: "table",
+          contentPaneId: "faDiv",
+          baseName: "fa",
+          headerDivName:  "faHeaderDiv",
+          footerDivName:  "faFooterDiv",
+          totalOutFields: ["Hauls", "Species", "Catch"],
+          tableHeaderTitle: "All Regions",
+          displayDivName: "faContainer",
+          disabledMsgDivName: "disabledMsg_fa",
+          mapServiceLayer: faMapServiceLayer,
+          mapServiceSublayers: ["Regions", "Locales", "Sites"],
+          dynamicLayerName: true,
+          dropDownInfo: [
+            { ddName: "Region",
+              LayerNameAddOn: "",
+              totalsLayerNameAddOn: "Regions",
+              subLayerName: "Regions",
+              ddOutFields: ["RegionName", "RegionID", "Envelope"],
+              orderByFields: ["RegionName"],
+              options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+              SelectedOption: "All",
+              whereField: "RegionID"
+            },
+            { ddName: "Locale",
+              LayerNameAddOn: "",
+              totalsLayerNameAddOn: "Locales",
+              subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
+              ddOutFields: ["Locale", "LocaleID", "Envelope"],
+              orderByFields: ["Locale"],
+              options: [ { label: "[All]", value: "All" } ],
+              SelectedOption: "All",
+              whereField: "LocaleID"
+            },
+            { ddName: "Habitat",
+              LayerNameAddOn: "Habitats",
+              totalsLayerNameAddOn: "Habitats",
+              options: [
+                { label: "All", value: "All" },
+                { label: "Bedrock", value: "Bedrock" },
+                { label: "Eelgrass", value: "Eelgrass" },
+                { label: "Kelp", value: "Kelp" },
+                { label: "Sand-Gravel", value: "Sand-Gravel" }
+              ],
+              SelectedOption: "All",
+              whereField: "Habitat",
+              isAlpha: true
+            },
+            { ddName: "Species",
+              LayerNameAddOn: "Species",
+              totalsLayerNameAddOn: "Species",
+              subLayerName: "vw_SpCatch_allAK",
+              ddOutFields: ["Sp_CommonName", "SpCode"],
+              orderByFields: ["Sp_CommonName"],
+              options: [ { label: "[All]", value: "All" } ],
+              SelectedOption: "All",
+              whereField: "SpCode",
+              isAlpha: true
+            }
+          ],
+          speciesTableInfo : {
+            iconLabel: 'Total Fish Catch',
+            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions"'
+          },
+          currTab: 0,
+          featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
+          tabInfo: [
+            {
+              tabName: 'Regions',
+              tabTitle: 'Fish Atlas Regions',
+              popupTitle: "Fish Atlas Region",
+              LayerNameAddOn: 'Regions',
+              parentAreaType: '',
+              visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
+              featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
+              calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
+              orderByFields: ["Region"],
+              specialFormatting: {      // Special HTML formatting for field values
+                Envelope: {
+                  title:  "",
+                  colWidth:  20,
+                  plugInFields: ["Envelope"],
+                  args: '"{0}"',
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                },
+                RegionID: {
+                  title:  "Fish Catch",
+                  colWidth:  30,
+                  plugInFields: ["RegionID", "Region"],
+                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                },
+                SelRegionBtn: {
+                  title:  "Locales",
+                  colWidth:  20,
+                  plugInFields: ["RegionID", "Envelope"],
+                  args: 'faWidget,{0},"{1}"',
+                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
+                }
+              },
+              idField: 'Region',
+              subTableDD: "Region",
+              //resetDDs: [0, 1],      //["Region", "Locale"],
+              clickableSymbolType: "extent",
+              clickableSymbolInfo: {
+                color: [ 51,51, 204, 0.1 ],
+                style: "solid",
+                width: "2px"
+              },
+              mapServiceSublayerVisibility: [false, false, true]
+              //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
+            },
+            {
+              tabName: 'Locales',
+              tabTitle: 'Fish Atlas Locales',
+              popupTitle: "Fish Atlas Locale",
+              LayerNameAddOn: 'Locales',
+              parentAreaType: 'Regions',
+              visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
+              calcFields:  [{name: "SelLocaleBtn", afterField: "LocaleID"}],
+              orderByFields: ["Region", "Locale"],
+              specialFormatting: {      // Special HTML formatting for field values
+                Envelope: {
+                  title:  "",
+                  colWidth:  20,
+                  plugInFields: ["Envelope"],
+                  args: '"{0}"',
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                },
+                LocaleID: {
+                  title:  "Fish Catch",
+                  colWidth:  30,
+                  plugInFields: ["LocaleID", "Locale"],
+                  args: 'faSpTableWidget,"vw_CatchStats_LocalesSpecies","vw_CatchStats_Locales","LocaleID={0}","{1}"',
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                },
+                SelLocaleBtn: {
+                  title:  "Sites",
+                  colWidth:  20,
+                  plugInFields: ["LocaleID", "Envelope"],
+                  args: 'faWidget,{0},"{1}"',
+                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
+                }
+              },
+              idField: 'Locale',
+              subTableDD: "Locale",
+              //resetDDs: [1],      //["Region", "Locale"],
+              clickableSymbolType: "point",
+              clickableSymbolInfo: {
+                style:"square",
+                color:[255,255,255,1.0],
+                outline: {  // autocasts as new SimpleLineSymbol()
+                  color: [ 128, 128, 128, 1.0 ],
+                  width: "0.5px"
+                },
+                size:12
+              },
+              textOverlayPars: {
+                type: "text",  // autocasts as new TextSymbol()
+                color: "black",
+                verticalAlignment: "middle",
+                font: {  // autocast as new Font()
+                  size: 8,
+                  family: "arial",
+                  //weight: "bolder"
+                }
+              },
+              textOverlayField: "MapID",
+            },
+            {
+              tabName: 'Sites',
+              tabTitle: 'Fish Atlas Sites',
+              popupTitle: "Fish Atlas Site",
+              LayerNameAddOn: 'Sites',
+              parentAreaType: 'Locales',
+              visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              featureOutFields: ["Envelope", "Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID"],
+              orderByFields: ["Region", "Locale", "Site"],
+              specialFormatting: {      // Special HTML formatting for field values
+                Envelope: {     //TODO:  For Sites, Envelope is null.  Replace with set-sized envelope centered on the point
+                  title:  "",
+                  colWidth:  20,
+                  plugInFields: ["Envelope"],
+                  args: '"{0}"',
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                },
+                SiteID: {
+                  title:  "Fish Catch",
+                  colWidth:  30,
+                  plugInFields: ["SiteID", "Site"],
+                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                }
+              },
+              idField: 'Site',
+              clickableSymbolType: "point",
+              clickableSymbolInfo: {
+                "style":"circle",
+                "color":[255,255,255,1.0],
+                outline: {  // autocasts as new SimpleLineSymbol()
+                  color: [ 0, 0, 0, 1.0 ],
+                  width: "0.5px"
+                },
+                "size":4
+              },
+              renderingInfo: {
+                field: "Habitat",
+                uniqueColors: {
+                  "Bedrock": "blue",
+                  "Eelgrass": "green",
+                  "Kelp": "red",
+                  "Sand-Gravel": "yellow"
+                },
+              }
+
+            },
+            {
+              tabName: 'Temperature',
+              tabTitle: 'Temperature Data',
+              popupTitle: "Thermograph",
+              LayerNameAddOn: 'Temperature',
+              featureOutFields: ["Region", "Hauls", "Species", "Catch"],
+              idField: 'Region'
+            },
+            {
+              tabName: 'Eelgrass',
+              tabTitle: 'Eelgrass Data',
+              popupTitle: "Eelgrass Bed",
+              LayerNameAddOn: 'Eelgrass',
+              featureOutFields: ["Region", "Hauls", "Species", "Catch"],
+              idField: 'Region'
+            }
+          ],
+          layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+                                                //   using the current panel info and dropdown info for any dropdowns that have something selected.
+          spatialRelationship: null,      // Using null as a flag to not filter spatially
+          showFieldsInPopup: "*",
+
+          // TODO: Remove, and use something like setActiveTab in constructor
+          clickableSymbolType: "extent",
+          clickableSymbolInfo: {
+            color: [ 51,51, 204, 0.1 ],
+            style: "solid",
+            width: "2px"
+          },
+
+          hasTextOverlayLayer: true,
+          clickableMsg: null
+        });
+
+        siteTabs.fa.widgets = [faWidget];
+
+        faSpTableWidget = new QueryBasedTablePanelWidget({
+          objName: "faSpTableWidget",
+          title: "Fish Catch",
+          sublayerIDs: faSublayerIDs,
+          panelName: "faSpTablePanel",
+          panelType: "table",
+          draggablePanelId: "faSpTableDiv",
+          contentPaneId: "faSpTableDiv_content",
+          baseName: "faSpTable",
+          headerDivName:  "faSpTableHeaderDiv",
+          footerDivName:  "faSpTableFooterDiv",
+          featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
+          totalOutFields: ["Catch", "Count_measured"],
+          tableHeaderTitle: "All Regions",
+          displayDivName: "faSpTableContainer",
+          mapServiceLayer: faMapServiceLayer,
+          dynamicLayerName: true,
+          dropDownInfo: [
+            /*
+                      { ddName: "Region",
+                        LayerNameAddOn: "",
+                        totalsLayerNameAddOn: "Regions",
+                        subLayerName: "Regions",
+                        ddOutFields: ["RegionName", "RegionID", "Envelope"],
+                        orderByFields: ["RegionName"],
+                        options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+                        SelectedOption: "All",
+                        whereField: "RegionID"
+                      },
+                      { ddName: "Locale",
+                        LayerNameAddOn: "",
+                        totalsLayerNameAddOn: "Locales",
+                        subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
+                        ddOutFields: ["Locale", "LocaleID", "Envelope"],
+                        orderByFields: ["Locale"],
+                        options: [ { label: "[All]", value: "All" } ],
+                        SelectedOption: "All",
+                        whereField: "LocaleID"
+                      },
+                      { ddName: "Species",
+                        LayerNameAddOn: "Species",
+                        totalsLayerNameAddOn: "Species",
+                        subLayerName: "vw_SpCatch_allAK",
+                        ddOutFields: ["Sp_CommonName", "SpCode"],
+                        orderByFields: ["Sp_CommonName"],
+                        options: [ { label: "[All]", value: "All" } ],
+                        SelectedOption: "All",
+                        whereField: "SpCode",
+                        isAlpha: true
+                      }
+            */
+          ],
+          currTab: 0,
+          tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
+          orderByFields: ["Catch DESC"],
+          visibleHeaderElements: ['faSpTableLabelSpan_featureCount'],
+          specialFormatting: {      // Special HTML formatting for field values
+            Sp_CommonName: {
+              title: "Species",
+              colWidth: 200
+            },
+            Catch: {
+              title: "Catch",
+              colWidth: 100,
+              useCommas: true
+            },
+            AvgFL: {
+              title: "Average Length",
+              colWidth: 150,
+              numDecimals: 1
+            },
+            Count_measured: {
+              title: "# Measured",
+              colWidth: 150,
+              useCommas: true
+            },
+          },
+  /*
+          tabInfo: [
+            {
+              tabName: 'Regions',
+              tabTitle: 'Fish Atlas Regions',
+              LayerNameAddOn: 'Regions',
+              visibleHeaderElements: [],
+              specialFormatting: {      // Special HTML formatting for field values
+              },
+              idField: 'Region'
+            },
+            {
+              tabName: 'Locales',
+              tabTitle: 'Fish Atlas Locales',
+              LayerNameAddOn: 'Locales',
+              visibleHeaderElements: [],
+              specialFormatting: {      // Special HTML formatting for field values
+              },
+              idField: 'Locale'
+            },
+            {
+              tabName: 'Sites',
+              tabTitle: 'Fish Atlas Sites',
+              LayerNameAddOn: 'Sites',
+              visibleHeaderElements: [],
+              idField: 'Site'
+            }
+            ],
+  */
+          layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+          //   using the current panel info and dropdown info for any dropdowns that have something selected.
+          //totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
+          spatialRelationship: null,      // Using null as a flag to not filter spatially
+          noGeometry: true
+        });
 
 
-    }, function(error){
-      console.log("Fish Atlas MapServiceLayer failed to load:  " + error);
-    });
 
-    sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURL, {id: "sslOpLayer", "opacity" : 0.5});
+      }, function(error){
+        console.log("Fish Atlas MapServiceLayer failed to load:  " + error);
+      });
 
-    serviceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
-    llServiceLayers = [sslMapServiceLayer, szMapServiceLayer];
-  }
+      sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURL, {id: "sslOpLayer", "opacity" : 0.5});
+
+      serviceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
+      llServiceLayers = [sslMapServiceLayer, szMapServiceLayer];
+    }
 
 
 /*

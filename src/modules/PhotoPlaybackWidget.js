@@ -249,20 +249,18 @@ define([
 
       photo_load_times = {}
 
-      let controlData_photo = [
-        ['photo_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', this.objName, 'toStart'],
-        ['photo_backwardButton', 'Play Backwards', 'w_left.png', this.objName, 'playBackward'],
-        ['photo_pauseButton', 'Pause', 'w_close_red.png', this.objName, 'pause'],
-        ['photo_ForwardButton', 'Play Forwards', 'w_right.png', this.objName, 'playForward'],
-        ['photo_resetForwardButton', 'Reset to End', 'w_collapse.png', this.objName, 'toEnd']
-      ];
-
-      let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>"
-      this.footerPanel.innerHTML = linkHTML + makeMediaPlaybackHtml(playbackControlTemplate, controlData_photo, 'photoTools', 'position: relative; float: left');
+      let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>";
+      this.currNumber_SpanId = this.baseName + "_currNumber";
+      this.photoCount_SpanId = this.baseName + "_photoCount";
+      let photoCountHtml = "<span style='float: right'>Photo ";
+      photoCountHtml += "<span id='" + this.currNumber_SpanId + "'></span>";
+      photoCountHtml += "<span id='" + this.photoCount_SpanId + "'></span>";
+      photoCountHtml += "</span>";
+      this.footerPanel.innerHTML = linkHTML + makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'photoTools', 'position: relative; float: left', this.objName) + photoCountHtml;
       //getEl('photoTools').style.position = "relative";
       //getEl('photoTools').style.float = "left";
 
-      setVisible("photo_pauseButton", false);
+      setVisible(this.controlData[2][0], false);      // Hide the "pause" button
 
       this.on_image_error = function(e) {
         // Called on image load error   param object e Event object
@@ -328,6 +326,7 @@ define([
           return;
         if (!this.noGeometry)
           this.makeClickableGraphics(features);
+        getEl(this.photoCount_SpanId).innerHTML = "/" + features.length;
         this.toStart();
       };
 

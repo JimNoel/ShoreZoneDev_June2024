@@ -468,6 +468,8 @@ define([
       let attrs = this.getFeatureAttributes(this.counter);
       this.moveToFeature(attrs);
       this.updateMedia(attrs);
+      getEl(this.currNumber_SpanId).innerHTML = this.counter + 1;
+      this.hideMootControls();
     },
 
     moveToFeature: function (attrs) {
@@ -487,6 +489,15 @@ define([
           headerDiv.innerHTML = getEl(this.disabledMsgDivName).innerHTML;
       }
     },
+
+    hideMootControls: function() {
+      setVisible(this.controlData[0][0], this.counter>0);
+      setVisible(this.controlData[1][0], this.counter>0);
+      setVisible(this.controlData[3][0], this.counter<(this.features.length-1));
+      setVisible(this.controlData[4][0], this.counter<(this.features.length-1));
+    },
+
+
 
     clearAllHighlights: function() {
       szVideoWidget.highlightLayer.removeAll();
@@ -601,15 +612,22 @@ define([
       }
     },
 
-    mediaDimensions: function(aspect) {
-      let mediaDiv = dijit.registry.byId(this.contentPaneId);
-      let d = {width: mediaDiv.w, height: mediaDiv.h} ;
-      let divAspect = d.width/d.height;
-      if (aspect < divAspect)
-        d.width = parseInt(d.height*aspect);
-      else
-        d.height = parseInt(d.width/aspect);
-      return d;
+  mediaDimensions: function(aspect) {
+    let mediaDiv = dijit.registry.byId(this.contentPaneId);
+    let d = {width: mediaDiv.w, height: mediaDiv.h} ;
+    let divAspect = d.width/d.height;
+    if (aspect < divAspect)
+      d.width = parseInt(d.height*aspect);
+    else
+      d.height = parseInt(d.width/aspect);
+    return d;
+  },
+
+  resizeImg: function() {
+    let pDims = this.mediaDimensions(photoAspectRatio);
+    let photoEl = this.photoImage[0];
+    photoEl.width = pDims.width;
+    photoEl.height = pDims.height;
   }
 
 });
