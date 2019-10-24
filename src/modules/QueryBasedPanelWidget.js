@@ -322,6 +322,8 @@ define([
       }
 
       let headerPanel = makeHtmlElement("div", name + "HeaderDiv", classType + "HeaderDiv");
+      //let headerWrapper = makeHtmlElement("div", null,"semiTransparentBG");
+      //headerWrapper.appendChild(headerPanel);
       theContainer.appendChild(headerPanel);
 
       // Main panel content
@@ -473,6 +475,13 @@ define([
     },
 
     moveToFeature: function (attrs) {
+      if (this.headerDivName) {
+        let headerDiv = getEl(this.headerDivName);
+        if (attrs.Caption)
+          headerDiv.innerHTML = attrs.Caption;
+        else
+          headerDiv.innerHTML = "";     // getEl(this.disabledMsgDivName).innerHTML;    // why was this here?
+      }
        if (this.noGeometry)
          return;
       this.trackingLayer.removeAll();
@@ -481,13 +490,6 @@ define([
       let newFeature = new Graphic(markerPoint, this.trackingSymbol);
       //console.log(this.baseName + ":  " + newFeature.geometry.x + "," + newFeature.geometry.y)
       this.trackingLayer.add(newFeature);
-      if (this.headerDivName) {
-        let headerDiv = getEl(this.headerDivName);
-        if (attrs.Caption)
-          headerDiv.innerHTML = attrs.Caption;
-        else
-          headerDiv.innerHTML = getEl(this.disabledMsgDivName).innerHTML;
-      }
     },
 
     hideMootControls: function() {

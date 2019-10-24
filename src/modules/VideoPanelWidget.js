@@ -279,7 +279,8 @@ define([
         pWidget.features = features.filter(function(f){
           return f.attributes.StillPhoto_FileName
         });
-        pWidget.makeClickableGraphics(pWidget.features);    // TODO: replace with pWidget.processData (or some equivalent)
+        pWidget.processFeatures();
+        //pWidget.makeClickableGraphics(pWidget.features);    // TODO: replace with pWidget.processData (or some equivalent)
 
         let vidcapFeatures = features.filter(function(f){
           return f.attributes.VidCap_FileName_HighRes

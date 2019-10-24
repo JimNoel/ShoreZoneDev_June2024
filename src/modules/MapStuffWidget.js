@@ -531,6 +531,8 @@ define([
           photoServer: "https://alaskafisheries.noaa.gov/mapping/shorestationdata/",      // TODO: Set up so this info appears near top of GlobarVars.js
           relPathField: "FileLocation",
           fileNameField: "ImageFileName",
+          captionTemplate: "",
+          captionFields: ["CaptionText", "Description"],
           noGeometry: true,
           controlData: [
             ['ssPhoto_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],

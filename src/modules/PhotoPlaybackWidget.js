@@ -223,7 +223,7 @@ define([
       if (!next_photo_point)
         return;
       latest_img_subPath = next_photo_point[this.relPathField] + "/" + this.photoResInsert + next_photo_point[this.fileNameField];
-      if (latest_img_subPath.indexOf(".jpeg")<0 && latest_img_subPath.indexOf(".jpg")<0)
+      if (latest_img_subPath.search(/.jpeg/i)<0 && latest_img_subPath.search(/.jpg/i)<0)    // TODO: Handle ".jpeg"
         latest_img_subPath += ".jpg";
       let photoServer = PHOTO_SERVER;     // TODO:  Will probably set this.photoServer for szPhotoWidget as well
       if (this.photoServer)
@@ -252,8 +252,8 @@ define([
       let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>";
       this.currNumber_SpanId = this.baseName + "_currNumber";
       this.photoCount_SpanId = this.baseName + "_photoCount";
-      let photoCountHtml = "<span style='float: right'>Photo ";
-      photoCountHtml += "<span id='" + this.currNumber_SpanId + "'></span>";
+      let photoCountHtml = "<span class='photoCount'>Photo ";
+      photoCountHtml += "<span id='" + this.currNumber_SpanId + "'>0</span>";
       photoCountHtml += "<span id='" + this.photoCount_SpanId + "'></span>";
       photoCountHtml += "</span>";
       this.footerPanel.innerHTML = linkHTML + makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'photoTools', 'position: relative; float: left', this.objName) + photoCountHtml;
@@ -316,18 +316,35 @@ define([
         this.photoImage.attr("src", latest_img_src);
       }
 
+      this.makeCaptions = function() {
+        for (let p=0; p<this.features.length; p++) {
+          let attrs = this.features[p].attributes;
+          let caption = attrs[this.captionFields[0]];
+          if (!caption)
+            caption = "";
+          for (let f=1; f<this.captionFields.length; f++) {
+            let S = attrs[this.captionFields[f]];
+            if (S)
+              caption += ", " + S.replace(/@/g,";");     // because some items in DVB have "@" character
+          }
+          attrs.Caption = caption;
+        }
+      }
+
+      this.processFeatures = function() {
+        if (!this.noGeometry)
+          this.makeClickableGraphics(this.features);
+        getEl(this.photoCount_SpanId).innerHTML = "/" + this.features.length;
+        if (this.captionFields)
+          this.makeCaptions();
+        this.toStart();
+      }
 
       this.processData = function(results) {
         let features = results.features;
         this.features = features;
-        console.log(features.length + " " + this.baseName + " features");
-        //pausePlayback("video");
-        if (this.noFeatures(features))
-          return;
-        if (!this.noGeometry)
-          this.makeClickableGraphics(features);
-        getEl(this.photoCount_SpanId).innerHTML = "/" + features.length;
-        this.toStart();
+        if (!this.noFeatures(features))
+          this.processFeatures(features);
       };
 
       this.toStart = function() {
