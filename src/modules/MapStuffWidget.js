@@ -925,6 +925,38 @@ define([
           noGeometry: true
         });
 
+/*
+        // Fish Atlas photos
+        faPhotoWidget = new PhotoPlaybackWidget({
+          objName: "faPhotoWidget",
+          sublayerIDs: faSublayerIDs,
+          panelName: "faPhotosPanel",
+          panelType: "media",
+          contentPaneId: "faPhotosDiv",
+          baseName: "faPhoto",
+          headerDivName:  "faPhotoHeaderDiv",
+          disabledMsgInfix: "photo points",
+          disabledMsgDivName: "disabledMsg_faPhoto",
+          mapServiceLayer: faMapServiceLayer,
+          layerName: "Photos_Sites",
+          featureOutFields: ["*"],
+          photoServer: "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos_ReducedSize/",      // TODO: Set up so this info appears near top of GlobarVars.js
+          //relPathField: "FileLocation",
+          fileNameField: "SitePhoto1",
+          captionTemplate: "",
+          captionFields: ["GenericCaption"],
+          noGeometry: true,
+          controlData: [
+            ['faPhoto_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
+            ['faPhoto_backwardButton', 'Previous Photo', 'backward.png', 'playBackward'],
+            ['faPhoto_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
+            ['faPhoto_ForwardButton', 'Next Photo', 'forward.png', 'playForward'],
+            ['faPhoto_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
+          ]
+        });
+        faPhotoWidget.resizeImg();
+        photoWidgets.push(faPhotoWidget);
+*/
 
 
       }, function(error){

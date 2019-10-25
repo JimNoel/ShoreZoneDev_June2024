@@ -222,7 +222,9 @@ define([
       update_photo_latest_params = next_photo_point;
       if (!next_photo_point)
         return;
-      latest_img_subPath = next_photo_point[this.relPathField] + "/" + this.photoResInsert + next_photo_point[this.fileNameField];
+      latest_img_subPath = this.photoResInsert + next_photo_point[this.fileNameField];
+      if (this.relPathField)
+        latest_img_subPath = next_photo_point[this.relPathField] + "/" + latest_img_subPath;
       if (latest_img_subPath.search(/.jpeg/i)<0 && latest_img_subPath.search(/.jpg/i)<0)    // TODO: Handle ".jpeg"
         latest_img_subPath += ".jpg";
       let photoServer = PHOTO_SERVER;     // TODO:  Will probably set this.photoServer for szPhotoWidget as well
