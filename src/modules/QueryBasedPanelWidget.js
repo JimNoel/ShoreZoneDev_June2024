@@ -331,7 +331,7 @@ define([
       this.footerPanel = null;
       if (classType === 'media') {
         this.photoImageId = this.baseName + 'Image';
-        let imgHtml = '    <img id="' + this.photoImageId + '" class="imageContainer" src="" alt="">\n';
+        let imgHtml = '    <img id="' + this.photoImageId + '" class="imageContainer" src="assets/images/Camera24X24.png" alt="">\n';
         if (name === 'video')
           imgHtml = '    <div id="videoImageContainer" class="imageContainer"></div>\n';
         midContent = '<div id="' + name + 'NoImageMessage" class="mediaMessageDiv" style="padding: 0" ><b>No ' + name + '</b></div>' + imgHtml;

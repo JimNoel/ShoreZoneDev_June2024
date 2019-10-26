@@ -251,16 +251,17 @@ define([
 
       photo_load_times = {}
 
-      let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>";
       this.currNumber_SpanId = this.baseName + "_currNumber";
       this.photoCount_SpanId = this.baseName + "_photoCount";
       let photoCountHtml = "<span class='photoCount'>Photo ";
       photoCountHtml += "<span id='" + this.currNumber_SpanId + "'>0</span>";
       photoCountHtml += "<span id='" + this.photoCount_SpanId + "'></span>";
       photoCountHtml += "</span>";
-      this.footerPanel.innerHTML = linkHTML + makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'photoTools', 'position: relative; float: left', this.objName) + photoCountHtml;
-      //getEl('photoTools').style.position = "relative";
-      //getEl('photoTools').style.float = "left";
+      this.footerPanel.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'photoTools', 'position: relative; float: left', this.objName) + photoCountHtml;
+      if (this.sync_photos) {
+        let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()'/>";
+        this.footerPanel.innerHTML = linkHTML + this.footerPanel.innerHTML;
+      }
 
       setVisible(this.controlData[2][0], false);      // Hide the "pause" button
 
@@ -337,6 +338,9 @@ define([
         if (!this.noGeometry)
           this.makeClickableGraphics(this.features);
         getEl(this.photoCount_SpanId).innerHTML = "/" + this.features.length;
+        //if (this.features.length <=1)
+        let controlContainer = this.footerPanel.getElementsByClassName("playbackControlContainer")[0];
+        setVisible(controlContainer, this.features.length>1);
         if (this.captionFields)
           this.makeCaptions();
         this.toStart();

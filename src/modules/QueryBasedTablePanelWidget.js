@@ -88,13 +88,17 @@ define([
           if (title === null)
             title = fields[i].alias;
 
+          let hidden = getIfExists(this,"specialFormatting." + fields[i].name + ".hidden");
+
           tableColumns.push({
             field: fields[i].name,
             label: title,
+            hidden: hidden,
             formatter: function(value){
               return value       // This causes dGrid to treat values as HTML code
             },
           });
+
 
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
           let colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
@@ -173,9 +177,11 @@ define([
           data: tableData
         });
 
+        // Hide any columns that don't have data
         for (let c=0; c<tableColumns.length; c++) {
           let col = tableColumns[c];
-          col.hidden = (nonNullCount[col.field]===0);       // TODO: sometimes can't show column subsequently?
+          if (nonNullCount[col.field]===0)
+            col.hidden = true;       // TODO: sometimes can't show column subsequently?
         }
 
         // Instantiate grid
@@ -246,12 +252,12 @@ define([
           if (subWidgetInfo) {
             console.log("update row-associated widgets");
             let row = this.grid.row(event);
-/*
+
             let rowIndex = event.selectorTarget.rowIndex;
             let gObjFieldHtml = this.store.data[rowIndex][this.idField];
             let gObjIndex = event.selectorTarget.innerHTML.split("@")[1];
-            let associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
-*/
+            //let associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
+
             for (let i=0; i<subWidgetInfo.length; i++) {
               let A = subWidgetInfo[i].split(":");
               let dataPresentField = A[2];

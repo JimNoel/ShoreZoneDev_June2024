@@ -731,12 +731,14 @@ define([
             },
             {
               tabName: 'Sites',
+              subWidgetInfo: ["faPhotoWidget:SiteID:PhotoCount"],     // name of subwidget : filter field : column to check before running query
               tabTitle: 'Fish Atlas Sites',
               popupTitle: "Fish Atlas Site",
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Locales',
               visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              featureOutFields: ["Envelope", "Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID"],
+              featureOutFields: ["Envelope", "Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
+              calcFields:  [{name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {     //TODO:  For Sites, Envelope is null.  Replace with set-sized envelope centered on the point
@@ -746,15 +748,18 @@ define([
                   args: '"{0}"',
                   html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
                 },
-                SiteID: {
+                FishCatch: {
                   title:  "Fish Catch",
                   colWidth:  30,
                   plugInFields: ["SiteID", "Site"],
                   args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
                   html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                },
+                SiteID: {
+                  hidden: true
                 }
               },
-              idField: 'Site',
+              idField: 'SiteID',
               clickableSymbolType: "point",
               clickableSymbolInfo: {
                 "style":"circle",
@@ -925,38 +930,36 @@ define([
           noGeometry: true
         });
 
-/*
         // Fish Atlas photos
         faPhotoWidget = new PhotoPlaybackWidget({
-          objName: "faPhotoWidget",
-          sublayerIDs: faSublayerIDs,
-          panelName: "faPhotosPanel",
-          panelType: "media",
-          contentPaneId: "faPhotosDiv",
-          baseName: "faPhoto",
-          headerDivName:  "faPhotoHeaderDiv",
-          disabledMsgInfix: "photo points",
-          disabledMsgDivName: "disabledMsg_faPhoto",
-          mapServiceLayer: faMapServiceLayer,
-          layerName: "Photos_Sites",
-          featureOutFields: ["*"],
-          photoServer: "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos_ReducedSize/",      // TODO: Set up so this info appears near top of GlobarVars.js
-          //relPathField: "FileLocation",
-          fileNameField: "SitePhoto1",
-          captionTemplate: "",
-          captionFields: ["GenericCaption"],
-          noGeometry: true,
-          controlData: [
-            ['faPhoto_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
-            ['faPhoto_backwardButton', 'Previous Photo', 'backward.png', 'playBackward'],
-            ['faPhoto_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
-            ['faPhoto_ForwardButton', 'Next Photo', 'forward.png', 'playForward'],
-            ['faPhoto_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
-          ]
+                    objName: "faPhotoWidget",
+                    sublayerIDs: faSublayerIDs,
+                    panelName: "faPhotosPanel",
+                    panelType: "media",
+                    contentPaneId: "faPhotosDiv",
+                    baseName: "faPhoto",
+                    headerDivName:  "faPhotoHeaderDiv",
+                    disabledMsgInfix: "photo points",
+                    disabledMsgDivName: "disabledMsg_faPhoto",
+                    mapServiceLayer: faMapServiceLayer,
+                    layerName: "Photos_Sites",
+                    featureOutFields: ["*"],
+                    photoServer: "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos_ReducedSize/",      // TODO: Set up so this info appears near top of GlobarVars.js
+                    //relPathField: "FileLocation",
+                    fileNameField: "SitePhoto1",
+                    captionTemplate: "",
+                    captionFields: ["GenericCaption"],
+                    noGeometry: true,
+                    controlData: [
+                      ['faPhoto_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
+                      ['faPhoto_backwardButton', 'Previous Photo', 'backward.png', 'playBackward'],
+                      ['faPhoto_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
+                      ['faPhoto_ForwardButton', 'Next Photo', 'forward.png', 'playForward'],
+                      ['faPhoto_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
+                    ]
         });
         faPhotoWidget.resizeImg();
         photoWidgets.push(faPhotoWidget);
-*/
 
 
       }, function(error){
