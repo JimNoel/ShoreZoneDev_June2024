@@ -361,7 +361,7 @@ define([
                   title:  "Species Data",
                   colWidth:  30,
                   plugInFields: ["RegionalID", "Region"],
-                  args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
+                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
                   html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
                 },
   */

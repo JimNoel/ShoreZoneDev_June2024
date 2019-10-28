@@ -101,10 +101,15 @@
             mvp:   ["root", "c",  "BC:v", {id: "mapMediaBC"}],      // set width of map and media panels in pixels, query/table panels get remainder
               m:     ["mvp",  "c",  "CP", {id: "mapDiv"}],
               vp:    ["mvp",  "r:500px",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
-                szV:      ["vp",  "c",     "CP", {id: "videoDiv", class: "mediaPanelDiv sz"}],  // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
-                szP:      ["vp",  "b:50%", "CP", {id: "photoDiv", class: "mediaPanelDiv sz"}],
-//                ssC:      ["vp",  "c", "CP", {id: "faChartsDiv", class: "mediaPanelDiv fa"}],
-//                ssP:      ["vp",  "b:50%", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv fa"}],
+                szVP:   ["vp", "c", "BC:h", {id: "szMediaBC", class: "sz"}],
+                  szV:      ["szVP",  "c",     "CP", {id: "videoDiv", class: "mediaPanelDiv"}],  // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+                  szP:      ["szVP",  "b:50%", "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+                ssCP:   ["vp", "c", "BC:h", {id: "ssMediaBC", class: "ss"}],
+                  ssC:      ["ssCP",  "c", "CP", {id: "ssChartsDiv", class: "mediaPanelDiv"}],
+                  ssP:      ["ssCP",  "b:50%", "CP", {id: "ssPhotosDiv", class: "mediaPanelDiv"}],
+                faCP:   ["vp", "c", "BC:h", {id: "faMediaBC", class: "fa"}],
+                  faC:      ["faCP",  "c", "CP", {id: "faChartsDiv", class: "mediaPanelDiv"}],
+                  faP:      ["faCP",  "b:50%", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv"}],
             qtEP:    ["root", "b:250px",  "EP:", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
               qt:       ["qtEP", "c",   "BC:v"],
                 //q:  ["qt",  "l:200px",    "CP"],        // set query panel height
@@ -119,8 +124,15 @@
         root:  [null,   "c",       "BC:v"],
           m:     ["root",  "l:800px",  "CP", {id: "mapDiv"}],
           vp:    ["root",  "c",  "BC:h", {id: "mediaBC"}],    // set video/photo height in pixels, map gets remainder
-              szV:      ["vp",  "t:45%",  "CP", {id: "videoDiv", class: "mediaPanelDiv sz"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
-              szP:      ["vp",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv sz"}],
+            szVP:   ["vp", "c", "BC:h", {id: "szMediaBC", class: "sz"}],
+              szV:      ["szVP",  "t:45%",  "CP", {id: "videoDiv", class: "mediaPanelDiv"}],      // video gets half the vp width, photo gets the other half  NOTE: 50% not giving accurate result, so using 45% for now
+              szP:      ["szVP",  "c",      "CP", {id: "photoDiv", class: "mediaPanelDiv"}],
+            ssCP:   ["vp", "c", "BC:h", {id: "ssMediaBC", class: "ss"}],
+              ssC:      ["ssCP",  "t:45%", "CP", {id: "ssChartsDiv", class: "mediaPanelDiv"}],
+              ssP:      ["ssCP",  "c", "CP", {id: "ssPhotosDiv", class: "mediaPanelDiv"}],
+            faCP:   ["vp", "c", "BC:h", {id: "faMediaBC", class: "fa"}],
+              faC:      ["faCP",  "t:45%", "CP", {id: "faChartsDiv", class: "mediaPanelDiv"}],
+              faP:      ["faCP",  "c", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv"}],
           qtEP:    ["root", "r:300px",  "EP:Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
             qt:    ["qtEP", "c",        "BC:h"],
               //q:  ["qt",  "t:200px",    "CP"],        // set query panel height
