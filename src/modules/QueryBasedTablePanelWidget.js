@@ -138,16 +138,17 @@ define([
               let template = getIfExists(this,"specialFormatting." + a + ".html");
               if (template) {     // If template exists, use this to replace attribute value with HTML code
                 let fmtInfo = this.specialFormatting[a];
-                if (fmtInfo.plugInFields) {
-                  let args = fmtInfo.args;
-                  for (p in fmtInfo.plugInFields)
-                    args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
-                  features[i].attributes[a] = template.replace("{args}", args);
-                } else if (fmtInfo.showWhen) {
+                if (fmtInfo.showWhen) {
                   if (features[i].attributes[a] === fmtInfo.showWhen)
                     features[i].attributes[a] = template;
                   else
                     features[i].attributes[a] = "";
+                }
+                if ((features[i].attributes[a]!=="") && fmtInfo.plugInFields) {
+                  let args = fmtInfo.args;
+                  for (p in fmtInfo.plugInFields)
+                    args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
+                  features[i].attributes[a] = template.replace("{args}", args);
                 }
               }
               if (features[i].attributes[a]) {

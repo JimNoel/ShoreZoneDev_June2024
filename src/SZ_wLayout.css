@@ -367,6 +367,8 @@ cursor: pointer;
 .icon_Active  {background-color: #6884B3;}
 .icon_Inactive  {background-color: white;}
 
+.tableIcon  { display: block; margin-left: auto; margin-right: auto; height:15px; width:15px }
+
 
 /*  This is the class for Layer headers (including Group layers)
 .esri-layer-list__item-title

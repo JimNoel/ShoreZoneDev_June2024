@@ -317,10 +317,11 @@ define([
               LayerNameAddOn: 'Field Stations',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
-              featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos"],
-              //calcFields:  [{name: "SpTableBtn", afterField: "Region"}],
+              featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
+              //calcFields:  [{name: "SpTableBtn", afterField: "hasPhotos"}],
               specialFormatting: {      // Special HTML formatting for field values
   /*
+  // TODO: Generate envelope from point coords, or from POINT_X and POINT_Y?
                 Envelope: {
                   title:  "",
                   colWidth:  20,
@@ -352,19 +353,24 @@ define([
                 },
                 hasPhotos: {
                   title:  "Photos",
-                  colWidth:  20,
-                  html:   "<img src='assets/images/Camera24X24.png' height='15' width='15' alt=''>",
+                  colWidth:  10,
+                  html:   "<img src='assets/images/Camera24X24.png' class='tableIcon' alt=''>",
                   showWhen: "1"
                 },
-  /*
-                SpTableBtn: {
-                  title:  "Species Data",
-                  colWidth:  30,
-                  plugInFields: ["RegionalID", "Region"],
-                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                hasSpecies: {
+                  title:  "Species",
+                  colWidth:  10,
+                  plugInFields: ["station", "station"],
+                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}"',
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='tableIcon' alt=''>",
+                  showWhen: "1"
                 },
-  */
+                hasProfile: {
+                  title:  "Profile",
+                  colWidth:  10,
+                  html:   "<img src='assets/images/graph.png' class='tableIcon' alt=''>",
+                  showWhen: "1"
+                },
               },
               idField: 'station',
               //subTableDD: "Region",
@@ -1664,7 +1670,7 @@ define([
       this.gotoExtent(extText);
     },
 
-      openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText) {
+    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText) {
       console.log("openSpeciesTable");
       if (headerText)
         headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
