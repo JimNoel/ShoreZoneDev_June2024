@@ -184,6 +184,7 @@ let faSpTableWidget = null;
 let ssWidget = null;
 let ssSpTableWidget = null;
 let ssPhotoWidget = null;
+let ssProfileWidget = null;
 let faPhotoWidget = null;
 
 let gp = null;      // for Geoprocessor

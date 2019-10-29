@@ -49,6 +49,7 @@ define([
   "noaa/PhotoPlaybackWidget",
   "noaa/UnitsPanelWidget",
   "noaa/QueryBasedTablePanelWidget",
+  "noaa/ChartPanelWidget",
   "esri/geometry/Extent",
   "esri/geometry/Point",
   "esri/geometry/Polygon",
@@ -63,7 +64,7 @@ define([
   "dojo/domReady!"
 ], function(declare, Basemap, watchUtils, Map, View, MapImageLayer, PortalItem, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, Geoprocessor, Query, QueryTask,
               //Print,
-            VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget,
+            VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
             Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
 
     function addServiceLayers() {
@@ -311,7 +312,7 @@ define([
             },
             {
               tabName: 'Stations',
-              subWidgetInfo: ["ssPhotoWidget:station:hasPhotos"],     // name of subwidget : filter field : column to check before running query
+              subWidgetInfo: ["ssPhotoWidget:station:hasPhotos", "ssProfileWidget:station:hasProfile"],     // name of subwidget : filter field : column to check before running query
               tabTitle: 'Shore Stations Stations',
               popupTitle: "Shore Stations Stations",
               LayerNameAddOn: 'Field Stations',
@@ -537,7 +538,6 @@ define([
           photoServer: "https://alaskafisheries.noaa.gov/mapping/shorestationdata/",      // TODO: Set up so this info appears near top of GlobarVars.js
           relPathField: "FileLocation",
           fileNameField: "ImageFileName",
-          captionTemplate: "",
           captionFields: ["CaptionText", "Description"],
           noGeometry: true,
           controlData: [
@@ -550,6 +550,25 @@ define([
         });
         ssPhotoWidget.resizeImg();
         photoWidgets.push(ssPhotoWidget);
+
+        // Shore Station profiles
+        ssProfileWidget = new ChartPanelWidget({
+          objName: "ssProfileWidget",
+          sublayerIDs: ssSublayerIDs,
+          panelName: "ssProfilesPanel",
+          panelType: "chart",
+          contentPaneId: "ssChartsDiv",
+          baseName: "ssProfile",
+          headerDivName:  "ssProfileHeaderDiv",
+          disabledMsgInfix: "profiles",
+          disabledMsgDivName: "disabledMsg_ssProfile",
+          mapServiceLayer: ssMapServiceLayer,
+          layerName: "SHORESTATIONS_STATIONPROFILE_FLAT",
+          featureOutFields: ["*"],
+          captionTemplate: "Shore Station: {0}",
+          captionFields: ["station"],
+          noGeometry: true,
+        });
 
       }, function(error){
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
@@ -953,7 +972,6 @@ define([
                     photoServer: "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos_ReducedSize/",      // TODO: Set up so this info appears near top of GlobarVars.js
                     //relPathField: "FileLocation",
                     fileNameField: "SitePhoto1",
-                    captionTemplate: "",
                     captionFields: ["GenericCaption"],
                     noGeometry: true,
                     controlData: [
