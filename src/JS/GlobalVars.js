@@ -294,6 +294,15 @@ function decDegCoords_to_DegMinSec(decLon, decLat) {
 }
 
 
+function replaceFromArray(theTemplate, A) {
+  let S = theTemplate;
+  for (let j=0; j<A.length; j++) {
+    let srch = '{' + j + '}';
+    S = S.replace(srch, A[j]);
+  }
+  return S;
+}
+
 function makeHtmlFromTemplate(theTemplate, parameters, widgetId) {
   let outHTML = '';
   for (let i=0; i<parameters.length; i++) {
@@ -873,6 +882,20 @@ function modify_LayerListItem_VideoFlightline() {
       alert("1s visibility has changed!");
     });
   */
+
+function ObjToCss(obj) {
+  let s = "";
+  for (p in obj) {
+    let name = p.replace(/_/g,'-');
+    let objType = typeof obj[p];
+    if (objType === "string") {
+      s += name + ":" +  obj[p] + ";";
+    } else if (objType === "number") {
+      s += name + ":" +  obj[p] + "px;";
+    }
+  }
+  return s;
+}
 
 
 // For debug purposes

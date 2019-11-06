@@ -565,6 +565,7 @@ define([
           mapServiceLayer: ssMapServiceLayer,
           layerName: "SHORESTATIONS_STATIONPROFILE_FLAT",
           featureOutFields: ["*"],
+          orderByFields: ["Point"],
           captionTemplate: "Shore Station: {0}",
           captionFields: ["station"],
           noGeometry: true,
