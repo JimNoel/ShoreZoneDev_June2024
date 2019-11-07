@@ -11,7 +11,7 @@
  *    -- perhaps other args for outFields and where clause?
  */
 
-let leftEdge = 100;
+let leftEdge = 60;
 let leftEdgePx = leftEdge + "px";
 let rightPad = 5;
 let viewBoxTemplate = "0 0 {0} {1}";
@@ -43,7 +43,7 @@ define([
 
       this.bbProfile = {
         layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "48%", height: "21%",},
-        //layoutInfo: {left: "14%", width: "85%", top: "48%", height: "21%",},
+        titleLayoutInfo: {left: 0, width: leftEdgePx, top: "48%", height: "21%", text_align: "center", font_family: "sans-serif", font_size: 10, font_weight: "bold", color: "black"},
         xField: "IntervalStartX_m",
         widthField: "IntervalWidth_m",
         colorField: "BiobandWebsiteColor",
@@ -54,7 +54,15 @@ define([
     };
 
       this.substrateProfile = {
-        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "70%", height: "15%",}
+        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "70%", height: "15%",},
+        titleLayoutInfo: {left: 0, width: leftEdgePx, top: "70%", height: "15%", text_align: "center", font_family: "sans-serif", font_size: 10, font_weight: "bold", color: "black"},
+        xField: "IntervalStartX_m",
+        widthField: "IntervalWidth_m",
+        colors: ["#808080", "#CCCCCC"],
+        labelField: "SubstrateCode",
+        descrField: "Substrate_Description",
+        labelStyle: {font_family: "sans-serif", font_size: 10, font_weight: "bold", color: "white"},
+        title: "Substrate on Profile"
       };
 
       this.scale = {
@@ -75,6 +83,7 @@ define([
         console.log(features.length + " profile points");     // TODO: Set this up, using HTML5 SVG  (https://www.w3schools.com/graphics/svg_intro.asp)
         this.initCharts();
         this.makeBarChart(this.bbProfile);
+        this.makeBarChart(this.substrateProfile);
       };
 
     },
@@ -83,17 +92,12 @@ define([
       profile.div = makeHtmlElement("DIV", null, "chartDiv", ObjToCss(profile.layoutInfo));
       this.contentPane.appendChild(profile.div);
       if (profile.title) {
-        profile.titleDiv = profile.div.cloneNode(false);
-        profile.titleDiv.style.left = "0";
-        profile.titleDiv.style.width = leftEdgePx;
-        profile.titleDiv.setAttribute("class","chartTitleDiv");
+        profile.titleDiv = makeHtmlElement("DIV", null, "chartTitleDiv", ObjToCss(profile.titleLayoutInfo));
         profile.titleDiv.innerHTML = profile.title;
         this.contentPane.appendChild(profile.titleDiv);
       }
       profile.textContainer = makeHtmlElement("div");
       document.body.appendChild(profile.textContainer);
-      if (profile.fontPixels)
-        profile.labelStyle += "font-size:" + profile.fontPixels + "px;"
     },
 
     initCharts: function() {
@@ -117,10 +121,11 @@ define([
         if (label !== lastLabel) {
           let id = profile.labelField + f;
           let description = attributes[profile.descrField];
+          if (!description)
+            description = "(no description available)";
           let barNode = getEl(id);
           let ofs = $(barNode).offset();
           ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
-//          ofs.top += (profile.div.offsetHeight-profile.fontPixels)/2;
           let style = 'position:absolute;top:' + ofs.top + 'px;left:' + ofs.left + 'px;' + ObjToCss(profile.labelStyle);
           let labelEl = makeHtmlElement("div",null,/*"svgLabelText"*/null,style,label);
           labelEl.setAttribute("title", description);
@@ -132,12 +137,24 @@ define([
 
     makeBarChart: function(profile) {
       console.log("makeBarChart");
+      let lastLabel = '';
+      let c = 0;
       for (f=1; f<this.features.length; f++) {
         let attributes = this.features[f].attributes;
         let id = profile.labelField + f;
         let x = attributes[profile.xField];
         let width = attributes[profile.widthField];
-        let color = attributes[profile.colorField];
+        let color = null;
+        if (profile.colorField)
+          color = attributes[profile.colorField];
+        else {      // if (profile.colors)
+          let label = attributes[profile.labelField];
+          if (label !== lastLabel) {
+            lastLabel = label;
+            c = 1 - c;
+          }
+          color = profile.colors[c];
+        }
         profile.svgCode += '<rect id="' + id + '" x="' + x + '" y="0" width="' + width + '" height="100" style="fill:' + color + '"></rect>';
 /*
         profile.svgCode += '<svg x="' + x + '" y="0" width="50" height="100" preserveAspectRatio="xMidYMax meet">';
