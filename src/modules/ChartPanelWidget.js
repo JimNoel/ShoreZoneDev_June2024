@@ -38,7 +38,10 @@ define([
       let chartWidthPx = chartWidth + "px";
 
       this.vertProfile = {
-        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "12%", height: "35%",}
+        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "12%", height: "35%",},
+        xField: "PointX_m",
+        yField: "PointY_cm",
+        yFactor: -0.01          // Converts centimeters to meters, and inverts
       };
 
       this.bbProfile = {
@@ -82,6 +85,7 @@ define([
           return;
         console.log(features.length + " profile points");     // TODO: Set this up, using HTML5 SVG  (https://www.w3schools.com/graphics/svg_intro.asp)
         this.initCharts();
+        this.makeXYChart(this.vertProfile);
         this.makeBarChart(this.bbProfile);
         this.makeBarChart(this.substrateProfile);
       };
@@ -104,7 +108,11 @@ define([
       this.numPoints = this.features.length;
       this.lastRecord = this.features[this.numPoints-1].attributes;
       this.profileLength = this.lastRecord["IntervalEndX_m"];
-      this.vertProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 12]);
+
+      this.vertProfile.viewBox = [0, -10, this.profileLength, 12];
+      this.vertProfile.bottom = 2;
+      // Initially, assume y from -2m to 10m.  Note that the y-axis points downward, so everything need to invert
+
       this.bbProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
       this.substrateProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
       for (p of [this.vertProfile, this.bbProfile, this.substrateProfile]) {
@@ -133,6 +141,19 @@ define([
         }
         lastLabel = label;
       }
+    },
+
+    makeXYChart: function(profile) {
+      let pointsStr = '0,' + profile.bottom;
+      for (f=0; f<this.features.length; f++) {
+        let attributes = this.features[f].attributes;
+        let coords = [attributes[profile.xField], attributes[profile.yField]*profile.yFactor];
+        pointsStr += ' ' + coords.join(',');
+      }
+      pointsStr +=  ' ' + this.profileLength + ',' + profile.bottom;
+      profile.svgCode += '<polygon class="vertProfileStyle" points= "' + pointsStr + '"/>';
+      profile.svgCode += '</svg>';
+      profile.div.innerHTML = profile.svgCode;
     },
 
     makeBarChart: function(profile) {
