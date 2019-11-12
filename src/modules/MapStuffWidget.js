@@ -566,8 +566,8 @@ define([
           layerName: "SHORESTATIONS_STATIONPROFILE_FLAT",
           featureOutFields: ["*"],
           orderByFields: ["Point"],
-          captionTemplate: "Shore Station: {0}",
-          captionFields: ["station"],
+          titleTemplate: "Shore Station: {0}",
+          titleField: "station",
           noGeometry: true,
         });
 

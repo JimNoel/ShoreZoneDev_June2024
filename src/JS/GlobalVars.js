@@ -853,6 +853,7 @@ function stripHtml(inStr) {
 }
 
 function resizeMedia() {
+  ssProfileWidget.resize();
   photoWidgets.forEach(function(w, index, array) {
     w.resizeImg();
   });

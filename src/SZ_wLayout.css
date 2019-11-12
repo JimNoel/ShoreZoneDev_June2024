@@ -375,6 +375,7 @@ cursor: pointer;
 .svgLabelText  {font-family: sans-serif; font-size: 12px; color:white}
 
 .vertProfileStyle  {fill:#AAAAAA;stroke:black;stroke-width:0.3;}
+.scaleBarStyle  {fill:#AAAAAA;stroke:black;stroke-width:5;}
 
 
 /*  This is the class for Layer headers (including Group layers)

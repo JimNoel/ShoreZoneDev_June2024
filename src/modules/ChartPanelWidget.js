@@ -37,6 +37,9 @@ define([
       let chartWidth = $(this.contentPane).width() - rightPad - leftEdge;
       let chartWidthPx = chartWidth + "px";
 
+      this.chartTitleDiv = makeHtmlElement("div",null,null,null,"Shore Station: ");
+      this.contentPane.appendChild(this.chartTitleDiv);
+
       this.vertProfile = {
         layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "12%", height: "35%",},
         xField: "PointX_m",
@@ -69,7 +72,7 @@ define([
       };
 
       this.scale = {
-        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "86%", height: "2%",}
+        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "86%", height: "10%",}
       };
 
       this.addDivFromLayout(this.vertProfile);
@@ -88,6 +91,7 @@ define([
         this.makeXYChart(this.vertProfile);
         this.makeBarChart(this.bbProfile);
         this.makeBarChart(this.substrateProfile);
+        this.makeScaleBar(this.scale);
       };
 
     },
@@ -105,6 +109,7 @@ define([
     },
 
     initCharts: function() {
+      this.chartTitleDiv.innerHTML = replaceFromArray(this.titleTemplate, [this.features[0].attributes[this.titleField]]);
       this.numPoints = this.features.length;
       this.lastRecord = this.features[this.numPoints-1].attributes;
       this.profileLength = this.lastRecord["IntervalEndX_m"];
@@ -115,10 +120,12 @@ define([
 
       this.bbProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
       this.substrateProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
+      this.scale.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
       for (p of [this.vertProfile, this.bbProfile, this.substrateProfile]) {
         p.svgCode =  '<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="' + p.viewBox + '">';
         p.textContainer.innerHTML = '';
       }
+      this.scale.svgCode =  '<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="' + p.viewBox + '">';
     },
 
     addBarLabels: function(profile) {
@@ -134,12 +141,33 @@ define([
           let barNode = getEl(id);
           let ofs = $(barNode).offset();
           ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
+          let labelId = "label_" + id;
           let style = 'position:absolute;top:' + ofs.top + 'px;left:' + ofs.left + 'px;' + ObjToCss(profile.labelStyle);
-          let labelEl = makeHtmlElement("div",null,/*"svgLabelText"*/null,style,label);
+          let labelEl = makeHtmlElement("div",labelId,null,style,label);
           labelEl.setAttribute("title", description);
           profile.textContainer.appendChild(labelEl);
         }
         lastLabel = label;
+      }
+    },
+
+    moveBarLabels: function(profile) {
+      for (f=1; f<this.features.length; f++) {
+          let id = profile.labelField + f;
+          let barNode = getEl(id);
+          let ofs = $(barNode).offset();
+          ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
+          let labelId = "label_" + id;
+          let labelEl = getEl(labelId);
+          if (labelEl) {
+/*
+            let labelNode = $(labelEl).offset();
+            labelNode.left = ofs.left;
+            labelNode.top = ofs.top;
+*/
+            labelEl.style.top = ofs.top + "px";
+            labelEl.style.left = ofs.left + "px";
+          }
       }
     },
 
@@ -152,12 +180,12 @@ define([
       }
       pointsStr +=  ' ' + this.profileLength + ',' + profile.bottom;
       profile.svgCode += '<polygon class="vertProfileStyle" points= "' + pointsStr + '"/>';
+      profile.svgCode += '<line class="vertProfileStyle" x1="0" y1="0" x2="' + this.profileLength  + '" y2="0" />';
       profile.svgCode += '</svg>';
       profile.div.innerHTML = profile.svgCode;
     },
 
     makeBarChart: function(profile) {
-      console.log("makeBarChart");
       let lastLabel = '';
       let c = 0;
       for (f=1; f<this.features.length; f++) {
@@ -177,29 +205,30 @@ define([
           color = profile.colors[c];
         }
         profile.svgCode += '<rect id="' + id + '" x="' + x + '" y="0" width="' + width + '" height="100" style="fill:' + color + '"></rect>';
-/*
-        profile.svgCode += '<svg x="' + x + '" y="0" width="50" height="100" preserveAspectRatio="xMidYMax meet">';
-        profile.svgCode += '<text x="' + x + '" y="50" fill="white" font-family="sans-serif" font-size="20">' + attributes[profile.labelField] + '</text></svg>';
-*/
       }
       profile.svgCode += '</svg>';
       profile.div.innerHTML = profile.svgCode;
-      profile.svgNode = profile.div.children[0];
       this.addBarLabels(profile);
     },
 
-/*
-    makeBar: function(profile, x, width, style ) {
-      let barEl = document.createElement("rect");
-      barEl.setAttribute("x", x);
-      barEl.setAttribute("y", "0");
-      barEl.setAttribute("width", width);
-      barEl.setAttribute("height", "50%");
-      barEl.setAttribute("style", style);
-      profile.svgNode.appendChild(barEl);
-    }
-*/
+    makeScaleBar: function(profile) {
+      let power = Math.floor(this.profileLength).toFixed(0).length -1;
+      let interval = Math.pow(10, power);
+      profile.svgCode += '<line class="scaleBarStyle" x1="0" y1="50" x2="' + this.profileLength  + '" y2="50" />';
+      for (i=0; i<this.profileLength; i+=interval) {
+        profile.svgCode += '<line class="scaleBarStyle" x1="' + i + '" y1="0" x2="' + i + '" y2="100" />';
+      }
+      profile.svgCode += '</svg>';
+      profile.div.innerHTML = profile.svgCode;
+    },
 
+    resize: function () {
+      let chartWidth = $(this.contentPane).width() - rightPad - leftEdge;
+      let chartWidthPx = Math.round(chartWidth) + "px";
+      for (p of [this.vertProfile, this.bbProfile, this.substrateProfile, this.scale])
+        p.div.style.width = chartWidthPx;
+      this.moveBarLabels(this.bbProfile);
+    }
 
   });
 });
