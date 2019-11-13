@@ -45,7 +45,8 @@
       "dijit/layout/BorderContainer",
       "dijit/layout/ContentPane",
       "dijit/layout/TabContainer",
-      "dojox/layout/ExpandoPane",
+//      "dojox/layout/ExpandoPane",
+      "noaa/noaaExpandoPane",
       "dojox/layout/FloatingPane",
       "noaa/MapStuffWidget",
       "dojo/domReady!"
@@ -173,7 +174,7 @@
         if (contCode === "CP") {
         }
         else if (contCode === "EP") {
-          //console.log("ExpandoPane: " + id);
+          console.log("ExpandoPane: " + id);
         }
         else if (contCode === "BC") {
           let orient = b[1];
@@ -326,8 +327,7 @@
 
       function splitterDragHandler(e) {
         if (e.buttons === 1) {
-          resizeWidgets();
-          resizeMedia();
+          panelResizeHandler();
         }
       }
 

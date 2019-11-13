@@ -128,49 +128,6 @@ define([
       this.scale.svgCode =  '<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="' + p.viewBox + '">';
     },
 
-    addBarLabels: function(profile) {
-      let lastLabel = '';
-      for (f=1; f<this.features.length; f++) {
-        let attributes = this.features[f].attributes;
-        let label = attributes[profile.labelField];
-        if (label !== lastLabel) {
-          let id = profile.labelField + f;
-          let description = attributes[profile.descrField];
-          if (!description)
-            description = "(no description available)";
-          let barNode = getEl(id);
-          let ofs = $(barNode).offset();
-          ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
-          let labelId = "label_" + id;
-          let style = 'position:absolute;top:' + ofs.top + 'px;left:' + ofs.left + 'px;' + ObjToCss(profile.labelStyle);
-          let labelEl = makeHtmlElement("div",labelId,null,style,label);
-          labelEl.setAttribute("title", description);
-          profile.textContainer.appendChild(labelEl);
-        }
-        lastLabel = label;
-      }
-    },
-
-    moveBarLabels: function(profile) {
-      for (f=1; f<this.features.length; f++) {
-          let id = profile.labelField + f;
-          let barNode = getEl(id);
-          let ofs = $(barNode).offset();
-          ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
-          let labelId = "label_" + id;
-          let labelEl = getEl(labelId);
-          if (labelEl) {
-/*
-            let labelNode = $(labelEl).offset();
-            labelNode.left = ofs.left;
-            labelNode.top = ofs.top;
-*/
-            labelEl.style.top = ofs.top + "px";
-            labelEl.style.left = ofs.left + "px";
-          }
-      }
-    },
-
     makeXYChart: function(profile) {
       let pointsStr = '0,' + profile.bottom;
       for (f=0; f<this.features.length; f++) {
@@ -211,6 +168,44 @@ define([
       this.addBarLabels(profile);
     },
 
+    addBarLabels: function(profile) {
+      let lastLabel = '';
+      for (f=1; f<this.features.length; f++) {
+        let attributes = this.features[f].attributes;
+        let label = attributes[profile.labelField];
+        if (label !== lastLabel) {
+          let id = profile.labelField + f;
+          let description = attributes[profile.descrField];
+          if (!description)
+            description = "(no description available)";
+          let barNode = getEl(id);
+          let ofs = $(barNode).offset();
+          ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
+          let labelId = "label_" + id;
+          let style = 'position:absolute;top:' + ofs.top + 'px;left:' + ofs.left + 'px;' + ObjToCss(profile.labelStyle);
+          let labelEl = makeHtmlElement("div",labelId,null,style,label);
+          labelEl.setAttribute("title", description);
+          profile.textContainer.appendChild(labelEl);
+        }
+        lastLabel = label;
+      }
+    },
+
+    moveBarLabels: function(profile) {
+      for (f=1; f<this.features.length; f++) {
+        let id = profile.labelField + f;
+        let barNode = getEl(id);
+        let ofs = $(barNode).offset();
+        ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
+        let labelId = "label_" + id;
+        let labelEl = getEl(labelId);
+        if (labelEl) {
+          labelEl.style.top = ofs.top + "px";
+          labelEl.style.left = ofs.left + "px";
+        }
+      }
+    },
+
     makeScaleBar: function(profile) {
       let power = Math.floor(this.profileLength).toFixed(0).length -1;
       let interval = Math.pow(10, power);
@@ -223,11 +218,14 @@ define([
     },
 
     resize: function () {
+      if (!this.features)
+        return;
       let chartWidth = $(this.contentPane).width() - rightPad - leftEdge;
       let chartWidthPx = Math.round(chartWidth) + "px";
       for (p of [this.vertProfile, this.bbProfile, this.substrateProfile, this.scale])
         p.div.style.width = chartWidthPx;
       this.moveBarLabels(this.bbProfile);
+      this.moveBarLabels(this.substrateProfile);
     }
 
   });

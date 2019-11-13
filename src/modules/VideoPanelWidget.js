@@ -260,10 +260,7 @@ define([
 
 
       this.processData = function(results) {
-        //this.processData.inherited(results);
-        //QueryBasedPanelWidget.processData(results);
-        //super.printInfo(this);
-        //this.inherited(arguments);
+        //this.inherited(arguments);      // This should work?
         let features = results.features;
         this.features = features;
         console.log(features.length + " video features");

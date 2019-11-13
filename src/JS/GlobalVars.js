@@ -863,6 +863,11 @@ function resizeMedia() {
   youtube_player.setSize(vDims.width, vDims.height);
 }
 
+function panelResizeHandler() {
+  resizeWidgets();
+  resizeMedia();
+}
+
 let mapStuff;
 
 function modify_LayerListItem_VideoFlightline() {

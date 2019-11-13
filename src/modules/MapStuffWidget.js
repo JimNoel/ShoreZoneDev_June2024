@@ -319,6 +319,7 @@ define([
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
               featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
+              orderByFields: ["station"],
               //calcFields:  [{name: "SpTableBtn", afterField: "hasPhotos"}],
               specialFormatting: {      // Special HTML formatting for field values
   /*
@@ -386,14 +387,6 @@ define([
                 },
                 "size":4
               },
-  /*
-              clickableSymbolInfo: {
-                color: [ 51,51, 204, 0.0 ],   // Transparency is 0 -- i.e. not visible
-                style: "solid",
-                width: "2px"
-              },
-  */
-              //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
             }
 
           ],
