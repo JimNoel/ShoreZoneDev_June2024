@@ -37,11 +37,16 @@ define([
       let chartWidth = $(this.contentPane).width() - rightPad - leftEdge;
       let chartWidthPx = chartWidth + "px";
 
-      this.chartTitleDiv = makeHtmlElement("div",null,null,null,"Shore Station: ");
-      this.contentPane.appendChild(this.chartTitleDiv);
+      this.chartHeaderDiv = makeHtmlElement("div",null,null,"position: absolute;width: 100%;height:11%;");
+      this.chartTitleDiv = makeHtmlElement("div",null,null,"position:absolute; height:10px; top:0; left:2px;","Shore Station: ");
+      this.chartWidthDiv = makeHtmlElement("div",null,null,"position:absolute; height:10px; bottom:0; right:5px; font-weight:bold;","Total across-shore width: ");
+      this.chartHeaderDiv.appendChild(this.chartTitleDiv);
+      this.chartHeaderDiv.appendChild(this.chartWidthDiv);
+      this.contentPane.appendChild(this.chartHeaderDiv);
 
       this.vertProfile = {
         layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "12%", height: "35%",},
+        titleLayoutInfo: {left: 0, width: leftEdgePx, top: "12%", height: "35%", text_align: "center", font_family: "sans-serif", font_size: 10, font_weight: "bold", color: "black"},
         xField: "PointX_m",
         yField: "PointY_cm",
         yFactor: -0.01          // Converts centimeters to meters, and inverts
@@ -99,11 +104,11 @@ define([
     addDivFromLayout: function(profile) {
       profile.div = makeHtmlElement("DIV", null, "chartDiv", ObjToCss(profile.layoutInfo));
       this.contentPane.appendChild(profile.div);
+      profile.titleDiv = makeHtmlElement("DIV", null, "chartTitleDiv", ObjToCss(profile.titleLayoutInfo));
       if (profile.title) {
-        profile.titleDiv = makeHtmlElement("DIV", null, "chartTitleDiv", ObjToCss(profile.titleLayoutInfo));
         profile.titleDiv.innerHTML = profile.title;
-        this.contentPane.appendChild(profile.titleDiv);
       }
+      this.contentPane.appendChild(profile.titleDiv);
       profile.textContainer = makeHtmlElement("div");
       document.body.appendChild(profile.textContainer);
     },
@@ -113,6 +118,7 @@ define([
       this.numPoints = this.features.length;
       this.lastRecord = this.features[this.numPoints-1].attributes;
       this.profileLength = this.lastRecord["IntervalEndX_m"];
+      this.chartWidthDiv.innerHTML = "Total across-shore width: " + this.profileLength.toFixed(1) + "m";
 
       this.vertProfile.viewBox = [0, -10, this.profileLength, 12];
       this.vertProfile.bottom = 2;
@@ -140,6 +146,13 @@ define([
       profile.svgCode += '<line class="vertProfileStyle" x1="0" y1="0" x2="' + this.profileLength  + '" y2="0" />';
       profile.svgCode += '</svg>';
       profile.div.innerHTML = profile.svgCode;
+      this.addScaleLabels(profile);
+    },
+
+    addScaleLabels: function(profile) {
+      let bottomYLabel = makeHtmlElement("div", null,"axisScaleLabel", "position:absolute; right:0; bottom:-5px", "-" + profile.bottom + "m");
+      profile.titleDiv.appendChild(bottomYLabel);
+
     },
 
     makeBarChart: function(profile) {

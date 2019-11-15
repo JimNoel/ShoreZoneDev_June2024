@@ -5,7 +5,9 @@
   --tableHeaderTabsColor: cornsilk;
 }
 
-html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: var(--NoaaBgColor) }
+html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: var(--NoaaBgColor);
+    font-size:11.5px;font-family:verdana, lucida grande, helvetica, arial, sans-serif;          /* These are from Flex site body css*/
+}
 
 .claro .dijitAccordionTitle {min-height:10px; font-size: 80%; font-weight: bold}
 
@@ -149,6 +151,10 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
     .tableHeaderDiv  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 50px;}
     .tableContainerDiv  {padding: 0; overflow:hidden; background-color:rgb(208,215,225); flex: 1 1 auto;}
     .tableFooterDiv  {padding: 0; overflow:hidden; background-color: lightgreen; flex: 0 1 50px;}
+
+/*
+.chartHeaderDiv  {position:absolute; width: 100%; height:11%; left: 0px; overflow:hidden; padding-left: 5px; padding-right: 5px; z-index: 50; color: black; background-color: pink; opacity: 0.7}
+*/
 
 .photoCount  {float: right; padding-left: 5px; padding-right: 5px; background-color: white; opacity: 0.7}
 
@@ -370,13 +376,14 @@ cursor: pointer;
 .tableIcon  { display: block; margin-left: auto; margin-right: auto; height:15px; width:15px }
 
 .chartDiv  {position: absolute; background-color: #74E5E1}
-.chartTitleDiv  {position: absolute;}
+.chartTitleDiv  {position: absolute; font-weight:bold; font-size: 10px;}
 
-.svgLabelText  {font-family: sans-serif; font-size: 12px; color:white}
+.svgLabelText  {font-family: sans-serif; font-weight:bold; font-size: 10px; color: #eef5ff;}
 
 .vertProfileStyle  {fill:#AAAAAA;stroke:black;stroke-width:0.3;}
 .scaleBarStyle  {fill:#AAAAAA;stroke:black;stroke-width:5;}
 
+.axisScaleLabel{ font-size: 10px; font-weight: normal}
 
 /*  This is the class for Layer headers (including Group layers)
 .esri-layer-list__item-title
