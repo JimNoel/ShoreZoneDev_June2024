@@ -122,16 +122,16 @@ define([
 
       this.vertProfile.viewBox = [0, -10, this.profileLength, 12];
       this.vertProfile.bottom = 2;
-      // Initially, assume y from -2m to 10m.  Note that the y-axis points downward, so everything need to invert
+      // Initially, assume y from -2m to 10m.  Note that the y-axis points downward, so everything needs to invert
 
       this.bbProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
       this.substrateProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
-      this.scale.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
+      this.scale.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 1]);
       for (p of [this.vertProfile, this.bbProfile, this.substrateProfile]) {
         p.svgCode =  '<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="' + p.viewBox + '">';
         p.textContainer.innerHTML = '';
       }
-      this.scale.svgCode =  '<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="' + p.viewBox + '">';
+      this.scale.svgCode =  '<svg width="100%" height="100%" preserveAspectRatio="xMinYMin" viewBox="' + this.scale.viewBox + '">';
     },
 
     makeXYChart: function(profile) {
@@ -143,7 +143,9 @@ define([
       }
       pointsStr +=  ' ' + this.profileLength + ',' + profile.bottom;
       profile.svgCode += '<polygon class="vertProfileStyle" points= "' + pointsStr + '"/>';
-      profile.svgCode += '<line class="vertProfileStyle" x1="0" y1="0" x2="' + this.profileLength  + '" y2="0" />';
+      profile.svgCode += '<line id="xAxis" class="vertProfileStyle" x1="0" y1="0" x2="' + this.profileLength  + '" y2="0" />';     // x-axis line
+      profile.startElev = this.features[0].attributes[profile.yField]*profile.yFactor;
+      profile.svgCode += '<line id="startElevLine" class="hiddenLineStyle" x1="0" y1="' + profile.startElev + '" x2="0" y2="0" />';     // (hidden) marker, for positioning of initial elevation label
       profile.svgCode += '</svg>';
       profile.div.innerHTML = profile.svgCode;
       this.addScaleLabels(profile);
@@ -152,6 +154,23 @@ define([
     addScaleLabels: function(profile) {
       let bottomYLabel = makeHtmlElement("div", null,"axisScaleLabel", "position:absolute; right:0; bottom:-5px", "-" + profile.bottom + "m");
       profile.titleDiv.appendChild(bottomYLabel);
+      let topLabel = makeHtmlElement("div", null,"axisScaleLabel", "position:absolute; right:0; top:-5px", -profile.viewBox[1] + "m");
+      profile.titleDiv.appendChild(topLabel);
+      let titleDivOfs = $(profile.titleDiv).offset();
+
+      let xAxisNode = getEl("xAxis");
+      let xAxisOfs = $(xAxisNode).offset();
+      xAxisOfs.top -= titleDivOfs.top + 5;
+      let theStyle = "position:absolute; right:0; top:" + xAxisOfs.top + "px";
+      let zeroLabel = makeHtmlElement("div", null,"axisScaleLabel", theStyle, "0");
+      profile.titleDiv.appendChild(zeroLabel);
+
+      let startElevNode = getEl("startElevLine");
+      let startElevOfs = $(startElevNode).offset();
+      startElevOfs.top -= titleDivOfs.top + 5;
+      theStyle = "position:absolute; right:0; top:" + startElevOfs.top + "px";
+      let startElevLabel = makeHtmlElement("div", null,"axisScaleLabel", theStyle, -profile.startElev.toFixed(2) + "m");
+      profile.titleDiv.appendChild(startElevLabel);
 
     },
 
@@ -222,7 +241,7 @@ define([
     makeScaleBar: function(profile) {
       let power = Math.floor(this.profileLength).toFixed(0).length -1;
       let interval = Math.pow(10, power);
-      profile.svgCode += '<line class="scaleBarStyle" x1="0" y1="50" x2="' + this.profileLength  + '" y2="50" />';
+      profile.svgCode += '<line class="scaleBarStyle" x1="0" y1="10" x2="' + this.profileLength  + '" y2="10" />';
       for (i=0; i<this.profileLength; i+=interval) {
         profile.svgCode += '<line class="scaleBarStyle" x1="' + i + '" y1="0" x2="' + i + '" y2="100" />';
       }

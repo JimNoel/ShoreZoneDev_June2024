@@ -381,7 +381,9 @@ cursor: pointer;
 .svgLabelText  {font-family: sans-serif; font-weight:bold; font-size: 10px; color: #eef5ff;}
 
 .vertProfileStyle  {fill:#AAAAAA;stroke:black;stroke-width:0.3;}
-.scaleBarStyle  {fill:#AAAAAA;stroke:black;stroke-width:5;}
+.hiddenLineStyle  {fill:none;stroke:none;}
+
+.scaleBarStyle  {fill:#AAAAAA;stroke:black;stroke-width:1;}
 
 .axisScaleLabel{ font-size: 10px; font-weight: normal}
 
