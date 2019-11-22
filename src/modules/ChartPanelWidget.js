@@ -45,7 +45,7 @@ define([
       this.contentPane.appendChild(this.chartHeaderDiv);
 
       this.vertProfile = {
-        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "12%", height: "35%",},
+        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "12%", height: "35%", background_color: "#74E5E1"},
         titleLayoutInfo: {left: 0, width: leftEdgePx, top: "12%", height: "35%", text_align: "center", font_family: "sans-serif", font_size: 10, font_weight: "bold", color: "black"},
         xField: "PointX_m",
         yField: "PointY_cm",
@@ -77,7 +77,7 @@ define([
       };
 
       this.scale = {
-        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "86%", height: "10%",}
+        layoutInfo: {left: leftEdgePx, width: chartWidthPx, top: "86%", height: "3%", border_top: "1px solid"}
       };
 
       this.addDivFromLayout(this.vertProfile);
@@ -97,6 +97,7 @@ define([
         this.makeBarChart(this.bbProfile);
         this.makeBarChart(this.substrateProfile);
         this.makeScaleBar(this.scale);
+        this.resize();
       };
 
     },
@@ -126,12 +127,10 @@ define([
 
       this.bbProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
       this.substrateProfile.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 100]);
-      this.scale.viewBox = replaceFromArray(viewBoxTemplate, [this.profileLength, 1]);
       for (p of [this.vertProfile, this.bbProfile, this.substrateProfile]) {
         p.svgCode =  '<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="' + p.viewBox + '">';
         p.textContainer.innerHTML = '';
       }
-      this.scale.svgCode =  '<svg width="100%" height="100%" preserveAspectRatio="xMinYMin" viewBox="' + this.scale.viewBox + '">';
     },
 
     makeXYChart: function(profile) {
@@ -142,7 +141,8 @@ define([
         pointsStr += ' ' + coords.join(',');
       }
       pointsStr +=  ' ' + this.profileLength + ',' + profile.bottom;
-      profile.svgCode += '<polygon class="vertProfileStyle" points= "' + pointsStr + '"/>';
+      //  Note:  stroke-alignment="inner" may not do anything  ( https://www.w3.org/TR/svg-strokes/#SpecifyingStrokeAlignment )
+      profile.svgCode += '<polygon class="vertProfileStyle" stroke-alignment="inner" points= "' + pointsStr + '"/>';
       profile.svgCode += '<line id="xAxis" class="vertProfileStyle" x1="0" y1="0" x2="' + this.profileLength  + '" y2="0" />';     // x-axis line
       profile.startElev = this.features[0].attributes[profile.yField]*profile.yFactor;
       profile.svgCode += '<line id="startElevLine" class="hiddenLineStyle" x1="0" y1="' + profile.startElev + '" x2="0" y2="0" />';     // (hidden) marker, for positioning of initial elevation label
@@ -152,6 +152,8 @@ define([
     },
 
     addScaleLabels: function(profile) {
+      profile.titleDiv.innerHTML = "";      // Clear any previous labels
+
       let bottomYLabel = makeHtmlElement("div", null,"axisScaleLabel", "position:absolute; right:0; bottom:-5px", "-" + profile.bottom + "m");
       profile.titleDiv.appendChild(bottomYLabel);
       let topLabel = makeHtmlElement("div", null,"axisScaleLabel", "position:absolute; right:0; top:-5px", -profile.viewBox[1] + "m");
@@ -241,12 +243,11 @@ define([
     makeScaleBar: function(profile) {
       let power = Math.floor(this.profileLength).toFixed(0).length -1;
       let interval = Math.pow(10, power);
-      profile.svgCode += '<line class="scaleBarStyle" x1="0" y1="10" x2="' + this.profileLength  + '" y2="10" />';
-      for (i=0; i<this.profileLength; i+=interval) {
-        profile.svgCode += '<line class="scaleBarStyle" x1="' + i + '" y1="0" x2="' + i + '" y2="100" />';
+      let intervalPct = 100*interval/this.profileLength;
+      profile.div.innerHTML = "";
+      for (p=0; p<100; p+=intervalPct) {
+        profile.div.innerHTML += '<div class="tickMark" style="left:' + p + '%"></div>';
       }
-      profile.svgCode += '</svg>';
-      profile.div.innerHTML = profile.svgCode;
     },
 
     resize: function () {

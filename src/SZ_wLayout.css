@@ -375,7 +375,7 @@ cursor: pointer;
 
 .tableIcon  { display: block; margin-left: auto; margin-right: auto; height:15px; width:15px }
 
-.chartDiv  {position: absolute; background-color: #74E5E1}
+.chartDiv  {position: absolute; }
 .chartTitleDiv  {position: absolute; font-weight:bold; font-size: 10px;}
 
 .svgLabelText  {font-family: sans-serif; font-weight:bold; font-size: 10px; color: #eef5ff;}
@@ -386,6 +386,8 @@ cursor: pointer;
 .scaleBarStyle  {fill:#AAAAAA;stroke:black;stroke-width:1;}
 
 .axisScaleLabel{ font-size: 10px; font-weight: normal}
+
+.tickMark { position: absolute; border-left: 1px solid; height: 100%; }
 
 /*  This is the class for Layer headers (including Group layers)
 .esri-layer-list__item-title
