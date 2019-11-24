@@ -164,16 +164,27 @@ define([
       let xAxisOfs = $(xAxisNode).offset();
       xAxisOfs.top -= titleDivOfs.top + 5;
       let theStyle = "position:absolute; right:0; top:" + xAxisOfs.top + "px";
-      let zeroLabel = makeHtmlElement("div", null,"axisScaleLabel", theStyle, "0");
-      profile.titleDiv.appendChild(zeroLabel);
+      profile.zeroLabel = makeHtmlElement("div", null,"axisScaleLabel", theStyle, "0");
+      profile.titleDiv.appendChild(profile.zeroLabel);
 
       let startElevNode = getEl("startElevLine");
       let startElevOfs = $(startElevNode).offset();
       startElevOfs.top -= titleDivOfs.top + 5;
       theStyle = "position:absolute; right:0; top:" + startElevOfs.top + "px";
-      let startElevLabel = makeHtmlElement("div", null,"axisScaleLabel", theStyle, -profile.startElev.toFixed(2) + "m");
-      profile.titleDiv.appendChild(startElevLabel);
+      profile.startElevLabel = makeHtmlElement("div", null,"axisScaleLabel", theStyle, -profile.startElev.toFixed(2) + "m");
+      profile.titleDiv.appendChild(profile.startElevLabel);
+    },
 
+    moveScaleLabels: function(profile) {
+      let titleDivOfs = $(profile.titleDiv).offset();
+
+      let xAxisOfs = $(getEl("xAxis")).offset();
+      xAxisOfs.top -= titleDivOfs.top + 5;
+      profile.zeroLabel.style.top = xAxisOfs.top + "px";
+
+      let startElevOfs = $(getEl("startElevLine")).offset();
+      startElevOfs.top -= titleDivOfs.top + 5;
+      profile.startElevLabel.style.top = startElevOfs.top + "px";
     },
 
     makeBarChart: function(profile) {
@@ -259,6 +270,7 @@ define([
         p.div.style.width = chartWidthPx;
       this.moveBarLabels(this.bbProfile);
       this.moveBarLabels(this.substrateProfile);
+      this.moveScaleLabels(this.vertProfile);
     }
 
   });
