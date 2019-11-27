@@ -93,15 +93,19 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
   background-color: #ffffff;
 }
 
-.tableHeaderTabs  {padding: 0; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 40px;}
+/* 2 versions, due to unexpected behavior when using customized ExpandoPane */
+.tableHeaderTabs  {padding: 0; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 16px;}
+.tableHeaderTabsEP  {padding: 0; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 35px;}
 
 /* Style the buttons inside the tab */
-.tableHeaderTabs button {
+.tableHeaderTabs button, .tableHeaderTabsEP button {
   background-color: var(--tableHeaderTabsColor);
   /*float: left;*/
   border: none;
   outline: none;
   cursor: pointer;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
   /*
   padding: 14px 16px;
   transition: 0.3s;
@@ -110,25 +114,27 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 }
 
 /* Change background color of buttons on hover */
-.tableHeaderTabs button:hover {
+.tableHeaderTabs button:hover, .tableHeaderTabsEP button:hover {
   background-color: #ddd;
 }
 
 /* Create an active/current tablink class */
-.tableHeaderTabs button.active {
+.tableHeaderTabs button.active, .tableHeaderTabsEP button.active {
   background-color: var(--tableHeaderBgColor);
 }
 
 
+/*
 .fbVertical  {display: flex; flex-flow: column;}
 
-.fbVertical .fbHeader  {position:absolute; top: 0; flex: 0 1 30px}     /* no growth, height=30px */
-.fbVertical .fbFooter  {position:absolute; top: 0; flex: 0 1 30px}     /* no growth, height=30px */
+.fbVertical .fbHeader  {position:absolute; top: 0; flex: 0 1 30px}     !* no growth, height=30px *!
+.fbVertical .fbFooter  {position:absolute; top: 0; flex: 0 1 30px}     !* no growth, height=30px *!
 
-.fbVertical .fbStatic30  {flex: 0 1 30px}     /* no growth, height=30px */
-.fbVertical .fbStaticFit  {flex: 0 1 auto}    /* no growth, fit to content*/
-.fbVertical .fbGrow30  {flex: 1 1 30px}       /* grow, initial height=30px */
-.fbVertical .fbGrowFit  {flex: 1 1 auto}      /* grow, fit to content */
+.fbVertical .fbStatic30  {flex: 0 1 30px}     !* no growth, height=30px *!
+.fbVertical .fbStaticFit  {flex: 0 1 auto}    !* no growth, fit to content*!
+.fbVertical .fbGrow30  {flex: 1 1 30px}       !* grow, initial height=30px *!
+.fbVertical .fbGrowFit  {flex: 1 1 auto}      !* grow, fit to content *!
+*/
 
 .semiTransparentBG {height: 20px; color: #000000; background: rgba(255, 255, 255, 0.5)}
 /*.semiTransparentBG {background-color: black; opacity: 0.5}*/
@@ -147,8 +153,9 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
     .mediaToolsContainer  {position:absolute; width:100%; bottom:5px; }
     /*.mediaToolsContainer  {position:absolute; width:100%; height:20px; bottom:0; overflow:hidden; background-color:rgb(238,245,255); flex: 0 1 auto}*/
 
-  .tablePanelEnabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4; visibility: visible; display: flex; flex-flow: column;}
-    .tableHeaderDiv  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 50px;}
+  .tablePanelEnabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4;
+      visibility: visible; display: flex; flex-flow: column;}
+    .tableHeaderDiv  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 25px;}
     .tableContainerDiv  {padding: 0; overflow:hidden; background-color:rgb(208,215,225); flex: 1 1 auto;}
     .tableFooterDiv  {padding: 0; overflow:hidden; background-color: lightgreen; flex: 0 1 50px;}
 
@@ -247,6 +254,8 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 }
 
 /* .tableContainer .dgrid-cell { width: 200px } */
+
+.dataTable  { flex: auto}
 
 /* Default all cells to 80px width */
 .dataTable .dgrid-cell .dgrid-column-0 {
@@ -389,51 +398,56 @@ cursor: pointer;
 
 .tickMark { position: absolute; border-left: 1px solid; height: 100%; }
 
-.navStylesBold
-{
-    borderVisible: true;
-    chromeColor: #90A1B1;
-    tab-offset: 5;
-    horizontalGap: 5;
-    verticalGap: 2;
-    cornerRadius: 5;
-    dropShadowVisible: true;
-    background-color: #eef5ff;
-}
+.stateTabStyle  { font-family:verdana; font-size: 14px; background-image: none; }
 
-.stateTabStyle
-{
+.claro .dijitTabContainerTop-tabs .dijitTab {
+    top: 1px;
+    margin-right: 5px;
+    padding: 3px 6px;
+    border-bottom-width: 0;
+    min-width: 60px;
+    text-align: center;
+    background-image: none;
     /*
-    upSkin:ClassReference('EnhancedButtonSkin');
-    overSkin:ClassReference('EnhancedButtonSkin');
-    downSkin:ClassReference('EnhancedButtonSkin');
-    disabledSkin:ClassReference('EnhancedButtonSkin');
-    selectedUpSkin:ClassReference('EnhancedButtonSkin');
-    selectedOverSkin:ClassReference('EnhancedButtonSkin');
-    selectedDownSkin:ClassReference('EnhancedButtonSkin');
-    selectedDisabledSkin:ClassReference('EnhancedButtonSkin');
+    background-image: url(layout/images/tabTopUnselected.png);
+    background-repeat: repeat-x;
+    background-image: -moz-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+    background-image: -webkit-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
+    background-image: linear-gradient(top, #ffffff 0px, #ffffff 1px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.6) 7px, rgba(255, 255, 255, 0) 100%);
     */
-
-    cornerRadii: 5, 5, 0, 0;
-    borderColors: #000000, #000000;
-    overBorderColors: #003399, #003399;
-    selectedBorderColors: #666666, #FFFFFF;
-    borderThickness: 1;
-    borderAlpha: 1;
-    fillColors: #3080bd, #79a7cb;
-    fillAlphas: 1, 1;
-    fillColorRatios: 0, 255;
-    overFillColors: #cedbef, #FFFFFF;
-    overFillAlphas: 1, 1;
-    overFillColorRatios: 0, 255;
-    selectedFillColors: #90A1B1, #FFFFFF;
-    selectedFillAlphas: 1, 1;
-    selectedFillColorRatios: 111, 255;
-    highlightAlphas: 0, 0;
-    color: #000000;
-    textRollOverColor: #000000;
-    fontSize: 18;
+    -webkit-box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
+    -moz-box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
+.claro .dijitTab {
+    border: 1px solid #b5bcc7;
+    background-color: #3E87BF;
+    -webkit-transition-property: background-color, border;
+    -moz-transition-property: background-color, border;
+    transition-property: background-color, border;
+    -webkit-transition-duration: 0.35s;
+    -moz-transition-duration: 0.35s;
+    transition-duration: 0.35s;
+    color: #494949;
+}
+
+
+.claro .dijitTabContainerTop-tabs .dijitTabChecked {
+    background-image: none;
+}
+
+.claro .dijitTabChecked {
+    border-color: #b5bcc7;
+    background-color: #A7B5C1;
+    color: #000000;
+}
+
+.claro .dijitTabPaneWrapper  { display: none}
+
+.claro .dijitTab .tabLabel  {outline: none}
 
 /*  This is the class for Layer headers (including Group layers)
 .esri-layer-list__item-title

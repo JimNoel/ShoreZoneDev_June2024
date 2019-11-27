@@ -231,7 +231,7 @@ define([
           contentPaneId: "ssDiv",
           baseName: "ss",
           headerDivName:  "ssHeaderDiv",
-          footerDivName:  "ssFooterDiv",
+          //footerDivName:  "ssFooterDiv",
           tableHeaderTitle: "All Regions",
           displayDivName: "ssContainer",
           disabledMsgDivName: "disabledMsg_ss",
@@ -257,8 +257,8 @@ define([
           tabInfo: [
             {
               tabName: 'Regions',
-              tabTitle: 'Shore Stations Regions',
-              popupTitle: "Shore Stations Region",
+              tabTitle: 'ShoreStation Regions',
+              popupTitle: "ShoreStation Region",
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
               visibleHeaderElements: ['ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
@@ -313,8 +313,8 @@ define([
             {
               tabName: 'Stations',
               subWidgetInfo: ["ssPhotoWidget:station:hasPhotos", "ssProfileWidget:station:hasProfile"],     // name of subwidget : filter field : column to check before running query
-              tabTitle: 'Shore Stations Stations',
-              popupTitle: "Shore Stations Stations",
+              tabTitle: 'ShoreStation Stations',
+              popupTitle: "ShoreStation Stations",
               LayerNameAddOn: 'Field Stations',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
@@ -423,7 +423,7 @@ define([
           contentPaneId: "ssSpTableDiv_content",
           baseName: "ssSpTable",
           headerDivName:  "ssSpTableHeaderDiv",
-          footerDivName:  "ssSpTableFooterDiv",
+          //footerDivName:  "ssSpTableFooterDiv",
           featureOutFields: ["SppNameHtml", "Common_name"],
           tableHeaderTitle: "All Regions",
           displayDivName: "ssSpTableContainer",
@@ -900,6 +900,7 @@ define([
             Catch: {
               title: "Catch",
               colWidth: 100,
+              padLength: 7,
               useCommas: true
             },
             AvgFL: {

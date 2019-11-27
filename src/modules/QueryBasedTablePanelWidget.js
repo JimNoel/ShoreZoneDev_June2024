@@ -135,6 +135,11 @@ define([
               let numDecimals = getIfExists(this,"specialFormatting." + a + ".numDecimals");
               if (numDecimals)
                 features[i].attributes[a] = features[i].attributes[a].toFixed(numDecimals);
+
+              let padLength = getIfExists(this,"specialFormatting." + a + ".padLength");
+              if (padLength)
+                features[i].attributes[a] = padString(features[i].attributes[a], padLength, "left");
+
               let template = getIfExists(this,"specialFormatting." + a + ".html");
               if (template) {     // If template exists, use this to replace attribute value with HTML code
                 let fmtInfo = this.specialFormatting[a];

@@ -311,7 +311,10 @@ define([
 
       // Header panel.  Optionally includes tabs if tabInfo is specified
       if (tabInfo) {
-        panelTabs = makeHtmlElement("div", "panelTabs_" + name, "tableHeaderTabs");
+        let theClass = "tableHeaderTabs";
+        if (layoutCode[0] === "h")
+          theClass = "tableHeaderTabsEP";     // Different class if under a horizontal ExpandoPane
+        panelTabs = makeHtmlElement("div", "panelTabs_" + name, theClass);
         for (let t in tabInfo) {
           let item = tabInfo[t];
           item.tabId = this.baseName + "Tab" + item.tabName;

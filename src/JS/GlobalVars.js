@@ -903,6 +903,25 @@ function ObjToCss(obj) {
   return s;
 }
 
+function padString(str, len, mode) {
+  // "mode" can be "left", "right" or "both"
+  let outstr = str;
+  let leftSide = false;
+  if (mode==="left")
+    leftSide = true;
+  while (outstr.length < len) {
+    if (mode==="both")
+      leftSide = !leftSide;
+    if (leftSide)
+      outstr = " " + outstr;
+    else
+      outstr = outstr + " ";
+  }
+  return outstr;
+}
+
+
+
 
 // For debug purposes
 function test() {
@@ -929,23 +948,6 @@ function logPoperties(obj) {
  else
  L = L.slice(1,L.length-1);
  return L.split("/");
- }
-
- function padString(str, len, mode) {
- // "mode" can be "left", "right" or "both"
- let outstr = str;
- let leftSide = false;
- if (mode==="left")
- leftSide = true;
- while (outstr.length < len) {
- if (mode==="both")
- leftSide = !leftSide;
- if (leftSide)
- outstr = " " + outstr;
- else
- outstr = outstr + " ";
- }
- return outstr;
  }
 
 function getSubLayerID(mapImageLayer, subLayerName) {

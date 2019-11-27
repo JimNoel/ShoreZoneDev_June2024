@@ -284,18 +284,18 @@
           ssTab = new ContentPane({id: "ssTab", title: "Shore Station"}),
           szUnitsTab = new ContentPane({id: "szUnitsTab", title: "ShoreZone 3D Units demo"});
 
-      let stateNavigator = new TabContainer({id: "stateNavigator", region: "left", style: "width: 500px"});
+      let stateNavigator = new TabContainer({id: "stateNavigator", region: "left", class: "stateTabStyle", style: "width: 500px;"});    // width set to fit text in tabs
         stateNavigator.addChild( szTab );
         stateNavigator.addChild( faTab );
         stateNavigator.addChild( ssTab );
         stateNavigator.addChild( szUnitsTab );
-      let linksCP = new ContentPane({id: "linksPane", region: "center", content: linksContent});
+      let linksCP = new ContentPane({id: "linksPane", region: "center", content: linksContent/*, style: "width: 650px;"*/});
 
       let bannerBC = new BorderContainer({id: "bannerDiv", region: "top", style: "height: 30px"});
       bannerBC.addChild(stateNavigator);
       bannerBC.addChild(linksCP);
 
-      let outerBC = new BorderContainer({id: "outerBC", style: "border-style: solid;", design: "headline"});
+      let outerBC = new BorderContainer({id: "outerBC", gutters: false, style: "border-style: solid;", design: "headline"});
       let currLayout = null;
       buildOuterBC(layoutCode);
       document.body.appendChild(outerBC.domNode);
