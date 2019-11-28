@@ -15,6 +15,54 @@
 let selectColor = "#DCEEFF";
 let unselectColor = "";   // "white";
 
+let formatValue = function(value) {
+  if (value === null)
+    return value;
+  let formatting = this.f[this.n];
+  if (!formatting)
+    return value;
+  if (formatting.plugInFields)
+    return fillTemplate(value, formatting);
+  else
+    return formatNumber(value, formatting);
+}
+
+let formatNumber = function(value, formatting) {
+  let newValue = value;
+  if (formatting.useCommas)
+    newValue = formatNumber_Commas(value);
+  else if (formatting.numDecimals)
+    newValue = value.toFixed(formatting.numDecimals);
+  else if (formatting.dateFormat)
+    newValue = formatNumber_Date(value);
+  if (formatting.padLength)
+    newValue = padString(newValue, formatting.padLength, "left");
+  return newValue
+};
+
+let fillTemplate = function(value) {
+  return value;
+  // TODO:  finish this
+/*
+  let template = getIfExists(this,"specialFormatting." + a + ".html");
+  if (template) {     // If template exists, use this to replace attribute value with HTML code
+    let fmtInfo = this.specialFormatting[a];
+    if (fmtInfo.showWhen) {
+      if (features[i].attributes[a] === fmtInfo.showWhen)
+        features[i].attributes[a] = template;
+      else
+        features[i].attributes[a] = "";
+    }
+    if ((features[i].attributes[a]!=="") && fmtInfo.plugInFields) {
+      let args = fmtInfo.args;
+      for (p in fmtInfo.plugInFields)
+        args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
+      features[i].attributes[a] = template.replace("{args}", args);
+    }
+  }
+*/
+}
+
 
 define([
   "dojo/_base/declare",
@@ -90,13 +138,17 @@ define([
 
           let hidden = getIfExists(this,"specialFormatting." + fields[i].name + ".hidden");
 
+          let formatter = formatValue.bind({f: this.specialFormatting, n: fields[i].name});
+/*
+          let plugInFields = getIfExists(this,"specialFormatting." + fields[i].name + ".plugInFields");
+          if (plugInFields)
+*/
+
           tableColumns.push({
             field: fields[i].name,
             label: title,
             hidden: hidden,
-            formatter: function(value){
-              return value       // This causes dGrid to treat values as HTML code
-            },
+            formatter: formatter
           });
 
 
@@ -126,19 +178,6 @@ define([
           let origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
           for (a in features[i].attributes)
             if (features[i].attributes[a]) {
-              let useCommas = getIfExists(this,"specialFormatting." + a + ".useCommas");
-              if (useCommas)
-                features[i].attributes[a] = formatNumber_Commas(features[i].attributes[a]);
-              let dateFormat = getIfExists(this,"specialFormatting." + a + ".dateFormat");
-              if (dateFormat)
-                features[i].attributes[a] = formatNumber_Date(features[i].attributes[a]);
-              let numDecimals = getIfExists(this,"specialFormatting." + a + ".numDecimals");
-              if (numDecimals)
-                features[i].attributes[a] = features[i].attributes[a].toFixed(numDecimals);
-
-              let padLength = getIfExists(this,"specialFormatting." + a + ".padLength");
-              if (padLength)
-                features[i].attributes[a] = padString(features[i].attributes[a], padLength, "left");
 
               let template = getIfExists(this,"specialFormatting." + a + ".html");
               if (template) {     // If template exists, use this to replace attribute value with HTML code
@@ -156,6 +195,7 @@ define([
                   features[i].attributes[a] = template.replace("{args}", args);
                 }
               }
+
               if (features[i].attributes[a]) {
                 nonNullCount[a] += 1;
                 const f = legendFilters.findIndex(obj => obj.fieldName === a);
