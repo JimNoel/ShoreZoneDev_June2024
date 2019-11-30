@@ -575,7 +575,6 @@ define([
 
         faWidget = new QueryBasedTablePanelWidget({
           objName: "faWidget",
-          //gotoFlexMsg: "Sorry, Fish Atlas has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.",
           title: "Fish Atlas",
           sublayerIDs: faSublayerIDs,
           panelName: "faPanel",
@@ -1668,6 +1667,8 @@ define([
     },
 
     selectAndZoom: function(w, id, extText) {
+      if (w.grid)
+        w.grid = null;
       let newTab = parseInt(w.currTab) + 1;
       let currTabInfo = w.tabInfo[w.currTab];
       let ddName = currTabInfo.subTableDD;

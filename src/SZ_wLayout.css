@@ -93,36 +93,6 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
   background-color: #ffffff;
 }
 
-/* 2 versions, due to unexpected behavior when using customized ExpandoPane */
-.tableHeaderTabs  {padding: 0; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 16px;}
-.tableHeaderTabsEP  {padding: 0; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 35px;}
-
-/* Style the buttons inside the tab */
-.tableHeaderTabs button, .tableHeaderTabsEP button {
-  background-color: var(--tableHeaderTabsColor);
-  /*float: left;*/
-  border: none;
-  outline: none;
-  cursor: pointer;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-  /*
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-  */
-}
-
-/* Change background color of buttons on hover */
-.tableHeaderTabs button:hover, .tableHeaderTabsEP button:hover {
-  background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.tableHeaderTabs button.active, .tableHeaderTabsEP button.active {
-  background-color: var(--tableHeaderBgColor);
-}
-
 
 /*
 .fbVertical  {display: flex; flex-flow: column;}
@@ -156,12 +126,41 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
   .tablePanelEnabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4;
       visibility: visible; display: flex; flex-flow: column;}
     .tableHeaderDiv  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 25px;}
+    .tableHeaderDivEP  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 44px;}
     .tableContainerDiv  {padding: 0; overflow:hidden; background-color:rgb(208,215,225); flex: 1 1 auto;}
-    .tableFooterDiv  {padding: 0; overflow:hidden; background-color: lightgreen; flex: 0 1 50px;}
+    .tableFooterDiv  {padding: 0; overflow:hidden; background-color: lightgreen; flex: 0 1 31px;}
+    .tableFooterDivEP  {padding: 0; overflow:hidden; background-color: lightgreen; flex: 0 1 50px;}
 
-/*
-.chartHeaderDiv  {position:absolute; width: 100%; height:11%; left: 0px; overflow:hidden; padding-left: 5px; padding-right: 5px; z-index: 50; color: black; background-color: pink; opacity: 0.7}
-*/
+/*  Overrides for these specific elements */
+#faSpTableHeaderDiv  {flex: 0 1 25px;}
+#faSpTableFooterDiv  {flex: 0 1 45px;}
+
+
+/* 2 versions, due to unexpected behavior when using customized ExpandoPane */
+.tableHeaderTabs  {padding: 0; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 16px;}
+.tableHeaderTabsEP  {padding: 0; overflow:hidden; background-color: var(--panelBgColor); flex: 0 1 35px;}
+
+/* Style the buttons inside the tab */
+.tableHeaderTabs button, .tableHeaderTabsEP button {
+    background-color: var(--tableHeaderTabsColor);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+/* Change background color of buttons on hover */
+.tableHeaderTabs button:hover, .tableHeaderTabsEP button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tableHeaderTabs button.active, .tableHeaderTabsEP button.active {
+    background-color: var(--tableHeaderBgColor);
+}
+
+
 
 .photoCount  {float: right; padding-left: 5px; padding-right: 5px; background-color: white; opacity: 0.7}
 
@@ -320,7 +319,7 @@ cursor: pointer;
     position: absolute;
     left:100px;
     top:100px;
-    width:600px;
+    width:650px;
     height:500px;
     z-index: 9;
     border: 1px solid #d3d3d3;
@@ -328,6 +327,7 @@ cursor: pointer;
     resize: both;
     overflow: hidden; /*auto;*/
     display: none;
+    flex-flow: column;
 }
 
 .draggableDivHeader {

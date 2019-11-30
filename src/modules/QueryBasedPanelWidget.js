@@ -298,6 +298,10 @@ define([
       let name = this.baseName;
       let tabInfo = this.tabInfo;
 
+      let classAddOn = "";
+      if ((classType === "table") & (layoutCode[0] === "h"))
+        classAddOn = "EP";     // Different class if under a horizontal ExpandoPane
+
       // Add "panel disabled" DIV.  (Visible when not zoomed in far enough to see features.)
       let S = '';
       S = '<div id="panelDisabled_' + name + '" class="PanelDisabled" >\n';
@@ -311,10 +315,7 @@ define([
 
       // Header panel.  Optionally includes tabs if tabInfo is specified
       if (tabInfo) {
-        let theClass = "tableHeaderTabs";
-        if (layoutCode[0] === "h")
-          theClass = "tableHeaderTabsEP";     // Different class if under a horizontal ExpandoPane
-        panelTabs = makeHtmlElement("div", "panelTabs_" + name, theClass);
+        panelTabs = makeHtmlElement("div", "panelTabs_" + name, "tableHeaderTabs"+classAddOn);
         for (let t in tabInfo) {
           let item = tabInfo[t];
           item.tabId = this.baseName + "Tab" + item.tabName;
@@ -324,7 +325,8 @@ define([
         theContainer.appendChild(panelTabs);
       }
 
-      let headerPanel = makeHtmlElement("div", name + "HeaderDiv", classType + "HeaderDiv");
+      let theClass = classType + "HeaderDiv" + classAddOn;
+      let headerPanel = makeHtmlElement("div", name + "HeaderDiv", theClass);
       //let headerWrapper = makeHtmlElement("div", null,"semiTransparentBG");
       //headerWrapper.appendChild(headerPanel);
       theContainer.appendChild(headerPanel);
@@ -339,9 +341,9 @@ define([
           imgHtml = '    <div id="videoImageContainer" class="imageContainer"></div>\n';
         midContent = '<div id="' + name + 'NoImageMessage" class="mediaMessageDiv" style="padding: 0" ><b>No ' + name + '</b></div>' + imgHtml;
         this.footerPanel = makeHtmlElement("div", name + "ToolsDiv", "mediaToolsContainer");
-      } else {
+      } else if (classType === 'table'){
         if (this.footerDivName) {
-          this.footerPanel = makeHtmlElement("div", this.footerDivName, classType + "FooterDiv");
+          this.footerPanel = makeHtmlElement("div", this.footerDivName,  "tableFooterDiv"+classAddOn);
         }
       }
 

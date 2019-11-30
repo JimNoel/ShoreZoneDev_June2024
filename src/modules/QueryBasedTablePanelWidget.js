@@ -21,9 +21,11 @@ let formatValue = function(value) {
   let formatting = this.f[this.n];
   if (!formatting)
     return value;
+/*
   if (formatting.plugInFields)
     return fillTemplate(value, formatting);
   else
+*/
     return formatNumber(value, formatting);
 }
 
@@ -40,27 +42,25 @@ let formatNumber = function(value, formatting) {
   return newValue
 };
 
-let fillTemplate = function(value) {
-  return value;
-  // TODO:  finish this
-/*
-  let template = getIfExists(this,"specialFormatting." + a + ".html");
-  if (template) {     // If template exists, use this to replace attribute value with HTML code
-    let fmtInfo = this.specialFormatting[a];
-    if (fmtInfo.showWhen) {
-      if (features[i].attributes[a] === fmtInfo.showWhen)
-        features[i].attributes[a] = template;
+let fillTemplate = function(value, formatting) {
+  let newValue = value;
+  let template = formatting.html;
+  if (template) {
+    if (formatting.showWhen) {
+      if (newValue === formatting.showWhen)
+        newValue = template;
       else
-        features[i].attributes[a] = "";
+        newValue = "";
     }
-    if ((features[i].attributes[a]!=="") && fmtInfo.plugInFields) {
-      let args = fmtInfo.args;
-      for (p in fmtInfo.plugInFields)
-        args = args.replace("{" + p + "}", origAttrs[fmtInfo.plugInFields[p]]);
-      features[i].attributes[a] = template.replace("{args}", args);
+    let plugInFields = formatting.plugInFields;
+    if ((newValue!=="") && plugInFields) {
+      let args = formatting.args;
+      for (p in plugInFields)
+        args = args.replace("{" + p + "}", features[i].attributes[plugInFields[p]]);
+      newValue = template.replace("{args}", args);
     }
   }
-*/
+  return newValue;
 }
 
 
