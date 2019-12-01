@@ -284,14 +284,18 @@
           ssTab = new ContentPane({id: "ssTab", title: "Shore Station"}),
           szUnitsTab = new ContentPane({id: "szUnitsTab", title: "ShoreZone 3D Units demo"});
 
-      let stateNavigator = new TabContainer({id: "stateNavigator", region: "left", class: "stateTabStyle", style: "width: 500px;"});    // width set to fit text in tabs
+      //let logoCP = new ContentPane({id: "logoPane", region: "left", content: "<img src='assets/images/noaa.png' height='25px' width='25px'>", style: "width: 25px; height: 25px; padding: 0"});
+
+      let stateNavigator = new TabContainer({id: "stateNavigator", region: "center", class: "stateTabStyle"});    // width set to fit text in tabs
         stateNavigator.addChild( szTab );
         stateNavigator.addChild( faTab );
         stateNavigator.addChild( ssTab );
         stateNavigator.addChild( szUnitsTab );
-      let linksCP = new ContentPane({id: "linksPane", region: "center", content: linksContent/*, style: "width: 650px;"*/});
 
-      let bannerBC = new BorderContainer({id: "bannerDiv", region: "top", style: "height: 30px"});
+      let linksCP = new ContentPane({id: "linksPane", region: "right", content: linksContent/*, style: "width: 650px;"*/});
+
+      let bannerBC = new BorderContainer({id: "bannerDiv", region: "top", style: "height: 35px"});
+      //bannerBC.addChild(logoCP);
       bannerBC.addChild(stateNavigator);
       bannerBC.addChild(linksCP);
 
@@ -302,6 +306,7 @@
       setPanelsContent();
 
       outerBC.startup();
+
       //adjustDojoLayoutDivs();     // Make some positioning adjustments that can't be done via CSS or Dojo props.  NOTE:  This has to happen after outerBC.startup()
 
 /*

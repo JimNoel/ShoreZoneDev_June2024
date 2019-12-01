@@ -398,11 +398,11 @@ cursor: pointer;
 
 .tickMark { position: absolute; border-left: 1px solid; height: 100%; }
 
-.stateTabStyle  { font-family:verdana; font-size: 14px; background-image: none; }
+.stateTabStyle  { font-family:verdana; font-size: 18px; background-image: none; }
 
 .claro .dijitTabContainerTop-tabs .dijitTab {
     top: 1px;
-    margin-right: 5px;
+    margin-right: 8px;
     padding: 3px 6px;
     border-bottom-width: 0;
     min-width: 60px;
@@ -419,11 +419,11 @@ cursor: pointer;
     -webkit-box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
     -moz-box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
     box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.04);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 .claro .dijitTab {
-    border: 1px solid #b5bcc7;
+    border: 1px solid black;
     background-color: #3E87BF;
     -webkit-transition-property: background-color, border;
     -moz-transition-property: background-color, border;
@@ -447,7 +447,7 @@ cursor: pointer;
 
 .claro .dijitTabPaneWrapper  { display: none}
 
-.claro .dijitTab .tabLabel  {outline: none}
+.claro .dijitTab .tabLabel  {outline: none; }
 
 /*  This is the class for Layer headers (including Group layers)
 .esri-layer-list__item-title
