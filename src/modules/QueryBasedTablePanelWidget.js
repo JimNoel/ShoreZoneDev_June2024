@@ -14,13 +14,13 @@
 
 let selectColor = "#DCEEFF";
 let unselectColor = "";   // "white";
+let padLength = 10;     // left-pad numeric values to same string length (10), so they sort correctly
+let padChars = "&nbsp;";    // HTML space escape character
 
 let formatValue = function(value) {
   if (value === null)
     return value;
   let formatting = this.f[this.n];
-  if (!formatting)
-    return value;
 /*
   if (formatting.plugInFields)
     return fillTemplate(value, formatting);
@@ -30,6 +30,8 @@ let formatValue = function(value) {
 }
 
 let formatNumber = function(value, formatting) {
+  if (!formatting)
+    return value;
   let newValue = value;
   if (formatting.useCommas)
     newValue = formatNumber_Commas(value);
@@ -37,12 +39,17 @@ let formatNumber = function(value, formatting) {
     newValue = value.toFixed(formatting.numDecimals);
   else if (formatting.dateFormat)
     newValue = formatNumber_Date(value);
-  if (formatting.padLength)
-    newValue = padString(newValue, formatting.padLength, "left");
+  newValue = padString(newValue, padLength, "left", padChars);
+/*
+  if (typeof value === "number")
+    newValue = '<div style="text-align: right">' + newValue + '</div>';     // right-align if numeric
+*/
   return newValue
 };
 
 let fillTemplate = function(value, formatting) {
+  if (!formatting)
+    return value;
   let newValue = value;
   let template = formatting.html;
   if (template) {
@@ -113,6 +120,7 @@ define([
         let tableColumns = [];
         let nonNullCount = new Object();
         nonNullList = new Object();       //Lists of unique values found
+        //let maxValue = new Object();
         let columnStyleCSS = "";
 
         if (this.calcFields)
@@ -158,8 +166,11 @@ define([
             colWidth = (title.length) * 15;
 
           columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
+          //columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px; text-align: right} ";
+
           nonNullCount[fields[i].name] = 0;
           nonNullList[fields[i].name] = [];     //Lists of unique values found
+          //maxValue[fields[i].name] = 0;
         }
 
         // Create style-sheet for columns
@@ -409,7 +420,7 @@ define([
           this.queryTask.execute(this.query).then(function(results){
             let totalValues = results.features[0].attributes;
             for (a in totalValues)
-              this.totalLabels[a].node.innerHTML = totalValues[a];
+              this.totalLabels[a].node.innerHTML = formatNumber(totalValues[a], this.specialFormatting[a]);
             this.repositionTotalLabels(this.grid.columns);
           }.bind(this), function(error) {
             console.log(this.baseName + ":  QueryTask for Totals failed.");
@@ -590,7 +601,7 @@ define([
           else {
             this.totalLabels[fieldName] = {
               colNum: colNum,
-              node: makeHtmlElement("LABEL", null, null, "position: absolute; top: 0; left: 0px", "Total")
+              node: makeHtmlElement("LABEL", null, "totalBox", "position: absolute; top: 0; left: 0px", "Total")
             }
             this.footerWrapper.appendChild(this.totalLabels[fieldName].node);
           }

@@ -903,20 +903,22 @@ function ObjToCss(obj) {
   return s;
 }
 
-function padString(str, len, mode) {
+function padString(str, len, mode, chars) {
   // "mode" can be "left", "right" or "both"
+  if (!chars)
+    chars = " "
   let outstr = str;
   let leftSide = false;
   if (mode==="left")
     leftSide = true;
-  while (outstr.length < len) {
-    if (mode==="both")
-      leftSide = !leftSide;
-    if (leftSide)
-      outstr = " " + outstr;
-    else
-      outstr = outstr + " ";
-  }
+  let l = len - str.length;
+  let padStr = "";
+  if (l > 0)
+    padStr = chars.repeat(l);
+  if (leftSide)
+    outstr = padStr + str;
+  else
+    outstr = str + padStr;
   return outstr;
 }
 

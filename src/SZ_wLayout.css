@@ -285,6 +285,7 @@ cursor: pointer;
   width: 20em;
 }
 
+.totalBox  { border: 1px solid gray }
 
 /*     For the video playback speed indicator */
 .slider {

@@ -898,18 +898,17 @@ define([
             },
             Catch: {
               title: "Catch",
-              colWidth: 100,
-              padLength: 7,
+              colWidth: 80,
               useCommas: true
             },
             AvgFL: {
               title: "Average Length",
-              colWidth: 150,
+              colWidth: 120,
               numDecimals: 1
             },
             Count_measured: {
               title: "# Measured",
-              colWidth: 150,
+              colWidth: 120,
               useCommas: true
             },
           },
