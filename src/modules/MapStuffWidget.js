@@ -657,10 +657,22 @@ define([
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {
                   title:  "",
-                  colWidth:  20,
+                  colWidth:  10,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
                   html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                },
+                Hauls: {
+                  colWidth: 20,
+                  useCommas: true
+                },
+                Species: {
+                  colWidth: 20,
+                  useCommas: true
+                },
+                Catch: {
+                  colWidth: 20,
+                  useCommas: true
                 },
                 RegionID: {
                   title:  "Fish Catch",
@@ -702,14 +714,28 @@ define([
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {
                   title:  "",
-                  colWidth:  20,
+                  colWidth:  10,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
                   html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
                 },
+                MapID: {
+                  colWidth: 20                },
+                Hauls: {
+                  colWidth: 20,
+                  useCommas: true
+                },
+                Species: {
+                  colWidth: 20,
+                  useCommas: true
+                },
+                Catch: {
+                  colWidth: 20,
+                  useCommas: true
+                },
                 LocaleID: {
                   title:  "Fish Catch",
-                  colWidth:  30,
+                  colWidth:  20,
                   plugInFields: ["LocaleID", "Locale"],
                   args: 'faSpTableWidget,"vw_CatchStats_LocalesSpecies","vw_CatchStats_Locales","LocaleID={0}","{1}"',
                   html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
@@ -765,6 +791,18 @@ define([
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
                   html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                },
+                Hauls: {
+                  colWidth: 20,
+                  useCommas: true
+                },
+                Species: {
+                  colWidth: 20,
+                  useCommas: true
+                },
+                Catch: {
+                  colWidth: 20,
+                  useCommas: true
                 },
                 FishCatch: {
                   title:  "Fish Catch",

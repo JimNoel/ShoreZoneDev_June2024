@@ -254,7 +254,7 @@ define([
         return false;
       this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
       this.footerWrapper.innerHTML = "";
-      this.footerPanel.innerHTML = "";
+      this.footerPanel.innerHTML = "<div style='position: absolute; left: 20px;'>Totals</div>";
       this.footerPanel.appendChild(this.footerWrapper);
       return true;
     },
