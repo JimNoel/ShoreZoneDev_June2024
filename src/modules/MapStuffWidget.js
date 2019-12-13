@@ -412,6 +412,8 @@ define([
         /* end szWidget def*/
 
         siteTabs.ss.widgets = [ssWidget];
+        if (initTab === "ssTab")
+          stateNavigator.selectChild(initTab);
 
         ssSpTableWidget = new QueryBasedTablePanelWidget({
           objName: "ssSpTableWidget",
@@ -872,6 +874,8 @@ define([
         });
 
         siteTabs.fa.widgets = [faWidget];
+        if (initTab === "faTab")
+          stateNavigator.selectChild(initTab);
 
         faSpTableWidget = new QueryBasedTablePanelWidget({
           objName: "faSpTableWidget",

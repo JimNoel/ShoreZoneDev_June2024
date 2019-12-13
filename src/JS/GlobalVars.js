@@ -175,6 +175,8 @@ let llServiceLayers = null;
 let extentDependentWidgets = [];
 let photoWidgets = [];
 
+let stateNavigator = null;
+
 // QueryBasedPanelWidget declarations
 let szVideoWidget = null;
 let szPhotoWidget = null;

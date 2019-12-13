@@ -286,7 +286,7 @@
 
       //let logoCP = new ContentPane({id: "logoPane", region: "left", content: "<img src='assets/images/noaa.png' height='25px' width='25px'>", style: "width: 25px; height: 25px; padding: 0"});
 
-      let stateNavigator = new TabContainer({id: "stateNavigator", region: "center", class: "stateTabStyle"});    // width set to fit text in tabs
+      stateNavigator = new TabContainer({id: "stateNavigator", region: "center", class: "stateTabStyle"});    // width set to fit text in tabs
         stateNavigator.addChild( szTab );
         stateNavigator.addChild( faTab );
         stateNavigator.addChild( ssTab );
@@ -343,8 +343,6 @@
       let flexSiteURL = "https://alaskafisheries.noaa.gov/mapping/szflex/index.html?L=B";
       let SZ3dUnitsSiteURL = "https://alaskafisheries.noaa.gov/mapping/jstest/szunits3d.html";
 
-      changeState(initTab);
-
       stateNavigator.watch("selectedChildWidget", function(name, oval, nval){
         changeState(nval.id, oval.id);
       });
@@ -358,10 +356,6 @@
             window.open(SZ3dUnitsSiteURL);
           return;
         }
-        /*    Code for going to Flex site if FA/SS is not ready on current site
-                  if (confirm(FaSsMsg.replace(/@/g,"Shore Station")))
-                    window.open(flexSiteURL + "@T=SS");
-        */
         let className = tabID.slice(0,2);
         switchTo(className);
       }
