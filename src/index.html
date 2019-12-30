@@ -368,6 +368,7 @@
         for (i in widgets) {    // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
           if (widgets[i].tabInfo)
             widgets[i].setActiveTab(0);
+          // TODO:  Figure out how to set up list of widgets, and hide on switching
         }
         setGraphicsLayersVisibilities(className);
       }

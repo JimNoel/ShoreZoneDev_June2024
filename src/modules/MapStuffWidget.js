@@ -411,7 +411,6 @@ define([
         });
         /* end szWidget def*/
 
-        siteTabs.ss.widgets = [ssWidget];
         if (initTab === "ssTab")
           stateNavigator.selectChild(initTab);
 
@@ -527,6 +526,7 @@ define([
           headerDivName:  "ssPhotoHeaderDiv",
           disabledMsgInfix: "photo points",
           disabledMsgDivName: "disabledMsg_ssPhoto",
+          defaultDisabledMsg: "Station photos can be seen from the Stations tab",
           mapServiceLayer: ssMapServiceLayer,
           layerName: "GVDATA_STNPHOTOS",
           featureOutFields: ["*"],
@@ -557,6 +557,7 @@ define([
           headerDivName:  "ssProfileHeaderDiv",
           disabledMsgInfix: "profiles",
           disabledMsgDivName: "disabledMsg_ssProfile",
+          defaultDisabledMsg: "Station profiles can be seen from the Stations tab",
           mapServiceLayer: ssMapServiceLayer,
           layerName: "SHORESTATIONS_STATIONPROFILE_FLAT",
           featureOutFields: ["*"],
@@ -566,6 +567,7 @@ define([
           noGeometry: true,
         });
 
+        siteTabs.ss.widgets = [ssWidget/*, ssPhotoWidget, ssProfileWidget*/];
       }, function(error){
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
@@ -1001,6 +1003,7 @@ define([
                     headerDivName:  "faPhotoHeaderDiv",
                     disabledMsgInfix: "photo points",
                     disabledMsgDivName: "disabledMsg_faPhoto",
+                    defaultDisabledMsg: "Site photos can be seen from the Fish Atlas Sites tab",
                     mapServiceLayer: faMapServiceLayer,
                     layerName: "Photos_Sites",
                     featureOutFields: ["*"],

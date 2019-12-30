@@ -45,14 +45,12 @@ define([
 
     constructor: function(/*Object*/ kwArgs){
       lang.mixin(this, kwArgs);
-/*
-      if (this.objName === "ssPhotoWidget")
-        return;
-*/
+
       this.initFeatureHandling();
       this.addPanelHtml();
-//      this.makeFooterElements();
 
+      if (this.defaultDisabledMsg)
+        setMessage(this.disabledMsgDivName, this.defaultDisabledMsg);
 
       this.noFeatures = function(f) {
         if (f.length===0) {
@@ -284,6 +282,14 @@ define([
       this.setHeaderItemVisibility();
       this.runQuery(view.extent);
 
+/*
+      let widgets = siteTabs[this.baseName].widgets;
+      let widgetsStr = "";
+      for (w in widgets) {
+        showPanelContents(widgets[w], false);
+      }
+*/
+
       this.makeFooterElements();
     },
 
@@ -310,7 +316,7 @@ define([
       panelDiv.innerHTML = S;
 
       // Make container for displaying feature info
-      let theContainer = makeHtmlElement("div", "panelEnabled_" + name, classType + "PanelEnabled");
+      let theContainer = makeHtmlElement("div", "panelEnabled_" + name, classType + "PanelEnabled"/*, "visibility: hidden"*/);
       let panelTabs = null;
 
       // Header panel.  Optionally includes tabs if tabInfo is specified
