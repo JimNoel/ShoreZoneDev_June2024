@@ -387,8 +387,8 @@ define([
 
       }
 
-      this.processData = function(results) {
-        //console.log("processData: Table");
+      this.processResults = function(results) {
+        //console.log("processResults: Table");
         let fields = results.fields;
         let features = results.features;
         console.log(features.length + " " + this.baseName + " features");

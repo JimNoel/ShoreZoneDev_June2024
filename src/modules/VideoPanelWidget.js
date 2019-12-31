@@ -259,7 +259,7 @@ define([
       this.noFeaturesPanels.push(this.syncTo);
 
 
-      this.processData = function(results) {
+      this.processResults = function(results) {
         //this.inherited(arguments);      // This should work?
         let features = results.features;
         this.features = features;
@@ -277,7 +277,7 @@ define([
           return f.attributes.StillPhoto_FileName
         });
         pWidget.processFeatures();
-        //pWidget.makeClickableGraphics(pWidget.features);    // TODO: replace with pWidget.processData (or some equivalent)
+        //pWidget.makeClickableGraphics(pWidget.features);    // TODO: replace with pWidget.processResults (or some equivalent)
 
         let vidcapFeatures = features.filter(function(f){
           return f.attributes.VidCap_FileName_HighRes

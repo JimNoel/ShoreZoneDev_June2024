@@ -346,7 +346,7 @@ define([
         this.toStart();
       }
 
-      this.processData = function(results) {
+      this.processResults = function(results) {
         let features = results.features;
         this.features = features;
         if (!this.noFeatures(features))

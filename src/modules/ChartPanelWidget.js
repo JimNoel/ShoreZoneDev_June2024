@@ -85,8 +85,8 @@ define([
       this.addDivFromLayout(this.substrateProfile);
       this.addDivFromLayout(this.scale);
 
-      this.processData = function(results) {
-        console.log("ChartPanelWidget processData function");
+      this.processResults = function(results) {
+        console.log("ChartPanelWidget processResults function");
         let features = results.features;
         this.features = features;
         if (this.noFeatures(features))
@@ -228,7 +228,8 @@ define([
           ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
           let labelId = "label_" + id;
           let style = 'position:absolute;top:' + ofs.top + 'px;left:' + ofs.left + 'px;' + ObjToCss(profile.labelStyle);
-          let labelEl = makeHtmlElement("div",labelId,null,style,label);
+          let theClass = this.baseName.slice(0,2);
+          let labelEl = makeHtmlElement("div",labelId,theClass,style,label);
           labelEl.setAttribute("title", description);
           profile.textContainer.appendChild(labelEl);
         }

@@ -2,7 +2,7 @@
  * Class QueryBasedPanelWidget
  *
  * generic widget for spatial queries on map service layers, with associated panel for results
- *   Subclasses of this must set the processData function in the constructor  (see example in VideoPanelWidget.js)
+ *   Subclasses of this must set the processResults function in the constructor  (see example in VideoPanelWidget.js)
  *
  * Constructor arguments:
  *    mapServiceLayer: MapImageLayer
@@ -62,8 +62,8 @@ define([
 
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
-      this.processData = function(results) {
-        console.log("QueryBasedPanelWidget processData function");
+      this.processResults = function(results) {
+        console.log("QueryBasedPanelWidget processResults function");
       };
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
@@ -466,7 +466,7 @@ define([
           if (this.widgetName === "szUnitsWidget")
             setDisplay("showUnitsDiv", true);     // Show secondary unit features checkbox
 */
-          this.processData(results);
+          this.processResults(results);
         }
       }.bind(this), function(error) {
         this.queryPending = false;

@@ -570,14 +570,12 @@ function refreshFeatures() {
 }
 
 function resetCurrentFeatures() {
-  //locateIconLayer.removeAll();
   setDisabled("offlineAppButton", true);    // This is directly setting the "disabled" attribute of the button in the OfflineAppLink widget
   showPanelContents("video,photo,units", false);
   extentDependentWidgets.forEach(function(w, index, array) {
     w.clearGraphics();
   });
   setContent("offlineAppPanel", download_notZoomedInEnoughContent);
-  //getEl("offlineAppPanel").innerHTML = download_notZoomedInEnoughContent;
 }
 
 function showCurrentFeatures() {
