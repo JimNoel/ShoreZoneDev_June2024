@@ -365,10 +365,13 @@
           return;
         siteTabs.visManager.promoteClass(className);
         let widgets = siteTabs[className].widgets;
-        for (i in widgets) {    // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
+        for (i in widgets) {
+          // TODO: Work on this
+          //showPanelContents(widgets[i].baseName, false);
+
+          // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
           if (widgets[i].tabInfo)
             widgets[i].setActiveTab(0);
-          // TODO:  Figure out how to set up list of widgets, and hide on switching
         }
         setGraphicsLayersVisibilities(className);
       }

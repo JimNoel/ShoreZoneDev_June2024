@@ -85,13 +85,7 @@ define([
       this.addDivFromLayout(this.substrateProfile);
       this.addDivFromLayout(this.scale);
 
-      this.processResults = function(results) {
-        console.log("ChartPanelWidget processResults function");
-        let features = results.features;
-        this.features = features;
-        if (this.noFeatures(features))
-          return;
-        console.log(features.length + " profile points");     // TODO: Set this up, using HTML5 SVG  (https://www.w3schools.com/graphics/svg_intro.asp)
+      this.processFeatures = function(features) {
         this.initCharts();
         this.makeXYChart(this.vertProfile);
         this.makeBarChart(this.bbProfile);

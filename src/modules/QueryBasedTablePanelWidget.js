@@ -387,26 +387,11 @@ define([
 
       }
 
-      this.processResults = function(results) {
-        //console.log("processResults: Table");
-        let fields = results.fields;
-        let features = results.features;
-        console.log(features.length + " " + this.baseName + " features");
-        getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
+
+      this.processFeatures = function(features) {
         getEl(this.displayDivName).innerHTML = "";      // clear the DIV
-        if (this.noFeatures(features))
-          return;
-
-/*
-        if (this.mapServiceSublayerVisibility) {
-          for (l in this.mapServiceSublayers) {
-            this.
-          }
-        }
-*/
-
         this.makeClickableGraphics(features);
-        this.makeTable(fields, features);
+        this.makeTable(this.fields, features);
         if (this.totalOutFields) {
           if (features.length === 0) {
             for (l in this.totalLabels)

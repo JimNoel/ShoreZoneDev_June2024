@@ -259,16 +259,8 @@ define([
       this.noFeaturesPanels.push(this.syncTo);
 
 
-      this.processResults = function(results) {
-        //this.inherited(arguments);      // This should work?
-        let features = results.features;
-        this.features = features;
-        console.log(features.length + " video features");
+      this.processFeatures = function(features) {
         pausePlayback("video");
-        if (this.noFeatures(features))
-          return;
-
-        //showPanelContents("video,photo", true);
 
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
         this.makeClickableGraphics(features);

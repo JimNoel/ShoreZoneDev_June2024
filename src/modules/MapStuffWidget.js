@@ -567,7 +567,7 @@ define([
           noGeometry: true,
         });
 
-        siteTabs.ss.widgets = [ssWidget/*, ssPhotoWidget, ssProfileWidget*/];
+        siteTabs.ss.widgets = [ssWidget, ssPhotoWidget, ssProfileWidget];
       }, function(error){
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
@@ -818,6 +818,17 @@ define([
                 SiteID: {
                   hidden: true
                 }
+
+                // TODO: get this to work
+/*
+                PhotoCount: {
+                  title:  "Photos",
+                  colWidth:  10,
+                  html:   "<img src='assets/images/Camera24X24.png' class='tableIcon' alt=''>",
+                  showWhen: "1"
+                }
+*/
+
               },
               idField: 'SiteID',
               clickableSymbolType: "point",

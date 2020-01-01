@@ -2,7 +2,7 @@
  * Class QueryBasedPanelWidget
  *
  * generic widget for spatial queries on map service layers, with associated panel for results
- *   Subclasses of this must set the processResults function in the constructor  (see example in VideoPanelWidget.js)
+ *   Subclasses of this must set the processFeatures function in the constructor  (see example in VideoPanelWidget.js)
  *
  * Constructor arguments:
  *    mapServiceLayer: MapImageLayer
@@ -55,15 +55,26 @@ define([
       this.noFeatures = function(f) {
         if (f.length===0) {
           updateNoFeaturesMsg(this.noFeaturesPanels , "zoomout");
+          showPanelContents(this.baseName, false);
           return true;
         }
+        showPanelContents(this.baseName, true);
         return false;
       };
 
 
-      // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
       this.processResults = function(results) {
-        console.log("QueryBasedPanelWidget processResults function");
+        let features = results.features;
+        this.features = features;
+        this.fields = results.fields;
+        if (this.featureCountElId)
+          getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
+        if (!this.noFeatures(features))
+          this.processFeatures(features);
+      };
+
+      // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
+      this.processFeatures = function(features) {
       };
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget

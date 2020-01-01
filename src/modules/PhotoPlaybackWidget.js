@@ -334,7 +334,7 @@ define([
         }
       }
 
-      this.processFeatures = function() {
+      this.processFeatures = function(features) {
         if (!this.noGeometry)
           this.makeClickableGraphics(this.features);
         getEl(this.photoCount_SpanId).innerHTML = "/" + this.features.length;
@@ -346,12 +346,6 @@ define([
         this.toStart();
       }
 
-      this.processResults = function(results) {
-        let features = results.features;
-        this.features = features;
-        if (!this.noFeatures(features))
-          this.processFeatures(features);
-      };
 
       this.toStart = function() {
         if (this.sync_photos)
