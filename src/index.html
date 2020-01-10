@@ -292,7 +292,7 @@
         stateNavigator.addChild( ssTab );
         stateNavigator.addChild( szUnitsTab );
 
-      let linksCP = new ContentPane({id: "linksPane", region: "right", content: linksContent/*, style: "width: 650px;"*/});
+      let linksCP = new ContentPane({id: "linksPane", region: "right", content: linksContent, style: "width: 660px;"});
 
       let bannerBC = new BorderContainer({id: "bannerDiv", region: "top", style: "height: 35px"});
       //bannerBC.addChild(logoCP);
@@ -374,6 +374,7 @@
             widgets[i].setActiveTab(0);
         }
         setGraphicsLayersVisibilities(className);
+        dijit.byId(className + "MediaBC").resize();   // This is needed to handle "disappearing photo panel" issue
       }
 
       function setGraphicsLayersVisibilities(className) {
@@ -411,5 +412,5 @@
 
   </script>
 </head>
-<body class="claro"></body>
+<body class="claro" onload="siteLoadedHandler()"onresize="browserResizeHandler()"></body>
 </html>

@@ -448,7 +448,7 @@ cursor: pointer;
 
 .claro .dijitTabPaneWrapper  { display: none}
 
-.claro .dijitTab .tabLabel  {outline: none; }
+.claro .dijitTab .tabLabel  {outline: none; font-size: 16px}
 
 /*  This is the class for Layer headers (including Group layers)
 .esri-layer-list__item-title

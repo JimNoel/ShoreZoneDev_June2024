@@ -852,6 +852,12 @@ function stripHtml(inStr) {
   return s;
 }
 
+function siteLoadedHandler() {
+}
+
+function browserResizeHandler() {
+}
+
 function resizeMedia() {
   ssProfileWidget.resize();
   photoWidgets.forEach(function(w, index, array) {

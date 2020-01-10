@@ -640,6 +640,11 @@ define([
 
   mediaDimensions: function(aspect) {
     let mediaDiv = dijit.registry.byId(this.contentPaneId);
+
+    // HACK to handle Dojo weirdness on browser resize
+    if (mediaDiv.h === 0)
+      return null;
+
     let d = {width: mediaDiv.w, height: mediaDiv.h} ;
     let divAspect = d.width/d.height;
     if (aspect < divAspect)
@@ -651,6 +656,11 @@ define([
 
   resizeImg: function() {
     let pDims = this.mediaDimensions(photoAspectRatio);
+
+    // HACK to handle Dojo weirdness on browser resize: Leave unchanged if pDims is null
+    if (pDims === null)
+      return null;
+
     let photoEl = this.photoImage[0];
     photoEl.width = pDims.width;
     photoEl.height = pDims.height;
