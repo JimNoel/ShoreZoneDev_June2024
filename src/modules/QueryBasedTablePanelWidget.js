@@ -318,8 +318,8 @@ define([
             for (let i=0; i<subWidgetInfo.length; i++) {
               let A = subWidgetInfo[i].split(":");
               let dataPresentField = A[2];
+              let w = eval(A[0]);
               if (row.data[dataPresentField] !== "") {
-                let w = eval(A[0]);
                 let whereField = A[1];
                 let theValue = stripHtml(row.data[whereField]);
                 let theWhere = whereField + "='" + theValue + "'";
@@ -328,6 +328,8 @@ define([
                   w.queryPending = true;
                   w.runQuery(null, {theWhere});
                 }
+              } else {
+                showPanelContents(w.baseName, false, w.noDataMsg);
               }
             }
           }

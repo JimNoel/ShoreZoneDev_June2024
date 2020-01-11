@@ -106,7 +106,7 @@ define([
       }
       this.contentPane.appendChild(profile.titleDiv);
       profile.textContainer = makeHtmlElement("div");
-      document.body.appendChild(profile.textContainer);
+      this.contentPane.appendChild(profile.textContainer);
     },
 
     initCharts: function() {

@@ -445,7 +445,7 @@ function showPanelContents(panelNames, show, disabledMsg) {
       panelDisabledDivStyle.visibility = "visible";
       panelEnabledDivStyle.visibility = "hidden";
       if (disabledMsg)
-        getEl("disabledMsg_" + names[i]).innerText = "Hello!";
+        getEl("disabledMsg_" + names[i]).innerText = disabledMsg;
     }
     console.log("panelEnabled_" + names[i] + " is now " + panelEnabledDivStyle.visibility)
   }
