@@ -263,6 +263,7 @@ define([
               parentAreaType: '',
               visibleHeaderElements: ['ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
               featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
+              orderByFields: ["Region"],
               calcFields:  [{name: "SpTableBtn", afterField: "Region"}, {name: "SelRegionBtn", afterField: "SpTableBtn"}],
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {

@@ -218,8 +218,7 @@ define([
           let description = attributes[profile.descrField];
           if (!description)
             description = "(no description available)";
-          let barNode = getEl(id);
-          let ofs = $(barNode).offset();
+          let ofs = relOffset(id, profile.textContainer);
           ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
           let labelId = "label_" + id;
           let style = 'position:absolute;top:' + ofs.top + 'px;left:' + ofs.left + 'px;' + ObjToCss(profile.labelStyle);
@@ -235,8 +234,7 @@ define([
     moveBarLabels: function(profile) {
       for (f=1; f<this.features.length; f++) {
         let id = profile.labelField + f;
-        let barNode = getEl(id);
-        let ofs = $(barNode).offset();
+        let ofs = relOffset(id, profile.textContainer);
         ofs.top += (profile.div.offsetHeight-profile.labelStyle.font_size)/2;
         let labelId = "label_" + id;
         let labelEl = getEl(labelId);

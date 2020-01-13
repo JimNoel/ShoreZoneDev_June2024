@@ -929,7 +929,15 @@ function padString(str, len, mode, chars) {
   return outstr;
 }
 
-
+function relOffset(el, tgtDiv) {
+  el = getEl(el);
+  tgtDiv = getEl(tgtDiv);
+  let ofs = $(el).offset();    // This is the left & top coords of el, relative to the browser window
+  let tgtDivOfs = $(tgtDiv).offset();
+  ofs.left -= tgtDivOfs.left;
+  ofs.top -= tgtDivOfs.top;
+  return ofs;
+}
 
 
 // For debug purposes
