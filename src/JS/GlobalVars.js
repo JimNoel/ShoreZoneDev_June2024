@@ -340,7 +340,7 @@ function setMessage(elName, text, visible, fade) {
     visible = true;
   if (image_message_timeout) clearTimeout(image_message_timeout);
   if (visible)
-    el.style.visibility = "visible";
+    el.style.visibility = "inherit";
   else
     el.style.visibility = "hidden";
   if (text)
@@ -399,7 +399,7 @@ function setVisible(id, value) {
     return;   // do nothing if el doesn't exist
   let visibility = "hidden";
   if (value)
-    visibility = "visible";
+    visibility = "inherit";
   el.style.visibility = visibility;
 }
 
@@ -408,7 +408,7 @@ function isVisible(id) {
   el = getEl(id);
   if (!el)
     return false;
-  if (el.style.visibility === "visible")
+  if (el.style.visibility in ["visible", "inherit"])
     return true;
   else
     return false;
@@ -440,9 +440,9 @@ function showPanelContents(panelNames, show, disabledMsg) {
     let panelEnabledDivStyle = panelEnabledDiv.style;
     if (show) {
       panelDisabledDivStyle.visibility = "hidden";
-      panelEnabledDivStyle.visibility = "visible";
+      panelEnabledDivStyle.visibility = "inherit";
     } else {
-      panelDisabledDivStyle.visibility = "visible";
+      panelDisabledDivStyle.visibility = "inherit";
       panelEnabledDivStyle.visibility = "hidden";
       if (disabledMsg)
         getEl("disabledMsg_" + names[i]).innerText = disabledMsg;

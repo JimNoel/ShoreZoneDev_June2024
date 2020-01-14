@@ -412,7 +412,7 @@ define([
           photoTools.title = "Click chain icon to unlink photo playback from video and unlock photo playback controls."
         }
         else {
-          //photoToolsDivStyle.visibility = "visible";
+          //photoToolsDivStyle.visibility = "inherit";
           photoToolsStyle.disabled = false;
           photoToolsStyle.opacity = 1.0;
           photoTools.title = "Photo playback controls."
