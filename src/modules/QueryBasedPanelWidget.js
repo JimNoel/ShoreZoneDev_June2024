@@ -327,7 +327,12 @@ define([
         for (let t in tabInfo) {
           let item = tabInfo[t];
           item.tabId = this.baseName + "Tab" + item.tabName;
-          let buttonHtml = '<button id="' + item.tabId + '">' + item.tabTitle + '</button>';
+          let titlePar = item.notAvailableMsg;
+          if (titlePar)
+            titlePar = ' title="' + titlePar + '" disabled';
+          else
+            titlePar = '';
+          let buttonHtml = '<button id="' + item.tabId + '"' + titlePar + '>' + item.tabTitle + '</button>';
           panelTabs.innerHTML += buttonHtml + "&emsp;";
         }
         theContainer.appendChild(panelTabs);

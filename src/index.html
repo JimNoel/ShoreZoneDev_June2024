@@ -86,7 +86,7 @@
                 ssC:      ["ssCP",  "l:50%", "CP", {id: "ssChartsDiv", class: "mediaPanelDiv"}],
                 ssP:      ["ssCP",  "c", "CP", {id: "ssPhotosDiv", class: "mediaPanelDiv"}],
               faCP:   ["vp", "c", "BC:h", {id: "faMediaBC", class: "fa"}],
-                faC:      ["faCP",  "l:50%", "CP", {id: "faChartsDiv", class: "mediaPanelDiv"}],
+                //faC:      ["faCP",  "l:50%", "CP", {id: "faChartsDiv", class: "mediaPanelDiv"}],
                 faP:      ["faCP",  "c", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv"}],
           qtEP:    ["root", "r:50%",  "EP:Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
             qt:    ["qtEP", "c",        "BC:h"],
@@ -109,8 +109,8 @@
                   ssC:      ["ssCP",  "c", "CP", {id: "ssChartsDiv", class: "mediaPanelDiv"}],
                   ssP:      ["ssCP",  "b:50%", "CP", {id: "ssPhotosDiv", class: "mediaPanelDiv"}],
                 faCP:   ["vp", "c", "BC:h", {id: "faMediaBC", class: "fa"}],
-                  faC:      ["faCP",  "c", "CP", {id: "faChartsDiv", class: "mediaPanelDiv"}],
-                  faP:      ["faCP",  "b:50%", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv"}],
+                  //faC:      ["faCP",  "c", "CP", {id: "faChartsDiv", class: "mediaPanelDiv"}],
+                  faP:      ["faCP",  "b:100%", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv"}],
             qtEP:    ["root", "b:250px",  "EP:", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
               qt:       ["qtEP", "c",   "BC:v"],
                 //q:  ["qt",  "l:200px",    "CP"],        // set query panel height
@@ -132,7 +132,7 @@
               ssC:      ["ssCP",  "t:45%", "CP", {id: "ssChartsDiv", class: "mediaPanelDiv"}],
               ssP:      ["ssCP",  "c", "CP", {id: "ssPhotosDiv", class: "mediaPanelDiv"}],
             faCP:   ["vp", "c", "BC:h", {id: "faMediaBC", class: "fa"}],
-              faC:      ["faCP",  "t:45%", "CP", {id: "faChartsDiv", class: "mediaPanelDiv"}],
+              //faC:      ["faCP",  "t:45%", "CP", {id: "faChartsDiv", class: "mediaPanelDiv"}],
               faP:      ["faCP",  "c", "CP", {id: "faPhotosDiv", class: "mediaPanelDiv"}],
           qtEP:    ["root", "r:300px",  "EP:Table/Query", {id: "tableQueryExpando"}],    // ExpandoPanel region can be top, bottom, left or right, but not center?
             qt:    ["qtEP", "c",        "BC:h"],
@@ -366,9 +366,7 @@
         siteTabs.visManager.promoteClass(className);
         let widgets = siteTabs[className].widgets;
         for (i in widgets) {
-          // TODO: Work on this
           showPanelContents(widgets[i].baseName, false);
-
           // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
           if (widgets[i].tabInfo)
             widgets[i].setActiveTab(0);

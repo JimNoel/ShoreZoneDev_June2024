@@ -863,6 +863,7 @@ define([
             {
               tabName: 'Temperature',
               tabTitle: 'Temperature Data',
+              notAvailableMsg: 'Sorry, temperature data is not available yet.  Coming soon!',
               popupTitle: "Thermograph",
               LayerNameAddOn: 'Temperature',
               featureOutFields: ["Region", "Hauls", "Species", "Catch"],
@@ -871,6 +872,7 @@ define([
             {
               tabName: 'Eelgrass',
               tabTitle: 'Eelgrass Data',
+              notAvailableMsg: 'Sorry, eelgrass bed data is not available yet.  Coming soon!',
               popupTitle: "Eelgrass Bed",
               LayerNameAddOn: 'Eelgrass',
               featureOutFields: ["Region", "Hauls", "Species", "Catch"],
