@@ -801,39 +801,42 @@ define([
                   args: '"{0}"',
                   html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
                 },
+                Latitude: {
+                  colWidth: 50,
+                  numDecimals: 4
+                },
+                Longitude: {
+                  colWidth: 50,
+                  numDecimals: 4
+                },
                 Hauls: {
-                  colWidth: 20,
+                  colWidth: 50,
                   useCommas: true
                 },
                 Species: {
-                  colWidth: 20,
+                  colWidth: 50,
                   useCommas: true
                 },
                 Catch: {
-                  colWidth: 20,
+                  colWidth: 50,
                   useCommas: true
                 },
                 FishCatch: {
                   title:  "Fish Catch",
-                  colWidth:  30,
+                  colWidth:  60,
                   plugInFields: ["SiteID", "Site"],
                   args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
                   html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
                 },
                 SiteID: {
                   hidden: true
-                }
-
-                // TODO: get this to work
-/*
+                },
                 PhotoCount: {
                   title:  "Photos",
-                  colWidth:  10,
+                  colWidth:  50,
                   html:   "<img src='assets/images/Camera24X24.png' class='tableIcon' alt=''>",
-                  showWhen: "1"
+                  showWhen: 1
                 }
-*/
-
               },
               idField: 'SiteID',
               clickableSymbolType: "point",
@@ -891,7 +894,6 @@ define([
           clickableMsg: null
         });
 
-        siteTabs.fa.widgets = [faWidget];
         if (initTab === "faTab")
           stateNavigator.selectChild(initTab);
 
@@ -1019,7 +1021,8 @@ define([
                     headerDivName:  "faPhotoHeaderDiv",
                     disabledMsgInfix: "photo points",
                     disabledMsgDivName: "disabledMsg_faPhoto",
-                    defaultDisabledMsg: "Site photos can be seen from the Fish Atlas Sites tab",
+                    defaultDisabledMsg: 'Site photos can be seen by going to the "Fish Atlas Sites" tab and clicking on a row having a "photo" icon in the Photos column.',
+                    noDataMsg: "No photos available for this site.",
                     mapServiceLayer: faMapServiceLayer,
                     layerName: "Photos_Sites",
                     featureOutFields: ["*"],
@@ -1038,7 +1041,7 @@ define([
         });
         faPhotoWidget.resizeImg();
         photoWidgets.push(faPhotoWidget);
-
+        siteTabs.fa.widgets = [faWidget, faPhotoWidget];
 
       }, function(error){
         console.log("Fish Atlas MapServiceLayer failed to load:  " + error);

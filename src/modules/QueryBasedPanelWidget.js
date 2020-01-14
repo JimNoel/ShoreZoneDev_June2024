@@ -292,15 +292,6 @@ define([
 
       this.setHeaderItemVisibility();
       this.runQuery(view.extent);
-
-/*
-      let widgets = siteTabs[this.baseName].widgets;
-      let widgetsStr = "";
-      for (w in widgets) {
-        showPanelContents(widgets[w], false);
-      }
-*/
-
       this.makeFooterElements();
     },
 

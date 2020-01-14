@@ -47,6 +47,7 @@ let formatNumber = function(value, formatting) {
   return newValue
 };
 
+/*
 let fillTemplate = function(value, formatting) {
   if (!formatting)
     return value;
@@ -69,6 +70,7 @@ let fillTemplate = function(value, formatting) {
   }
   return newValue;
 }
+*/
 
 
 define([
@@ -188,7 +190,7 @@ define([
 
           let origAttrs = Object.assign({},features[i].attributes);     // Make a "copy" of the attributes object
           for (a in features[i].attributes)
-            if (features[i].attributes[a]) {
+            if (features[i].attributes[a] !== null) {
 
               let template = getIfExists(this,"specialFormatting." + a + ".html");
               if (template) {     // If template exists, use this to replace attribute value with HTML code
