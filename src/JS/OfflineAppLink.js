@@ -31,7 +31,7 @@ function updateDownloadDialog(vidCapCount, photoCount) {
     dlDataDialog += '<input type="checkbox" id="cb_LowResVidCap">&nbsp;&nbsp;Low resolution video captures (' + vidCapCount + ' images targeted)<br>';
     dlDataDialog += '<input type="checkbox" id="cb_HighResVidCap">&nbsp;&nbsp;High resolution video captures (' + vidCapCount + ' images targeted)<br>';
   }
-  //dlDataDialog += 'Description:&nbsp;&nbsp;<input type="text" id="text_Description" value="Spatial Data Extraction" size="30"><br>';
+  dlDataDialog += 'Description:&nbsp;&nbsp;<input type="text" id="text_Description" value="Spatial Data Extraction" size="30"><br>';
   dlDataDialog += '&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="downloadData();">Submit</button>';
   setContent("dlDataContent", dlDataDialog);
 }
