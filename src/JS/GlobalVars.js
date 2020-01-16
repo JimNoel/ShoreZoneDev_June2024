@@ -19,30 +19,33 @@ let maxSZFeatures = 6000;    // More than 2000 causes the browser to slow signif
 let maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
 let highlightSize = 15;
 
-let aoosQueryBaseUrl = "https://servomatic9000.axiomalaska.com/spatial-imagery/alaska_shorezone/imageMetadata?callback=jQuery111107511455304335468_1552688607085&x={lon}&y={lat}&width=300&height=300&_=1552688607089";
-let aoosPhotosBaseUrl = "https://servomatic9000.axiomalaska.com/photo-server/";
+//let aoosQueryBaseUrl = "https://servomatic9000.axiomalaska.com/spatial-imagery/alaska_shorezone/imageMetadata?callback=jQuery111107511455304335468_1552688607085&x={lon}&y={lat}&width=300&height=300&_=1552688607089";
+//let aoosPhotosBaseUrl = "https://servomatic9000.axiomalaska.com/photo-server/";
 
 let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
 
 let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
 
 //Map service URLs
-// Pacific States server URLs
-let szServerURLps = "https://geo.psmfc.org";
-let szRestServicesURLps = szServerURLps + "/arcgis/rest/services";
-let szMapServiceLayerURLps = szRestServicesURLps + "/NOAA/ShoreZoneFlexMapService/MapServer";
 
-// NOAA server URLs
+  // Pacific States server URLs
+let szServerURLps = "https://maps.psmfc.org";     // "https://geo.psmfc.org";
+let szRestServicesURLps = szServerURLps + "/arcgis/rest/services/NOAA";
+let szMapServiceLayerURLps = szRestServicesURLps + "/ShoreZone/MapServer";
+
+  // NOAA server URLs
 let szServerURLnoaa = "https://alaskafisheries.noaa.gov";
 let szRestServicesURLnoaa = szServerURLnoaa + "/arcgis/rest/services";
-let szMapServiceLayerURLnoaa = szRestServicesURLnoaa + "/ShoreZoneFlexMapService/MapServer";
-let szMapServiceLayerURLnoaaNew = szRestServicesURLnoaa + "/ShoreZone/MapServer";
-//let szMapServiceLayerURLnoaaNew = szRestServicesURLnoaa + "/ShoreZoneMapService/MapServer";
+let szMapServiceLayerURLnoaa = szRestServicesURLnoaa + "/ShoreZone/MapServer";
 
 // Set default server URLs
 let szServerURL = szServerURLnoaa;
 let szRestServicesURL = szRestServicesURLnoaa;
-let szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
+let szMapServiceLayerURL = szMapServiceLayerURLnoaa;
+let ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";
+let faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer";
+let sslMapServiceLayerURL = szRestServicesURLnoaa + "/Ports_SSL/MapServer";
+
 let szSublayerIDs = {};
 
 let videoClipURLs = "";    // For download of video clips for currnt extent
@@ -59,11 +62,9 @@ settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input ty
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
 
-let ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";        // ShoreStation gives CORS error for some reason
 let ssSublayerIDs = {};
 makeSublayerIdTable(ssMapServiceLayerURL, ssSublayerIDs);
 
-let faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer";
 let faSublayerIDs = {};
 makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 
@@ -125,18 +126,14 @@ if (siteParsJSON !== "") {
   siteParsJSON = '{"' + siteParsJSON + '"}';
   let sitePars = JSON.parse(siteParsJSON);
 
-  // for comparing performance of old and new SZ map services
-  if (sitePars["db"] === "sql") {
-    szMapServiceLayerURL = szMapServiceLayerURLnoaaNew;
-    alert("Switching to SqlServer-based map service");
-  }
-  else if (sitePars["db"] === "sde") {
+  // switch between NOAA & PSMFC servers
+  if (sitePars["server"] === "noaa") {
     szMapServiceLayerURL = szMapServiceLayerURLnoaa;
-    alert("Switching to old map service");
+    alert("Using SZ service on NOAA server");
   }
-  else if (sitePars["db"] === "ps") {
+  else if (sitePars["server"] === "ps") {
     szMapServiceLayerURL = szMapServiceLayerURLps;
-    alert("Switching to PSMFC map service");
+    alert("Using SZ service on PSMFC server");
   }
 
   // Use alternate offline app URL, if present in parameters
@@ -152,7 +149,6 @@ if (siteParsJSON !== "") {
 
 makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
 
-let sslMapServiceLayerURL = szRestServicesURL + "/Ports_SSL/MapServer";
 
 let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let mainMediaServer = "https://maps.psmfc.org/shorezonedata/";
