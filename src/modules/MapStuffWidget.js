@@ -168,6 +168,11 @@ define([
         orderByFields: ["PHY_IDENT"],
         extraOutFields:  ["CMECS_1", "CMECS_2", "CMECS_3", "Length_M", "Slope_calc", "SHORE_PROB", "LOST_SHORE", "Fetch_max", "Wave_Dissipation", "Orient_dir", "Tidal_height", "CVI_Rank"],
         specialFormatting: {      // Special HTML formatting for field values
+          PHY_IDENT: { colWidth: 100 },
+          HabClass: { colWidth: 100 },
+          BC_CLASS: { colWidth: 100 },
+          EXP_BIO: { colWidth: 80 },
+          Length_m: { colWidth: 80 },
           CMECS_1: { colWidth: 130 },
           CMECS_2: { colWidth: 130 },
           CMECS_3: { colWidth: 130 }
@@ -666,33 +671,34 @@ define([
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {
                   title:  "",
-                  colWidth:  10,
+                  colWidth:  5,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
                   html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
                 },
+                //Region: { colWidth: 10 },
                 Hauls: {
-                  colWidth: 20,
+                  colWidth: 10,
                   useCommas: true
                 },
                 Species: {
-                  colWidth: 20,
+                  colWidth: 10,
                   useCommas: true
                 },
                 Catch: {
-                  colWidth: 20,
+                  colWidth: 10,
                   useCommas: true
                 },
                 RegionID: {
                   title:  "Fish Catch",
-                  colWidth:  30,
+                  colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
                   args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
                   html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
                 },
                 SelRegionBtn: {
                   title:  "Locales",
-                  colWidth:  20,
+                  colWidth:  5,
                   plugInFields: ["RegionID", "Envelope"],
                   args: 'faWidget,{0},"{1}"',
                   html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
@@ -728,6 +734,7 @@ define([
                   args: '"{0}"',
                   html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
                 },
+                Region: { colWidth: 30 },
                 MapID: {
                   colWidth: 20                },
                 Hauls: {
