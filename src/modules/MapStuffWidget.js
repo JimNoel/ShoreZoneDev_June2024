@@ -273,10 +273,10 @@ define([
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {
                   title:  "",
-                  colWidth:  20,
+                  colWidth:  5,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
-                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='tableIcon' alt=''>"
                 },
                 RegionNumID: {
                   title:  "Region Id",
@@ -287,22 +287,22 @@ define([
                   colWidth:  20
                 },
                 Region: {
-                  title:  "Region Name",
-                  colWidth:  20
+                  title:  "Region Name"
+                  //colWidth:  15
                 },
                 SpTableBtn: {
                   title:  "Species Data",
-                  colWidth:  30,
+                  colWidth:  20,
                   plugInFields: ["RegionalID", "Region"],
                   args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='tableIcon' alt=''>"
                 },
                 SelRegionBtn: {
                   title:  "Stations",
-                  colWidth:  20,
+                  colWidth:  15,
                   plugInFields: ["RegionalID", "Envelope"],
                   args: 'ssWidget,"{0}","{1}"',
-                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='tableIcon' alt=''>"
                 }
               },
               idField: 'Region',
@@ -335,39 +335,39 @@ define([
                   colWidth:  20,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
-                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='tableIcon' alt=''>"
                 },
   */
                 LocaleConcat: {
                   title:  "Geographic Name",
-                  colWidth:  50
+                  //colWidth:  50
                 },
                 station: {
                   title:  "Station Id",
-                  colWidth:  20
+                  colWidth:  35
                 },
                 ExpBio: {
                   title:  "EXP BIO",
-                  colWidth:  20
+                  colWidth:  25
                 },
                 CoastalClass: {
                   title:  "Coastal Class",
-                  colWidth:  20
+                  colWidth:  35
                 },
                 date_: {
                   title:  "Date Sampled",
-                  colWidth:  20,
+                  colWidth:  35,
                   dateFormat: true
                 },
                 hasPhotos: {
                   title:  "Photos",
-                  colWidth:  10,
+                  colWidth:  20,
                   html:   "<img src='assets/images/Camera24X24.png' class='tableIcon' alt=''>",
                   showWhen: "1"
                 },
                 hasSpecies: {
                   title:  "Species",
-                  colWidth:  10,
+                  colWidth:  20,
                   plugInFields: ["station", "station"],
                   args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}"',
                   html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='tableIcon' alt=''>",
@@ -375,7 +375,7 @@ define([
                 },
                 hasProfile: {
                   title:  "Profile",
-                  colWidth:  10,
+                  colWidth:  20,
                   html:   "<img src='assets/images/graph.png' class='tableIcon' alt=''>",
                   showWhen: "1"
                 },
@@ -674,7 +674,7 @@ define([
                   colWidth:  5,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
-                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='tableIcon' alt=''>"
                 },
                 //Region: { colWidth: 10 },
                 Hauls: {
@@ -694,14 +694,14 @@ define([
                   colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
                   args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='tableIcon' alt=''>"
                 },
                 SelRegionBtn: {
                   title:  "Locales",
                   colWidth:  5,
                   plugInFields: ["RegionID", "Envelope"],
                   args: 'faWidget,{0},"{1}"',
-                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='tableIcon'  alt=''>"
                 }
               },
               idField: 'Region',
@@ -729,39 +729,39 @@ define([
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {
                   title:  "",
-                  colWidth:  10,
+                  colWidth:  5,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
-                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='tableIcon' alt=''>"
                 },
                 Region: { colWidth: 30 },
                 MapID: {
-                  colWidth: 20                },
+                  colWidth: 10                },
                 Hauls: {
-                  colWidth: 20,
+                  colWidth: 12,
                   useCommas: true
                 },
                 Species: {
-                  colWidth: 20,
+                  colWidth: 12,
                   useCommas: true
                 },
                 Catch: {
-                  colWidth: 20,
+                  colWidth: 12,
                   useCommas: true
                 },
                 LocaleID: {
                   title:  "Fish Catch",
-                  colWidth:  20,
+                  colWidth:  12,
                   plugInFields: ["LocaleID", "Locale"],
                   args: 'faSpTableWidget,"vw_CatchStats_LocalesSpecies","vw_CatchStats_Locales","LocaleID={0}","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='tableIcon' alt=''>"
                 },
                 SelLocaleBtn: {
                   title:  "Sites",
-                  colWidth:  20,
+                  colWidth:  8,
                   plugInFields: ["LocaleID", "Envelope"],
                   args: 'faWidget,{0},"{1}"',
-                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='tableIcon' alt=''>"
                 }
               },
               idField: 'Locale',
@@ -806,41 +806,44 @@ define([
                   colWidth:  20,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
-                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='tableIcon' alt=''>"
                 },
+                Region: { colWidth: 30 },
+                Site: { colWidth: 15 },
                 Latitude: {
-                  colWidth: 50,
+                  colWidth: 20,
                   numDecimals: 4
                 },
                 Longitude: {
-                  colWidth: 50,
+                  colWidth: 20,
                   numDecimals: 4
                 },
+                Habitat: { colWidth: 20 },
                 Hauls: {
-                  colWidth: 50,
+                  colWidth: 15,
                   useCommas: true
                 },
                 Species: {
-                  colWidth: 50,
+                  colWidth: 15,
                   useCommas: true
                 },
                 Catch: {
-                  colWidth: 50,
+                  colWidth: 15,
                   useCommas: true
                 },
                 FishCatch: {
                   title:  "Fish Catch",
-                  colWidth:  60,
+                  colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
                   args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' height='15' width='15' alt=''>"
+                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='tableIcon' alt=''>"
                 },
                 SiteID: {
                   hidden: true
                 },
                 PhotoCount: {
                   title:  "Photos",
-                  colWidth:  50,
+                  colWidth:  12,
                   html:   "<img src='assets/images/Camera24X24.png' class='tableIcon' alt=''>",
                   showWhen: 1
                 }
@@ -1406,6 +1409,7 @@ define([
       let legendDivId = null;
       const l = svcLegendInfo.findIndex(obj => obj.layerId === layerId );
       if (l !== -1) {
+        item.openable = true;
         const lTitle = svcLegendInfo[l].layerName;
         let fInfo = null;
         const f = legendFilters.findIndex(obj => obj.layerTitle === lTitle);
@@ -1442,31 +1446,27 @@ define([
           content: contentDiv,
           open: (item.visible && item.visibleAtCurrentScale)
         };
-        item.watch("visible", function() {
-          item.panel.open = (item.visible && item.visibleAtCurrentScale);
-/*
-          if (item.panel.open)
-            filterLegend(item.title, nonNullList);
-*/
-        });
       }
 
+      item.watch("visible", function() {
+        if (item.widget)
+          item.widget.clickableLayer.visible = item.visible;    // Make associated clickableLayer visibility same as LayerList item visibility
+        if (item.openable)
+          item.panel.open = (item.visible && item.visibleAtCurrentScale);
+      });
+
+      if (item.layer.title === "Still Photos") {
+        item.widget = szPhotoWidget;
+      }
       if (item.layer.title === "Video Flightline") {
         listItem_VideoFlightline = item;
-        //item.layer.listMode = "hide-children";
+        item.widget = szVideoWidget;
       }
       if (item.layer.title === "10s") {
         listItem_10s_legendHtml = item.panel.content.innerHTML;
         modify_LayerListItem_VideoFlightline();
       }
 
-      /*
-            //  NOT SURE WHAT THIS WAS FOR?
-            if (event.item.layer.title === "Derived ShoreZone Attributes")
-              event.item.layer.visible = false;     // turn off layer display
-            if (event.item.layer.title === "Video Flightline")
-              event.item.visible = false;
-      */
     };
 
     llExpand.content = wrapperWithOpacitySlider(layerListWidget.domNode, "Layers");
