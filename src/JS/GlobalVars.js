@@ -91,6 +91,7 @@ let basemapIds = [
 let locateIconLayer;     // GraphicsLayer for displaying user location.  Used by Locate widget.
 let layoutCode = "h2";     // default layout
 let initTab = "szTab";
+let initExpandoCollapsed = false;
 
 const legendFilters = [
   {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","},
@@ -118,7 +119,6 @@ function filterLegend(serviceName, nonNullList) {
   }
 }
 
-
 //* process site parameters
 let siteParsJSON = location.search.slice(1);
 if (siteParsJSON !== "") {
@@ -143,8 +143,15 @@ if (siteParsJSON !== "") {
   if (sitePars["layout"])
     layoutCode = sitePars["layout"];
 
-  if (sitePars["tab"])
-    initTab = sitePars["tab"] + "Tab";
+  if (sitePars["tab"]) {
+    initTab = sitePars["tab"];
+    if (initTab === "szsimple") {
+      initTab = "sz";
+      initExpandoCollapsed = true;
+    }
+    initTab += "Tab";
+  }
+
 }
 
 makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);

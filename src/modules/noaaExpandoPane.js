@@ -24,7 +24,12 @@ define([
     toggle: function() {
       this.inherited(arguments);
       window.setTimeout(panelResizeHandler, 500);
+    },
+
+    expanded: function() {
+      return this._showing;
     }
+
 
   });
 });

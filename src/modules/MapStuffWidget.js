@@ -417,9 +417,6 @@ define([
         });
         /* end szWidget def*/
 
-        if (initTab === "ssTab")
-          stateNavigator.selectChild(initTab);
-
         ssSpTableWidget = new QueryBasedTablePanelWidget({
           objName: "ssSpTableWidget",
           title: "Species Data",       // "Shore Stations",
@@ -578,7 +575,11 @@ define([
         });
 
         siteTabs.ss.widgets = [ssWidget, ssPhotoWidget, ssProfileWidget];
-      }, function(error){
+
+        if (initTab === "ssTab")
+          stateNavigator.selectChild(initTab);
+
+        }, function(error){
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
 
@@ -906,9 +907,6 @@ define([
           clickableMsg: null
         });
 
-        if (initTab === "faTab")
-          stateNavigator.selectChild(initTab);
-
         faSpTableWidget = new QueryBasedTablePanelWidget({
           objName: "faSpTableWidget",
           title: "Fish Catch",
@@ -1055,6 +1053,8 @@ define([
         photoWidgets.push(faPhotoWidget);
         siteTabs.fa.widgets = [faWidget, faPhotoWidget];
 
+        if (initTab === "faTab")
+          stateNavigator.selectChild(initTab);
       }, function(error){
         console.log("Fish Atlas MapServiceLayer failed to load:  " + error);
       });
