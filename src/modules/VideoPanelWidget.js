@@ -447,7 +447,7 @@ define([
 
       speedHTML = getPlaybackControlHTML()//"<span style='position: absolute; right: 10px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span>"
 
-      let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()'/>"
+      let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()' title='Click to lock in or unlock current set of video points' />";
       let leftToolsHTML = "<span style='position: absolute; left: 10px'>" + lockHTML + "</span>";
 
       videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'videoTools', '', this.objName) + speedHTML + lockHTML;
