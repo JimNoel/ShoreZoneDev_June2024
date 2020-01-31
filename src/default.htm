@@ -29,8 +29,14 @@
 	        line-height: 35px;
 	        vertical-align:3px;
         }
-        
-    </style>
+
+				.spanLayout  {position: absolute; background-color: coral}
+
+					.radioBtnLayout  {position: absolute; top: 65px}
+
+					.imgLayout  {position:absolute; left: 35px; top:10px; height:140px}
+
+		</style>
 
 
     <script language="javascript">
@@ -40,6 +46,15 @@
     
         function setInitTab(arg) {
             initTab = arg;
+            let szVideoSpan = document.getElementById("szVideoPreviewWrapper");
+						let othersSpan = document.getElementById("layoutPreviewWrapper");
+            if (arg === "szSimple") {
+            	szVideoSpan.style.visibility = "inherit";
+							othersSpan.style.visibility = "hidden";
+						} else {
+							szVideoSpan.style.visibility = "hidden";
+							othersSpan.style.visibility = "inherit";
+						}
         }
         
         function setInitLayout(arg) {
@@ -86,7 +101,7 @@
 </script>
 <!-- End Google Tag Manager -->
 
-    <img src="assets/images/noaa_wb.png" alt="NOAA logo" style="top:5; left:10" height="50" width="50" />
+    <img src="assets/images/noaa_wb.png" alt="NOAA logo" style="top:5px; left:10px" height="50" width="50" />
     
     <span style="position:absolute; left:100px; top:25px" >
 				<a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.noaa.gov/disclaimer.html')" >Disclaimer</a> &nbsp;&nbsp;
@@ -106,8 +121,10 @@
       <span style="position:absolute; left:50px; top:180px;">
 	    <label class="subTitle">Choose a database</label><br />
 	    
-	    <input type="radio" name="rgInitialTab" id="radioSZ" class="radioButton" value="sz" onclick="setInitTab('sz')" checked />
-	        <label for="radioSZ" class="radioText">ShoreZone</label><br />
+	    <input type="radio" name="rgInitialTab" id="radioSZvideo" class="radioButton" value="szVideo" onclick="setInitTab('szSimple')" checked />
+	        <label for="radioSZ" class="radioText">ShoreZone Video</label><br />
+	    <input type="radio" name="rgInitialTab" id="radioSZ" class="radioButton" value="sz" onclick="setInitTab('sz')" />
+	        <label for="radioSZ" class="radioText">ShoreZone Data</label><br />
 	    <input type="radio" name="rgInitialTab" id="radioFA" class="radioButton" value="fa" onclick="setInitTab('fa')" />
 	        <label for="radioFA" class="radioText">Nearshore Fish Atlas</label><br />
 	    <input type="radio" name="rgInitialTab" id="radioSS" value="ss" onclick="setInitTab('ss')" />
@@ -116,24 +133,29 @@
         <br /><br /><br />
       </span>
 
-      <span style="position:absolute; left:350px; top:180px; width:400px;">
-	    	<center><label class="subTitle">Choose a desktop <br /> configuration</label></center>
-				<span style="position:absolute; left:0px; top:80px">
-	    		<input type="radio" id="rbImagesBelow" name="rgImageLayout" value="v2" onclick="setInitLayout('v2')" checked /><label for="rbImagesBelow" class="radioText">Images on bottom</label><br />
-	        <img src="assets/images/SZflex_Images_on_Botom_crop.png" style="position:relative; top:10px; width:2.09in; height:1.75in" /><br />
-	    	</span>
-        <span style="position:absolute; left:220px; top:80px">
-	    		<input type="radio" id="rbImagesRight" name="rgImageLayout" value="v2" onclick="setInitLayout('v3')" /><label for="rbImagesRight" class="radioText">Images to right</label><br />
-	        <img src="assets/images/SZflex_Images_to_Right_crop.png" style="position:relative; top:10px; width:2.09in" /><br />
-        </span>	      
-        <span style="position:absolute; left:440px; top:80px">
-	    		<input type="radio" id="rbImagesRight" name="rgImageLayout" value="h2" onclick="setInitLayout('h2')" /><label for="rbImagesRight" class="radioText">Table on bottom</label><br />
-	        <img src="assets/images/layoutPreview_h3.png" style="position:relative; top:10px; width:2.09in" /><br />
+
+		<span id="szVideoPreviewWrapper" style="position:absolute; left:350px; top:180px; width:400px; visibility: inherit">
+			<img alt="preview image" src="assets/images/layoutPreview_szVideo.PNG" style="position:relative; top:10px; height:140px"/>
+		</span>
+
+      <span id="layoutPreviewWrapper" style="position:absolute; left:350px; top:180px; width:400px; visibility: hidden">
+	    	<label class="subTitle">Choose a desktop configuration</label>
+        <span class="spanLayout" style="left:0px; top:50px">
+	    		<input type="radio" class="radioBtnLayout" id="h2" name="rgImageLayout" value="h2" onclick="setInitLayout('h2')" checked />
+	        <img class="imgLayout" src="assets/images/layoutPreview_h2.png" />
         </span>
+				<span class="spanLayout" style="left:300px; top:50px">
+	    		<input type="radio" class="radioBtnLayout" id="rbImagesBelow" name="rgImageLayout" value="v2" onclick="setInitLayout('v2')" />
+	        <img class="imgLayout" src="assets/images/layoutPreview_v2.png" /><br />
+	    	</span>
+        <span class="spanLayout" style="left:600px; top:50px">
+	    		<input type="radio" class="radioBtnLayout" id="v3" name="rgImageLayout" value="v2" onclick="setInitLayout('v3')" />
+	        <img class="imgLayout"  src="assets/images/layoutPreview_v3.png" /><br />
+        </span>	      
       </span>
 	</form>
 
-        <button onclick="openSZJS()" style="position:absolute; left:120px; top:330px; font-family:Calibri; font-weight:bold; font-size:28pt;
+        <button onclick="openSZJS()" style="position:absolute; left:120px; top:370px; font-family:Calibri; font-weight:bold; font-size:28pt;
               box-shadow: 0px 6px 0px 0px rgba(56, 93, 138, 1),
                             0px 5px 12px 0px rgba(0, 0, 0, 0.6),
                             inset 0px 0px 10px -5px rgba(0, 0, 0, 1);
