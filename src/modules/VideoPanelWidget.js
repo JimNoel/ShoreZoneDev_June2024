@@ -439,7 +439,7 @@ define([
       };
 
       function getPlaybackControlHTML() {
-        let html = "<div class=\"playback_speed_div\"><span style='position: absolute; right: 30px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span><div id=\"slider_value\" class=\"slider_value\" style=\"float: right\"></div></div>";
+        let html = "<div class=\"playback_speed_div\"><span style='position: absolute; right: 10px; width: 20%'><input type='range' id='playback_speed_range' step='10' style='width: 100%' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span><div id=\"slider_value\" class=\"slider_value\" style=\"float: right\"></div></div>";
         return html
       }
 
