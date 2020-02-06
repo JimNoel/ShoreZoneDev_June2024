@@ -324,8 +324,9 @@ define([
               if (row.data[dataPresentField] !== "") {
                 let whereField = A[1];
                 let theValue = stripHtml(row.data[whereField]);
-                let theWhere = whereField + "='" + theValue + "'";
-                console.log(event);
+                if (A[3] === "string")                  // Check if string or numeric.  If numeric, A[3] probably isn't there.
+                  theValue = "'" + theValue + "'";      // If it's a string then add quotes
+                let theWhere = whereField + "=" + theValue;
                 if (!w.queryPending) {
                   w.queryPending = true;
                   w.runQuery(null, {theWhere});

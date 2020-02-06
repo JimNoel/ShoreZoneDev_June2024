@@ -318,7 +318,8 @@ define([
             },
             {
               tabName: 'Stations',
-              subWidgetInfo: ["ssPhotoWidget:station:hasPhotos", "ssProfileWidget:station:hasProfile"],     // name of subwidget : filter field : column to check before running query
+              subWidgetInfo: ["ssPhotoWidget:station:hasPhotos:string", "ssProfileWidget:station:hasProfile:string"],
+              // name of subwidget : filter field : column to check before running query : (optional) "string" if it's a string field
               tabTitle: 'ShoreStation Stations',
               popupTitle: "ShoreStation Stations",
               LayerNameAddOn: 'Field Stations',
@@ -1493,8 +1494,11 @@ define([
     view.ui.add(prevNextBtnsDiv, "top-left");
 
     savedExtentsWidget = new Bookmarks({
-      //bookmarks: new Collection(),      // In 4.12, needed to get past bug
-      view: view
+      view: view,
+/*
+      bookmarks: new Collection(),      // In 4.12, needed to get past bug
+      editingEnabled: true    //4.14
+*/
     });
     let savedExtentsExpand = new Expand({
       expandIconClass: "esri-icon-collection",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/

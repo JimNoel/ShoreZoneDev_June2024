@@ -30,7 +30,7 @@ let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.ht
 
   // Pacific States server URLs
 let szServerURLps = "https://maps.psmfc.org";     // "https://geo.psmfc.org";
-let szRestServicesURLps = szServerURLps + "/arcgis/rest/services/NOAA";
+let szRestServicesURLps = szServerURLps + "/server/rest/services/NOAA";
 let szMapServiceLayerURLps = szRestServicesURLps + "/ShoreZone/MapServer";
 
   // NOAA server URLs
@@ -61,12 +61,6 @@ settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange=
 settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
-
-let ssSublayerIDs = {};
-makeSublayerIdTable(ssMapServiceLayerURL, ssSublayerIDs);
-
-let faSublayerIDs = {};
-makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
 
 let basemapIds = [
   "oceans",
@@ -133,6 +127,9 @@ if (siteParsJSON !== "") {
   }
   else if (sitePars["server"] === "ps") {
     szMapServiceLayerURL = szMapServiceLayerURLps;
+    ssMapServiceLayerURL = szRestServicesURLps + "/ShoreStation_2019/MapServer";
+    faMapServiceLayerURL = szRestServicesURLps + "/FishAtlas_wViews/MapServer";
+    sslMapServiceLayerURL = szRestServicesURLps + "/Ports_SSL/MapServer";
     alert("Using SZ service on PSMFC server");
   }
 
@@ -155,6 +152,11 @@ if (siteParsJSON !== "") {
 }
 
 makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
+let ssSublayerIDs = {};
+makeSublayerIdTable(ssMapServiceLayerURL, ssSublayerIDs);
+let faSublayerIDs = {};
+makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
+
 
 
 let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
@@ -450,7 +452,6 @@ function showPanelContents(panelNames, show, disabledMsg) {
       if (disabledMsg)
         getEl("disabledMsg_" + names[i]).innerText = disabledMsg;
     }
-    console.log("panelEnabled_" + names[i] + " is now " + panelEnabledDivStyle.visibility)
   }
 }
 
@@ -761,22 +762,6 @@ function gotoSavedExtent(offset) {
 /* For extent history and prev/next extent navigation*/
 
 
-function simulateMouseEvent(el, evType) {
-  let event = new MouseEvent(evType, {
-    view: window,
-    bubbles: true,
-    cancelable: true
-  });
-  let cancelled = !el.dispatchEvent(event);
-  if (cancelled) {
-    // A handler called preventDefault.
-    console.log("cancelled");
-  } else {
-    // None of the handlers called preventDefault.
-    console.log("not cancelled");
-  }
-}
-
 function isInViewport(el, scrollWindow) {
   let elementTop = $(el).offset().top;
   let elementBottom = elementTop + $(el).outerHeight();
@@ -982,6 +967,22 @@ function getSubLayerID(mapImageLayer, subLayerName) {
 
 function getSubLayerUrl(mapImageLayer, subLayerName) {
   return this.mapServiceLayer.url + "/" + getSubLayerID(mapImageLayer, subLayerName).toString();
+}
+
+function simulateMouseEvent(el, evType) {
+  let event = new MouseEvent(evType, {
+    view: window,
+    bubbles: true,
+    cancelable: true
+  });
+  let cancelled = !el.dispatchEvent(event);
+  if (cancelled) {
+    // A handler called preventDefault.
+    console.log("cancelled");
+  } else {
+    // None of the handlers called preventDefault.
+    console.log("not cancelled");
+  }
 }
 
 */

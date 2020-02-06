@@ -41,8 +41,6 @@ define([
 
       lang.mixin(this, kwArgs);
       
-      //console.log("UnitsPanelWidget created");
-
       this.UnitAttrsInfo = [];
 
       this.tableColumns = [];
