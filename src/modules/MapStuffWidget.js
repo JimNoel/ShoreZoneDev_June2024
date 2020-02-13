@@ -536,7 +536,7 @@ define([
           mapServiceLayer: ssMapServiceLayer,
           layerName: "GVDATA_STNPHOTOS",
           featureOutFields: ["*"],
-          photoServer: "https://alaskafisheries.noaa.gov/mapping/shorestationdata/",      // TODO: Set up so this info appears near top of GlobarVars.js
+          photoServer: "https://alaskafisheries.noaa.gov/mapping/shorestationdata/compress75/",      // TODO: Set up so this info appears near top of GlobarVars.js
           relPathField: "FileLocation",
           fileNameField: "ImageFileName",
           captionFields: ["CaptionText", "Description"],
@@ -1170,7 +1170,7 @@ define([
         p.dockEnabled = true;
         p.dockOptions = {position: "bottom-right" };
       }
-      p.actions.removeAll();      // not working
+      p.actions.removeAll();
       p.actions.push(moveButtonAction);
       p.on("trigger-action", function(event){
         if (event.action.id === "move-camera") {

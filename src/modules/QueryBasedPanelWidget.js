@@ -111,6 +111,8 @@ define([
         infoWin.content = "<nobr><b>" + attrs.Caption.replace(":",":</b>") + "</nobr><br>";        //+ "</b>";
         //a.Caption = "<b>" + a.Caption.replace(":","</b>");      //
 
+        // TODO: This only applies to QueryBasedTablePanelWidget.  In this case, get attr names & values/descriptions from table.
+        //    (Might have to get extendeed attribute name, in some cases.)
         if (this.showFieldsInPopup) {
           for (f in this.query.outFields) {
             a = this.query.outFields[f];

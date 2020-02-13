@@ -384,6 +384,7 @@
         }
         setGraphicsLayersVisibilities(className);
         dijit.byId(className + "MediaBC").resize();   // This is needed to handle "disappearing photo panel" issue
+        llExpand.expanded = (className === "sz");
       }
 
       function setGraphicsLayersVisibilities(className) {

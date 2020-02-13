@@ -445,7 +445,14 @@ define([
 
       this.setSyncPhotos(true);
 
-      speedHTML = getPlaybackControlHTML()//"<span style='position: absolute; right: 10px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span>"
+      let speedHTML = '<span class="photoCount" style="position: absolute; right: 5px; bottom: 5px; width: 50px;">';
+      speedHTML += '<img src="assets/images/minus_12x12_red.png" />';
+      //speedHTML += '<span id="speedSpan" style="position: absolute; left: 10px; width: 30px; text-align: center">';
+      speedHTML += '<span id="speedSpan" class="photoCount" style="position: absolute; bottom:0; left: 15px; width: 20px;">';
+      speedHTML += '1.75X</span>';
+      speedHTML += '</span>';
+
+      //speedHTML = getPlaybackControlHTML()//"<span style='position: absolute; right: 10px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span>"
 
       let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()' title='Click to lock in or unlock current set of video points' />";
       let leftToolsHTML = "<span style='position: absolute; left: 10px'>" + lockHTML + "</span>";
