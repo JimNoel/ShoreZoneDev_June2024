@@ -73,6 +73,7 @@ function CheckVideoProgress() {
   szVideoWidget.update_track(szVideoWidget.getVideoPosition(), duration);
 }
 
+/*    // old Tristan code for speed slider
 function changePlaybackSpeed(p) {
   // Change the playback speed of the video player to p. p should be a value between 0 and 100. 0 will indicate the lowest possible playback speed, 100 the highest
   if (!youtube_player)
@@ -90,6 +91,7 @@ function getProportionalInt(p, min, max) {
   // Return the value that is p% of the way between min and max, rounded to the nearest integer.
   return Math.round(min + (p / 100.0) * (max - min))
 }
+*/
 
 function onYouTubeIframeAPIReady() {
   // YouTube API calls this function when download of the API is complete

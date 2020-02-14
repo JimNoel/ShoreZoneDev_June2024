@@ -501,10 +501,31 @@ function checkbox_showFeatures_clickHandler(w, cb) {
   }
 }
 
+/*    // old Tristan code for speed slider
 function findAndChangePlaybackSpeed() {
   changePlaybackSpeed(document.getElementById('playback_speed_range').value);
 }
+*/
 
+function nudgePlaybackSpeed(incr) {
+  if (!youtube_id)
+    return;
+  let currSpeed = youtube_player.getPlaybackRate();
+  let avail_rates = youtube_player.getAvailablePlaybackRates();
+  let i = avail_rates.indexOf(currSpeed) + incr;
+  let newSpeed = currSpeed;
+  if (i>=0 && i<avail_rates.length) {
+    newSpeed = avail_rates[i];
+    youtube_player.setPlaybackRate(newSpeed);
+    updatePlaybackSpeedMarker(newSpeed, i>0, i<(avail_rates.length-1));
+  }
+}
+
+function updatePlaybackSpeedMarker(newSpeed, showMinus, showPlus) {
+  getEl("speedSpan").innerText = newSpeed + "X";
+  setVisible(("speedDecrIcon"), showMinus);
+  setVisible(("speedIncrIcon"), showPlus);
+}
 
 // If parentObject has property indicated in propertyChain, returns the value of that property.  Otherwise, returns null
 function getIfExists(parentObject, propertyChain) {

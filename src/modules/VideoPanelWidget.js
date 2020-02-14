@@ -438,30 +438,33 @@ define([
                 return p;
       };
 
+/*    // old Tristan code for speed slider
       function getPlaybackControlHTML() {
         let html = "<div class=\"playback_speed_div\"><span style='position: absolute; right: 10px; width: 20%'><input type='range' id='playback_speed_range' step='10' style='width: 100%' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span><div id=\"slider_value\" class=\"slider_value\" style=\"float: right\"></div></div>";
         return html
       }
+      let speedHTML = getPlaybackControlHTML()
+*/
 
       this.setSyncPhotos(true);
 
-      let speedHTML = '<span class="photoCount" style="position: absolute; right: 5px; bottom: 5px; width: 50px;">';
-      speedHTML += '<img src="assets/images/minus_12x12_red.png" />';
-      //speedHTML += '<span id="speedSpan" style="position: absolute; left: 10px; width: 30px; text-align: center">';
-      speedHTML += '<span id="speedSpan" class="photoCount" style="position: absolute; bottom:0; left: 15px; width: 20px;">';
-      speedHTML += '1.75X</span>';
+      let speedHTML = '<span class="photoCount" style="position: absolute; right: 5px; bottom: 5px; width: 60px;">';
+      speedHTML += '<img id="speedDecrIcon" src="assets/images/minus_12x12_red.png" style="position: absolute; bottom: 1px; left: 0" title="Click to reduce playback speed." onclick="nudgePlaybackSpeed(-1)"/>';
+      speedHTML += '<span id="speedSpan" class="photoCount" style="position: absolute; bottom:0; left: 15px; width: 40px; text-align: center; font-weight: bold; padding-left: 0; padding-right: 0;" title="Current playback speed.  Click the +/- icons to increase or decrease.">';
+      speedHTML += '1X</span>';
+      speedHTML += '<img id="speedIncrIcon" src="assets/images/plus_12x12_red.png" style="position: absolute; bottom: 1px; right: 0" title="Click to increase playback speed." onclick="nudgePlaybackSpeed(1)"/>';
       speedHTML += '</span>';
-
-      //speedHTML = getPlaybackControlHTML()//"<span style='position: absolute; right: 10px;'><input type='range' id='playback_speed_range' step='10' onchange='findAndChangePlaybackSpeed()' title='Adjust playback speed'></span>"
 
       let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()' title='Click to lock in or unlock current set of video points' />";
       let leftToolsHTML = "<span style='position: absolute; left: 10px'>" + lockHTML + "</span>";
 
       videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'videoTools', '', this.objName) + speedHTML + lockHTML;
 
+/*    // old Tristan code for speed slider
       $("#playback_speed_range").on("input", function(val){
         $("#slider_value").html(val.target.value)
       })
+*/
 
 
       },    // end of constructor function
