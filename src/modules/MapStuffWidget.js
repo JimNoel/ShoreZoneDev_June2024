@@ -1621,15 +1621,20 @@ define([
     view.ui.add(showUnitsDiv, "bottom-left");
 
     // Add ESRI search widget to map
-    let searchWidget = new Search({ view: view, maxSuggestions: 4 });
+    searchWidget = new Search({ view: view, maxSuggestions: 4 });
     view.ui.add(searchWidget, "bottom-right");
+
+    let cbCode = '<input type="checkbox" id="cbLimitSearchToExtent" checked onclick="cbSearchExtentHandler()">  Limit suggestions to current extent';
+    searchWidget.container.appendChild(makeHtmlElement("DIV", "cbLimitToExtentDiv", null, null, cbCode));
 
     // Default source:  https://developers.arcgis.com/rest/geocode/api-reference/overview-world-geocoding-service.htm
     searchWidget.on("suggest-start", function(event){
-      this.activeSource.filter = {
-        geometry: view.extent
-        //where: "countryCode='USA'"
-      };
+      if (searchLocal)
+        this.activeSource.filter = {
+          geometry: view.extent
+        };
+      else
+        this.activeSource.filter = null;
       this.activeSource.countryCode = "US";
     });
 

@@ -453,3 +453,5 @@ cursor: pointer;
 /*  This is the class for Layer headers (including Group layers)
 .esri-layer-list__item-title
  */
+
+#cbLimitToExtentDiv  {position: absolute; left: 30px; top:30px; font-size: 12px; font-style: italic; font-weight: bold;}

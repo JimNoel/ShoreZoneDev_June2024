@@ -202,6 +202,9 @@ let listItem_10s_legendHtml = null;
 let listItem_VideoFlightline = null;
 let legendInfo = {};
 
+let searchWidget = null;
+let searchLocal = true;
+
 //  When a graphic is hovered over, these point to the graphic and the widget controlling the graphic
 let minHoverTime = 500;     // Minimum hover time (ms) over a graphic before a new popup opens up
 //let hitTestStartTime = null;
@@ -948,6 +951,13 @@ function relOffset(el, tgtDiv) {
   return ofs;
 }
 
+function cbSearchExtentHandler() {
+  searchLocal = getEl("cbLimitSearchToExtent").checked;
+}
+
+function containerChangeCallBack(newValue, oldValue, property, object) {
+  console.log("containerChangeCallBack");
+}
 
 // For debug purposes
 function test() {
