@@ -48,7 +48,7 @@ let sslMapServiceLayerURL = szRestServicesURLnoaa + "/Ports_SSL/MapServer";
 
 let szSublayerIDs = {};
 
-let videoClipURLs = "";    // For download of video clips for currnt extent
+let videoClipURLs = "";    // For download of video clips for current extent
 
 let settings = {
   autoRefresh: true,
