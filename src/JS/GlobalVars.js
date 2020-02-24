@@ -959,6 +959,25 @@ function containerChangeCallBack(newValue, oldValue, property, object) {
   console.log("containerChangeCallBack");
 }
 
+// On right-click of SZ photo, bypasses default context menu and allows download of original resolution photo
+function downloadOrigRes(e) {
+  let imgSrc = this.getElementsByTagName("IMG")[0].src;
+  let lowResInesrt = "_lowres/280_";
+  let midResInesrt = "_midres/560_";
+  let origResSrc = imgSrc.replace(lowResInesrt,"/").replace(midResInesrt,"/");
+  if (confirm("Do you want to download this photo?")) {
+    /*    // Still can't get it to download straight to file file rather than open in new tab.
+              let theStyle = "position: absolute; left:" + e.clientX + "px; top:" + e.clientY + "px; width:200px; height:50px; z-index: 10; background-color: white";
+              let theContent = '<a href="' + origResSrc + '" download>Download image</a>';
+              document.body.appendChild(makeHtmlElement("DIV",null,null, theStyle,theContent));
+    */
+    window.open(origResSrc);
+  }
+  return false;
+}
+
+
+
 // For debug purposes
 function test() {
   alert("Website last modified on  " + document.lastModified);

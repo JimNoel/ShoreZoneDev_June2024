@@ -111,6 +111,8 @@ define([
 
       lang.mixin(this, kwArgs);
 
+      this.hasTable = true;
+
       this.hideEmptyColumns = true;
       this.store = null;
       this.grid = null;
@@ -127,7 +129,7 @@ define([
 
         if (this.calcFields)
           for (let f in this.calcFields) {
-            let p =0;
+            let p = -1;
             if (this.calcFields[f].afterField)
               p = fields.findIndex(obj => obj.name == this.calcFields[f].afterField);
             let newField = {
@@ -292,7 +294,7 @@ define([
           let associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
           this.showGridTooltip(event, rowIndex, associatedGraphic);
           if (this.clickableLayer.visible) {
-            this.displayPlayButton(associatedGraphic);
+            this.displayPlayButton(associatedGraphic, row);
           }
           // row.element === the element with the dgrid-row class
           // row.id === the identity of the item represented by the row
@@ -373,8 +375,11 @@ define([
             let cell = this.grid.cell(event);
             if (cell.column) {
               let fieldName = cell.column.field;
-              let fieldValueDescr = this.attrValDescription(fieldName, associatedGraphic.attributes);
-              if (fieldValueDescr !== associatedGraphic.attributes[fieldName]) {
+              let fieldValue = associatedGraphic.attributes[fieldName];
+              if (!fieldValue)
+                return;
+              let fieldValueDescr = this.attrValDescription(fieldName, fieldValue);
+              if (fieldValueDescr !== fieldValue) {
                 let toolTipText = fieldValueDescr;
                 dijit.showTooltip(toolTipText, cell.element);
               }
@@ -558,6 +563,28 @@ define([
       this.unHighlightCurrentRow = function() {
         if (this.selectedRow)
           this.selectedRow.style.backgroundColor = unselectColor;
+      }
+
+      this.rowHtmlToLines = function(row) {
+        console.log("rowHtmlToLines");
+        let th = this.grid.headerNode.getElementsByTagName("TH");
+        let tr = row.element;
+        let td = tr.getElementsByTagName("TD");
+        let h = "";
+        for (i=0; i<td.length; i++) {
+          let colHeader = this.attrName(th[i].innerText);
+          if (this.popupAltHeaders && this.popupAltHeaders[i])
+              colHeader = this.popupAltHeaders[i];
+          let value =row.data[this.grid.columns[i].field];
+          if (value) {
+            if (typeof value === "string")
+              value = value.replace("actionIcon", "actionIconPopup");    // If it's an icon with class "actionIcon", change to class for display in popup
+            // TODO:  Fix this  (2nd argument should be object made of attributes, e.g. for SZ UNits:  {PHY_IDENT, HabClass, ...
+            value = this.attrValDescription(th[i].field, value);
+            h += "<div><b>" + colHeader + ":</b>&nbsp;&nbsp;" + value + "</div>";
+          }
+        }
+        return h;
       }
 
       this.makeTableHeaderHtml();

@@ -87,10 +87,12 @@ define([
         this.infoWin.close();
       };
 
-      // default method, returns argument
+      // default method, returns attrValue
       // override this method in subwidget
-      this.attrValDescription = function(a, attrs) {
-        return attrs[a];
+      this.attrValDescription = function(attrName, attrValue) {
+        //if (!attrs)
+        //  return a;
+        return attrValue;
       };
 
       // default method, returns argument
@@ -99,7 +101,7 @@ define([
         return a;
       };
 
-      this.displayPlayButton = function(e) {
+      this.displayPlayButton = function(e, row) {
         // TODO:  Make the popup moveable?  (Example for 3.x using Dojo is at http://jsfiddle.net/goldenlimit/gaz8ao8n)
         let infoWin = view.popup;
         if (popupsDocked) {
@@ -111,8 +113,15 @@ define([
         infoWin.content = "<nobr><b>" + attrs.Caption.replace(":",":</b>") + "</nobr><br>";        //+ "</b>";
         //a.Caption = "<b>" + a.Caption.replace(":","</b>");      //
 
+        //infoWin.container.style.maxHeight = "300px";
+        //infoWin.container.setAttribute("style", "max-height: 300px;");
+
+        if (row)
+          infoWin.content = this.rowHtmlToLines(row);
+
         // TODO: This only applies to QueryBasedTablePanelWidget.  In this case, get attr names & values/descriptions from table.
         //    (Might have to get extendeed attribute name, in some cases.)
+/*
         if (this.showFieldsInPopup) {
           for (f in this.query.outFields) {
             a = this.query.outFields[f];
@@ -120,13 +129,11 @@ define([
               infoWin.content += "<nobr><b>" + this.attrName(a) + ": </b>" + this.attrValDescription(a, attrs) + "</nobr><br>";
           }
         }
+*/
 
+        infoWin.actions.removeAll();
         if (this.clickableMsg) {
-          infoWin.actions.items[0].visible = true;
-          infoWin.actions.items[0].title = this.clickableMsg;
-          infoWin.actions.items[0].image = this.trackingImageURL;
-        } else {
-          infoWin.actions.items[0].visible = false;
+          infoWin.actions.push({id: "move-camera", title: this.clickableMsg, image: this.trackingImageURL});
         }
 
         //    Positions the popup.  Disabled for now, as it can cause panning of display.
@@ -364,6 +371,8 @@ define([
 
       let centerPanel = makeHtmlElement("div", name + "Container", classType + "ContainerDiv");
       centerPanel.innerHTML = midContent;
+      if (this.customContextMenu)
+        centerPanel.oncontextmenu = this.customContextMenu;
       theContainer.appendChild(centerPanel);
 
       if (this.footerPanel) {

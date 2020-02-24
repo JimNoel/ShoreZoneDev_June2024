@@ -78,6 +78,16 @@ define([
       };
 
       // This method overrides the original method in QueryBasedPanelWidget.js
+      this.attrValDescription = function(attrName, attrValue) {
+        let o = this.findAttrInfoObj(attrName);
+        if (o) {
+          return o.descrLookup[attrValue];
+        } else {
+          return attrValue;
+        }
+      };
+
+/*
       this.attrValDescription = function(a, attrs) {
         let o = this.findAttrInfoObj(a);
         if (o) {
@@ -86,6 +96,8 @@ define([
           return attrs[a];
         }
       };
+
+*/
 
     },
 
