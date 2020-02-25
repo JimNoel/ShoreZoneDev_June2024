@@ -538,7 +538,7 @@ define([
         if (this.speciesTableInfo) {
           let spTableSpanId = this.baseName + 'IconSpeciesTable';
           let spTableHtml = '&emsp;<LABEL class="boldLabel">' + this.speciesTableInfo.iconLabel + '</LABEL>&ensp;';
-          spTableHtml += "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable(" + this.speciesTableInfo.args + ")' height='15' width='15' alt=''>";
+          spTableHtml += "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable(" + this.speciesTableInfo.args + ")' height='15' width='15' alt='' title='Show species table for all of Alaska'>";
           headerContent.innerHTML += '<span id="' + spTableSpanId + '">' + spTableHtml + '</span>';
         }
       };
@@ -550,6 +550,7 @@ define([
           getEl(this.visibleHeaderElements[c]).style.display = "inline";
       }
 
+      // Highlight row associated with the graphic feature, and return the DGrid row
       this.highlightAssociatedRow = function(graphic) {
         this.unHighlightCurrentRow();
         let r = graphic.attributes.item;
@@ -558,6 +559,8 @@ define([
         this.selectedRow.style.backgroundColor = selectColor;
         if (!isInViewport(this.selectedRow,this.grid.bodyNode))
           this.selectedRow.scrollIntoView();
+        let dataRow = this.selectedRow.parentNode.parentNode.rowIndex;
+        return this.grid.row(dataRow);
       }
 
       this.unHighlightCurrentRow = function() {
@@ -571,17 +574,28 @@ define([
         let tr = row.element;
         let td = tr.getElementsByTagName("TD");
         let h = "";
+        let excludeCols = [];
+        if (this.tabInfo) {
+          let currTabInfo = this.tabInfo[this.currTab];
+          if (currTabInfo.popupExcludeCols)
+            excludeCols = currTabInfo.popupExcludeCols;
+        }
         for (i=0; i<td.length; i++) {
           let colHeader = this.attrName(th[i].innerText);
-          if (this.popupAltHeaders && this.popupAltHeaders[i])
-              colHeader = this.popupAltHeaders[i];
-          let value =row.data[this.grid.columns[i].field];
-          if (value) {
-            if (typeof value === "string")
-              value = value.replace("actionIcon", "actionIconPopup");    // If it's an icon with class "actionIcon", change to class for display in popup
-            // TODO:  Fix this  (2nd argument should be object made of attributes, e.g. for SZ UNits:  {PHY_IDENT, HabClass, ...
-            value = this.attrValDescription(th[i].field, value);
-            h += "<div><b>" + colHeader + ":</b>&nbsp;&nbsp;" + value + "</div>";
+          if (!excludeCols.includes(colHeader)) {
+            let value =row.data[this.grid.columns[i].field];
+            if (colHeader === "" && value.includes("title=")) {
+              let p = value.indexOf("title=");
+              colHeader = value.slice(p).split("'")[1];
+            }
+            if (value) {
+              if (typeof value === "string")
+                value = value.replace("actionIcon", "actionIconPopup");    // If it's an icon with class "actionIcon", change to class for display in popup
+              value = this.attrValDescription(th[i].field, value);
+              if (colHeader !== "")
+                colHeader += ":";
+              h += "<div><b>" + colHeader + "</b>&nbsp;&nbsp;" + value + "</div>";
+            }
           }
         }
         return h;

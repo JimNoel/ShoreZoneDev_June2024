@@ -277,7 +277,7 @@ define([
                   colWidth:  5,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
-                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='actionIcon' alt=''>"
+                  html:  zoomInTemplate.replace("{area}", "Region")
                 },
                 RegionNumID: {
                   title:  "Region Id",
@@ -296,14 +296,14 @@ define([
                   colWidth:  20,
                   plugInFields: ["RegionalID", "Region"],
                   args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
+                  html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
                 },
                 SelRegionBtn: {
                   title:  "Stations",
                   colWidth:  15,
                   plugInFields: ["RegionalID", "Envelope"],
                   args: 'ssWidget,"{0}","{1}"',
-                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon' alt=''>"
+                  html: gotoSubareasTemplate.replace("{area}", "stations for this region")       //"<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon' alt=''>"
                 }
               },
               idField: 'Region',
@@ -323,6 +323,7 @@ define([
               // name of subwidget : filter field : column to check before running query : (optional) "string" if it's a string field
               tabTitle: 'ShoreStation Stations',
               popupTitle: "ShoreStation Stations",
+              popupExcludeCols: ["Photos", "Profile"],
               LayerNameAddOn: 'Field Stations',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
@@ -335,7 +336,7 @@ define([
                   colWidth:  5,
                   plugInFields: ["x", "y"],
                   args: '"{0},{1},1000"',
-                  html:  "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='actionIcon' alt=''>"
+                  html: zoomInTemplate.replace("{area}", "Station")
                 },
                 LocaleConcat: {
                   title:  "Geographic Name",
@@ -369,7 +370,7 @@ define([
                   colWidth:  20,
                   plugInFields: ["station", "station"],
                   args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>",
+                  html:   spTableTemplate,     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>",
                   showWhen: "1"
                 },
                 hasProfile: {
@@ -662,7 +663,6 @@ define([
               tabName: 'Regions',
               tabTitle: 'Fish Atlas Regions',
               popupTitle: "Fish Atlas Region",
-              popupAltHeaders: ['Zoom to this region'],
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
               visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
@@ -675,7 +675,7 @@ define([
                   colWidth:  5,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
-                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='actionIcon' alt='' title='Zoom to this region'>"
+                  html: zoomInTemplate.replace("{area}", "Region")
                 },
                 //Region: { colWidth: 10 },
                 Hauls: {
@@ -695,14 +695,14 @@ define([
                   colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
                   args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt='' title='Show species table for this region'>"
+                  html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt='' title='Show species table for this region'>"
                 },
                 SelRegionBtn: {
                   title:  "Locales",
                   colWidth:  5,
                   plugInFields: ["RegionID", "Envelope"],
                   args: 'faWidget,{0},"{1}"',
-                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon'  alt='' title='Show locales for this region'>"
+                  html:  gotoSubareasTemplate.replace("{area}", "locales for this region")       //"<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon'  alt='' title='Go to locales for this region'>"
                 }
               },
               idField: 'Region',
@@ -733,7 +733,7 @@ define([
                   colWidth:  5,
                   plugInFields: ["Envelope"],
                   args: '"{0}"',
-                  html:   "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='actionIcon' alt=''>"
+                  html: zoomInTemplate.replace("{area}", "Locale")
                 },
                 Region: { colWidth: 30 },
                 MapID: {
@@ -755,14 +755,14 @@ define([
                   colWidth:  12,
                   plugInFields: ["LocaleID", "Locale"],
                   args: 'faSpTableWidget,"vw_CatchStats_LocalesSpecies","vw_CatchStats_Locales","LocaleID={0}","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
+                  html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
                 },
                 SelLocaleBtn: {
                   title:  "Sites",
                   colWidth:  8,
                   plugInFields: ["LocaleID", "Envelope"],
                   args: 'faWidget,{0},"{1}"',
-                  html:   "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon' alt=''>"
+                  html: gotoSubareasTemplate.replace("{area}", "sites for this locale")       //"<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon' alt=''>"
                 }
               },
               idField: 'Locale',
@@ -795,6 +795,7 @@ define([
               subWidgetInfo: ["faPhotoWidget:SiteID:PhotoCount"],     // name of subwidget : filter field : column to check before running query
               tabTitle: 'Fish Atlas Sites',
               popupTitle: "Fish Atlas Site",
+              popupExcludeCols: ["Photos"],
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Locales',
               visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
@@ -807,7 +808,7 @@ define([
                   colWidth:  5,
                   plugInFields: ["x", "y"],
                   args: '"{0},{1},1000"',
-                  html:  "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='actionIcon' alt=''>"
+                  html: zoomInTemplate.replace("{area}", "Site")
                 },
                 Region: { colWidth: 30 },
                 Site: { colWidth: 15 },
@@ -837,7 +838,7 @@ define([
                   colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
                   args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
-                  html:   "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
+                  html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
                 },
                 SiteID: {
                   hidden: true
@@ -1296,11 +1297,12 @@ define([
     if (response.results[i].graphic !== currentHoveredGraphic) {
       currentHoveredGraphic = response.results[i].graphic;
       currentWidgetController = currentHoveredGraphic.layer.widgetController;
+      let dataRow = null;
+      if (currentWidgetController.grid)
+        dataRow = currentWidgetController.highlightAssociatedRow(currentHoveredGraphic)
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
-      hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic), minHoverTime);       // delay popup
-      if (currentWidgetController.grid)
-        currentWidgetController.highlightAssociatedRow(currentHoveredGraphic)
+      hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
     }
   };
 

@@ -119,18 +119,6 @@ define([
         if (row)
           infoWin.content = this.rowHtmlToLines(row);
 
-        // TODO: This only applies to QueryBasedTablePanelWidget.  In this case, get attr names & values/descriptions from table.
-        //    (Might have to get extendeed attribute name, in some cases.)
-/*
-        if (this.showFieldsInPopup) {
-          for (f in this.query.outFields) {
-            a = this.query.outFields[f];
-            if (attrs[a])
-              infoWin.content += "<nobr><b>" + this.attrName(a) + ": </b>" + this.attrValDescription(a, attrs) + "</nobr><br>";
-          }
-        }
-*/
-
         infoWin.actions.removeAll();
         if (this.clickableMsg) {
           infoWin.actions.push({id: "move-camera", title: this.clickableMsg, image: this.trackingImageURL});

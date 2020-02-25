@@ -50,6 +50,10 @@ let szSublayerIDs = {};
 
 let videoClipURLs = "";    // For download of video clips for current extent
 
+let zoomInTemplate = "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='actionIcon' alt='' title='Zoom to this {area}'>";
+let spTableTemplate = "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt='' title='Show species table'>";
+let gotoSubareasTemplate = "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon'  alt='' title='Go to {area}'>";
+
 let settings = {
   autoRefresh: true,
   photoGap: 50
