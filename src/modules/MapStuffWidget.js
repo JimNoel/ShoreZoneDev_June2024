@@ -1148,18 +1148,44 @@ define([
         setRefreshButtonVisibility(featureRefreshDue);
     }
 
-    if (bookmarkSelected) {
-      bookmarkSelected = false;
-      return;
+    // TODO: Change to default to true and only set false on Bookmark goTo
+    //   Need to see if handleExtentChange is still being called more than once due to ongoing stuff...
+    if (unvisitedExtent) {
+      unvisitedExtent = false;
+
+      if (savedExtentsWidget.bookmarks.length == 0)
+        // HACK: Something not ready yet on initial call, so takeScreenshot fails.  So creating bookmark without the thumbnail.
+        //   Thumbnail is subsequently created on a view.watch("updating" call
+        bookmarkCurrentExtent(null, newExtent);
+      else {
+        // Create a square thumbnail from the current view
+        view.takeScreenshot({width: 200, height: 200}).then(bookmarkCurrentExtent.bind(newExtent));
+      }
     }
+  }
+
+  function bookmarkCurrentExtent(screenshot, newExtent) {
+    if (!newExtent)
+      newExtent = this;
     let km = Math.round(newExtent.width/1000) + " km";
+    if (savedExtentsWidget.bookmarks.items.length === 0)
+      km = "Initial Extent";
     let bookmark = new Bookmark({name: savedExtentsWidget.bookmarks.items.length + ":" + km, extent: newExtent});
-    //bookmark.thumbnail = "assets/images/noaa_wb.png";
-    savedExtentsWidget.bookmarks.add(bookmark);       // TODO: Successfully initializes with initial extent, but this is lost because bookmarks array is subsequently reset
-    currentBookmarkNumber = savedExtentsWidget.bookmarks.length -1;
+    bookmark.index = savedExtentsWidget.bookmarks.length;
+    if (screenshot)
+      bookmark.thumbnail.url = screenshot.dataUrl;
+    savedExtentsWidget.bookmarks.add(bookmark);
+    currentBookmark = bookmark;
   }
 
   function addMapWatchers() {
+
+/*
+    view.on("layerview-create", function(event) {
+      console.log(event.layerView.layer.title);
+    });
+*/
+
     view.when(function() {
       //searchWidget.activeSource.filter = {geometry: view.extent};
       //homeExtent = view.extent;
@@ -1178,6 +1204,18 @@ define([
             currentWidgetController.moveButtonPressHandler(currentHoveredGraphic.attributes);
         }
       });
+    });
+
+    view.watch("updating", function(isResizing, oldValue, property, object) {
+      console.log("Watching parameter: updating");
+      if (initialExtentThumbnail || view.updating)
+        return;
+      view.takeScreenshot({width: 200, height: 200}).then(function(screenshot) {
+        initialExtentThumbnail = screenshot.dataUrl;
+        if (savedExtentsWidget.bookmarks.items[0])
+          savedExtentsWidget.bookmarks.items[0].thumbnail = {url: initialExtentThumbnail};
+      });
+
     });
 
     view.watch("extent", function(newExtent, oldExtent, property, theView) {
@@ -1243,8 +1281,9 @@ define([
 
         view.graphics.add(extentGraphic)
       } else if (e.action === 'end'){
-        view.goTo(extentGraphic);
+        unvisitedExtent = true;
         view.graphics.remove(extentGraphic);
+        view.goTo(extentGraphic, {animate: false});
       }
     });
 
@@ -1495,10 +1534,9 @@ define([
 
     savedExtentsWidget = new Bookmarks({
       view: view,
-/*
       bookmarks: new Collection(),      // In 4.12, needed to get past bug
-      editingEnabled: true    //4.14
-*/
+      editingEnabled: true,
+      visibleElements: {addBookmark: false}
     });
     let savedExtentsExpand = new Expand({
       expandIconClass: "esri-icon-collection",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
@@ -1511,8 +1549,16 @@ define([
     });
 
     savedExtentsWidget.on("select-bookmark", function(event){
-      currentBookmarkNumber = parseInt(event.target.activeBookmark.name.split(":")[0]);
-      bookmarkSelected = true;
+      currentBookmark = event.target.activeBookmark;      //parseInt(event.target.activeBookmark.name.split(":")[0]);
+      let prevButton = getEl("btn_prevExtent");
+      let nextButton = getEl("btn_nextExtent");
+      // TODO: Place IMG inside BUTTON tag, and use "dsiable" attribute
+      prevButton.style.opacity = 1;
+      nextButton.style.opacity = 1;
+      if (currentBookmark.index === 0)
+        prevButton.style.opacity = 0.2;
+      if (currentBookmark.index === (savedExtentsWidget.bookmarks.items.length-1))
+        nextButton.style.opacity = 0.2;
     });
 
 /*  Upper-left widgets  */
@@ -1758,7 +1804,7 @@ define([
         });
       }
       //view.constraints.snapToZoom = false;    // Makes no difference?
-      view.goTo(newExtent);
+      view.goTo(newExtent, {animate: false});
     },
 
     selectAndZoom: function(w, id, extText) {

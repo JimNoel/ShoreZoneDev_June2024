@@ -54,6 +54,8 @@ let zoomInTemplate = "<img src='assets/images/i_zoomin.png' onclick='mapStuff.go
 let spTableTemplate = "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt='' title='Show species table'>";
 let gotoSubareasTemplate = "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon'  alt='' title='Go to {area}'>";
 
+let initialExtentThumbnail = null;
+
 let settings = {
   autoRefresh: true,
   photoGap: 50
@@ -761,33 +763,19 @@ let prevNextBtnsHtml = "<div class='iconDiv'><img id='btn_prevExtent' src='asset
 prevNextBtnsHtml += "<div class='iconDiv'><img id='btn_nextExtent' src='assets/images/forward.png' onclick='gotoSavedExtent(1)' title='Click to go to next extent in history' height='24px' width='24px' style='opacity: 0.2' /></div>";
 
 let savedExtentsWidget = null;
-let bookmarkSelected = false;
-let currentBookmarkNumber = -1;
+let currentBookmark = null;
+let unvisitedExtent = true;
 
 function gotoSavedExtent(offset) {
+  if (!currentBookmark)
+    return;
   let l = savedExtentsWidget.bookmarks.length;
-  if (currentBookmarkNumber === -1)
-    currentBookmarkNumber = l - 1;
-  let n = currentBookmarkNumber + offset;
+  let n = currentBookmark.index + offset;
   if (n>=0 && n<l) {
-    //TODO: handle this:  Uncaught Error: li had a span child removed, but there is now more than one. You must add unique key properties to make them distinguishable.
-    //savedExtentsWidget.bookmarks.items[currentBookmarkNumber].thumbnail = "";
-    //savedExtentsWidget.bookmarks.items[n].thumbnail = "assets/images/w_right_green.png";
-    let currentBookmark = savedExtentsWidget.bookmarks.items[n];
-    //currentBookmark.thumbnail.url = "assets/images/w_right_green.png";
-    savedExtentsWidget.goTo(currentBookmark);
-    let prevButton = getEl("btn_prevExtent");
-    let nextButton = getEl("btn_nextExtent");
-    prevButton.style.opacity = 1;
-    nextButton.style.opacity = 1;
-    if (n === 0)
-      prevButton.style.opacity = 0.2;
-    if (n === l - 1)
-      nextButton.style.opacity = 0.2;
-    currentBookmarkNumber = n;
+    currentBookmark = savedExtentsWidget.bookmarks.items[n];
+    savedExtentsWidget.goTo(currentBookmark, {animate: false});
   }
 }
-/* For extent history and prev/next extent navigation*/
 
 
 function isInViewport(el, scrollWindow) {
