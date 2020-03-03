@@ -764,7 +764,8 @@ prevNextBtnsHtml += "<div class='iconDiv'><img id='btn_nextExtent' src='assets/i
 
 let savedExtentsWidget = null;
 let currentBookmark = null;
-let unvisitedExtent = true;
+let extentIsBookmarked = false;
+let drawingZoomRectangle = false;
 
 function gotoSavedExtent(offset) {
   if (!currentBookmark)
@@ -772,6 +773,7 @@ function gotoSavedExtent(offset) {
   let l = savedExtentsWidget.bookmarks.length;
   let n = currentBookmark.index + offset;
   if (n>=0 && n<l) {
+    extentIsBookmarked = true;
     currentBookmark = savedExtentsWidget.bookmarks.items[n];
     savedExtentsWidget.goTo(currentBookmark, {animate: false});
   }

@@ -1147,21 +1147,6 @@ define([
     } else {
         setRefreshButtonVisibility(featureRefreshDue);
     }
-
-    // TODO: Change to default to true and only set false on Bookmark goTo
-    //   Need to see if handleExtentChange is still being called more than once due to ongoing stuff...
-    if (unvisitedExtent) {
-      unvisitedExtent = false;
-
-      if (savedExtentsWidget.bookmarks.length == 0)
-        // HACK: Something not ready yet on initial call, so takeScreenshot fails.  So creating bookmark without the thumbnail.
-        //   Thumbnail is subsequently created on a view.watch("updating" call
-        bookmarkCurrentExtent(null, newExtent);
-      else {
-        // Create a square thumbnail from the current view
-        view.takeScreenshot({width: 200, height: 200}).then(bookmarkCurrentExtent.bind(newExtent));
-      }
-    }
   }
 
   function bookmarkCurrentExtent(screenshot, newExtent) {
@@ -1208,20 +1193,23 @@ define([
 
     view.watch("updating", function(isResizing, oldValue, property, object) {
       console.log("Watching parameter: updating");
-      if (initialExtentThumbnail || view.updating)
+      if (view.updating || drawingZoomRectangle)
         return;
-      view.takeScreenshot({width: 200, height: 200}).then(function(screenshot) {
-        initialExtentThumbnail = screenshot.dataUrl;
-        if (savedExtentsWidget.bookmarks.items[0])
-          savedExtentsWidget.bookmarks.items[0].thumbnail = {url: initialExtentThumbnail};
-      });
-
+      if (extentIsBookmarked) {
+        extentIsBookmarked = false;
+      } else {
+          view.takeScreenshot({width: 200, height: 200}).then(bookmarkCurrentExtent.bind(view.extent));
+      }
     });
 
     view.watch("extent", function(newExtent, oldExtent, property, theView) {
+/*    // All of this is handled by following if statement?
       if (theView.interacting || theView.resizing)    // Bypass if panning or using mouse wheel.  In this case, the watch on "interacting" (below) will kick in when the interaction is complete
         return;
       if (theView.animation && theView.animation.state==="running")      // Wait until extent change is complete
+        return;
+*/
+      if (!view.stationary)
         return;
       handleExtentChange(newExtent);
     });
@@ -1263,6 +1251,7 @@ define([
         return;
       e.stopPropagation();
       if (e.action === 'start'){
+        drawingZoomRectangle = true;
         if (extentGraphic) view.graphics.remove(extentGraphic)
         origin = view.toMap(e);
       } else if (e.action === 'update'){
@@ -1281,8 +1270,9 @@ define([
 
         view.graphics.add(extentGraphic)
       } else if (e.action === 'end'){
-        unvisitedExtent = true;
+        //extentIsBookmarked = true;
         view.graphics.remove(extentGraphic);
+        drawingZoomRectangle = false;
         view.goTo(extentGraphic, {animate: false});
       }
     });
@@ -1549,6 +1539,7 @@ define([
     });
 
     savedExtentsWidget.on("select-bookmark", function(event){
+      extentIsBookmarked = true;
       currentBookmark = event.target.activeBookmark;      //parseInt(event.target.activeBookmark.name.split(":")[0]);
       let prevButton = getEl("btn_prevExtent");
       let nextButton = getEl("btn_nextExtent");
