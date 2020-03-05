@@ -766,6 +766,7 @@ let savedExtentsWidget = null;
 let currentBookmark = null;
 let extentIsBookmarked = false;
 let drawingZoomRectangle = false;
+let extentChanged = true;
 
 function gotoSavedExtent(offset) {
   if (!currentBookmark)

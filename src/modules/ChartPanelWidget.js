@@ -31,7 +31,7 @@ define([
 
       lang.mixin(this, kwArgs);
       
-      console.log("ChartPanelWidget created");
+      //console.log("ChartPanelWidget created");
 
 //      this.contentPane = getEl(this.contentPaneId);
       this.contentPane = getEl(this.displayDivName);

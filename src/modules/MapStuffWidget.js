@@ -1191,38 +1191,61 @@ define([
       });
     });
 
-    view.watch("updating", function(isResizing, oldValue, property, object) {
-      console.log("Watching parameter: updating");
-      if (view.updating || drawingZoomRectangle)
-        return;
-      if (extentIsBookmarked) {
-        extentIsBookmarked = false;
+    // TODO: use esri/core/watchUtils instead of the following "watch" calls?
+
+    // When "stationary" property changes to True, there is a new extent, so handle the extent change
+    view.watch("stationary", function() {
+      let msg = "Extent changing...";
+      if (view.stationary) {
+        msg = "Extent change complete";
+        console.log(msg);
+        console.log("  handleExtentChange via view.stationary");
+        handleExtentChange(view.extent);
       } else {
-          view.takeScreenshot({width: 200, height: 200}).then(bookmarkCurrentExtent.bind(view.extent));
+        if (!view.resizing)
+          extentChanged = true;
       }
     });
 
+    // When "updating" property changes to False, if extent is not changing and not drawing a zoom rectangle, then make a new bookmark (unless bookmark already exists)
+    view.watch("updating", function() {
+      if (view.updating || !extentChanged || !view.stationary || drawingZoomRectangle)
+        return;
+      console.log("Map draw complete");
+      if (extentIsBookmarked) {
+        extentIsBookmarked = false;
+      } else {
+          console.log("  making new bookmark");
+          view.takeScreenshot({width: 200, height: 200}).then(bookmarkCurrentExtent.bind(view.extent));
+          extentChanged = false;
+      }
+    });
+
+/*    // THESE ARE OBSOLETE?
     view.watch("extent", function(newExtent, oldExtent, property, theView) {
-/*    // All of this is handled by following if statement?
-      if (theView.interacting || theView.resizing)    // Bypass if panning or using mouse wheel.  In this case, the watch on "interacting" (below) will kick in when the interaction is complete
-        return;
-      if (theView.animation && theView.animation.state==="running")      // Wait until extent change is complete
-        return;
-*/
+      let msg = "new extent";
+      if (!view.stationary)
+        msg += "  (still changing)"
+      console.log(msg);
       if (!view.stationary)
         return;
       handleExtentChange(newExtent);
     });
 
+
     view.watch("interacting", function(isInteracting, oldValue, property, object) {
       if (isInteracting)
         return;
+      console.log("  handleExtentChange via PAN");
       handleExtentChange(view.extent);
     });
+*/
 
     view.watch("resizing", function(isResizing, oldValue, property, object) {
-      if (isResizing)
+      if (isResizing) {
+        console.log("resizeWidgets");
         resizeWidgets();
+      }
     });
 
     /* Suggestion for repositioning map popup
