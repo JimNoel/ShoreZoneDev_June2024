@@ -643,8 +643,9 @@ define([
             { ddName: "Species",
               LayerNameAddOn: "Species",
               totalsLayerNameAddOn: "Species",
-              subLayerName: "vw_SpCatch_allAK",
-              ddOutFields: ["Sp_CommonName", "SpCode"],
+              subLayerName: "vw_CatchStats_Species",
+              ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
+              labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
               orderByFields: ["Sp_CommonName"],
               options: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
@@ -1155,7 +1156,7 @@ define([
     let km = Math.round(newExtent.width/1000) + " km";
     if (savedExtentsWidget.bookmarks.items.length === 0)
       km = "Initial Extent";
-    let bookmark = new Bookmark({name: savedExtentsWidget.bookmarks.items.length + ":" + km, extent: newExtent});
+    let bookmark = new Bookmark({name: km, extent: newExtent});
     bookmark.index = savedExtentsWidget.bookmarks.length;
     if (screenshot)
       bookmark.thumbnail.url = screenshot.dataUrl;

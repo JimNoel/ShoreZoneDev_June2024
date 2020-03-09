@@ -446,9 +446,19 @@ define([
             let extentStr = null;
             if (a["Envelope"])
               extentStr = a["Envelope"];
-              //v += ":" + a["Envelope"];
+            let theLabel = a[ddFields[0]];
+            if (ddItem.labelTemplate) {
+              theLabel = "";
+              let arr = ddItem.labelTemplate.split(",");
+              for (let j=0; j<arr.length; j++) {
+                if (arr[j].startsWith("*"))
+                  theLabel += a[arr[j].slice(1)];
+                else
+                  theLabel += arr[j];
+              }
+            }
             options.push({
-              label: a[ddFields[0]],
+              label: theLabel,
               value: v,
               extent: extentStr
             });
