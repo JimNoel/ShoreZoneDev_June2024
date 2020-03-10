@@ -608,7 +608,9 @@ define([
             }
           }
         }
-        return h;
+        let newDiv = makeHtmlElement("DIV",null,null, null, h);
+        return newDiv;
+        //return h;
       }
 
       this.makeTableHeaderHtml();

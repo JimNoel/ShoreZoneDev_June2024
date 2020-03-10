@@ -108,16 +108,17 @@ define([
           infoWin.dockEnabled = true;
           infoWin.dockOptions = {position: "bottom-right" };
         }
-        attrs = e.attributes;
-        infoWin.title = this.popupTitle;    // this.baseName + " point";
-        infoWin.content = "<nobr><b>" + attrs.Caption.replace(":",":</b>") + "</nobr><br>";        //+ "</b>";
-        //a.Caption = "<b>" + a.Caption.replace(":","</b>");      //
 
         //infoWin.container.style.maxHeight = "300px";
         //infoWin.container.setAttribute("style", "max-height: 300px;");
 
         if (row)
           infoWin.content = this.rowHtmlToLines(row);
+        else {
+          attrs = e.attributes;
+          infoWin.title = this.popupTitle;    // this.baseName + " point";
+          infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
+        }
 
         infoWin.actions.removeAll();
         if (this.clickableMsg) {
