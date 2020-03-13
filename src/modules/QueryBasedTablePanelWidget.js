@@ -511,7 +511,10 @@ define([
             let ddItem = this.dropDownInfo[d];
             ddItem.domId = this.baseName + "Dropdown_" + ddItem.ddName;
             let ddSpanId = ddItem.domId.replace("_","Span_");
-            let ddHtml = '&emsp;<LABEL class="boldLabel">' + ddItem.ddName + ': </LABEL>';
+            let ddTitle = ddItem.ddName;
+            if (ddItem.ddTitle)
+              ddTitle = ddItem.ddTitle;
+            let ddHtml = '&emsp;<LABEL class="boldLabel">' + ddTitle + ': </LABEL>';
             let args = this.objName + ',' + d + ',' + ddItem.domId;
             ddHtml += '<select id="' + ddItem.domId + '" onchange="dropdownSelectHandler(' + args + ')" ></select>&emsp;';
             headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';

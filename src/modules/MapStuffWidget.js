@@ -640,6 +640,40 @@ define([
               whereField: "Habitat",
               isAlpha: true
             },
+
+            // The next 2 items may be removed in favor of 1 common habitat dropdown, if it is decided not to keep
+            //    habitat selection independent between Region/Locale/Site tabs
+            { ddName: "LocaleHabitat",
+              ddTitle: "Habitat",     // Title text if it is not ddName value
+              LayerNameAddOn: "Habitats",
+              totalsLayerNameAddOn: "Habitats",
+              options: [
+                { label: "All", value: "All" },
+                { label: "Bedrock", value: "Bedrock" },
+                { label: "Eelgrass", value: "Eelgrass" },
+                { label: "Kelp", value: "Kelp" },
+                { label: "Sand-Gravel", value: "Sand-Gravel" }
+              ],
+              SelectedOption: "All",
+              whereField: "Habitat",
+              isAlpha: true
+            },
+            { ddName: "SiteHabitat",
+              ddTitle: "Habitat",     // Title text if it is not ddName value
+              LayerNameAddOn: "Habitats",
+              totalsLayerNameAddOn: "Habitats",
+              options: [
+                { label: "All", value: "All" },
+                { label: "Bedrock", value: "Bedrock" },
+                { label: "Eelgrass", value: "Eelgrass" },
+                { label: "Kelp", value: "Kelp" },
+                { label: "Sand-Gravel", value: "Sand-Gravel" }
+              ],
+              SelectedOption: "All",
+              whereField: "Habitat",
+              isAlpha: true
+            },
+
             { ddName: "Species",
               LayerNameAddOn: "Species",
               totalsLayerNameAddOn: "Species",
@@ -724,7 +758,7 @@ define([
               popupTitle: "Fish Atlas Locale",
               LayerNameAddOn: 'Locales',
               parentAreaType: 'Regions',
-              visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              visibleHeaderElements: ['faDropdownSpan_Region', 'faDropdownSpan_LocaleHabitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
               calcFields:  [{name: "SelLocaleBtn", afterField: "LocaleID"}],
               orderByFields: ["Region", "Locale"],
@@ -799,7 +833,7 @@ define([
               popupExcludeCols: ["Photos"],
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Locales',
-              visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_Habitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
