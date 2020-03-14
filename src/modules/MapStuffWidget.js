@@ -583,7 +583,27 @@ define([
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
 
-      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "hide"});
+      // TODO: Sublayers IDs from titles?
+      // TODO: Add Locales, Sites as (gray) background layers to map service?
+      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "show",
+        sublayers: [
+          { id: 9},
+          { id: 8,
+          },
+          { id: 5, opacity: 0.5,
+            renderer: {
+              type: "simple",  // autocasts as new SimpleRenderer()
+              symbol: {
+                type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
+                color: "gray",
+                size: 6
+              }
+            }
+          },
+          { id: 3},
+          { id: 0}
+          ]
+      });
       faMapServiceLayer.when(function() {
         //console.log("Fish Atlas MapServiceLayer loaded.");
         faMapServiceLayer.visible = false;
@@ -1098,7 +1118,9 @@ define([
       sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURL, {id: "sslOpLayer", "opacity" : 0.5});
 
       serviceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
-      llServiceLayers = [sslMapServiceLayer, szMapServiceLayer];
+
+      // TODO:  Make this list of service names, so legend info can be generated independently of operational layers?
+      llServiceLayers = [sslMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
     }
 
 
@@ -1499,6 +1521,8 @@ define([
       if (l !== -1) {
         item.openable = true;
         const lTitle = svcLegendInfo[l].layerName;
+        if (item.title === "")
+          item.title = lTitle;
         let fInfo = null;
         const f = legendFilters.findIndex(obj => obj.layerTitle === lTitle);
 
@@ -1797,6 +1821,7 @@ define([
   };
 
   function initMap() {
+//    getLegendHtml(0);     // Trying this here...  Move back to original spot if it goes wrong...
     gp = new Geoprocessor(gpUrl);
     addServiceLayers();
     map = new Map({
