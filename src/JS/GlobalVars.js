@@ -48,6 +48,17 @@ let sslMapServiceLayerURL = szRestServicesURLnoaa + "/Ports_SSL/MapServer";
 
 let szSublayerIDs = {};
 
+let faDisplayInfo = [
+  "Eelgrass Beds",
+  "Thermograph Sites",
+  "Regions",
+  "Locales_background:false",
+//  "vw_CatchStats_Locales",      // example of Locales layer with labels on server
+  "Sites_background:false",
+  "Sites:false"
+];
+
+
 let videoClipURLs = "";    // For download of video clips for current extent
 
 let zoomInTemplate = "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='actionIcon' alt='' title='Zoom to this {area}'>";
@@ -162,8 +173,6 @@ let ssSublayerIDs = {};
 makeSublayerIdTable(ssMapServiceLayerURL, ssSublayerIDs);
 let faSublayerIDs = {};
 makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
-
-
 
 let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let mainMediaServer = "https://maps.psmfc.org/shorezonedata/";
@@ -689,6 +698,22 @@ function makeSublayerIdTable(serviceUrl, idTable) {
       idTable[o.name] = o.id.toString();
     }
   });
+}
+
+function makeSublayerArgs(displayInfo) {    // Make arguments for specifying sublayers of map service layer
+  let args = [];
+  for (let i=0; i<displayInfo.length; i++) {
+    let arr = displayInfo[i].split(":");
+    let title = arr[0];
+    let obj = {
+      id: faSublayerIDs[title],
+      title: title
+    }
+    if (arr[1])
+      obj.visible = (arr[1] !== "false");
+    args[i] = obj;
+  }
+  return args;
 }
 
 function makeClassArrayVisibilityObject(/*Object*/ obj) {  // Initialize obj with "classNames" array and "currClassName".  For example:  {classNames: ["sz", "fa", "ss"], currClassName: "sz"}

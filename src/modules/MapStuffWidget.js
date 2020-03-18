@@ -586,26 +586,22 @@ define([
       // TODO: Sublayers IDs from titles?
       // TODO: Add Locales, Sites as (gray) background layers to map service?
       faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "show",
+/*
         sublayers: [
-          { id: 9},
-          { id: 8,
-          },
-          { id: 5, opacity: 0.5,
-            renderer: {
-              type: "simple",  // autocasts as new SimpleRenderer()
-              symbol: {
-                type: "simple-marker",  // autocasts as new SimpleMarkerSymbol()
-                color: "gray",
-                size: 6
-              }
-            }
-          },
-          { id: 3},
-          { id: 0}
+          { id: 11},    // Eelgrass
+          { id: 10},    // Thermograph
+          { id: 0},      // Regions
+          { id: 3, visible: false},     // Locales_background
+          { id: 9, visible: false},     // Sites_background
+          { id: 6, visible: false}     // Sites
           ]
+*/
       });
       faMapServiceLayer.when(function() {
         //console.log("Fish Atlas MapServiceLayer loaded.");
+
+        faMapServiceLayer.sublayers = makeSublayerArgs(faDisplayInfo);
+
         faMapServiceLayer.visible = false;
 
         faWidget = new QueryBasedTablePanelWidget({
@@ -823,6 +819,7 @@ define([
               idField: 'Locale',
               subTableDD: "Locale",
               //resetDDs: [1],      //["Region", "Locale"],
+              bgLayerName: "Locales_background",
               clickableSymbolType: "point",
               clickableSymbolInfo: {
                 style:"square",
@@ -906,6 +903,7 @@ define([
                 }
               },
               idField: 'SiteID',
+              bgLayerName: "Sites_background",
               clickableSymbolType: "point",
               clickableSymbolInfo: {
                 "style":"circle",
@@ -914,7 +912,8 @@ define([
                   color: [ 0, 0, 0, 1.0 ],
                   width: "0.5px"
                 },
-                "size":4
+                "size":4,
+                filteredSize: 6
               },
               renderingInfo: {
                 field: "Habitat",

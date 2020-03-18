@@ -537,6 +537,13 @@ define([
           return;
       this.clearGraphics();     // Clear any previously-existing graphics and associated stuff
       //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " started... ");
+      if (this.bgLayerName) {   // If there is an associated background layer, show it whenever data has been filtered
+        let bgLayer = faMapServiceLayer.sublayers.find(function(layer){
+          return layer.title === this.bgLayerName;
+        }.bind({bgLayerName: this.bgLayerName}));
+          //.items[faSublayerIDs[this.bgLayerName]];
+        bgLayer.visible = (this.query.where !== "");
+      }
       for (let n = 0; n < features.length; n++) {
         let g = features[n];
         let geom = g.geometry;
@@ -581,6 +588,8 @@ define([
             let v = a[this.renderingInfo.field];
             currSymbol.color = this.renderingInfo.uniqueColors[v];
           }
+          if (this.clickableSymbolInfo.filteredSize && this.query.where!=="")
+            currSymbol.size = this.clickableSymbolInfo.filteredSize;
           let graphic = new Graphic({
             geometry: mapFeature,
             symbol: currSymbol,   // this.clickableSymbol,
