@@ -68,7 +68,7 @@ define([
             Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
 
     function addServiceLayers() {
-      szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {id: "szOpLayer", "opacity" : 0.5});
+      szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {id: "szOpLayer", "opacity" : 1.0});    // opacity was 0.5
       szMapServiceLayer.when(function() {
 
       szPhotoWidget = new PhotoPlaybackWidget({
@@ -220,7 +220,7 @@ define([
         console.log("szMapServiceLayer failed to load:  " + error);
       });
 
-      ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 0.5, listMode: "hide"});
+      ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 1.0, listMode: "hide"});
       ssMapServiceLayer.when(function(resolvedVal) {
         //console.log("Shore Station MapServiceLayer loaded.");
         ssMapServiceLayer.visible = false;
@@ -585,22 +585,11 @@ define([
 
       // TODO: Sublayers IDs from titles?
       // TODO: Add Locales, Sites as (gray) background layers to map service?
-      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 0.5, listMode: "show",
-/*
-        sublayers: [
-          { id: 11},    // Eelgrass
-          { id: 10},    // Thermograph
-          { id: 0},      // Regions
-          { id: 3, visible: false},     // Locales_background
-          { id: 9, visible: false},     // Sites_background
-          { id: 6, visible: false}     // Sites
-          ]
-*/
-      });
+      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
       faMapServiceLayer.when(function() {
         //console.log("Fish Atlas MapServiceLayer loaded.");
 
-        faMapServiceLayer.sublayers = makeSublayerArgs(faDisplayInfo);
+        faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo);
 
         faMapServiceLayer.visible = false;
 
@@ -759,6 +748,8 @@ define([
               idField: 'Region',
               subTableDD: "Region",
               //resetDDs: [0, 1],      //["Region", "Locale"],
+              backgroundLayers: ["Sites"],
+              filterBgLayer: "Regions",
               clickableSymbolType: "extent",
               clickableSymbolInfo: {
                 color: [ 51,51, 204, 0.1 ],
@@ -819,17 +810,19 @@ define([
               idField: 'Locale',
               subTableDD: "Locale",
               //resetDDs: [1],      //["Region", "Locale"],
-              bgLayerName: "Locales_background",
+              backgroundLayers: ["Regions"],
+              filterBgLayer: "Locales_background",
               clickableSymbolType: "point",
               clickableSymbolInfo: {
                 style:"square",
-                color:[255,255,255,1.0],
+                color:[255,255,255,0.0],    //opacity was set at 1
                 outline: {  // autocasts as new SimpleLineSymbol()
-                  color: [ 128, 128, 128, 1.0 ],
+                  color: [ 128, 128, 128, 0.0 ],   //opacity was set at 1
                   width: "0.5px"
                 },
                 size:12
               },
+/*
               textOverlayPars: {
                 type: "text",  // autocasts as new TextSymbol()
                 color: "black",
@@ -841,6 +834,7 @@ define([
                 }
               },
               textOverlayField: "MapID",
+*/
             },
             {
               tabName: 'Sites',
@@ -903,7 +897,8 @@ define([
                 }
               },
               idField: 'SiteID',
-              bgLayerName: "Sites_background",
+              backgroundLayers: ["Regions"],
+              filterBgLayer: "Sites_background",
               clickableSymbolType: "point",
               clickableSymbolInfo: {
                 "style":"circle",

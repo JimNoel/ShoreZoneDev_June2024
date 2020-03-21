@@ -49,13 +49,15 @@ let sslMapServiceLayerURL = szRestServicesURLnoaa + "/Ports_SSL/MapServer";
 let szSublayerIDs = {};
 
 let faDisplayInfo = [
-  "Eelgrass Beds",
-  "Thermograph Sites",
-  "Regions",
-  "Locales_background:false",
-//  "vw_CatchStats_Locales",      // example of Locales layer with labels on server
-  "Sites_background:false",
-  "Sites:false"
+  {title: "Eelgrass Beds"},
+  {title: "Thermograph Sites"},
+  {title: "Regions"},
+  {title: "Locales_background", visible: false, listMode: "hide"},
+  {title: "Locales (point)"},
+  {title: "vw_CatchStats_Locales", visible: false, listMode: "hide"},
+  {title: "vw_CatchStats_LocalesHabitats", visible: false, listMode: "hide"},
+  {title: "Sites_background", visible: false, listMode: "hide"},
+  {title: "Sites", visible: false}
 ];
 
 
@@ -700,20 +702,12 @@ function makeSublayerIdTable(serviceUrl, idTable) {
   });
 }
 
-function makeSublayerArgs(displayInfo) {    // Make arguments for specifying sublayers of map service layer
-  let args = [];
+function updateSublayerArgs(displayInfo) {    // Make arguments for specifying sublayers of map service layer
   for (let i=0; i<displayInfo.length; i++) {
-    let arr = displayInfo[i].split(":");
-    let title = arr[0];
-    let obj = {
-      id: faSublayerIDs[title],
-      title: title
-    }
-    if (arr[1])
-      obj.visible = (arr[1] !== "false");
-    args[i] = obj;
+    let obj = displayInfo[i];
+    obj.id = faSublayerIDs[obj.title];
   }
-  return args;
+  return displayInfo;
 }
 
 function makeClassArrayVisibilityObject(/*Object*/ obj) {  // Initialize obj with "classNames" array and "currClassName".  For example:  {classNames: ["sz", "fa", "ss"], currClassName: "sz"}

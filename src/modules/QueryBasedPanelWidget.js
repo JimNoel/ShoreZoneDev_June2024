@@ -69,8 +69,25 @@ define([
         this.fields = results.fields;
         if (this.featureCountElId)
           getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
-        if (!this.noFeatures(features))
+        if (!this.noFeatures(features)) {
+          this.setDisplayLayers();
           this.processFeatures(features);
+        }
+      };
+
+      this.setDisplayLayers = function() {
+        if (!this.backgroundLayers)
+          return;
+        let displayLayers = this.backgroundLayers.slice();
+        displayLayers.push(this.layerName);
+        if (this.filterBgLayer  && (this.query.where !== ""))
+          displayLayers.push(this.filterBgLayer);
+        let layers = this.mapServiceLayer.sublayers.items;
+        for (let i=0; i<layers.length; i++) {
+          layers[i].visible = displayLayers.includes(layers[i].title);
+          if (layers[i].title === this.layerName)
+            layers[i].definitionExpression = this.query.where;
+        }
       };
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
@@ -537,11 +554,11 @@ define([
           return;
       this.clearGraphics();     // Clear any previously-existing graphics and associated stuff
       //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " started... ");
-      if (this.bgLayerName) {   // If there is an associated background layer, show it whenever data has been filtered
+      if (this.filterBgLayer) {   // If there is an associated background layer, show it whenever data has been filtered
         let bgLayer = faMapServiceLayer.sublayers.find(function(layer){
-          return layer.title === this.bgLayerName;
-        }.bind({bgLayerName: this.bgLayerName}));
-          //.items[faSublayerIDs[this.bgLayerName]];
+          return layer.title === this.filterBgLayer;
+        }.bind({filterBgLayer: this.filterBgLayer}));
+          //.items[faSublayerIDs[this.filterBgLayer]];
         bgLayer.visible = (this.query.where !== "");
       }
       for (let n = 0; n < features.length; n++) {
