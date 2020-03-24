@@ -902,14 +902,14 @@ define([
               clickableSymbolType: "point",
               clickableSymbolInfo: {
                 "style":"circle",
-                "color":[255,255,255,1.0],
+                "color":[255,255,255,0.0],
                 outline: {  // autocasts as new SimpleLineSymbol()
-                  color: [ 0, 0, 0, 1.0 ],
+                  color: [ 0, 0, 0, 0.0 ],
                   width: "0.5px"
                 },
-                "size":4,
-                filteredSize: 6
+                "size":4
               },
+/*
               renderingInfo: {
                 field: "Habitat",
                 uniqueColors: {
@@ -919,6 +919,7 @@ define([
                   "Sand-Gravel": "yellow"
                 },
               }
+*/
 
             },
             {

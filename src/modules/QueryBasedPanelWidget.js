@@ -605,8 +605,6 @@ define([
             let v = a[this.renderingInfo.field];
             currSymbol.color = this.renderingInfo.uniqueColors[v];
           }
-          if (this.clickableSymbolInfo.filteredSize && this.query.where!=="")
-            currSymbol.size = this.clickableSymbolInfo.filteredSize;
           let graphic = new Graphic({
             geometry: mapFeature,
             symbol: currSymbol,   // this.clickableSymbol,

@@ -57,9 +57,17 @@ let faDisplayInfo = [
   {title: "vw_CatchStats_Locales", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_LocalesHabitats", visible: false, listMode: "hide"},
   {title: "Sites_background", visible: false, listMode: "hide"},
-  {title: "Sites", visible: false}
+  {title: "Sites", visible: false},
+  {title: "vw_CatchStats_Sites", visible: false, listMode: "hide"},
+  {title: "vw_CatchStats_SitesHabitats", visible: false, listMode: "hide"},
+  {title: "vw_CatchStats_SitesSpecies", visible: false, listMode: "hide"},
+  {title: "vw_CatchStats_SitesHabitatsSpecies", visible: false, listMode: "hide"}
 ];
 
+let ssDisplayInfo = [
+  {title: "Regions"},
+  {title: "Field Stations", visible: false, listMode: "hide"}
+];
 
 let videoClipURLs = "";    // For download of video clips for current extent
 
