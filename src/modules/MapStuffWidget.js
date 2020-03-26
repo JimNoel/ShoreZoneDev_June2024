@@ -220,11 +220,10 @@ define([
         console.log("szMapServiceLayer failed to load:  " + error);
       });
 
-      ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 1.0, listMode: "hide"});
+      ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 1.0, listMode: "show"});
       ssMapServiceLayer.when(function(resolvedVal) {
-        //console.log("Shore Station MapServiceLayer loaded.");
+        ssMapServiceLayer.sublayers = updateSublayerArgs(ssDisplayInfo, ssSublayerIDs);
         ssMapServiceLayer.visible = false;
-
 
         /*  ssWidget def */
         ssWidget = new QueryBasedTablePanelWidget({
@@ -309,6 +308,8 @@ define([
               idField: 'Region',
               subTableDD: "Region",
               //resetDDs:  ["Region", "Locale"],
+              backgroundLayers: ["Field Stations"],
+              filterBgLayer: "Regions",
               clickableSymbolType: "extent",
               clickableSymbolInfo: {
                 color: [ 51,51, 204, 0.1 ],
@@ -383,12 +384,14 @@ define([
               idField: 'station',
               //subTableDD: "Region",
               //resetDDs:  ["Region", "Locale"],
+              backgroundLayers: ["Regions"],
+              //filterBgLayer: "Regions",
               clickableSymbolType: "point",
               clickableSymbolInfo: {
                 "style":"circle",
-                "color":[255,255,255,1.0],
+                "color":[255,255,255,0.0],
                 outline: {  // autocasts as new SimpleLineSymbol()
-                  color: [ 0, 0, 0, 1.0 ],
+                  color: [ 0, 0, 0, 0.0 ],
                   width: "0.5px"
                 },
                 "size":4
@@ -587,10 +590,7 @@ define([
       // TODO: Add Locales, Sites as (gray) background layers to map service?
       faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
       faMapServiceLayer.when(function() {
-        //console.log("Fish Atlas MapServiceLayer loaded.");
-
-        faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo);
-
+        faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo, faSublayerIDs);
         faMapServiceLayer.visible = false;
 
         faWidget = new QueryBasedTablePanelWidget({
@@ -1115,7 +1115,7 @@ define([
       serviceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
 
       // TODO:  Make this list of service names, so legend info can be generated independently of operational layers?
-      llServiceLayers = [sslMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
+      llServiceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
     }
 
 

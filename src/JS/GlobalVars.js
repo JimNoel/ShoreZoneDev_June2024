@@ -66,7 +66,7 @@ let faDisplayInfo = [
 
 let ssDisplayInfo = [
   {title: "Regions"},
-  {title: "Field Stations", visible: false, listMode: "hide"}
+  {title: "Field Stations", visible: false, listMode: "show"}
 ];
 
 let videoClipURLs = "";    // For download of video clips for current extent
@@ -710,10 +710,10 @@ function makeSublayerIdTable(serviceUrl, idTable) {
   });
 }
 
-function updateSublayerArgs(displayInfo) {    // Make arguments for specifying sublayers of map service layer
+function updateSublayerArgs(displayInfo, sublayerIDs) {    // Make arguments for specifying sublayers of map service layer
   for (let i=0; i<displayInfo.length; i++) {
     let obj = displayInfo[i];
-    obj.id = faSublayerIDs[obj.title];
+    obj.id = sublayerIDs[obj.title];
   }
   return displayInfo;
 }
