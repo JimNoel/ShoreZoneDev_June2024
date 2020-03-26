@@ -1153,7 +1153,6 @@ define([
     //let extent3d = sceneViewExtent(view, 200);
     //let extent3d_geog = webMercatorUtils.webMercatorToGeographic(extent3d);
 
-
 /*
     //JN  Works, times out at 60s (~1M records).
       this.prequeryTask = new QueryTask(szMapServiceLayerURL + "/2");
@@ -1175,29 +1174,13 @@ define([
       }.bind(this));
 */
 
-
-    //OBS?  lastExtent = newExtent;
-/*
-    if (draggingSplitter)      // Don't do if splitter is being dragged
-      return;
-*/
-    featureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
+    szFeatureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
     if (lock_points)      // If point set is locked,
       return;             //    then don't reset or query new points
     if (settings.autoRefresh) {
-      refreshFeatures();
-/*
-      resetCurrentFeatures();
-      mapLoading = true;
-      if (featureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
-        if (szVideoWidget)
-          szVideoWidget.runQuery(newExtent);         // 3D: use extent3d?
-        if (szUnitsWidget)
-          szUnitsWidget.runQuery(newExtent);         // 3D: use extent3d?
-      }
-*/
+      refreshSzFeatures();
     } else {
-        setRefreshButtonVisibility(featureRefreshDue);
+        setRefreshButtonVisibility(szFeatureRefreshDue);
     }
   }
 
@@ -1247,6 +1230,8 @@ define([
 
     // When "stationary" property changes to True, there is a new extent, so handle the extent change
     view.watch("stationary", function() {
+      if (siteTabs.visManager.currClassName !== "sz")
+        return;
       let msg = "Extent changing...";
       if (view.stationary) {
         msg = "Extent change complete";

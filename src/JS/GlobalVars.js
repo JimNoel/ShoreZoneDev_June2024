@@ -261,7 +261,7 @@ function setRefreshButtonVisibility(isVisible) {
 function photoGapInputHandler() {
   settings.photoGap = parseInt(getEl("input_photoGap").value);
   szPhotoWidget.clickableSymbolGap = settings.photoGap;
-  //refreshFeatures();
+  //refreshSzFeatures();
 }
 
 function cbShowMediaHandler(w, isPhotos) {
@@ -608,10 +608,10 @@ function updateNoFeaturesMsg(widgets, status) {
   //setDisplay("showUnitsDiv", false);      // Hide secondary unit features checkbox
 }
 
-function refreshFeatures() {
+function refreshSzFeatures() {
   resetCurrentFeatures();
   mapLoading = true;
-  if (featureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
+  if (szFeatureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
     updateNoFeaturesMsg(extentDependentWidgets, "querying");
     if (szVideoWidget)
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
@@ -761,8 +761,8 @@ function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
   return el;
 }
 
-let featureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
-let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' src='assets/images/refresh24x24.png' onclick='refreshFeatures()' height='32px' width='32px' title='Click to refresh features' />";
+let szFeatureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
+let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' src='assets/images/refresh24x24.png' onclick='refreshSzFeatures()' height='32px' width='32px' title='Click to refresh features' />";
 
 let unitsCb2_Id = "unitsCheckbox2_showFeatures";
 let showUnitsCheckbox2 = '<input id="' + unitsCb2_Id  + '" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget,unitsCheckbox2_showFeatures)"><span style="background-color: #ff6060; opacity: 0.25">&emsp;&emsp;</span>'
