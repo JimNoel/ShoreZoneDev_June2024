@@ -66,7 +66,9 @@ let faDisplayInfo = [
 
 let ssDisplayInfo = [
   {title: "Regions"},
-  {title: "Field Stations", visible: false, listMode: "show"}
+  {title: "Field Stations", visible: false, listMode: "show"},
+  {title: "vw_Stations_", visible: false, listMode: "hide"},
+  {title: "vw_Stations_Species", visible: false, listMode: "hide"}
 ];
 
 let videoClipURLs = "";    // For download of video clips for current extent

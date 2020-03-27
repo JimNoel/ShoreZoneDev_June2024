@@ -252,6 +252,17 @@ define([
               SelectedOption: "All",
               whereField: "RegionalID",
               isAlpha: true
+            },
+            { ddName: "Species",
+              LayerNameAddOn: "Species",
+              subLayerName: "vw_AlaskaSpecies",     // table for generating dropdown items
+              ddOutFields: ["Common_name", "SppTxtCode", "SppName"],
+              labelTemplate: "*Common_name, - ,*SppName",
+              orderByFields: ["Common_name"],
+              options: [ { label: "[All]", value: "All" } ],
+              SelectedOption: "All",
+              whereField: "SppTxtCode",
+              isAlpha: true
             }
           ],
           speciesTableInfo : {
@@ -325,9 +336,9 @@ define([
               tabTitle: 'ShoreStation Stations',
               popupTitle: "ShoreStation Stations",
               popupExcludeCols: ["Photos", "Profile"],
-              LayerNameAddOn: 'Field Stations',
+              LayerNameAddOn: "vw_Stations_",        //'Field Stations',
               parentAreaType: 'Regions',
-              visibleHeaderElements: ['ssDropdownSpan_Region', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
+              visibleHeaderElements: ['ssDropdownSpan_Region', 'ssDropdownSpan_Species', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
               featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
               orderByFields: ["station"],
               calcFields:  [{name: "Envelope", afterField: null}],
