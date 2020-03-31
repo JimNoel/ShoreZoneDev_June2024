@@ -54,8 +54,10 @@ define([
 
       this.noFeatures = function(f) {
         if (f.length===0) {
-          updateNoFeaturesMsg(this.noFeaturesPanels , "zoomout");
-          showPanelContents(this.baseName, false);
+          if (this.disabledMsgInfix) {
+            updateNoFeaturesMsg(this.noFeaturesPanels , "zoomout");
+            showPanelContents(this.baseName, false);
+          }
           return true;
         }
         showPanelContents(this.baseName, true);
@@ -69,10 +71,12 @@ define([
         this.fields = results.fields;
         if (this.featureCountElId)
           getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
-        if (!this.noFeatures(features)) {
-          this.setDisplayLayers();
+        this.setDisplayLayers();
+        let showTable = !this.noFeatures(features);
+        if (showTable) {
           this.processFeatures(features);
         }
+        setVisible(this.displayDivName, showTable);
       };
 
       this.setDisplayLayers = function() {
