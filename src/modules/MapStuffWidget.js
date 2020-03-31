@@ -689,7 +689,6 @@ define([
               whereField: "Habitat",
               isAlpha: true
             },
-
             { ddName: "Species",
               LayerNameAddOn: "Species",
               totalsLayerNameAddOn: "Species",
@@ -702,6 +701,15 @@ define([
               whereField: "SpCode",
               isAlpha: true
             }
+
+            // TODO: Not used yet, a "dropButton" with associated panel, placeholders to be replaced with named dropdowns
+/*
+            ,{ ddName: "SpeciesDropButton",
+              ddTitle: "Species Filter",
+              htmlTemplate: ""
+            }
+*/
+
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',

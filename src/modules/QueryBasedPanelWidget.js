@@ -52,7 +52,7 @@ define([
       if (this.defaultDisabledMsg)
         setMessage(this.disabledMsgDivName, this.defaultDisabledMsg);
 
-      this.noFeatures = function(f) {
+      this.setPanelVisibility = function(f) {
         if (f.length===0) {
           if (this.disabledMsgInfix) {
             updateNoFeaturesMsg(this.noFeaturesPanels , "zoomout");
@@ -72,11 +72,7 @@ define([
         if (this.featureCountElId)
           getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
         this.setDisplayLayers();
-        let showTable = !this.noFeatures(features);
-        if (showTable) {
           this.processFeatures(features);
-        }
-        setVisible(this.displayDivName, showTable);
       };
 
       this.setDisplayLayers = function() {
@@ -553,11 +549,13 @@ define([
       this.highlightLayer.add(newFeature);
     },
 
-    makeClickableGraphics: function(features) {
+    makeClickableGraphics: function(features) {     // Make clickable graphic features.  If no new features, then clear all
       if (!this.clickableSymbol)
           return;
       this.clearGraphics();     // Clear any previously-existing graphics and associated stuff
-      //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " started... ");
+      if (features.length === 0)
+        return;
+
       if (this.filterBgLayer) {   // If there is an associated background layer, show it whenever data has been filtered
         let bgLayer = faMapServiceLayer.sublayers.find(function(layer){
           return layer.title === this.filterBgLayer;

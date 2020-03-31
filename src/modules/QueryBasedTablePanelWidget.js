@@ -119,8 +119,12 @@ define([
       this.selectedRow = null;
 
 
-      this.makeTable = function(fields, features) {
+      this.makeTable = function(fields, features) {     // Generate data table.  If no new features, then empty the DOM for the table
         // Create a dGrid table from returned data
+        getEl(this.displayDivName).innerHTML = "";      // clear the DIV
+        if (features.length === 0)
+          return;
+
         let tableColumns = [];
         let nonNullCount = new Object();
         nonNullList = new Object();       //Lists of unique values found
@@ -139,8 +143,6 @@ define([
             };
             fields.splice(p + 1, 0, newField);
           }
-
-
 
         for (let i=0; i<fields.length; i++) {
           // Use supplied title for column name
@@ -183,7 +185,6 @@ define([
         document.body.appendChild(sheet);
 
         let tableData = [];
-
 
         for (let i=0; i<features.length; i++) {
 
@@ -398,31 +399,32 @@ define([
       }
 
 
+      this.setTotals = function(features) {
+        if (!this.totalOutFields)
+          return;
+        if (features.length === 0) {
+          for (l in this.totalLabels)
+            this.totalLabels[l].node.innerHTML = "0";
+          return;
+        }
+        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.totalsLayerName].toString();
+        this.query.outFields = this.totalOutFields;
+        this.query.orderByFields = null;
+        this.queryTask.execute(this.query).then(function(results){
+          let totalValues = results.features[0].attributes;
+          for (a in totalValues)
+            this.totalLabels[a].node.innerHTML = formatNumber(totalValues[a], this.specialFormatting[a]);
+          this.repositionTotalLabels(this.grid.columns);
+        }.bind(this), function(error) {
+          console.log(this.baseName + ":  QueryTask for Totals failed.");
+        }.bind(this));
+      };
+
       this.processFeatures = function(features) {
-        getEl(this.displayDivName).innerHTML = "";      // clear the DIV
+        this.setPanelVisibility(features);
         this.makeClickableGraphics(features);
         this.makeTable(this.fields, features);
-        if (this.totalOutFields) {
-          if (features.length === 0) {
-            for (l in this.totalLabels)
-              this.totalLabels[l].node.innerHTML = "0";
-            return;
-          }
-          //let totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
-          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.totalsLayerName].toString();
-          this.query.outFields = this.totalOutFields;
-          this.query.orderByFields = null;
-          this.queryTask.execute(this.query).then(function(results){
-            let totalValues = results.features[0].attributes;
-            for (a in totalValues)
-              this.totalLabels[a].node.innerHTML = formatNumber(totalValues[a], this.specialFormatting[a]);
-            this.repositionTotalLabels(this.grid.columns);
-          }.bind(this), function(error) {
-            console.log(this.baseName + ":  QueryTask for Totals failed.");
-          }.bind(this));
-
-        }
-
+        this.setTotals(features);
       };
 
 
@@ -517,6 +519,8 @@ define([
             let ddHtml = '&emsp;<LABEL class="boldLabel">' + ddTitle + ': </LABEL>';
             let args = this.objName + ',' + d + ',' + ddItem.domId;
             ddHtml += '<select id="' + ddItem.domId + '" onchange="dropdownSelectHandler(' + args + ')" ></select>&emsp;';
+
+            // TODO: Make option to insert ddHtml in named panel HTML (replacing {0}, etc.)
             headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';
             ddItem.dom = getEl(ddItem.domId);
             if (ddItem.subLayerName) {
