@@ -591,7 +591,7 @@ define([
         siteTabs.ss.widgets = [ssWidget, ssPhotoWidget, ssProfileWidget];
 
         if (initTab === "ssTab")
-          stateNavigator.selectChild(initTab);
+          waitAndSelectChild();
 
         }, function(error){
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
@@ -1124,7 +1124,8 @@ define([
         siteTabs.fa.widgets = [faWidget, faPhotoWidget];
 
         if (initTab === "faTab")
-          stateNavigator.selectChild(initTab);
+          waitAndSelectChild();
+
       }, function(error){
         console.log("Fish Atlas MapServiceLayer failed to load:  " + error);
       });

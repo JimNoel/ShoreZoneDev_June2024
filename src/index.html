@@ -395,19 +395,17 @@
           let isVisible = (classNames[i] === className);
           let widgets = siteTabs[classNames[i]].widgets;
           for (j in widgets) {
-            //widgets[j].clickableLayer.visible = isVisible;
-            with (widgets[j]) {
-              setLayerVisibility(mapServiceLayer, isVisible);
+            let w = widgets[j];
+              setLayerVisibility(w.mapServiceLayer, isVisible);
 
               // Go back to initial clickableLayer visibility
               let cVisibility = isVisible;
-              if (widgets[j].hideMarkersAtStart)
+              if (w.hideMarkersAtStart)
                 cVisibility = false;
-              setLayerVisibility(clickableLayer, cVisibility);
+              setLayerVisibility(w.clickableLayer, cVisibility);
 
-              setLayerVisibility(highlightLayer, isVisible);
-              setLayerVisibility(trackingLayer, isVisible);
-            }
+              setLayerVisibility(w.highlightLayer, isVisible);
+              setLayerVisibility(w.trackingLayer, isVisible);
           }
         }
       }

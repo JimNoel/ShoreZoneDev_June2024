@@ -260,6 +260,12 @@ function setRefreshButtonVisibility(isVisible) {
   getEl("btn_refresh").setAttribute("class", btnClass)
 }
 
+function waitAndSelectChild() {
+  let t = setTimeout(function() {
+    stateNavigator.selectChild(initTab);
+  }, 500)
+}
+
 function photoGapInputHandler() {
   settings.photoGap = parseInt(getEl("input_photoGap").value);
   szPhotoWidget.clickableSymbolGap = settings.photoGap;
