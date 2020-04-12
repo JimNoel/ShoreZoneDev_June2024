@@ -706,7 +706,8 @@ define([
 /*
             ,{ ddName: "SpeciesDropButton",
               ddTitle: "Species Filter",
-              htmlTemplate: ""
+              htmlTemplate: '<button>Click me!</button><span>STUFF</span>',
+              SelectedOption: "All",
             }
 */
 
@@ -863,7 +864,7 @@ define([
               popupExcludeCols: ["Photos"],
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Locales',
-              visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species', 'faDropdownSpan_SpeciesDropButton', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
@@ -941,6 +942,7 @@ define([
 */
 
             },
+/*
             {
               tabName: 'Temperature',
               tabTitle: 'Temperature Data',
@@ -959,6 +961,7 @@ define([
               featureOutFields: ["Region", "Hauls", "Species", "Catch"],
               idField: 'Region'
             }
+*/
           ],
           layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
                                                 //   using the current panel info and dropdown info for any dropdowns that have something selected.

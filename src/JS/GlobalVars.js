@@ -49,8 +49,10 @@ let sslMapServiceLayerURL = szRestServicesURLnoaa + "/Ports_SSL/MapServer";
 let szSublayerIDs = {};
 
 let faDisplayInfo = [
+/*
   {title: "Eelgrass Beds"},
   {title: "Thermograph Sites"},
+*/
   {title: "Regions"},
   {title: "Locales_background", visible: false, listMode: "hide"},
   {title: "Locales (point)"},
