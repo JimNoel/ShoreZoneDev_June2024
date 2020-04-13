@@ -509,10 +509,12 @@ define([
         if (this.tableHeaderTitle)
           headerContent.innerHTML = '&emsp;<label id="' + this.baseName + 'TableHeaderTitle" class="tableHeaderTitle">' + this.tableHeaderTitle + ' &emsp;</label>';
 
+        //TODO:  Replace "headerContent.innerHTML+=..." with "headerContent.appendChild(...)"
         if (this.dropDownInfo) {
           for (d in this.dropDownInfo) {
             let ddItem = this.dropDownInfo[d];
             ddItem.domId = this.baseName + "Dropdown_" + ddItem.ddName;
+            //ddItem.dom = makeHtmlElement(("span", ))
             let ddSpanId = ddItem.domId.replace("_","Span_");
             let ddTitle = ddItem.ddName;
             if (ddItem.ddTitle)
@@ -523,10 +525,13 @@ define([
             if (ddItem.htmlTemplate) {
               //let onclickCall = "setVisible('" + dialogBoxId + "', true);";
               //ddHtml += '<button id="' + ddItem.domId + '" onclick="' + onclickCall + '" ></button>&emsp;';
-              headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddItem.htmlTemplate + '</span>';
+              headerContent.innerHTML += '<span class="dropdown" id="' + ddSpanId + '">' + ddItem.htmlTemplate + '</span>';
             } else {
               ddHtml += '<select id="' + ddItem.domId + '" onchange="dropdownSelectHandler(' + args + ')" ></select>&emsp;';
-              headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';
+              if (ddItem.subDropDown)
+                ddItem.dom = makeHtmlElement('span', ddSpanId, null, null, ddHtml);
+              else
+                headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';
               if (ddItem.subLayerName) {
                 this.getDropDownOptions(d, ddItem.domId);
               } else {
@@ -534,6 +539,7 @@ define([
               }
             }
             ddItem.dom = getEl(ddItem.domId);
+            //if (ddItem.subDropDown)
           }
         }
 

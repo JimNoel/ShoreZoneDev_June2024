@@ -93,6 +93,13 @@ settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input ty
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
 
+let faSpeciesDropdownHtml = '<strong>Species: </strong>{Species}<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp">FMP Species<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_forage" name="fishTypes" value="forage">Forage Fish<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked>All Fish<br><br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked>Common Name<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci">Scientific Name<br>';
+
 let basemapIds = [
   "oceans",
   "satellite",
