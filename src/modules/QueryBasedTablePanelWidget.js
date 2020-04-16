@@ -429,7 +429,7 @@ define([
       };
 
 
-      this.getDropDownOptions = function(ddNum, headerContent) {
+      this.queryDropDownOptions = function(ddNum, headerContent) {
         let ddItem = this.dropDownInfo[ddNum];
         let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
         let queryTask = new QueryTask(subLayerURL);
@@ -468,12 +468,12 @@ define([
           }
           this.w.makeDropdownOptionsHtml(ddNum, this.headerContent)
         }.bind({ddItem: ddItem, headerContent: headerContent, w: this}))/*.else({
-          console.log("Query error in getDropDownOptions");
+          console.log("Query error in queryDropDownOptions");
         })*/;
       };
 
 
-      this.makeDropdownOptionsHtml = function(ddNum, domId) {
+      this.makeDropdownOptionsHtml = function(ddNum, selectDom) {
         let ddItem = this.dropDownInfo[ddNum];
         let options = ddItem.options;
         let theHtml = '';
@@ -483,11 +483,7 @@ define([
             extentStr = 'extent="' + options[i].extent + '" ';
           theHtml += '<option ' + extentStr + 'value="' + options[i].value + '">' + options[i].label + '</option>';
         }
-/*
-        ddItem.options.forEach(function(item, index, array) {
-        });
-*/
-        getEl(domId).innerHTML = theHtml;
+        getEl(selectDom).innerHTML = theHtml;
       };
 
 
@@ -499,6 +495,20 @@ define([
       };
 */
 
+      this.insertDropdowns = function(ddItem) {
+        let html = ddItem.htmlTemplate;
+        let a = html.split("{");
+        for (let i=1; i<a.length; i++) {
+          let p = a[i].indexOf("}");
+          let ddName = a[i].slice(0, p);
+          let htmlInsert = this.dropDownInfo.find(function(ddItem){
+            return ddItem.ddName === ddName;
+          });
+          html = html.replace("{" + ddName + "}", htmlInsert.spanDom.outerHTML);
+          console.log(ddName);
+        }
+        return html;
+      };
 
       this.makeTableHeaderHtml = function() {
         let headerDivNode = getEl(this.headerDivName);
@@ -509,37 +519,33 @@ define([
         if (this.tableHeaderTitle)
           headerContent.innerHTML = '&emsp;<label id="' + this.baseName + 'TableHeaderTitle" class="tableHeaderTitle">' + this.tableHeaderTitle + ' &emsp;</label>';
 
-        //TODO:  Replace "headerContent.innerHTML+=..." with "headerContent.appendChild(...)"
         if (this.dropDownInfo) {
           for (d in this.dropDownInfo) {
             let ddItem = this.dropDownInfo[d];
-            ddItem.domId = this.baseName + "Dropdown_" + ddItem.ddName;
-            //ddItem.dom = makeHtmlElement(("span", ))
-            let ddSpanId = ddItem.domId.replace("_","Span_");
+            ddItem.ddId = this.baseName + "Dropdown_" + ddItem.ddName;
+            let ddSpanId = ddItem.ddId.replace("_","Span_");
+            ddItem.spanDom = makeHtmlElement("span", ddSpanId, "dropdown");   // The SPAN for the dropdown, that will be added to the header
+            if (!ddItem.subDropDown)      // If it's a subDropDown, element will be added to separate dropdown dialog later
+              headerContent.appendChild(ddItem.spanDom);    // add the SPAN for the dropdown to the header
             let ddTitle = ddItem.ddName;
             if (ddItem.ddTitle)
               ddTitle = ddItem.ddTitle;
-            let ddHtml = '&emsp;<LABEL class="boldLabel">' + ddTitle + ': </LABEL>';
-            let args = this.objName + ',' + d + ',' + ddItem.domId;
+            let args = this.objName + ',' + d + ',' + ddItem.ddId;
 
             if (ddItem.htmlTemplate) {
-              //let onclickCall = "setVisible('" + dialogBoxId + "', true);";
-              //ddHtml += '<button id="' + ddItem.domId + '" onclick="' + onclickCall + '" ></button>&emsp;';
-              headerContent.innerHTML += '<span class="dropdown" id="' + ddSpanId + '">' + ddItem.htmlTemplate + '</span>';
+              ddItem.spanDom.innerHTML = this.insertDropdowns(ddItem);
             } else {
-              ddHtml += '<select id="' + ddItem.domId + '" onchange="dropdownSelectHandler(' + args + ')" ></select>&emsp;';
-              if (ddItem.subDropDown)
-                ddItem.dom = makeHtmlElement('span', ddSpanId, null, null, ddHtml);
-              else
-                headerContent.innerHTML += '<span id="' + ddSpanId + '">' + ddHtml + '</span>';
+              ddItem.selectDom = makeHtmlElement("select", ddItem.ddId);
+              ddItem.selectDom.setAttribute('onchange', 'dropdownSelectHandler(' + args + ')');
+              ddItem.spanDom.innerHTML = '&emsp;<LABEL class="boldLabel">' + ddTitle + ': </LABEL>';
+              ddItem.spanDom.appendChild(ddItem.selectDom);
+              ddItem.spanDom.innerHTML += '&emsp;';
               if (ddItem.subLayerName) {
-                this.getDropDownOptions(d, ddItem.domId);
+                this.queryDropDownOptions(d, ddItem.ddId);
               } else {
-                this.makeDropdownOptionsHtml(d, ddItem.domId);
+                this.makeDropdownOptionsHtml(d, ddItem.ddId);
               }
             }
-            ddItem.dom = getEl(ddItem.domId);
-            //if (ddItem.subDropDown)
           }
         }
 

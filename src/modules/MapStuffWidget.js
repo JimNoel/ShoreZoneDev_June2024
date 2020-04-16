@@ -1893,7 +1893,7 @@ define([
         return f.ddName === ddName;
       });
       let ddInfo = w.dropDownInfo[ddIndex];
-      let ddDom = getEl(ddInfo.domId);
+      let ddDom = getEl(ddInfo.ddId);
       ddDom.value = id;
       ddInfo.SelectedOption = ddDom.value;
       w.setActiveTab(newTab);

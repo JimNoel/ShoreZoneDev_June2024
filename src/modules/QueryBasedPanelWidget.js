@@ -456,7 +456,7 @@ define([
           let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
             let item = ddInfo[d];
-            let spanName = item.domId.replace("_","Span_");     // Name of associated SPAN element -- If span not visible, don't include in where clause
+            let spanName = item.ddId.replace("_","Span_");     // Name of associated SPAN element -- If span not visible, don't include in where clause
             if ((this.visibleHeaderElements.includes(spanName)) && (item.SelectedOption !== "All")) {
               let selOption = item.SelectedOption;
               if (item.isAlpha)

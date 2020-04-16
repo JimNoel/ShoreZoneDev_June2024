@@ -520,7 +520,7 @@ function sliderHandler(divID) {
 }
 
 function setDropdownValue(ddInfo, value) {
-  let ddDom = getEl(ddInfo.domId);
+  let ddDom = getEl(ddInfo.ddId);
   ddDom.value = value;
   ddInfo.SelectedOption = value;
 }
