@@ -118,7 +118,6 @@ define([
       this.grid = null;
       this.selectedRow = null;
 
-
       this.makeTable = function(fields, features) {     // Generate data table.  If no new features, then empty the DOM for the table
         // Create a dGrid table from returned data
         getEl(this.displayDivName).innerHTML = "";      // clear the DIV
@@ -583,6 +582,12 @@ define([
           this.headerContent.children[c].style.display = "none";
         for (c in this.visibleHeaderElements)
           getEl(this.visibleHeaderElements[c]).style.display = "inline";
+
+        // TODO: Explicitly set dropDowns parameter in all widget instances?
+        // Temporarily, if dropDowns not present use visibleHeaderElements as proxy
+        // Strictly speaking this is incorrect, as visibleHeaderElements can include non-dropdown items
+        if (!this.dropDowns)
+          this.dropDowns = this.visibleHeaderElements;
       }
 
       // Highlight row associated with the graphic feature, and return the DGrid row

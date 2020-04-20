@@ -693,6 +693,8 @@ define([
             // TODO: Not used yet, a "dropButton" with associated panel, placeholders to be replaced with named dropdowns
             { ddName: "Species",
               subDropDown: true,
+              expandPanelId: "faDropdownSpan_SpeciesPanel",
+              dfltButtonLabel: "Species Filter",
               LayerNameAddOn: "Species",
               totalsLayerNameAddOn: "Species",
               subLayerName: "vw_CatchStats_Species",
@@ -704,9 +706,9 @@ define([
               whereField: "SpCode",
               isAlpha: true
             },
-            { ddName: "SpeciesDropButton",
+            { ddName: "SpeciesPanel",
               ddTitle: "Species Filter",
-              htmlTemplate: '<button>Click me!</button><div class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
+              htmlTemplate: '<button id="faDropdownSpan_SpeciesPanel_Button" onclick="expandDropdownPanel(\'faDropdownSpan_SpeciesPanel_Content\', true)">Species Filter</button><div id="faDropdownSpan_SpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
             },
 
@@ -863,7 +865,8 @@ define([
               popupExcludeCols: ["Photos"],
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Locales',
-              visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', /*'faDropdownSpan_Species',*/ 'faDropdownSpan_SpeciesDropButton', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              visibleHeaderElements: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', /*'faDropdownSpan_Species',*/ 'faDropdownSpan_SpeciesPanel', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              dropDowns: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species'],
               featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],

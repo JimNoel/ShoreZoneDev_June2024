@@ -93,14 +93,15 @@ settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input ty
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
 
-let faSpeciesDropdownHtml = '<strong>Species: </strong>{Species}<br>';
+let faSpeciesDropdownHtml = '{Species}<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp">FMP Species<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_forage" name="fishTypes" value="forage">Forage Fish<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked>All Fish<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked>Common Name<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci">Scientific Name<br>';
+faSpeciesDropdownHtml += '<button class="closeButton" onclick="expandDropdownPanel(\'faDropdownSpan_SpeciesPanel_Content\', false)">Close</button>';
 
-let basemapIds = [
+  let basemapIds = [
   "oceans",
   "satellite",
   "hybrid",
@@ -132,6 +133,13 @@ const legendFilters = [
 ];
 
 let nonNullList = null;
+
+function expandDropdownPanel(panelId, expand) {
+  let className = "dropdown-content";
+  if (expand)
+    className = "dropdown-content-visible";
+  getEl(panelId).setAttribute("class", className);
+}
 
 function filterLegend(serviceName, nonNullList) {
   if (!nonNullList)
@@ -528,10 +536,18 @@ function setDropdownValue(ddInfo, value) {
 function dropdownSelectHandler(w, index, ddElement) {
   let ddInfo = w.dropDownInfo[index];
   ddInfo.SelectedOption = ddElement.value;
+  let selOption = ddInfo.options[ddElement.selectedIndex];
   let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
   if (newExtent)
     mapStuff.gotoExtent(newExtent);
   w.runQuery(view.extent);
+  if (ddInfo.expandPanelId) {
+    expandDropdownPanel(ddInfo.expandPanelId + "_Content", false)
+    let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name
+    if (buttonText === "[All]")
+      buttonText = "[All species]";     //ddInfo.dfltButtonLabel;
+    getEl(ddInfo.expandPanelId + "_Button").innerHTML = buttonText;
+  }
 }
 
 // TODO:  Generalize, so not specific to szUnitsWidget

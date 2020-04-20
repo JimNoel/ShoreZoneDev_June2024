@@ -486,19 +486,26 @@ cursor: pointer;
 #cbLimitToExtentDiv  {position: absolute; left: 30px; top:30px; font-size: 12px; font-style: italic; font-weight: bold;}
 
 
-.dropdown-content {
-    display: /*inline-block;*/      none;
+.dropdown-content, .dropdown-content-visible {
+    display: none;
     position: absolute;
-    background-color: #f9f9f9;
+    background-color: #eeffee;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
+    border: 1px solid grey;
+    padding: 5px;
 }
+
+.dropdown-content-visible { display: inline-block; }
 
 dropdown {
     display: inline;
 }
 
+/*
 .dropdown:hover .dropdown-content {
     display: inline-block;
-}
+}*/
+
+.closeButton {position: absolute; bottom: 10px; right: 10px;}
