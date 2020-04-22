@@ -94,9 +94,9 @@ settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cb
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
 
 let faSpeciesDropdownHtml = '{Species}<br><br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp">FMP Species<br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_forage" name="fishTypes" value="forage">Forage Fish<br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked>All Fish<br><br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'FMP=1\')">FMP Species<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_forage" name="fishTypes" value="forage" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'ForageFish=1\')">Forage Fish<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\')">All Fish<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked>Common Name<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci">Scientific Name<br>';
 faSpeciesDropdownHtml += '<button class="closeButton" onclick="expandDropdownPanel(\'faDropdownSpan_SpeciesPanel_Content\', false)">Close</button>';
@@ -1043,6 +1043,21 @@ function logPoperties(obj) {
     console.log(p + ":  " + (typeof obj[p]));
 }
 
+function download_csv(data) {
+  var csv = 'Name,Title\n';
+  data.forEach(function(row) {
+    console.log(csv);
+    //csv += row.join(',');
+    csv += "\n";
+  });
+
+  console.log(csv);
+  var hiddenElement = document.createElement('a');
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+  hiddenElement.target = '_blank';
+  hiddenElement.download = 'test.csv';
+  hiddenElement.click();
+}
 
 /* Unused functions
 

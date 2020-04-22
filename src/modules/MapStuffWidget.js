@@ -248,7 +248,7 @@ define([
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionalID", "Envelope"],
               orderByFields: ["Region"],
-              options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+              initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
               SelectedOption: "All",
               whereField: "RegionalID",
               isAlpha: true
@@ -259,7 +259,7 @@ define([
               ddOutFields: ["Common_name", "SppTxtCode", "SppName"],
               labelTemplate: "*Common_name, - ,*SppName",
               orderByFields: ["Common_name"],
-              options: [ { label: "[All]", value: "All" } ],
+              initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "SppTxtCode",
               isAlpha: true
@@ -455,7 +455,7 @@ define([
                         subLayerName: "Regions",
                         ddOutFields: ["RegionName", "RegionID", "Envelope"],
                         orderByFields: ["RegionName"],
-                        options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+                        initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
                         SelectedOption: "All",
                         whereField: "RegionID"
                       },
@@ -465,7 +465,7 @@ define([
                         subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
                         ddOutFields: ["Locale", "LocaleID", "Envelope"],
                         orderByFields: ["Locale"],
-                        options: [ { label: "[All]", value: "All" } ],
+                        initialOption: [ { label: "[All]", value: "All" } ],
                         SelectedOption: "All",
                         whereField: "LocaleID"
                       },
@@ -475,7 +475,7 @@ define([
                         subLayerName: "vw_SpCatch_allAK",
                         ddOutFields: ["Sp_CommonName", "SpCode"],
                         orderByFields: ["Sp_CommonName"],
-                        options: [ { label: "[All]", value: "All" } ],
+                        initialOption: [ { label: "[All]", value: "All" } ],
                         SelectedOption: "All",
                         whereField: "SpCode",
                         isAlpha: true
@@ -628,7 +628,7 @@ define([
               subLayerName: "Regions",
               ddOutFields: ["RegionName", "RegionID", "Envelope"],
               orderByFields: ["RegionName"],
-              options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+              initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
               SelectedOption: "All",
               whereField: "RegionID"
             },
@@ -638,7 +638,7 @@ define([
               subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
               ddOutFields: ["Locale", "LocaleID", "Envelope"],
               orderByFields: ["Locale"],
-              options: [ { label: "[All]", value: "All" } ],
+              initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "LocaleID"
             },
@@ -701,7 +701,7 @@ define([
               ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
               labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
               orderByFields: ["Sp_CommonName"],
-              options: [ { label: "[All]", value: "All" } ],
+              initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "SpCode",
               isAlpha: true
@@ -726,7 +726,7 @@ define([
               popupTitle: "Fish Atlas Region",
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
-              visibleHeaderElements: ['faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
+              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
               featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
               calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
               orderByFields: ["Region"],
@@ -1007,7 +1007,7 @@ define([
                         subLayerName: "Regions",
                         ddOutFields: ["RegionName", "RegionID", "Envelope"],
                         orderByFields: ["RegionName"],
-                        options: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+                        initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
                         SelectedOption: "All",
                         whereField: "RegionID"
                       },
@@ -1017,7 +1017,7 @@ define([
                         subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
                         ddOutFields: ["Locale", "LocaleID", "Envelope"],
                         orderByFields: ["Locale"],
-                        options: [ { label: "[All]", value: "All" } ],
+                        initialOption: [ { label: "[All]", value: "All" } ],
                         SelectedOption: "All",
                         whereField: "LocaleID"
                       },
@@ -1027,7 +1027,7 @@ define([
                         subLayerName: "vw_SpCatch_allAK",
                         ddOutFields: ["Sp_CommonName", "SpCode"],
                         orderByFields: ["Sp_CommonName"],
-                        options: [ { label: "[All]", value: "All" } ],
+                        initialOption: [ { label: "[All]", value: "All" } ],
                         SelectedOption: "All",
                         whereField: "SpCode",
                         isAlpha: true

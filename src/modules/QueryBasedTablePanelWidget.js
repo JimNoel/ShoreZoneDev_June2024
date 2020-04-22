@@ -428,19 +428,21 @@ define([
       };
 
 
-      this.queryDropDownOptions = function(ddNum, headerContent) {
+      this.queryDropDownOptions = function(ddNum, headerContent, where) {
         let ddItem = this.dropDownInfo[ddNum];
         let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
         let queryTask = new QueryTask(subLayerURL);
         let query = new Query();
-        with (query) {
-          outFields = ddItem.ddOutFields;
-          orderByFields = ddItem.orderByFields;
-          where = "";
-        }
+        query.outFields = ddItem.ddOutFields;
+        query.orderByFields = ddItem.orderByFields;
+        query.where = "";
+        if (where)
+          query.where = where;
         queryTask.query = query;
         queryTask.execute(query).then(function(results){
+          ddItem.options = [];    // ddItem.initialOption;
           let options = ddItem.options;
+          options.push(ddItem.initialOption[0]);
           let ddFields = ddItem.ddOutFields;
           for (let i=0;  i<results.features.length; i++) {
             let a = results.features[i].attributes;
@@ -509,14 +511,44 @@ define([
         return html;
       };
 
+      this.filterDropdown = function(ddName, headerContent, where) {
+        let ddNum = this.dropDownInfo.findIndex(function(D) {
+          return D.ddName === ddName;
+        })
+        this.queryDropDownOptions(ddNum, headerContent, where);
+      };
+
+      this.downloadTableData = function() {
+        console.log("downloadTableData");
+        download_csv(this.store.data)
+/*
+        $("table").tableExport({
+          headings: true,                    // (Boolean), display table headings (th/td elements) in the <thead>
+          footers: true,                     // (Boolean), display table footers (th/td elements) in the <tfoot>
+          formats: ["xls", "csv", "txt"],    // (String[]), filetypes for the export
+          fileName: "id",                    // (id, String), filename for the downloaded file
+          bootstrap: true,                   // (Boolean), style buttons using bootstrap
+          position: "well" ,                // (top, bottom), position of the caption element relative to table
+          ignoreRows: null,                  // (Number, Number[]), row indices to exclude from the exported file
+          ignoreCols: null,                 // (Number, Number[]), column indices to exclude from the exported file
+          ignoreCSS: ".tableexport-ignore"   // (selector, selector[]), selector(s) to exclude from the exported file
+        });
+*/
+      };
+
       this.makeTableHeaderHtml = function() {
         let headerDivNode = getEl(this.headerDivName);
         let headerContent = document.createElement("SPAN");
         this.headerContent = headerContent;
         headerDivNode.appendChild(headerContent);
 
+        headerContent.innerHTML = '';
+
+        let downloadFtnText = this.objName + ".downloadTableData()";
+        headerContent.innerHTML += '<span id="' + this.baseName + 'TableDownload"><img src="assets/images/floppy16x16.png" title="Download table data" onclick="' + downloadFtnText + '"></span>';
+
         if (this.tableHeaderTitle)
-          headerContent.innerHTML = '&emsp;<label id="' + this.baseName + 'TableHeaderTitle" class="tableHeaderTitle">' + this.tableHeaderTitle + ' &emsp;</label>';
+          headerContent.innerHTML += '&emsp;<label id="' + this.baseName + 'TableHeaderTitle" class="tableHeaderTitle">' + this.tableHeaderTitle + ' &emsp;</label>';
 
         if (this.dropDownInfo) {
           for (d in this.dropDownInfo) {
