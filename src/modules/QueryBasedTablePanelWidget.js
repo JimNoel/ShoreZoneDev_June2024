@@ -111,12 +111,69 @@ define([
 
       lang.mixin(this, kwArgs);
 
+/*
+      for (let t=0; t<this.tabInfo.length; t++) {
+        let tabInfo = this.tabInfo[t];
+        if (tabInfo.tableDownloadFields)
+          tabInfo.visibleHeaderElements.splice(0,0,this.baseName + "TableDownload");
+      }
+*/
+
       this.hasTable = true;
 
       this.hideEmptyColumns = true;
       this.store = null;
       this.grid = null;
       this.selectedRow = null;
+
+      // TODO: Use exclusionary lst instead of tableDownloadFields?
+      this.downloadTableData = function() {
+        if (!this.tableDownloadFields) {
+          alert("ERROR: This table is not set up for downloading.");
+          return;
+        }
+        let data = this.store.data;
+        let columns = this.tableDownloadFields;
+
+        //var csv = columns.join(",") + "\n";
+        var csv = '';
+        for (let c=0; c<columns.length; c++) {
+          let columnLabel = null;
+          let specialFormatting = this.specialFormatting[columns[c]];
+          if (specialFormatting)
+            columnLabel = specialFormatting.title;
+          if (!columnLabel)
+            columnLabel = columns[c];
+          if (c !== 0)
+            csv += ',';
+          csv += '"' + columnLabel + '"';
+        }
+        csv += '\n';
+
+        for (let r=0; r<data.length; r++) {
+          let row = data[r];
+          for (let c=0; c<columns.length; c++) {
+            let value = row[columns[c]];
+            if (!value)
+              value = "";
+            if (typeof value === "string")
+              value = '"' + stripHtml(value) + '"';     // value.split("<")[0];
+            let specialFormatting = this.specialFormatting[columns[c]];
+            if (specialFormatting && specialFormatting.dateFormat)
+              value = '"' + formatNumber_Date(value) + '"';
+            let suffix = ",";
+            if (c === columns.length-1)
+              suffix = "\n";
+            csv += value + suffix;
+          }
+        }
+        let dfltFileName = "TableData.csv";
+        if (this.draggablePanelId)
+          dfltFileName = getEl(this.draggablePanelId + "_headerText").innerText + ".csv";
+        else if (this.tabInfo)
+          dfltFileName = this.tabInfo[this.currTab].tabTitle + ".csv";
+        download_csv(csv, dfltFileName);
+      }
 
       this.makeTable = function(fields, features) {     // Generate data table.  If no new features, then empty the DOM for the table
         // Create a dGrid table from returned data
@@ -518,24 +575,6 @@ define([
         this.queryDropDownOptions(ddNum, headerContent, where);
       };
 
-      this.downloadTableData = function() {
-        console.log("downloadTableData");
-        download_csv(this.store.data)
-/*
-        $("table").tableExport({
-          headings: true,                    // (Boolean), display table headings (th/td elements) in the <thead>
-          footers: true,                     // (Boolean), display table footers (th/td elements) in the <tfoot>
-          formats: ["xls", "csv", "txt"],    // (String[]), filetypes for the export
-          fileName: "id",                    // (id, String), filename for the downloaded file
-          bootstrap: true,                   // (Boolean), style buttons using bootstrap
-          position: "well" ,                // (top, bottom), position of the caption element relative to table
-          ignoreRows: null,                  // (Number, Number[]), row indices to exclude from the exported file
-          ignoreCols: null,                 // (Number, Number[]), column indices to exclude from the exported file
-          ignoreCSS: ".tableexport-ignore"   // (selector, selector[]), selector(s) to exclude from the exported file
-        });
-*/
-      };
-
       this.makeTableHeaderHtml = function() {
         let headerDivNode = getEl(this.headerDivName);
         let headerContent = document.createElement("SPAN");
@@ -545,7 +584,7 @@ define([
         headerContent.innerHTML = '';
 
         let downloadFtnText = this.objName + ".downloadTableData()";
-        headerContent.innerHTML += '<span id="' + this.baseName + 'TableDownload"><img src="assets/images/floppy16x16.png" title="Download table data" onclick="' + downloadFtnText + '"></span>';
+        headerContent.innerHTML += '<span id="' + this.baseName + 'TableDownload"><img src="assets/images/floppy16x16.png" title="Download table data" class="tableHeaderIcon" onclick="' + downloadFtnText + '"></span>';
 
         if (this.tableHeaderTitle)
           headerContent.innerHTML += '&emsp;<label id="' + this.baseName + 'TableHeaderTitle" class="tableHeaderTitle">' + this.tableHeaderTitle + ' &emsp;</label>';
@@ -604,7 +643,7 @@ define([
         if (this.speciesTableInfo) {
           let spTableSpanId = this.baseName + 'IconSpeciesTable';
           let spTableHtml = '&emsp;<LABEL class="boldLabel">' + this.speciesTableInfo.iconLabel + '</LABEL>&ensp;';
-          spTableHtml += "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable(" + this.speciesTableInfo.args + ")' height='15' width='15' alt='' title='Show species table for all of Alaska'>";
+          spTableHtml += "<img src='assets/images/table.png' class='tableHeaderIcon' onclick='mapStuff.openSpeciesTable(" + this.speciesTableInfo.args + ")' height='15' width='15' alt='' title='Show species table for all of Alaska'>";
           headerContent.innerHTML += '<span id="' + spTableSpanId + '">' + spTableHtml + '</span>';
         }
       };

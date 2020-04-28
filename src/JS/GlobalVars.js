@@ -1043,19 +1043,15 @@ function logPoperties(obj) {
     console.log(p + ":  " + (typeof obj[p]));
 }
 
-function download_csv(data) {
-  var csv = 'Name,Title\n';
-  data.forEach(function(row) {
-    console.log(csv);
-    //csv += row.join(',');
-    csv += "\n";
-  });
-
-  console.log(csv);
+function download_csv(csv, dfltFileName) {
+  let fileName = prompt("Enter name of file to save to: ", dfltFileName);
+  if (!fileName)
+    return;
+  fileName = fileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
   var hiddenElement = document.createElement('a');
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
   hiddenElement.target = '_blank';
-  hiddenElement.download = 'test.csv';
+  hiddenElement.download = fileName;
   hiddenElement.click();
 }
 

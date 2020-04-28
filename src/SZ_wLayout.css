@@ -406,6 +406,8 @@ cursor: pointer;
     /*overflow-x: auto;     doesn't work at this level? */
 }
 
+.tableHeaderIcon  {padding-left: 5px;}
+
 .iconDiv  {height: 24px;}
 
 .icon_Active  {background-color: #6884B3;}
