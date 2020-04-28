@@ -114,7 +114,7 @@ define([
 /*
       for (let t=0; t<this.tabInfo.length; t++) {
         let tabInfo = this.tabInfo[t];
-        if (tabInfo.tableDownloadFields)
+        if (tabInfo.downloadExcludeFields)
           tabInfo.visibleHeaderElements.splice(0,0,this.baseName + "TableDownload");
       }
 */
@@ -126,52 +126,62 @@ define([
       this.grid = null;
       this.selectedRow = null;
 
-      // TODO: Use exclusionary lst instead of tableDownloadFields?
       this.downloadTableData = function() {
-        if (!this.tableDownloadFields) {
+        if (!this.downloadExcludeFields) {
           alert("ERROR: This table is not set up for downloading.");
           return;
         }
         let data = this.store.data;
-        let columns = this.tableDownloadFields;
 
-        //var csv = columns.join(",") + "\n";
+        let columns = [];
         var csv = '';
-        for (let c=0; c<columns.length; c++) {
-          let columnLabel = null;
-          let specialFormatting = this.specialFormatting[columns[c]];
-          if (specialFormatting)
-            columnLabel = specialFormatting.title;
-          if (!columnLabel)
-            columnLabel = columns[c];
-          if (c !== 0)
-            csv += ',';
-          csv += '"' + columnLabel + '"';
+        for (c in this.grid.columns) {
+          let column = this.grid.columns[c];
+          let fName = column.field;
+          if (!this.downloadExcludeFields.includes(fName) && !column.hidden) {
+            columns.push(fName);
+            let columnLabel = null;
+            let specialFormatting = this.specialFormatting[fName];
+            if (specialFormatting)
+              columnLabel = specialFormatting.title;
+            if (!columnLabel)
+              columnLabel = fName;
+            if (csv !== '')
+              csv += ',';
+            csv += '"' + columnLabel + '"';
+          }
         }
         csv += '\n';
 
         for (let r=0; r<data.length; r++) {
           let row = data[r];
+          let rowCsv = '';
+          //for (c in this.grid.columns) {
           for (let c=0; c<columns.length; c++) {
-            let value = row[columns[c]];
-            if (!value)
-              value = "";
-            if (typeof value === "string")
-              value = '"' + stripHtml(value) + '"';     // value.split("<")[0];
-            let specialFormatting = this.specialFormatting[columns[c]];
-            if (specialFormatting && specialFormatting.dateFormat)
-              value = '"' + formatNumber_Date(value) + '"';
-            let suffix = ",";
-            if (c === columns.length-1)
-              suffix = "\n";
-            csv += value + suffix;
+            let fName = columns[c];     // this.grid.columns[c].field;     //
+            //if (!this.downloadExcludeFields.includes(fName)) {
+              let value = row[fName];
+              if (!value)
+                value = "";
+              if (typeof value === "string")
+                value = '"' + stripHtml(value) + '"';     // value.split("<")[0];
+              let specialFormatting = this.specialFormatting[fName];
+              if (specialFormatting && specialFormatting.dateFormat)
+                value = '"' + formatNumber_Date(value) + '"';
+              if (rowCsv !== '')
+                rowCsv += ',';
+              rowCsv += value;
+            //}
           }
+          csv += rowCsv + '\n';
         }
         let dfltFileName = "TableData.csv";
         if (this.draggablePanelId)
           dfltFileName = getEl(this.draggablePanelId + "_headerText").innerText + ".csv";
         else if (this.tabInfo)
           dfltFileName = this.tabInfo[this.currTab].tabTitle + ".csv";
+        else if (this.popupTitle)
+          dfltFileName = this.popupTitle + ".csv";
         download_csv(csv, dfltFileName);
       }
 

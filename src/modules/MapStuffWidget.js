@@ -166,6 +166,7 @@ define([
         spatialRelationship: "contains",
         idField: "PHY_IDENT",
         featureOutFields:  ["PHY_IDENT"],     // Other fields will be added based on queries of map service layers
+        downloadExcludeFields: [],
         orderByFields: ["PHY_IDENT"],
         extraOutFields:  ["CMECS_1", "CMECS_2", "CMECS_3", "Length_M", "Slope_calc", "SHORE_PROB", "LOST_SHORE", "Fetch_max", "Wave_Dissipation", "Orient_dir", "Tidal_height", "CVI_Rank"],
         specialFormatting: {      // Special HTML formatting for field values
@@ -279,7 +280,7 @@ define([
               parentAreaType: '',
               visibleHeaderElements: ['ssTableDownload', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
               featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
-              tableDownloadFields: ["RegionNumID", "RegionalID", "Region"],
+              downloadExcludeFields: ["Envelope", "SpTableBtn", "SelRegionBtn"],
               orderByFields: ["Region"],
               calcFields:  [{name: "SpTableBtn", afterField: "Region"}, {name: "SelRegionBtn", afterField: "SpTableBtn"}],
               specialFormatting: {      // Special HTML formatting for field values
@@ -341,7 +342,7 @@ define([
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssTableDownload', 'ssDropdownSpan_Region', 'ssDropdownSpan_Species', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
               featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
-              tableDownloadFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_"],
+              downloadExcludeFields: ["Envelope", "hasPhotos", "hasSpecies", "hasProfile"],
               orderByFields: ["station"],
               calcFields:  [{name: "Envelope", afterField: null}],
               specialFormatting: {      // Special HTML formatting for field values
@@ -446,7 +447,7 @@ define([
           //footerDivName:  "ssSpTableFooterDiv",
           visibleHeaderElements: ['ssSpTableTableDownload', 'ssSpTableLabelSpan_featureCount'],
           featureOutFields: ["SppNameHtml", "Common_name"],
-          tableDownloadFields: ["SppNameHtml", "Common_name"],
+          downloadExcludeFields: [],
           tableHeaderTitle: "All Regions",
           displayDivName: "ssSpTableContainer",
           mapServiceLayer: ssMapServiceLayer,
@@ -729,10 +730,10 @@ define([
               popupTitle: "Fish Atlas Region",
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
-              // TODO: Have 'faTableDownload' added in code, if tableDownloadFields is present
+              // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
               visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
               featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
-              tableDownloadFields: ["Region", "Hauls", "Species", "Catch"],
+              downloadExcludeFields: ["Envelope", "RegionID", "SelRegionBtn"],
               calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
               orderByFields: ["Region"],
               specialFormatting: {      // Special HTML formatting for field values
@@ -793,7 +794,7 @@ define([
               parentAreaType: 'Regions',
               visibleHeaderElements: ['faTableDownload', 'faDropdownSpan_Region', 'faDropdownSpan_LocaleHabitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
-              tableDownloadFields: ["Region", "MapID", "Locale", "Hauls", "Species", "Catch"],
+              downloadExcludeFields: ["Envelope", "LocaleID", "SelLocaleBtn"],
               calcFields:  [{name: "SelLocaleBtn", afterField: "LocaleID"}],
               orderByFields: ["Region", "Locale"],
               specialFormatting: {      // Special HTML formatting for field values
@@ -861,7 +862,7 @@ define([
               visibleHeaderElements: ['faTableDownload', /*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', /*'faDropdownSpan_Species',*/ 'faDropdownSpan_SpeciesPanel', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               dropDowns: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species'],
               featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
-              tableDownloadFields: ["Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch"],
+              downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
               specialFormatting: {      // Special HTML formatting for field values
@@ -989,7 +990,7 @@ define([
           footerDivName:  "faSpTableFooterDiv",
           visibleHeaderElements: ['faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
           featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
-          tableDownloadFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
+          downloadExcludeFields: [],
           totalOutFields: ["Catch", "Count_measured"],
           tableHeaderTitle: "All Regions",
           displayDivName: "faSpTableContainer",
