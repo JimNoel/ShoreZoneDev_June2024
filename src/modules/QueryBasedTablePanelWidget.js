@@ -495,12 +495,17 @@ define([
       };
 
 
-      this.queryDropDownOptions = function(ddNum, headerContent, where) {
+      this.queryDropDownOptions = function(ddNum, headerContent, where, comSci) {
         let ddItem = this.dropDownInfo[ddNum];
         let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
         let queryTask = new QueryTask(subLayerURL);
         let query = new Query();
         query.outFields = ddItem.ddOutFields;
+        if (comSci) {  // If comSci present, change ordering and label template
+          ddItem.comSci = comSci;
+          ddItem.orderByFields = ddItem.comSciSettings[comSci].orderByFields;
+          ddItem.labelTemplate = ddItem.comSciSettings[comSci].labelTemplate;
+        }
         query.orderByFields = ddItem.orderByFields;
         query.where = "";
         if (where)
@@ -522,8 +527,11 @@ define([
               theLabel = "";
               let arr = ddItem.labelTemplate.split(",");
               for (let j=0; j<arr.length; j++) {
-                if (arr[j].startsWith("*"))
-                  theLabel += a[arr[j].slice(1)];
+                if (arr[j].startsWith("*")) {
+                  let s = a[arr[j].slice(1)];
+                  if (s)    // Avoids adding "null" if s is null
+                    theLabel += s;
+                }
                 else
                   theLabel += arr[j];
               }
@@ -578,11 +586,11 @@ define([
         return html;
       };
 
-      this.filterDropdown = function(ddName, headerContent, where) {
+      this.filterDropdown = function(ddName, headerContent, where, comSci) {
         let ddNum = this.dropDownInfo.findIndex(function(D) {
           return D.ddName === ddName;
         })
-        this.queryDropDownOptions(ddNum, headerContent, where);
+        this.queryDropDownOptions(ddNum, headerContent, where, comSci);
       };
 
       this.makeTableHeaderHtml = function() {

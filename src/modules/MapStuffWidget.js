@@ -260,6 +260,17 @@ define([
               ddOutFields: ["Common_name", "SppTxtCode", "SppName"],
               labelTemplate: "*Common_name, - ,*SppName",
               orderByFields: ["Common_name"],
+              comSci: "com",
+              comSciSettings: {
+                com: {
+                  labelTemplate: "*Common_name, - ,*SppName",
+                  orderByFields: ["Common_name"]
+                },
+                sci: {
+                  labelTemplate: "*SppName, - ,*Common_name",
+                  orderByFields: ["SppName"]
+                }
+              },
               initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "SppTxtCode",
@@ -705,6 +716,17 @@ define([
               ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
               labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
               orderByFields: ["Sp_CommonName"],
+              comSci: "com",
+              comSciSettings: {
+                com: {
+                  labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
+                  orderByFields: ["Sp_CommonName"]
+                },
+                sci: {
+                  labelTemplate: "*Sp_ScientificName, - ,*Sp_CommonName",
+                  orderByFields: ["Sp_ScientificName"]
+                }
+              },
               initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "SpCode",
@@ -862,7 +884,7 @@ define([
               visibleHeaderElements: ['faTableDownload', /*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', /*'faDropdownSpan_Species',*/ 'faDropdownSpan_SpeciesPanel', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               dropDowns: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species'],
               featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
-              downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount"],
+              downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
               specialFormatting: {      // Special HTML formatting for field values

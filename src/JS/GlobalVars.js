@@ -95,10 +95,10 @@ settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick
 
 let faSpeciesDropdownHtml = '{Species}<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'FMP=1\')">FMP Species<br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_forage" name="fishTypes" value="forage" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'ForageFish=1\')">Forage Fish<br>';
+//faSpeciesDropdownHtml += '<input type="radio" id="radio_forage" name="fishTypes" value="forage" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'ForageFish=1\')">Forage Fish<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\')">All Fish<br><br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked>Common Name<br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci">Scientific Name<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',null,\'com\')">Common Name<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',null,\'sci\')">Scientific Name<br>';
 faSpeciesDropdownHtml += '<button class="closeButton" onclick="expandDropdownPanel(\'faDropdownSpan_SpeciesPanel_Content\', false)">Close</button>';
 
   let basemapIds = [
