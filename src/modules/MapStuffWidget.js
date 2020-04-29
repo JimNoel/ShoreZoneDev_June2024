@@ -707,7 +707,6 @@ define([
 
             // TODO: Not used yet, a "dropButton" with associated panel, placeholders to be replaced with named dropdowns
             { ddName: "Species",
-              subDropDown: true,
               expandPanelId: "faDropdownSpan_SpeciesPanel",
               dfltButtonLabel: "Species Filter",
               LayerNameAddOn: "Species",

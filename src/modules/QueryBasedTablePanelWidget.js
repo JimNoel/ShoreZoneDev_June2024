@@ -508,8 +508,9 @@ define([
         }
         query.orderByFields = ddItem.orderByFields;
         query.where = "";
-        if (where)
-          query.where = where;
+        if (where !== null)
+          ddItem.ddWhere = where;
+        query.where = ddItem.ddWhere;
         queryTask.query = query;
         queryTask.execute(query).then(function(results){
           ddItem.options = [];    // ddItem.initialOption;
@@ -610,10 +611,11 @@ define([
         if (this.dropDownInfo) {
           for (d in this.dropDownInfo) {
             let ddItem = this.dropDownInfo[d];
+            ddItem.ddWhere = "";
             ddItem.ddId = this.baseName + "Dropdown_" + ddItem.ddName;
             let ddSpanId = ddItem.ddId.replace("_","Span_");
             ddItem.spanDom = makeHtmlElement("span", ddSpanId, "dropdown");   // The SPAN for the dropdown, that will be added to the header
-            if (!ddItem.subDropDown)      // If it's a subDropDown, element will be added to separate dropdown dialog later
+            if (!ddItem.expandPanelId)      // If it's part of an expand panel, element will be added to separate dropdown dialog later
               headerContent.appendChild(ddItem.spanDom);    // add the SPAN for the dropdown to the header
             let ddTitle = ddItem.ddName;
             if (ddItem.ddTitle)
@@ -629,9 +631,9 @@ define([
               ddItem.spanDom.appendChild(ddItem.selectDom);
               ddItem.spanDom.innerHTML += '&emsp;';
               if (ddItem.subLayerName) {
-                this.queryDropDownOptions(d, ddItem.ddId);
+                this.queryDropDownOptions(d, ddItem.ddId, null);
               } else {
-                this.makeDropdownOptionsHtml(d, ddItem.ddId);
+                this.makeDropdownOptionsHtml(d, ddItem.ddId, null);
               }
             }
           }
