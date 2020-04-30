@@ -93,15 +93,19 @@ settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input ty
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
 
+let ssSpeciesDropdownHtml = '{Species}<br><br>';
+ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssComFirst" name="ssCommSciOrder" value="common" checked onclick="ssWidget.filterDropdown(\'Species\',\'ssDropdown_Species\',null,\'com\')">Common Name<br>';
+ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',\'ssDropdown_Species\',null,\'sci\')">Scientific Name<br>';
+ssSpeciesDropdownHtml += '<button class="closeButton" onclick="expandDropdownPanel(\'ssDropdownSpan_SpeciesPanel_Content\', sslse)">Close</button>';
+
 let faSpeciesDropdownHtml = '{Species}<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'FMP=1\')">FMP Species<br>';
-//faSpeciesDropdownHtml += '<input type="radio" id="radio_forage" name="fishTypes" value="forage" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'ForageFish=1\')">Forage Fish<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'\')">All Fish<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',null,\'com\')">Common Name<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',null,\'sci\')">Scientific Name<br>';
 faSpeciesDropdownHtml += '<button class="closeButton" onclick="expandDropdownPanel(\'faDropdownSpan_SpeciesPanel_Content\', false)">Close</button>';
 
-  let basemapIds = [
+let basemapIds = [
   "oceans",
   "satellite",
   "hybrid",

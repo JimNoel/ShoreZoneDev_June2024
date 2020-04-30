@@ -275,6 +275,11 @@ define([
               SelectedOption: "All",
               whereField: "SppTxtCode",
               isAlpha: true
+            },
+            { ddName: "ssSpeciesPanel",
+              ddTitle: "Species Filter",
+              htmlTemplate: '<button id="ssDropdownSpan_SpeciesPanel_Button" onclick="expandDropdownPanel(\'ssDropdownSpan_SpeciesPanel_Content\', true)">Species Filter</button><div id="ssDropdownSpan_SpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
+              SelectedOption: "All",
             }
           ],
           speciesTableInfo : {
@@ -290,6 +295,7 @@ define([
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
               visibleHeaderElements: ['ssTableDownload', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
+              dropdownElements: [],
               featureOutFields: ["Envelope", "RegionNumID", "RegionalID", "Region"],
               downloadExcludeFields: ["Envelope", "SpTableBtn", "SelRegionBtn"],
               orderByFields: ["Region"],
@@ -352,6 +358,7 @@ define([
               LayerNameAddOn: "vw_Stations_",        //'Field Stations',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssTableDownload', 'ssDropdownSpan_Region', 'ssDropdownSpan_Species', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
+              dropdownElements: ['ssDropdownSpan_Region', 'ssDropdownSpan_Species'],
               featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
               downloadExcludeFields: ["Envelope", "hasPhotos", "hasSpecies", "hasProfile"],
               orderByFields: ["station"],
@@ -457,6 +464,7 @@ define([
           headerDivName:  "ssSpTableHeaderDiv",
           //footerDivName:  "ssSpTableFooterDiv",
           visibleHeaderElements: ['ssSpTableTableDownload', 'ssSpTableLabelSpan_featureCount'],
+          dropdownElements: [],
           featureOutFields: ["SppNameHtml", "Common_name"],
           downloadExcludeFields: [],
           tableHeaderTitle: "All Regions",
@@ -735,8 +743,7 @@ define([
               ddTitle: "Species Filter",
               htmlTemplate: '<button id="faDropdownSpan_SpeciesPanel_Button" onclick="expandDropdownPanel(\'faDropdownSpan_SpeciesPanel_Content\', true)">Species Filter</button><div id="faDropdownSpan_SpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
-            },
-
+            }
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
@@ -753,6 +760,7 @@ define([
               parentAreaType: '',
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
               visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
+              dropdownElements: ['faDropdownSpan_Habitat'],
               featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
               downloadExcludeFields: ["Envelope", "RegionID", "SelRegionBtn"],
               calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
@@ -814,6 +822,7 @@ define([
               LayerNameAddOn: 'Locales',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['faTableDownload', 'faDropdownSpan_Region', 'faDropdownSpan_LocaleHabitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              dropdownElements: ['faDropdownSpan_Region', 'faDropdownSpan_LocaleHabitat'],
               featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
               downloadExcludeFields: ["Envelope", "LocaleID", "SelLocaleBtn"],
               calcFields:  [{name: "SelLocaleBtn", afterField: "LocaleID"}],
@@ -881,7 +890,7 @@ define([
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Locales',
               visibleHeaderElements: ['faTableDownload', /*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', /*'faDropdownSpan_Species',*/ 'faDropdownSpan_SpeciesPanel', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropDowns: [/*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species'],
+              dropdownElements: ['faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species'],
               featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
@@ -1010,6 +1019,7 @@ define([
           headerDivName:  "faSpTableHeaderDiv",
           footerDivName:  "faSpTableFooterDiv",
           visibleHeaderElements: ['faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
+          dropdownElements: [],
           featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
           downloadExcludeFields: [],
           totalOutFields: ["Catch", "Count_measured"],
