@@ -594,6 +594,15 @@ define([
         this.queryDropDownOptions(ddNum, headerContent, where, comSci);
       };
 
+      this.handleDependentDropdowns = function(ddInfo) {
+        console.log("handleDependentDropdowns");
+        let where =  ddInfo.whereField + "=" + ddInfo.SelectedOption;
+        for (let i=0; i<ddInfo.dependentDropdowns.length; i++) {
+          let ddName = ddInfo.dependentDropdowns[i];
+          this.filterDropdown(ddName, ddItem.ddId, where);
+        }
+      };
+
       this.makeTableHeaderHtml = function() {
         let headerDivNode = getEl(this.headerDivName);
         let headerContent = document.createElement("SPAN");

@@ -254,7 +254,32 @@ define([
               whereField: "RegionalID",
               isAlpha: true
             },
+            { ddName: "Group",
+              expandPanelId: "ssDropdownSpan_SpeciesPanel",
+              LayerNameAddOn: "Species",
+              subLayerName: "vw_AlaskaSpeciesGroups",     // table for generating dropdown items
+              ddOutFields: ["Group_", "GroupID"],
+              orderByFields: ["Group_"],
+              initialOption: [ { label: "[All]", value: "All" } ],
+              SelectedOption: "All",
+              whereField: "GroupID",
+              isAlpha: true,
+              dependentDropdowns: ["Subgroup", "Species"]
+            },
+            { ddName: "Subgroup",
+              expandPanelId: "ssDropdownSpan_SpeciesPanel",
+              LayerNameAddOn: "Species",
+              subLayerName: "vw_AlaskaSpeciesSubgroups",     // table for generating dropdown items
+              ddOutFields: ["Subgroup", "SubgroupID"],
+              orderByFields: ["Subgroup"],
+              initialOption: [ { label: "[All]", value: "All" } ],
+              SelectedOption: "All",
+              whereField: "SubgroupID",
+              isAlpha: true,
+              dependentDropdowns: ["Species"]
+            },
             { ddName: "Species",
+              expandPanelId: "ssDropdownSpan_SpeciesPanel",
               LayerNameAddOn: "Species",
               subLayerName: "vw_AlaskaSpecies",     // table for generating dropdown items
               ddOutFields: ["Common_name", "SppTxtCode", "SppName"],
@@ -276,7 +301,7 @@ define([
               whereField: "SppTxtCode",
               isAlpha: true
             },
-            { ddName: "ssSpeciesPanel",
+            { ddName: "SpeciesPanel",
               ddTitle: "Species Filter",
               htmlTemplate: '<button id="ssDropdownSpan_SpeciesPanel_Button" onclick="expandDropdownPanel(\'ssDropdownSpan_SpeciesPanel_Content\', true)">Species Filter</button><div id="ssDropdownSpan_SpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
@@ -357,8 +382,8 @@ define([
               popupExcludeCols: ["Photos", "Profile"],
               LayerNameAddOn: "vw_Stations_",        //'Field Stations',
               parentAreaType: 'Regions',
-              visibleHeaderElements: ['ssTableDownload', 'ssDropdownSpan_Region', 'ssDropdownSpan_Species', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
-              dropdownElements: ['ssDropdownSpan_Region', 'ssDropdownSpan_Species'],
+              visibleHeaderElements: ['ssTableDownload', 'ssDropdownSpan_Region', 'ssDropdownSpan_SpeciesPanel', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
+              dropdownElements: ['ssDropdownSpan_Region', 'ssDropdownSpan_Species', 'ssDropdownSpan_Group', 'ssDropdownSpan_Subgroup'],
               featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
               downloadExcludeFields: ["Envelope", "hasPhotos", "hasSpecies", "hasProfile"],
               orderByFields: ["station"],
@@ -716,7 +741,7 @@ define([
             // TODO: Not used yet, a "dropButton" with associated panel, placeholders to be replaced with named dropdowns
             { ddName: "Species",
               expandPanelId: "faDropdownSpan_SpeciesPanel",
-              dfltButtonLabel: "Species Filter",
+              //dfltButtonLabel: "Species Filter",
               LayerNameAddOn: "Species",
               totalsLayerNameAddOn: "Species",
               subLayerName: "vw_CatchStats_Species",
