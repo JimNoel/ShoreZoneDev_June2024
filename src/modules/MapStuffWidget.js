@@ -255,31 +255,31 @@ define([
               isAlpha: true
             },
             { ddName: "Group",
-              expandPanelId: "ssDropdownSpan_SpeciesPanel",
-              LayerNameAddOn: "Species",
+              expandPanelId: "SpeciesPanel",
+              LayerNameAddOn: "SpeciesGroups",
               subLayerName: "vw_AlaskaSpeciesGroups",     // table for generating dropdown items
               ddOutFields: ["Group_", "GroupID"],
               orderByFields: ["Group_"],
               initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "GroupID",
-              isAlpha: true,
+              isAlpha: false,
               dependentDropdowns: ["Subgroup", "Species"]
             },
             { ddName: "Subgroup",
-              expandPanelId: "ssDropdownSpan_SpeciesPanel",
-              LayerNameAddOn: "Species",
+              expandPanelId: "SpeciesPanel",
+              LayerNameAddOn: "SpeciesSubgroups",
               subLayerName: "vw_AlaskaSpeciesSubgroups",     // table for generating dropdown items
               ddOutFields: ["Subgroup", "SubgroupID"],
               orderByFields: ["Subgroup"],
               initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "SubgroupID",
-              isAlpha: true,
+              isAlpha: false,
               dependentDropdowns: ["Species"]
             },
             { ddName: "Species",
-              expandPanelId: "ssDropdownSpan_SpeciesPanel",
+              expandPanelId: "SpeciesPanel",
               LayerNameAddOn: "Species",
               subLayerName: "vw_AlaskaSpecies",     // table for generating dropdown items
               ddOutFields: ["Common_name", "SppTxtCode", "SppName"],
@@ -303,8 +303,10 @@ define([
             },
             { ddName: "SpeciesPanel",
               ddTitle: "Species Filter",
-              htmlTemplate: '<button id="ssDropdownSpan_SpeciesPanel_Button" onclick="expandDropdownPanel(\'ssDropdownSpan_SpeciesPanel_Content\', true)">Species Filter</button><div id="ssDropdownSpan_SpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
+              htmlTemplate: '<button id="ssSpeciesPanel_Button" onclick="expandDropdownPanel(\'ssSpeciesPanel\', true)">Species Filter</button><div id="ssSpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
+              LayerNameAddOn: "",
+              where: ""
             }
           ],
           speciesTableInfo : {
@@ -357,7 +359,7 @@ define([
                   colWidth:  15,
                   plugInFields: ["RegionalID", "Envelope"],
                   args: 'ssWidget,"{0}","{1}"',
-                  html: gotoSubareasTemplate.replace("{area}", "stations for this region")       //"<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon' alt=''>"
+                  html: gotoSubareasTemplate.replace("{area}", "stations for this region")
                 }
               },
               idField: 'Region',
@@ -382,8 +384,8 @@ define([
               popupExcludeCols: ["Photos", "Profile"],
               LayerNameAddOn: "vw_Stations_",        //'Field Stations',
               parentAreaType: 'Regions',
-              visibleHeaderElements: ['ssTableDownload', 'ssDropdownSpan_Region', 'ssDropdownSpan_SpeciesPanel', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
-              dropdownElements: ['ssDropdownSpan_Region', 'ssDropdownSpan_Species', 'ssDropdownSpan_Group', 'ssDropdownSpan_Subgroup'],
+              visibleHeaderElements: ['ssTableDownload', 'ssRegion_ddWrapper', 'ssSpeciesPanel_ddWrapper', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
+              dropdownElements: ['ssRegion_ddWrapper', 'ssSpecies_ddWrapper', 'ssGroup_ddWrapper', 'ssSubgroup_ddWrapper'],
               featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
               downloadExcludeFields: ["Envelope", "hasPhotos", "hasSpecies", "hasProfile"],
               orderByFields: ["station"],
@@ -740,9 +742,9 @@ define([
 
             // TODO: Not used yet, a "dropButton" with associated panel, placeholders to be replaced with named dropdowns
             { ddName: "Species",
-              expandPanelId: "faDropdownSpan_SpeciesPanel",
+              expandPanelId: "SpeciesPanel",
               //dfltButtonLabel: "Species Filter",
-              LayerNameAddOn: "Species",
+              //LayerNameAddOn: "Species",
               totalsLayerNameAddOn: "Species",
               subLayerName: "vw_CatchStats_Species",
               ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
@@ -766,8 +768,9 @@ define([
             },
             { ddName: "SpeciesPanel",
               ddTitle: "Species Filter",
-              htmlTemplate: '<button id="faDropdownSpan_SpeciesPanel_Button" onclick="expandDropdownPanel(\'faDropdownSpan_SpeciesPanel_Content\', true)">Species Filter</button><div id="faDropdownSpan_SpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
+              htmlTemplate: '<button id="faSpeciesPanel_Button" onclick="expandDropdownPanel(\'faSpeciesPanel\', true)">Species Filter</button><div id="faSpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
+              LayerNameAddOn: "Species",
             }
           ],
           speciesTableInfo : {
@@ -784,8 +787,8 @@ define([
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
-              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faDropdownSpan_Habitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
-              dropdownElements: ['faDropdownSpan_Habitat'],
+              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faHabitat_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
+              dropdownElements: ['faHabitat_ddWrapper'],
               featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
               downloadExcludeFields: ["Envelope", "RegionID", "SelRegionBtn"],
               calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
@@ -823,7 +826,7 @@ define([
                   colWidth:  5,
                   plugInFields: ["RegionID", "Envelope"],
                   args: 'faWidget,{0},"{1}"',
-                  html:  gotoSubareasTemplate.replace("{area}", "locales for this region")       //"<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon'  alt='' title='Go to locales for this region'>"
+                  html:  gotoSubareasTemplate.replace("{area}", "locales for this region")
                 }
               },
               idField: 'Region',
@@ -846,8 +849,8 @@ define([
               popupTitle: "Fish Atlas Locale",
               LayerNameAddOn: 'Locales',
               parentAreaType: 'Regions',
-              visibleHeaderElements: ['faTableDownload', 'faDropdownSpan_Region', 'faDropdownSpan_LocaleHabitat', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropdownElements: ['faDropdownSpan_Region', 'faDropdownSpan_LocaleHabitat'],
+              visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faLocaleHabitat_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              dropdownElements: ['faRegion_ddWrapper', 'faLocaleHabitat_ddWrapper'],
               featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
               downloadExcludeFields: ["Envelope", "LocaleID", "SelLocaleBtn"],
               calcFields:  [{name: "SelLocaleBtn", afterField: "LocaleID"}],
@@ -887,7 +890,7 @@ define([
                   colWidth:  8,
                   plugInFields: ["LocaleID", "Envelope"],
                   args: 'faWidget,{0},"{1}"',
-                  html: gotoSubareasTemplate.replace("{area}", "sites for this locale")       //"<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon' alt=''>"
+                  html: gotoSubareasTemplate.replace("{area}", "sites for this locale")
                 }
               },
               idField: 'Locale',
@@ -914,8 +917,8 @@ define([
               popupExcludeCols: ["Photos"],
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Locales',
-              visibleHeaderElements: ['faTableDownload', /*'faDropdownSpan_Region',*/ 'faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', /*'faDropdownSpan_Species',*/ 'faDropdownSpan_SpeciesPanel', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropdownElements: ['faDropdownSpan_Locale', 'faDropdownSpan_SiteHabitat', 'faDropdownSpan_Species'],
+              visibleHeaderElements: ['faTableDownload', /*'faRegion_ddWrapper',*/ 'faLocale_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              dropdownElements: ['faLocale_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpecies_ddWrapper'],
               featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
@@ -1944,10 +1947,7 @@ define([
       let newTab = parseInt(w.currTab) + 1;
       let currTabInfo = w.tabInfo[w.currTab];
       let ddName = currTabInfo.subTableDD;
-      let ddIndex = w.dropDownInfo.findIndex(function(f){
-        return f.ddName === ddName;
-      });
-      let ddInfo = w.dropDownInfo[ddIndex];
+      let ddInfo = w.getddItem(ddName);
       let ddDom = getEl(ddInfo.ddId);
       ddDom.value = id;
       ddInfo.SelectedOption = ddDom.value;

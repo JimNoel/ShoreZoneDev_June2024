@@ -456,17 +456,26 @@ define([
           let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
             let item = ddInfo[d];
-            let spanName = item.ddId.replace("_","Span_");     // Name of associated SPAN element -- If span not visible, don't include in where clause
-            if ((this.dropdownElements.includes(spanName)) && (item.SelectedOption !== "All")) {
+            let itemWhere = null;
+            if (item.panelWhere) {
+              itemWhere = item.panelWhere;
+              item.panelWhereChanged = false;
+              getEl(item.uniqueName + "_closeButton").innerText = "Close";
+              this.ddLayerNameAddOn += item.LayerNameAddOn;
+            }
+            else if ((!item.expandPanelId) && (this.dropdownElements.includes(item.wrapperId)) && (item.SelectedOption !== "All")) {
               let selOption = item.SelectedOption;
               if (item.isAlpha)
                 selOption = "'" + selOption + "'";
               this.ddLayerNameAddOn += item.LayerNameAddOn;
               if (item.totalsLayerNameAddOn)
                 this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
+              itemWhere = item.whereField + "=" + selOption;
+            }
+            if (itemWhere) {
               if (theWhere !== "")
                 theWhere += " AND ";
-              theWhere += item.whereField + "=" + selOption;
+              theWhere += itemWhere;
             }
           }
         }

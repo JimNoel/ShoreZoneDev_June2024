@@ -96,16 +96,16 @@ settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick
 let ssSpeciesDropdownHtml = '{Group}<br><br>';
 ssSpeciesDropdownHtml += '{Subgroup}<br><br>';
 ssSpeciesDropdownHtml += '{Species}<br><br>';
-ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssComFirst" name="ssCommSciOrder" value="common" checked onclick="ssWidget.filterDropdown(\'Species\',\'ssDropdown_Species\',null,\'com\')">Common Name<br>';
-ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',\'ssDropdown_Species\',null,\'sci\')">Scientific Name<br>';
-ssSpeciesDropdownHtml += '<button class="closeButton" onclick="expandDropdownPanel(\'ssDropdownSpan_SpeciesPanel_Content\', sslse)">Close</button>';
+ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssComFirst" name="ssCommSciOrder" value="common" checked onclick="ssWidget.filterDropdown(\'Species\',null,\'com\')">Common Name<br>';
+ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',,null,\'sci\')">Scientific Name<br>';
+ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'ssSpeciesPanel\', false, ssWidget)">Close</button>';
 
 let faSpeciesDropdownHtml = '{Species}<br><br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'FMP=1\')">FMP Species<br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',\'\')">All Fish<br><br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',null,\'com\')">Common Name<br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',\'faDropdown_Species\',null,\'sci\')">Scientific Name<br>';
-faSpeciesDropdownHtml += '<button class="closeButton" onclick="expandDropdownPanel(\'faDropdownSpan_SpeciesPanel_Content\', false)">Close</button>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'FMP=1\')">FMP Species<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',\'\')">All Fish<br><br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked onclick="faWidget.filterDropdown(\'Species\',null,\'com\')">Common Name<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
+faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false)">Close</button>';
 
 let basemapIds = [
   "oceans",
@@ -140,11 +140,13 @@ const legendFilters = [
 
 let nonNullList = null;
 
-function expandDropdownPanel(panelId, expand) {
+function expandDropdownPanel(panelId, expand, w) {
   let className = "dropdown-content";
   if (expand)
     className = "dropdown-content-visible";
-  getEl(panelId).setAttribute("class", className);
+  getEl(panelId + "_Content").setAttribute("class", className);
+  if (w)
+    w.runQuery(view.extent);
 }
 
 function filterLegend(serviceName, nonNullList) {
@@ -542,23 +544,34 @@ function setDropdownValue(ddInfo, value) {
 function dropdownSelectHandler(w, index, ddElement) {
   let ddInfo = w.dropDownInfo[index];
   ddInfo.SelectedOption = ddElement.value;
+  let selOption = ddInfo.options[ddElement.selectedIndex];
+  let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
+  if (newExtent)
+    mapStuff.gotoExtent(newExtent);
+  if (ddInfo.expandPanelId) {
+    let expandPanel = w.getddItem(ddInfo.expandPanelId);
+    expandPanel.LayerNameAddOn = ddInfo.LayerNameAddOn;
+    if (!ddInfo.dependentDropdowns)
+      expandDropdownPanel(expandPanel.uniqueName, false);
+    let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name
+    if (buttonText === "[All]")
+      buttonText = "[All species]";     //ddInfo.dfltButtonLabel;
+    getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonText;
+    let whereValue = ddInfo.SelectedOption;
+    if (ddInfo.isAlpha)
+      whereValue = "'" + whereValue + "'";
+    expandPanel.panelWhere = ddInfo.whereField + "=" + whereValue;
+    if (whereValue === "All")
+      expandPanel.panelWhere = "";
+    expandPanel.panelWhereChanged = true;
+    getEl(expandPanel.uniqueName + "_closeButton").innerText = "Go";
+  }
   if (ddInfo.dependentDropdowns) {
     //let where = ddInfo.whereField + "=" +
     w.handleDependentDropdowns(ddInfo);
     return;
   }
-  let selOption = ddInfo.options[ddElement.selectedIndex];
-  let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
-  if (newExtent)
-    mapStuff.gotoExtent(newExtent);
   w.runQuery(view.extent);
-  if (ddInfo.expandPanelId) {
-    expandDropdownPanel(ddInfo.expandPanelId + "_Content", false)
-    let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name
-    if (buttonText === "[All]")
-      buttonText = "[All species]";     //ddInfo.dfltButtonLabel;
-    getEl(ddInfo.expandPanelId + "_Button").innerHTML = buttonText;
-  }
 }
 
 // TODO:  Generalize, so not specific to szUnitsWidget

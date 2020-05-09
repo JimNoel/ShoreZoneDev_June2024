@@ -495,8 +495,7 @@ define([
       };
 
 
-      this.queryDropDownOptions = function(ddNum, headerContent, where, comSci) {
-        let ddItem = this.dropDownInfo[ddNum];
+      this.queryDropDownOptions = function(ddItem, where, comSci) {
         let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
         let queryTask = new QueryTask(subLayerURL);
         let query = new Query();
@@ -543,15 +542,14 @@ define([
               extent: extentStr
             });
           }
-          this.w.makeDropdownOptionsHtml(ddNum, this.headerContent)
-        }.bind({ddItem: ddItem, headerContent: headerContent, w: this}))/*.else({
+          this.w.makeDropdownOptionsHtml(ddItem)
+        }.bind({ddItem: ddItem, w: this}))/*.else({
           console.log("Query error in queryDropDownOptions");
         })*/;
       };
 
 
-      this.makeDropdownOptionsHtml = function(ddNum, selectDom) {
-        let ddItem = this.dropDownInfo[ddNum];
+      this.makeDropdownOptionsHtml = function(ddItem) {
         let options = ddItem.options;
         let theHtml = '';
         for (i in options) {
@@ -560,7 +558,7 @@ define([
             extentStr = 'extent="' + options[i].extent + '" ';
           theHtml += '<option ' + extentStr + 'value="' + options[i].value + '">' + options[i].label + '</option>';
         }
-        getEl(selectDom).innerHTML = theHtml;
+        getEl(ddItem.ddId).innerHTML = theHtml;
       };
 
 
@@ -581,25 +579,32 @@ define([
           let htmlInsert = this.dropDownInfo.find(function(ddItem){
             return ddItem.ddName === ddName;
           });
-          html = html.replace("{" + ddName + "}", htmlInsert.spanDom.outerHTML);
+          html = html.replace("{" + ddName + "}", htmlInsert.wrapperDom.outerHTML);
           console.log(ddName);
         }
         return html;
       };
 
-      this.filterDropdown = function(ddName, headerContent, where, comSci) {
-        let ddNum = this.dropDownInfo.findIndex(function(D) {
-          return D.ddName === ddName;
-        })
-        this.queryDropDownOptions(ddNum, headerContent, where, comSci);
+      this.getddItem = function(ddName) {
+        let ddIndex = this.dropDownInfo.findIndex(function(f){
+          return f.ddName === ddName;
+        });
+        return this.dropDownInfo[ddIndex];
+
+      };
+
+      this.filterDropdown = function(ddName, where, comSci) {
+        this.queryDropDownOptions(this.getddItem(ddName), where, comSci);
       };
 
       this.handleDependentDropdowns = function(ddInfo) {
         console.log("handleDependentDropdowns");
-        let where =  ddInfo.whereField + "=" + ddInfo.SelectedOption;
+        let where = "";
+        if (ddInfo.SelectedOption !== "All")
+          where =  ddInfo.whereField + "=" + ddInfo.SelectedOption;
         for (let i=0; i<ddInfo.dependentDropdowns.length; i++) {
           let ddName = ddInfo.dependentDropdowns[i];
-          this.filterDropdown(ddName, ddItem.ddId, where);
+          this.filterDropdown(ddName, where);
         }
       };
 
@@ -620,29 +625,31 @@ define([
         if (this.dropDownInfo) {
           for (d in this.dropDownInfo) {
             let ddItem = this.dropDownInfo[d];
-            ddItem.ddWhere = "";
-            ddItem.ddId = this.baseName + "Dropdown_" + ddItem.ddName;
-            let ddSpanId = ddItem.ddId.replace("_","Span_");
-            ddItem.spanDom = makeHtmlElement("span", ddSpanId, "dropdown");   // The SPAN for the dropdown, that will be added to the header
-            if (!ddItem.expandPanelId)      // If it's part of an expand panel, element will be added to separate dropdown dialog later
-              headerContent.appendChild(ddItem.spanDom);    // add the SPAN for the dropdown to the header
-            let ddTitle = ddItem.ddName;
+            let ddTitle = ddItem.ddName;    // Text for label in from of dropdown
             if (ddItem.ddTitle)
               ddTitle = ddItem.ddTitle;
+            ddItem.ddWhere = "";
+            ddItem.uniqueName = this.baseName + ddItem.ddName;
+            ddItem.ddId = ddItem.uniqueName + "_Dropdown";      //this.baseName + "Dropdown_" + ddItem.ddName;
+            ddItem.wrapperId = ddItem.uniqueName + "_ddWrapper";
+            //let ddSpanId = ddItem.ddId.replace("_","Span_");
+            ddItem.wrapperDom = makeHtmlElement("span", ddItem.wrapperId, "dropdown");   // The SPAN for the dropdown, that will be added to the header
+            if (!ddItem.expandPanelId)      // If it's part of an expand panel, element will be added to separate dropdown dialog later
+              headerContent.appendChild(ddItem.wrapperDom);    // add the wrapper for the dropdown to the header
             let args = this.objName + ',' + d + ',' + ddItem.ddId;
 
             if (ddItem.htmlTemplate) {
-              ddItem.spanDom.innerHTML = this.insertDropdowns(ddItem);
+              ddItem.wrapperDom.innerHTML = this.insertDropdowns(ddItem);
             } else {
               ddItem.selectDom = makeHtmlElement("select", ddItem.ddId);
               ddItem.selectDom.setAttribute('onchange', 'dropdownSelectHandler(' + args + ')');
-              ddItem.spanDom.innerHTML = '&emsp;<LABEL class="boldLabel">' + ddTitle + ': </LABEL>';
-              ddItem.spanDom.appendChild(ddItem.selectDom);
-              ddItem.spanDom.innerHTML += '&emsp;';
+              ddItem.wrapperDom.innerHTML = '&emsp;<LABEL class="boldLabel">' + ddTitle + ': </LABEL>';
+              ddItem.wrapperDom.appendChild(ddItem.selectDom);
+              ddItem.wrapperDom.innerHTML += '&emsp;';
               if (ddItem.subLayerName) {
-                this.queryDropDownOptions(d, ddItem.ddId, null);
+                this.queryDropDownOptions(ddItem, null);
               } else {
-                this.makeDropdownOptionsHtml(d, ddItem.ddId, null);
+                this.makeDropdownOptionsHtml(ddItem);
               }
             }
           }
