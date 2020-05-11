@@ -70,6 +70,8 @@ let ssDisplayInfo = [
   {title: "Regions"},
   {title: "Field Stations", visible: false, listMode: "show"},
   {title: "vw_Stations_", visible: false, listMode: "hide"},
+  {title: "vw_Stations_SpeciesGroups", visible: false, listMode: "hide"},
+  {title: "vw_Stations_SpeciesSubgroups", visible: false, listMode: "hide"},
   {title: "vw_Stations_Species", visible: false, listMode: "hide"}
 ];
 

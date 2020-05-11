@@ -1317,6 +1317,10 @@ define([
         msg = "Extent change complete";
         console.log(msg);
         console.log("  handleExtentChange via view.stationary");
+        console.log("screen.availHeight:  " + screen.availHeight);
+        console.log("window.outerHeight:  " + window.outerHeight);
+        console.log("window.innerHeight:  " + window.innerHeight);
+        console.log("outer browser height:  " + (window.outerHeight - window.innerHeight));
         handleExtentChange(view.extent);
       } else {
         if (!view.resizing)
