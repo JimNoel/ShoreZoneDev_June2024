@@ -109,6 +109,12 @@ faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faComm
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
 faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false)">Close</button>';
 
+let lastInnerHeight = window.innerHeight;
+let innerHeight_noFileDownloadBar = lastInnerHeight;
+let innerHeight_withFileDownloadBar = null;
+let fileDownloadCount = 0;
+let downloadBarCycle = 0;
+
 let basemapIds = [
   "oceans",
   "satellite",
@@ -949,7 +955,8 @@ function stripHtml(inStr) {
 function siteLoadedHandler() {
 }
 
-function browserResizeHandler() {
+function browserResizeHandler(e) {
+  console.log("browserResizeHandler");
 }
 
 function resizeMedia() {
@@ -1078,6 +1085,14 @@ function download_csv(csv, dfltFileName) {
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
   hiddenElement.target = '_blank';
   hiddenElement.download = fileName;
+
+  lastInnerHeight = window.innerHeight;
+  fileDownloadCount += 1;
+  if (fileDownloadCount === 1) {
+    downloadBarCycle = 2;
+    innerHeight_noFileDownloadBar = lastInnerHeight;
+  }
+
   hiddenElement.click();
 }
 

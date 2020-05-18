@@ -1308,20 +1308,50 @@ define([
 
     // TODO: use esri/core/watchUtils instead of the following "watch" calls?
 
+/*
+    window.watch("innerHeight", function(newValue, oldValue, property, object) {
+      console.log("window.innerHeight changed");
+    });
+*/
+
     // When "stationary" property changes to True, there is a new extent, so handle the extent change
-    view.watch("stationary", function() {
+    view.watch("stationary", function(newValue, oldValue, property, object) {
       if (siteTabs.visManager.currClassName !== "sz")
         return;
       let msg = "Extent changing...";
       if (view.stationary) {
         msg = "Extent change complete";
         console.log(msg);
+/*
         console.log("  handleExtentChange via view.stationary");
         console.log("screen.availHeight:  " + screen.availHeight);
         console.log("window.outerHeight:  " + window.outerHeight);
         console.log("window.innerHeight:  " + window.innerHeight);
         console.log("outer browser height:  " + (window.outerHeight - window.innerHeight));
-        handleExtentChange(view.extent);
+*/
+
+        let bypass = false;
+/*
+        if ((fileDownloadCount > 1) && (window.innerHeight === lastInnerHeight))
+          fileDownloadCount -= 1;
+        else if (fileDownloadCount===1) {
+          if ((downloadBarCycle===2)  && (window.innerHeight < innerHeight_noFileDownloadBar)) {
+            // This condition should only be true immediately after the first download, when the downloads bar pops up
+            bypass = true;
+            downloadBarCycle = 1;
+            innerHeight_withFileDownloadBar = window.innerHeight;
+          }
+          if ((downloadBarCycle===1)  && (window.innerHeight===innerHeight_noFileDownloadBar)) {
+            // This condition should only be true immediately after opening the last download, when the downloads bar disappears
+            bypass = true;
+            downloadBarCycle = 0;
+            fileDownloadCount = 0;
+          }
+        }
+        lastInnerHeight = window.innerHeight;
+*/
+        if (!bypass)
+          handleExtentChange(view.extent);
       } else {
         if (!view.resizing)
           extentChanged = true;
@@ -1341,26 +1371,6 @@ define([
           extentChanged = false;
       }
     });
-
-/*    // THESE ARE OBSOLETE?
-    view.watch("extent", function(newExtent, oldExtent, property, theView) {
-      let msg = "new extent";
-      if (!view.stationary)
-        msg += "  (still changing)"
-      console.log(msg);
-      if (!view.stationary)
-        return;
-      handleExtentChange(newExtent);
-    });
-
-
-    view.watch("interacting", function(isInteracting, oldValue, property, object) {
-      if (isInteracting)
-        return;
-      console.log("  handleExtentChange via PAN");
-      handleExtentChange(view.extent);
-    });
-*/
 
     view.watch("resizing", function(isResizing, oldValue, property, object) {
       if (isResizing) {
