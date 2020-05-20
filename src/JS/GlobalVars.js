@@ -563,7 +563,7 @@ function dropdownSelectHandler(w, index, ddElement) {
       expandDropdownPanel(expandPanel.uniqueName, false);
     let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name
     if (buttonText === "[All]")
-      buttonText = "[All species]";     //ddInfo.dfltButtonLabel;
+      buttonText = "[All species]";
     getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonText;
     let whereValue = ddInfo.SelectedOption;
     if (ddInfo.isAlpha)

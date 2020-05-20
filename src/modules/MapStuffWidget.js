@@ -740,11 +740,9 @@ define([
               isAlpha: true
             },
 
-            // TODO: Not used yet, a "dropButton" with associated panel, placeholders to be replaced with named dropdowns
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
-              //dfltButtonLabel: "Species Filter",
-              //LayerNameAddOn: "Species",
+              LayerNameAddOn: "Species",
               totalsLayerNameAddOn: "Species",
               subLayerName: "vw_CatchStats_Species",
               ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
