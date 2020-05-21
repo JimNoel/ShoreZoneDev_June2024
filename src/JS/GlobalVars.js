@@ -1082,7 +1082,7 @@ function download_csv(csv, dfltFileName) {
     return;
   fileName = fileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
   var hiddenElement = document.createElement('a');
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);    // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
   hiddenElement.target = '_blank';
   hiddenElement.download = fileName;
 
