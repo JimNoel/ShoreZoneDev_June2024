@@ -5,7 +5,6 @@
     <title>ShoreZone Maps for CarryMap</title>
     
     <script language="javascript">
-    
         function downloadCMF(fileName) {
             theURL = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/carrymap/" + fileName;
             window.open(theURL);
@@ -14,89 +13,66 @@
         function openNewTab(url) {
             window.open(url);
         }
-        
+
     </script>
-    
+
+  <script src="JS/allAppsData.js" ></script>
+
 </head>
 
 <body style="background-color:#6884B3" link="#000000" vlink="#808080" alink="#FF0000"> 
 
-<!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-M67WBF" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script>
-	(function(w,d,s,l,i){
-		w[l]=w[l]||[];
-		w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-		var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-		j.async=true;
-		j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;
-		f.parentNode.insertBefore(j,f);
-	})
-	(window,document,'script','dataLayer','GTM-M67WBF');
-</script>
-<!-- End Google Tag Manager -->
+  <!-- Google Tag Manager -->
+  <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-M67WBF" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <script>
+    (function(w,d,s,l,i){
+      w[l]=w[l]||[];
+      w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+      var
+        f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),
+        dl=(l!='dataLayer')?'&l='+l:'';
+      j.async=true;
+      j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;
+      f.parentNode.insertBefore(j,f);
+    })
+    (window,document,'script','dataLayer','GTM-M67WBF');
+  </script>
+  <!-- End Google Tag Manager -->
 
-    <img src="noaa_wb.png" style="top:5; left:10" height="50" width="50"  /> &nbsp;&nbsp;&nbsp;&nbsp;
-    
-    <span  style="position:absolute; left:100px; top:25px"  >
-				<a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.noaa.gov/disclaimer.html')" >Disclaimer</a> &nbsp;&nbsp;
-				<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.nmfs.noaa.gov/privacy.htm')" >Privacy Policy</a>  &nbsp;&nbsp;    
-				<a id="shoreZonePageLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/shorezone/')" >ShoreZone Page</a>  &nbsp;&nbsp;    
-				<a id="metadataLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/habitat/shorezone/metadata.zip')" >Metadata</a>  &nbsp;&nbsp;   
-				<a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab('mailto:Steve.Lewis@noaa.gov')" >Contact</a>  &nbsp;&nbsp;
-				<a id="dicitonaryLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/DataDictionary')" >Data Dictionary</a>  &nbsp;&nbsp;
-				<a id="adminLinksLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/ShoreZoneMvcServices/Admin/Links')" >Admin Links</a>  &nbsp;&nbsp;
-    </span>
-    
-    <br /><br /><br />
-    
-    <label style="font-family:Calibri; font-size: 28pt; font-weight: bold; padding:60px">ShoreZone demo maps for the CarryMap app</label>
-    
-    <br /><br /><br />
-    
-    <table style="position:absolute; left:0px; text-align:center">
-      <tr style="font-size:18pt"><th style="width:220px">Map</th><th style="width:220px">Approx. Size</th><th style="width:220px">Apple iOS / Android</th><th style="width:220px">Windows</th></tr>
-      <tr style="height:10px"></tr>
-      <tr>
-        <th>Ragged Island - with photos</th>
-        <th>20 MB</th>
-        <td><button onclick="downloadCMF('RaggedIsland.cmf')" >Download</button></td>
-        <td><button onclick="downloadCMF('RaggedIsland.exe')" >Download</button></td>
-      </tr>
-      <tr>
-        <th>Cook Inlet - with some photos</th>
-        <th>400 MB</th>
-        <td><button onclick="downloadCMF('CookInlet_lowres_3000pics.cmf')" >Download</button></td>
-        <td><button onclick="downloadCMF('CookInlet_lowres_3000pics.exe')" >Download</button></td>   
-      </tr>
-      <tr>
-        <th>Cook Inlet - photos online</th>
-        <th>115 MB</th>
-        <td><button onclick="downloadCMF('CookInlet_online.cmf')" >Download</button></td>
-        <td><button onclick="downloadCMF('CookInlet_online.exe')" >Download</button></td>   
-      </tr>
-    </table>
-    
+  <img src="assets/images/noaa_wb.png" style="top:5px; left:10px" height="50" width="50"  /> &nbsp;&nbsp;&nbsp;&nbsp;
+
+  <span id="noaaLinks" style="position:absolute; left:100px; top:25px"  >
 <!--
-    <div style="position:absolute; top:450px; left:60px">    
-      <label style="font-family:Calibri; font-size: 18pt; font-weight: bold">To request the full ShoreZone geodatabase, &nbsp;</label>
-				<a id="contactLabel" style="color:Black; font-family:Calibri; font-size: 18pt; font-weight: bold"  href="#" onclick="openNewTab('mailto:Steve.Lewis@noaa.gov')" >click here.</a>  &nbsp;&nbsp;
-    </div>
+      <a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.noaa.gov/disclaimer.html')" >Disclaimer</a> &nbsp;&nbsp;
+      <a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.nmfs.noaa.gov/privacy.htm')" >Privacy Policy</a>  &nbsp;&nbsp;
+      <a id="shoreZonePageLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/shorezone/')" >ShoreZone Page</a>  &nbsp;&nbsp;
+      <a id="metadataLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/habitat/shorezone/metadata.zip')" >Metadata</a>  &nbsp;&nbsp;
+      <a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab('mailto:Steve.Lewis@noaa.gov')" >Contact</a>  &nbsp;&nbsp;
+      <a id="dicitonaryLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/DataDictionary')" >Data Dictionary</a>  &nbsp;&nbsp;
+      <a id="adminLinksLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/ShoreZoneMvcServices/Admin/Links')" >Admin Links</a>  &nbsp;&nbsp;
 -->
+  </span>
 
-    <div style="position:absolute; top:400px; left:60px">    
-      <label style="font-family:Calibri; font-size: 28pt; font-weight: bold">Download the full ShoreZone <br /> geodatabase (840 MB)</label>
-      <button style="position:absolute; top:55px; left:400px; height:35px" onclick="downloadCMF('ShoreZoneFlexMapService_2019_0331.mpk')" >Download</button>
-    </div>
+  <br /><br /><br />
 
-    <div style="position:absolute; top:600px; left:60px">    
-      <label style="font-family:Calibri; font-size: 28pt; font-weight: bold">REST services</label>
-      <h3 style="position:absolute; top:35px; left:30px">
-		<a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZone/MapServer')" >ShoreZone</a><br>
-		<a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas_wViews/MapServer')" >FishAtlas</a><br>
-		<a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreStation/MapServer')" >ShoreStation</a><br>
-      </h3>
-    </div>
+  <div style="position:absolute; top:400px; left:60px">
+    <label style="font-family:Calibri; font-size: 28pt; font-weight: bold">Download the full ShoreZone <br /> geodatabase (840 MB)</label>
+    <button style="position:absolute; top:55px; left:400px; height:35px" onclick="downloadCMF('ShoreZoneFlexMapService_2019_0331.mpk')" >Download</button>
+  </div>
+
+  <div style="position:absolute; top:600px; left:60px">
+    <label style="font-family:Calibri; font-size: 28pt; font-weight: bold">REST services</label>
+    <h3 style="position:absolute; top:35px; left:30px">
+  <a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZone/MapServer')" >ShoreZone</a><br>
+  <a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas_wViews/MapServer')" >FishAtlas</a><br>
+  <a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreStation/MapServer')" >ShoreStation</a><br>
+    </h3>
+  </div>
+
+  <script type="application/javascript">
+    getEl("noaaLinks").innerHTML = noaaLinksContent
+  </script>
 
 </body>
 </html>

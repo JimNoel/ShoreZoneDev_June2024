@@ -95,6 +95,13 @@ settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input ty
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
 
+let tableDownloadHtml = '<strong>Table download</strong><br><br>'
+  + '<label for="text_dlFileName">Download file name: </label><input type="text" id="text_dlFileName"><br><br>'
+  + '&emsp; <button onclick = "doTableDownload()">Download</button>&emsp;<button onclick="doTableDownload(true)">Cancel</button><br><br>'
+  + '<i>The current table will be downloaded as a comma-delimited (CSV) file.<br>'
+  + 'The associated geometry is not included.<br>'
+  + 'If you need geometry data, the entire geodatabase may be downloaded <a href="szapps.htm" target="_blank"><strong>here</strong></a>.</i>';
+
 let ssSpeciesDropdownHtml = '{Group}<br><br>';
 ssSpeciesDropdownHtml += '{Subgroup}<br><br>';
 ssSpeciesDropdownHtml += '{Species}<br><br>';
@@ -486,15 +493,6 @@ function isVisible(id) {
     return true;
   else
     return false;
-}
-
-function getEl(id) {
-  // If the arguent is a string, returns the element whose id is equal to the argument
-  // If not a string, assume the argument is already an element, and return it
-  if ((typeof id) === "object")
-    return id;
-  else
-    return document.getElementById(id);
 }
 
 function showPanelContents(panelNames, show, disabledMsg) {
@@ -1064,36 +1062,51 @@ function downloadOrigRes(e) {
   return false;
 }
 
-
-
-// For debug purposes
-function test() {
-  alert("Website last modified on  " + document.lastModified);
-}
-
 function logPoperties(obj) {
   for (p in obj)
     console.log(p + ":  " + (typeof obj[p]));
 }
 
-function download_csv(csv, dfltFileName) {
-  let fileName = prompt("Enter name of file to save to: ", dfltFileName);
-  if (!fileName)
-    return;
-  fileName = fileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
-  var hiddenElement = document.createElement('a');
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);    // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
-  hiddenElement.target = '_blank';
-  hiddenElement.download = fileName;
+function doTableDownload(cancel) {
+  if (!cancel) {
+    let hiddenElement = getEl("hidden_downloadTable");
+    let fileName = getEl("text_dlFileName").value.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
+    hiddenElement.download = fileName;
+    hiddenElement.click();
+  }
+  setVisible("downloadPanel", false);
+}
 
+function makeDownloadPanel() {
+  let downloadPanel = makeHtmlElement("div", "downloadPanel", "dropdown-content-visible", "top:200px;left:200px;", tableDownloadHtml);
+  document.body.appendChild(downloadPanel);
+  setVisible("downloadPanel", false);
+  var hiddenElement = document.createElement('a');
+  hiddenElement.id = "hidden_downloadTable";
+  hiddenElement.target = '_blank';
+  document.body.appendChild(hiddenElement);
+
+}
+
+function download_csv(csv, dfltFileName) {
+  let fileNameEl = getEl("text_dlFileName");
+  fileNameEl.value = dfltFileName;
+  let fileName = dfltFileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
+  let downloadPanel = getEl("downloadPanel");
+  downloadPanel.value = dfltFileName;
+  setVisible(downloadPanel, true);
+  let hiddenElement = getEl("hidden_downloadTable");
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);    // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
+
+/*    // Attempt to keep track of when Chrome downloads bar appears/disappears.  Will probably discard.
   lastInnerHeight = window.innerHeight;
   fileDownloadCount += 1;
   if (fileDownloadCount === 1) {
     downloadBarCycle = 2;
     innerHeight_noFileDownloadBar = lastInnerHeight;
   }
+*/
 
-  hiddenElement.click();
 }
 
 /* Unused functions

@@ -42,6 +42,7 @@
 <!--  <script src="https://js.arcgis.com/4.13/"></script>-->
   <script src="https://js.arcgis.com/4.14/"></script>
 
+  <script src="JS/allAppsData.js" ></script>
   <script src="JS/GlobalVars.js" ></script>
   <script src="JS/OfflineAppLink.js"></script>
   <script src="JS/youtube.js"></script>
@@ -274,23 +275,6 @@
         addContent('mapDiv', '<span id="coordinates" ></span>');
       }
 
-      let linksContent = '';
-/*  //Add buttons to change layout.  So far, this isn't working post-load, so disabled for now.
-      linksContent += '<img src="assets/images/layoutH2.png" id="btn_h2" class="layoutImg" >';
-      linksContent += '<img src="assets/images/layoutV2.png" id="btn_v2" class="layoutImg" style="left: 40px;" >';
-      linksContent += '<img src="assets/images/layoutV3.png" id="btn_v3" class="layoutImg" style="left: 80px;">';
-*/
-
-      linksContent += '<a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.noaa.gov/disclaimer.html\')" >Disclaimer</a> &nbsp;&nbsp;\n' +
-        '<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab(\'http://www.nmfs.noaa.gov/privacy.htm\')" >Privacy Policy</a>  &nbsp;&nbsp;' +
-        '<a id="shoreZonePageLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/shorezone/\')" >ShoreZone Page</a>  &nbsp;&nbsp;' +
-        '<a id="metadataLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/habitat/shorezone/metadata.zip\')" >Metadata</a>  &nbsp;&nbsp;' +
-        '<a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab(\'mailto:Steve.Lewis@noaa.gov\')" >Contact</a>  &nbsp;&nbsp;' +
-        '<a id="dicitonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;' +
-        '<a id="adminLinksLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/ShoreZoneMvcServices/Admin/Links\')" >Admin Links</a>  &nbsp;&nbsp;' +
-        '<a id="testLabel" style="color:Black"  href="#" onclick="test()" >Site Info</a>';
-
-
       // Tabs for ShoreZone/FishAtlas/ShoreStation
       let szTab = new ContentPane({id: "szTab", title: "ShoreZone"}),
           faTab = new ContentPane({id: "faTab", title: "Fish Atlas"}),
@@ -305,7 +289,7 @@
         stateNavigator.addChild( ssTab );
         stateNavigator.addChild( szUnitsTab );
 
-      let linksCP = new ContentPane({id: "linksPane", region: "right", content: linksContent, style: "width: 660px;"});
+      let linksCP = new ContentPane({id: "linksPane", region: "right", content: noaaLinksContent, style: "width: 660px;"});
 
       let bannerBC = new BorderContainer({id: "bannerDiv", region: "top", style: "height: 35px"});
       //bannerBC.addChild(logoCP);
@@ -355,6 +339,8 @@
       siteTabs.visManager = makeClassArrayVisibilityObject( {classNames: siteTabs.tabs, currClassName: siteTabs.currTab} );
       let flexSiteURL = "https://alaskafisheries.noaa.gov/mapping/szflex/index.html?L=B";
       let SZ3dUnitsSiteURL = "https://alaskafisheries.noaa.gov/mapping/jstest/szunits3d.html";
+
+      makeDownloadPanel();
 
       stateNavigator.watch("selectedChildWidget", function(name, oval, nval){
         changeState(nval.id, oval.id);
