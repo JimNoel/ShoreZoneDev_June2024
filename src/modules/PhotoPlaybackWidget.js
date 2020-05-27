@@ -236,7 +236,7 @@ define([
         getEl(this.photoCount_SpanId).innerHTML = "/" + this.features.length;
         //if (this.features.length <=1)
         let controlContainer = this.footerPanel.getElementsByClassName("playbackControlContainer")[0];
-        setVisible(controlContainer, this.features.length>1);
+        setVisible(controlContainer, this.features.length>0);
         if (this.captionFields)
           this.makeCaptions();
         this.toStart();

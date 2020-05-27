@@ -72,7 +72,8 @@ define([
         if (this.featureCountElId)
           getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
         this.setDisplayLayers();
-          this.processFeatures(features);
+        this.setPanelVisibility(features);
+        this.processFeatures(features);
       };
 
       this.setDisplayLayers = function() {

@@ -38,8 +38,10 @@
 
 		</style>
 
+	<script src="JS/allAppsData.js" ></script>
 
-    <script language="javascript">
+
+	<script language="javascript">
     
         var initTab = "szSimple";
         var initLayout = "h2";
@@ -103,15 +105,7 @@
 
     <img src="assets/images/noaa_wb.png" alt="NOAA logo" style="top:5px; left:10px" height="50" width="50" />
     
-    <span style="position:absolute; left:100px; top:25px" >
-				<a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.noaa.gov/disclaimer.html')" >Disclaimer</a> &nbsp;&nbsp;
-				<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.nmfs.noaa.gov/privacy.htm')" >Privacy Policy</a>  &nbsp;&nbsp;    
-				<a id="shoreZonePageLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/shorezone/')" >ShoreZone Page</a>  &nbsp;&nbsp;    
-				<a id="metadataLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/habitat/shorezone/metadata.zip')" >Metadata</a>  &nbsp;&nbsp;   
-				<a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab('mailto:Steve.Lewis@noaa.gov')" >Contact</a>  &nbsp;&nbsp;
-				<a id="dicitonaryLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/DataDictionary')" >Data Dictionary</a>  &nbsp;&nbsp;
-				<a id="adminLinksLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/ShoreZoneMvcServices/Admin/Links')" >Admin Links</a>  &nbsp;&nbsp;
-    </span>
+    <span id="noaaLinks" style="position:absolute; left:100px; top:25px" ></span>
 
     <p style="position:absolute; top:0px; font-family:Calibri; font-size: 28pt; font-weight: bold; padding:60px">Alaska ShoreZone Mapping Website</p>
     
@@ -167,10 +161,15 @@
 				</p>
 
 
-        <a href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/szflex/szapps.htm')" style="position:absolute; left:40px; top:460px; color:Black; font-size:10pt">ShoreZone GDB, REST services and CarryMap app</a>
+        <a href="#" onclick="openNewTab('szapps.htm')" style="position:absolute; left:40px; top:460px; color:Black; font-size:10pt">ShoreZone GDB and REST services</a>
         
 
     <img src="assets/images/ShoreZone_southeastAK_2008.JPG" style="position:absolute; top:500px; left:0px; height:2.27in; width:8in;"/>
+
+		<script type="application/javascript">
+			getEl("noaaLinks").innerHTML = noaaLinksContent
+		</script>
+
 
 </body>
 </html>

@@ -42,31 +42,27 @@
 
   <img src="assets/images/noaa_wb.png" style="top:5px; left:10px" height="50" width="50"  /> &nbsp;&nbsp;&nbsp;&nbsp;
 
-  <span id="noaaLinks" style="position:absolute; left:100px; top:25px"  >
-<!--
-      <a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.noaa.gov/disclaimer.html')" >Disclaimer</a> &nbsp;&nbsp;
-      <a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab('http://www.nmfs.noaa.gov/privacy.htm')" >Privacy Policy</a>  &nbsp;&nbsp;
-      <a id="shoreZonePageLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/shorezone/')" >ShoreZone Page</a>  &nbsp;&nbsp;
-      <a id="metadataLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/habitat/shorezone/metadata.zip')" >Metadata</a>  &nbsp;&nbsp;
-      <a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab('mailto:Steve.Lewis@noaa.gov')" >Contact</a>  &nbsp;&nbsp;
-      <a id="dicitonaryLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/DataDictionary')" >Data Dictionary</a>  &nbsp;&nbsp;
-      <a id="adminLinksLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/mapping/ShoreZoneMvcServices/Admin/Links')" >Admin Links</a>  &nbsp;&nbsp;
--->
-  </span>
+  <span id="noaaLinks" style="position:absolute; left:100px; top:25px"  ></span>
 
-  <br /><br /><br />
+  <br /><br /><br /><br>
 
-  <div style="position:absolute; top:400px; left:60px">
-    <label style="font-family:Calibri; font-size: 28pt; font-weight: bold">Download the full ShoreZone <br /> geodatabase (840 MB)</label>
-    <button style="position:absolute; top:55px; left:400px; height:35px" onclick="downloadCMF('ShoreZoneFlexMapService_2019_0331.mpk')" >Download</button>
+  <label style="font-family:Calibri; font-size: 28pt; font-weight: bold">ShoreZone Data Access<br> </label>
+
+  <div style="position:absolute; top:250px; left:60px">
+    <label style="font-family:Calibri; font-size: 24pt; font-weight: bold">Geodatabase Downloads<br> </label>
+    <h3 style="position:absolute; top:35px; left:30px">
+      <a id="szMpkLabel" style="color:Black"  href="#" onclick="downloadCMF('ShoreZone.mpk')" >ShoreZone (840 MB)</a><br>
+      <a id="faMpkLabel" style="color:Black"  href="#" onclick="downloadCMF('FishAtlas_wViews_2020_0418.mpk')" >Fish Atlas (1.7 MB)</a><br>
+      <a id="ssMpkLabel" style="color:Black"  href="#" onclick="downloadCMF('ShoreStation2019_2020_0518.mpk')" >Shore Stations (1.8 MB)</a><br>
+    </h3>
   </div>
 
-  <div style="position:absolute; top:600px; left:60px">
-    <label style="font-family:Calibri; font-size: 28pt; font-weight: bold">REST services</label>
+  <div style="position:absolute; top:450px; left:60px">
+    <label style="font-family:Calibri; font-size: 24pt; font-weight: bold">REST services</label>
     <h3 style="position:absolute; top:35px; left:30px">
-  <a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZone/MapServer')" >ShoreZone</a><br>
-  <a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas_wViews/MapServer')" >FishAtlas</a><br>
-  <a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreStation/MapServer')" >ShoreStation</a><br>
+      <a id="szRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZone/MapServer')" >ShoreZone</a><br>
+      <a id="faRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas_wViews/MapServer')" >FishAtlas</a><br>
+      <a id="ssRestLabel" style="color:Black"  href="#" onclick="openNewTab('https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreStation/MapServer')" >ShoreStation</a><br>
     </h3>
   </div>
 
