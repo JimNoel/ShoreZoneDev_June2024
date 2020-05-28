@@ -57,7 +57,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 #mapAndImageryBC  { }
 #mapWToolsBC  { border: double}
 #mapDiv  { min-width: 560px }
-  #coordinates  { position:absolute; left:60px; bottom:15px; color:#000; z-index:50; }
+  #coordinates  { position:absolute; left:60px; bottom:15px; color:#000; z-index:10; }
 #mapToolsExpando  { width: 350px}
 #mapToolsAccordion  {}
 /*
@@ -336,7 +336,7 @@ cursor: pointer;
     top:100px;
     width:600px;
     height:100px;
-    z-index: 9;
+    z-index: 10;
     border: 1px solid #d3d3d3;
     text-align: center;
     resize: both;
@@ -350,7 +350,7 @@ cursor: pointer;
     top:100px;
     width:650px;
     height:500px;
-    z-index: 9;
+    z-index: 10;
     border: 1px solid #d3d3d3;
     text-align: center;
     resize: both;
@@ -363,13 +363,13 @@ cursor: pointer;
     height: 15px;
     padding: 5px;
     cursor: move;
-    z-index: 10;
+    z-index: 11;
     background-color: #6884B3;
     color: #fff;
 }
 
 .draggableDivContent {
-    z-index: 11;
+    z-index: 12;
     background-color: #f1f1f1;
     /*height: 100px;*/
 }
@@ -379,7 +379,7 @@ cursor: pointer;
     right:25px;
     top:5px;
     height:10px;
-    z-index: 11;
+    z-index: 12;
 }
 
 /* The Close Button */
@@ -494,7 +494,7 @@ cursor: pointer;
     background-color: #eeffee;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 10;
+    z-index: 20;
     border: 1px solid grey;
     padding: 5px;
 }
