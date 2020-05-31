@@ -130,10 +130,13 @@ define([
       photo_load_times = {}
 
       this.currNumber_SpanId = this.baseName + "_currNumber";
-      this.photoCount_SpanId = this.baseName + "_photoCount";
+      this.featureCountElId = this.baseName + "_photoCount";
+      this.featureCountTemplate = "/{0}";
+
+
       let photoCountHtml = "<span class='photoCount'>Photo ";
       photoCountHtml += "<span id='" + this.currNumber_SpanId + "'>0</span>";
-      photoCountHtml += "<span id='" + this.photoCount_SpanId + "'></span>";
+      photoCountHtml += "<span id='" + this.featureCountElId + "'></span>";
       photoCountHtml += "</span>";
       this.footerPanel.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'photoTools', 'position: relative; float: left', this.objName) + photoCountHtml;
       if (this.sync_photos) {
@@ -231,10 +234,7 @@ define([
       }
 
       this.processFeatures = function(features) {
-        if (!this.noGeometry)
-          this.makeClickableGraphics(this.features);
-        getEl(this.photoCount_SpanId).innerHTML = "/" + this.features.length;
-        //if (this.features.length <=1)
+        this.processFeatures_common(features);
         let controlContainer = this.footerPanel.getElementsByClassName("playbackControlContainer")[0];
         setVisible(controlContainer, this.features.length>0);
         if (this.captionFields)

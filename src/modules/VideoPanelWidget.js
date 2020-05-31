@@ -261,14 +261,14 @@ define([
 
       this.processFeatures = function(features) {
         pausePlayback("video");
+        this.processFeatures_common(features);
 
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
-        this.makeClickableGraphics(features);
         let pWidget = this.syncTo;
         pWidget.features = features.filter(function(f){
           return f.attributes.StillPhoto_FileName
         });
-        pWidget.processFeatures();
+        pWidget.processFeatures(pWidget.features);
 
         let vidcapFeatures = features.filter(function(f){
           return f.attributes.VidCap_FileName_HighRes

@@ -111,14 +111,6 @@ define([
 
       lang.mixin(this, kwArgs);
 
-/*
-      for (let t=0; t<this.tabInfo.length; t++) {
-        let tabInfo = this.tabInfo[t];
-        if (tabInfo.downloadExcludeFields)
-          tabInfo.visibleHeaderElements.splice(0,0,this.baseName + "TableDownload");
-      }
-*/
-
       this.hasTable = true;
 
       this.hideEmptyColumns = true;
@@ -489,8 +481,7 @@ define([
       };
 
       this.processFeatures = function(features) {
-        this.setPanelVisibility(features);
-        this.makeClickableGraphics(features);
+        this.processFeatures_common(features);
         this.makeTable(this.fields, features);
         this.setTotals(features);
       };
@@ -609,6 +600,7 @@ define([
         }
       };
 
+      // Same header is shared by all tabs (some elements are hidden), so this is run just once, regardless of whether there are multiple tabs
       this.makeTableHeaderHtml = function() {
         let headerDivNode = getEl(this.headerDivName);
         let headerContent = document.createElement("SPAN");
@@ -657,10 +649,11 @@ define([
         }
 
         let fCtID = this.baseName + 'Label_featureCount';
-        this.featureCountElId = fCtID;
         let fCtSpanId = fCtID.replace("_","Span_");
         let fCtHtml = '&emsp;<LABEL class="boldLabel" id="' + fCtID + '"></LABEL>&emsp;';
         let spanHtml = '<span id="' + fCtSpanId + '">' + fCtHtml + '</span>';
+        this.featureCountElId = fCtID;
+        this.featureCountTemplate = "{0} {1}";
 
         //let titleEl = getEl("tableQueryExpando_Title");
         //titleEl.innerHTML = spanHtml;

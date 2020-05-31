@@ -69,8 +69,6 @@ define([
         let features = results.features;
         this.features = features;
         this.fields = results.fields;
-        if (this.featureCountElId)
-          getEl(this.featureCountElId).innerHTML = features.length + " " + this.tabName;
         this.setDisplayLayers();
         this.setPanelVisibility(features);
         this.processFeatures(features);
@@ -93,6 +91,14 @@ define([
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
       this.processFeatures = function(features) {
+      };
+
+      // Initial processing of features, common to all inherited widgets
+      this.processFeatures_common = function(features) {
+        if (!this.noGeometry)
+          this.makeClickableGraphics(this.features);
+        if (this.featureCountTemplate)
+          getEl(this.featureCountElId).innerHTML = this.featureCountTemplate.replace("{0}",features.length).replace("{1}", this.tabName);
       };
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
@@ -639,7 +645,6 @@ define([
 
       }
       console.log(this.clickableLayer.graphics.items.length + " " + this.baseName + " markers");
-      //console.log(new Date() + "  makeClickableGraphics for " +  this.baseName + " completed, with " + this.clickableLayer.graphics.items.length + " items");
     },
 
     getFeatureCount: function() {
