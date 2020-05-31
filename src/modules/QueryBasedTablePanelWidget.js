@@ -480,8 +480,7 @@ define([
         }.bind(this));
       };
 
-      this.processFeatures = function(features) {
-        this.processFeatures_common(features);
+      this.processFeatures_Widget = function(features) {
         this.makeTable(this.fields, features);
         this.setTotals(features);
       };

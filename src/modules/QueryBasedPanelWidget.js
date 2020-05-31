@@ -2,7 +2,7 @@
  * Class QueryBasedPanelWidget
  *
  * generic widget for spatial queries on map service layers, with associated panel for results
- *   Subclasses of this must set the processFeatures function in the constructor  (see example in VideoPanelWidget.js)
+ *   Subclasses of this must set the processFeatures_Widget function in the constructor  (see example in VideoPanelWidget.js)
  *
  * Constructor arguments:
  *    mapServiceLayer: MapImageLayer
@@ -90,15 +90,16 @@ define([
       };
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget
-      this.processFeatures = function(features) {
+      this.processFeatures_Widget = function(features) {
       };
 
       // Initial processing of features, common to all inherited widgets
-      this.processFeatures_common = function(features) {
+      this.processFeatures = function(features) {
         if (!this.noGeometry)
           this.makeClickableGraphics(this.features);
         if (this.featureCountTemplate)
           getEl(this.featureCountElId).innerHTML = this.featureCountTemplate.replace("{0}",features.length).replace("{1}", this.tabName);
+        this.processFeatures_Widget(features);
       };
 
       // placeholder -- function will be overridden by subclasses of QueryBasedPanelWidget

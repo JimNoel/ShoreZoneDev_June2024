@@ -259,9 +259,8 @@ define([
       this.noFeaturesPanels.push(this.syncTo);
 
 
-      this.processFeatures = function(features) {
+      this.processFeatures_Widget = function(features) {
         pausePlayback("video");
-        this.processFeatures_common(features);
 
         getEl("offlineAppPanel").innerHTML = download_ZoomedInEnoughContent;
         let pWidget = this.syncTo;

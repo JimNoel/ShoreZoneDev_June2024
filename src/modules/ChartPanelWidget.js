@@ -86,8 +86,7 @@ define([
       this.addDivFromLayout(this.substrateProfile);
       this.addDivFromLayout(this.scale);
 
-      this.processFeatures = function(features) {
-        this.processFeatures_common(features);
+      this.processFeatures_Widget = function(features) {
         this.initCharts();
         this.makeXYChart(this.vertProfile);
         this.makeBarChart(this.bbProfile);

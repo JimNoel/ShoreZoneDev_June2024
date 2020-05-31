@@ -233,8 +233,7 @@ define([
         }
       }
 
-      this.processFeatures = function(features) {
-        this.processFeatures_common(features);
+      this.processFeatures_Widget = function(features) {
         let controlContainer = this.footerPanel.getElementsByClassName("playbackControlContainer")[0];
         setVisible(controlContainer, this.features.length>0);
         if (this.captionFields)
