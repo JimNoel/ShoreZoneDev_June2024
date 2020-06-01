@@ -382,7 +382,7 @@ define([
               tabTitle: 'ShoreStation Stations',
               popupTitle: "ShoreStation Stations",
               popupExcludeCols: ["Photos", "Profile"],
-              LayerNameAddOn: "vw_Stations_",        //'Field Stations',
+              LayerNameAddOn: "vw_StationPoints_",        //'Field Stations',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssTableDownload', 'ssRegion_ddWrapper', 'ssSpeciesPanel_ddWrapper', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
               dropdownElements: ['ssRegion_ddWrapper', 'ssSpecies_ddWrapper', 'ssGroup_ddWrapper', 'ssSubgroup_ddWrapper'],
