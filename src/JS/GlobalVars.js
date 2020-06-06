@@ -70,6 +70,7 @@ let ssDisplayInfo = [
   {title: "Regions"},
   {title: "Field Stations", visible: false, listMode: "show"},
   {title: "vw_StationPoints_", visible: false, listMode: "hide"},
+  {title: "vw_StationPoints_Biobands", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_SpeciesGroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_SpeciesSubgroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_Species", visible: false, listMode: "hide"}
@@ -554,7 +555,9 @@ function setDropdownValue(ddInfo, value) {
 }
 
 function dropdownSelectHandler(w, index, ddElement) {
-  let ddInfo = w.dropDownInfo[index];
+  let ddInfo = index;     // allows using actual ddInfo object for "index", rather than numeric index
+  if (typeof index !== "object")
+    ddInfo = w.dropDownInfo[index];
   ddInfo.SelectedOption = ddElement.value;
   let selOption = ddInfo.options[ddElement.selectedIndex];
   let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
@@ -563,9 +566,9 @@ function dropdownSelectHandler(w, index, ddElement) {
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);
     expandPanel.LayerNameAddOn = ddInfo.LayerNameAddOn;
-    if (!ddInfo.dependentDropdowns)
-      expandDropdownPanel(expandPanel.uniqueName, false);
     let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name
+    if (!ddInfo.dependentDropdowns /*&& (buttonText!=="[All]")*/)
+      expandDropdownPanel(expandPanel.uniqueName, false);     // No widget specified, so query is not run
     if (buttonText === "[All]")
       buttonText = "[All species]";
     getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonText;
