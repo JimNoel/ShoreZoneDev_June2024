@@ -28,8 +28,38 @@ let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.ht
 
 //Map service URLs
 
+let serverNames = ["psmfc", "noaa"];
+let currServerNum = 0;    // Default value, sets default server to item in serverNames.
+                      // TODO: If server fails, change this value and rebuild service URLs
+
+let serverUrls = {
+  noaa:  "alaskafisheries.noaa.gov",
+  psmfc: "maps.psmfc.org"
+}
+
+let svcPathTemplate = {
+  noaa:  {
+    service:  "/arcgis/rest/services/{name}/MapServer",
+    media:  "/mapping/{name}/"
+  },
+  psmfc:  {
+    service:  "/server/rest/services/NOAA/{name}/MapServer",
+    media:  "/{name}/"
+  }
+};
+
+function makeServiceUrl(serverNum, type, name) {
+  // Makes URL for a map service or virtual directory
+  let serverName = serverNames[serverNum];
+  let url = "https://" + serverUrls[serverName];
+  let svcTemplate = svcPathTemplate[serverName][type];
+  url += svcTemplate.replace("{name}", name);
+  return url;
+}
+
+
   // Pacific States server URLs
-let szServerURLps = "https://maps.psmfc.org";     // "https://geo.psmfc.org";
+let szServerURLps = "https://maps.psmfc.org";
 let szRestServicesURLps = szServerURLps + "/server/rest/services/NOAA";
 let szMapServiceLayerURLps = szRestServicesURLps + "/ShoreZone/MapServer";
 
@@ -39,12 +69,18 @@ let szRestServicesURLnoaa = szServerURLnoaa + "/arcgis/rest/services";
 let szMapServiceLayerURLnoaa = szRestServicesURLnoaa + "/ShoreZone/MapServer";
 
 // Set default server URLs
+let szMapServiceLayerURL = makeServiceUrl(currServerNum, "service", "ShoreZone");
+let ssMapServiceLayerURL = makeServiceUrl(currServerNum, "service", "ShoreStation_2019");
+let faMapServiceLayerURL = makeServiceUrl(currServerNum, "service", "FishAtlas_wViews");
+let sslMapServiceLayerURL = makeServiceUrl(currServerNum, "service", "Ports_SSL");
+/*
 let szServerURL = szServerURLnoaa;
 let szRestServicesURL = szRestServicesURLnoaa;
 let szMapServiceLayerURL = szMapServiceLayerURLnoaa;
 let ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";
 let faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer";
 let sslMapServiceLayerURL = szRestServicesURLnoaa + "/Ports_SSL/MapServer";
+*/
 
 let szSublayerIDs = {};
 
@@ -73,7 +109,10 @@ let ssDisplayInfo = [
   {title: "vw_StationPoints_Biobands", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_SpeciesGroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_SpeciesSubgroups", visible: false, listMode: "hide"},
-  {title: "vw_StationPoints_Species", visible: false, listMode: "hide"}
+  {title: "vw_StationPoints_Species", visible: false, listMode: "hide"},
+  {title: "vw_StationPoints_BiobandsSpeciesGroups", visible: false, listMode: "hide"},
+  {title: "vw_StationPoints_BiobandsSpeciesSubgroups", visible: false, listMode: "hide"},
+  {title: "vw_StationPoints_BiobandsSpecies", visible: false, listMode: "hide"}
 ];
 
 let videoClipURLs = "";    // For download of video clips for current extent

@@ -206,17 +206,6 @@ define([
 
       siteTabs.sz.widgets = [szPhotoWidget, szVideoWidget, szUnitsWidget];
 
-
-      /*  TRY:  attempt to catch sublayer visibility change event
-      let subLayers = szMapServiceLayer.allSublayers;
-      alert(subLayers.length);
-      for (let L=0; L<subLayers.length; L++) {
-        subLayers.items[L].watch("visible", function(newValue, oldValue, property, subLayer) {
-          alert(subLayer.title + " visibility changed");
-        });
-      };
-      /**/
-
     }, function(error){
         console.log("szMapServiceLayer failed to load:  " + error);
       });
