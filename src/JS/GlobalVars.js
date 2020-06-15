@@ -54,6 +54,7 @@ function makeServiceUrl(serverNum, type, name) {
   let url = "https://" + serverUrls[serverName];
   let svcTemplate = svcPathTemplate[serverName][type];
   url += svcTemplate.replace("{name}", name);
+  console.log("Map service:  " + url);
   return url;
 }
 
@@ -270,7 +271,7 @@ let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let mainMediaServer = "https://maps.psmfc.org/shorezonedata/";
 let VIDEO_SERVER = altMediaServer;
 let PHOTO_SERVER = mainMediaServer;
-console.log(PHOTO_SERVER);
+console.log("sz PHOTOS:  " + PHOTO_SERVER);
 let VIDEO_FOLDER = "video/";
 
 let current_photo_sub = "stillphotos_lowres";
@@ -593,10 +594,11 @@ function setDropdownValue(ddInfo, value) {
   ddInfo.SelectedOption = value;
 }
 
-function dropdownSelectHandler(w, index, ddElement) {
+function dropdownSelectHandler(w, index) {
   let ddInfo = index;     // allows using actual ddInfo object for "index", rather than numeric index
   if (typeof index !== "object")
     ddInfo = w.dropDownInfo[index];
+  let ddElement = getEl(ddInfo.ddId);
   ddInfo.SelectedOption = ddElement.value;
   let selOption = ddInfo.options[ddElement.selectedIndex];
   let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
@@ -615,8 +617,14 @@ function dropdownSelectHandler(w, index, ddElement) {
     if (ddInfo.isAlpha)
       whereValue = "'" + whereValue + "'";
     expandPanel.panelWhere = ddInfo.whereField + "=" + whereValue;
-    if (whereValue === "All")
+    if (whereValue === "'All'") {
       expandPanel.panelWhere = "";
+      if (ddInfo.parentDropdown) {
+        let parentDdInfo = w.getddItem(ddInfo.parentDropdown);
+        dropdownSelectHandler(w, parentDdInfo);
+        return;
+      }
+    }
     expandPanel.panelWhereChanged = true;
     getEl(expandPanel.uniqueName + "_closeButton").innerText = "Go";
   }
@@ -1002,7 +1010,7 @@ function siteLoadedHandler() {
 }
 
 function browserResizeHandler(e) {
-  console.log("browserResizeHandler");
+  //console.log("browserResizeHandler");
 }
 
 function resizeMedia() {

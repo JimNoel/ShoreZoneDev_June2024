@@ -571,7 +571,6 @@ define([
             return ddItem.ddName === ddName;
           });
           html = html.replace("{" + ddName + "}", htmlInsert.wrapperDom.outerHTML);
-          console.log(ddName);
         }
         return html;
       };
@@ -628,7 +627,7 @@ define([
             ddItem.wrapperDom = makeHtmlElement("span", ddItem.wrapperId, "dropdown");   // The SPAN for the dropdown, that will be added to the header
             if (!ddItem.expandPanelId)      // If it's part of an expand panel, element will be added to separate dropdown dialog later
               headerContent.appendChild(ddItem.wrapperDom);    // add the wrapper for the dropdown to the header
-            let args = this.objName + ',' + d + ',' + ddItem.ddId;
+            let args = this.objName + ',' + d;
 
             if (ddItem.htmlTemplate) {
               ddItem.wrapperDom.innerHTML = this.insertDropdowns(ddItem);

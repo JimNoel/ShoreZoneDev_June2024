@@ -120,6 +120,9 @@ define([
 
       lang.mixin(this, kwArgs);
 
+      if (this.photoServer)
+        console.log(this.panelName + " PHOTOS:  " + this.photoServer);
+
       this.clickableSymbolGap = settings.photoGap;
 
       if (!this.photoResInsert)     // If not specified in the parameters, then set to blank string
