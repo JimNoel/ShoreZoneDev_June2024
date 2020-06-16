@@ -29,7 +29,7 @@ let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.ht
 //Map service URLs
 
 let serverNames = ["psmfc", "noaa"];
-let currServerNum = 0;    // Default value, sets default server to item in serverNames.
+let currServerNum = 1;    // Default value, sets default server to item in serverNames.
                       // TODO: If server fails, change this value and rebuild service URLs
 
 let serverUrls = {
@@ -604,35 +604,43 @@ function dropdownSelectHandler(w, index) {
   let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
   if (newExtent)
     mapStuff.gotoExtent(newExtent);
+
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);
+    let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name (if contains " - ")
     expandPanel.LayerNameAddOn = ddInfo.LayerNameAddOn;
-    let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name
-    if (!ddInfo.dependentDropdowns /*&& (buttonText!=="[All]")*/)
-      expandDropdownPanel(expandPanel.uniqueName, false);     // No widget specified, so query is not run
-    if (buttonText === "[All]")
+    if (buttonText === "[All]") {
       buttonText = "[All species]";
-    getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonText;
-    let whereValue = ddInfo.SelectedOption;
-    if (ddInfo.isAlpha)
-      whereValue = "'" + whereValue + "'";
-    expandPanel.panelWhere = ddInfo.whereField + "=" + whereValue;
-    if (whereValue === "'All'") {
-      expandPanel.panelWhere = "";
-      if (ddInfo.parentDropdown) {
+      if (ddInfo.parentDropdown) {      // Fall back to higher category, call function again recursively
         let parentDdInfo = w.getddItem(ddInfo.parentDropdown);
         dropdownSelectHandler(w, parentDdInfo);
         return;
+      } else {       // "All" selected at highest category, so no layer name add-on
+        expandPanel.LayerNameAddOn = "";
       }
+    }
+    getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonText;
+
+    if (!ddInfo.dependentDropdowns)
+      expandDropdownPanel(expandPanel.uniqueName, false);     // No widget specified, so query is not run
+
+    let whereValue = ddInfo.SelectedOption;
+    if (whereValue === "All") {
+      expandPanel.panelWhere = "";
+    } else {
+      if (ddInfo.isAlpha)
+        whereValue = "'" + whereValue + "'";
+      expandPanel.panelWhere = ddInfo.whereField + "=" + whereValue;
     }
     expandPanel.panelWhereChanged = true;
     getEl(expandPanel.uniqueName + "_closeButton").innerText = "Go";
   }
-  if (ddInfo.dependentDropdowns) {
-    //let where = ddInfo.whereField + "=" +
+
+  if (ddInfo.dependentDropdowns) {      // This is not in the expandPanelId section, because might use for dropdowns outside of dropdown panels
     w.handleDependentDropdowns(ddInfo);
     return;
   }
+
   w.runQuery(view.extent);
 }
 

@@ -645,7 +645,7 @@ define([
         }
 
       }
-      console.log(this.clickableLayer.graphics.items.length + " " + this.baseName + " markers");
+      //console.log(this.clickableLayer.graphics.items.length + " " + this.baseName + " markers");
     },
 
     getFeatureCount: function() {

@@ -702,7 +702,7 @@ define([
       }
 
       this.rowHtmlToLines = function(row) {
-        console.log("rowHtmlToLines");
+        //console.log("rowHtmlToLines");
         let th = this.grid.headerNode.getElementsByTagName("TH");
         let tr = row.element;
         let td = tr.getElementsByTagName("TD");
