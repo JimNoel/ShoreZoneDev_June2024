@@ -715,6 +715,8 @@ define([
         }
         for (i=0; i<td.length; i++) {
           let colHeader = this.attrName(th[i].innerText);
+          if (colHeader.indexOf("\n") !== -1)      // Handle case where field title wraps due to decreased space
+            colHeader = colHeader.slice(2);
           if (!excludeCols.includes(colHeader)) {
             let value =row.data[this.grid.columns[i].field];
             if (colHeader === "" && value.includes("title=")) {

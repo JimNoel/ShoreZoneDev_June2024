@@ -549,23 +549,6 @@ function showPanelContents(panelNames, show, disabledMsg) {
     setVisible("panelEnabled_" + names[i], show);
     if (!show && disabledMsg)
       getEl("disabledMsg_" + names[i]).innerText = disabledMsg;
-/*    // Obsolete code replaced by the above lines
-    let panelDisabledDiv = getEl("panelDisabled_" + names[i]);
-    let panelEnabledDiv = getEl("panelEnabled_" + names[i]);
-    if (!panelDisabledDiv || !panelEnabledDiv)
-      return;
-    let panelDisabledDivStyle =panelDisabledDiv.style;
-    let panelEnabledDivStyle = panelEnabledDiv.style;
-    if (show) {
-      panelDisabledDivStyle.visibility = "hidden";
-      panelEnabledDivStyle.visibility = "inherit";
-    } else {
-      panelDisabledDivStyle.visibility = "inherit";
-      panelEnabledDivStyle.visibility = "hidden";
-      if (disabledMsg)
-        getEl("disabledMsg_" + names[i]).innerText = disabledMsg;
-    }
-*/
   }
 }
 

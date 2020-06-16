@@ -365,9 +365,10 @@
         siteTabs.visManager.promoteClass(className);
         let widgets = siteTabs[className].widgets;
         for (i in widgets) {
-          showPanelContents(widgets[i].baseName, false);
+          if (widgets[i].disabledMsgInfix)      // Hide panel if it uses a "disabled" message
+            showPanelContents(widgets[i].baseName, false);
           // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
-          if (widgets[i].tabInfo)
+          if (widgets[i].tabInfo && !widgets[i].grid)
             widgets[i].setActiveTab(0);
         }
         setGraphicsLayersVisibilities(className);
