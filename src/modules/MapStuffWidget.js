@@ -204,10 +204,11 @@ define([
     }
 
     function addServiceLayers() {
+//*JN*/  szMapServiceLayerURL += "a";
       szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {id: "szOpLayer", "opacity" : 1.0});
       szMapServiceLayer.when(function() {
         makeSzWidgets();
-/*
+/*    // Old code moved to makeSzWidgets()
       szPhotoWidget = new PhotoPlaybackWidget({
         objName: "szPhotoWidget",
         panelName: "szPhotosPanel",
@@ -347,11 +348,12 @@ define([
     }, function(error){
         console.log("szMapServiceLayer failed to load:  " + error);
 /*
-        szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {id: "szOpLayer", "opacity" : 1.0});
-        szMapServiceLayer.when(function() {
+        szMapServiceLayerURL = makeServiceUrl(1-currServerNum, "service", "ShoreZone");
+        let altSzMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {id: "szOpLayer2", "opacity" : 1.0});
+        altSzMapServiceLayer.when(function() {
           makeSzWidgets();
         }, function(error) {
-          console.log("szMapServiceLayer failed to load AGAIN:  " + error);
+          console.log("altSzMapServiceLayer failed to load AGAIN:  " + error);
         });
 */
       });

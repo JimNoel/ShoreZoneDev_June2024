@@ -28,13 +28,13 @@ let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.ht
 
 //Map service URLs
 
-let serverNames = ["psmfc", "noaa"];
-let currServerNum = 1;    // Default value, sets default server to item in serverNames.
+let serverNames = ["ps", "noaa"];
+let currServerNum = 0;    // Default value, sets default server to item in serverNames.
                       // TODO: If server fails, change this value and rebuild service URLs
 
 let serverUrls = {
   noaa:  "alaskafisheries.noaa.gov",
-  psmfc: "maps.psmfc.org"
+  ps: "maps.psmfc.org"
 }
 
 let svcPathTemplate = {
@@ -42,7 +42,7 @@ let svcPathTemplate = {
     service:  "/arcgis/rest/services/{name}/MapServer",
     media:  "/mapping/{name}/"
   },
-  psmfc:  {
+  ps:  {
     service:  "/server/rest/services/NOAA/{name}/MapServer",
     media:  "/{name}/"
   }
@@ -229,6 +229,12 @@ if (siteParsJSON !== "") {
   siteParsJSON = siteParsJSON.toLowerCase().replace(/&/g,'","').replace(/=/g,'":"');
   siteParsJSON = '{"' + siteParsJSON + '"}';
   let sitePars = JSON.parse(siteParsJSON);
+
+/*
+  let serverNum = serverNames.indexOf(sitePars["server"])
+  if (serverNum !== -1)
+    currServerNum = serverNum;
+*/
 
   // switch between NOAA & PSMFC servers
   if (sitePars["server"] === "noaa") {
@@ -807,8 +813,17 @@ function queryServer(url, returnJson, responseHandler) {
   xmlhttp.send();
 }
 
+function makeSublayerIdTable_fromAlt(serviceUrl, idTable, error) {
+  console.log("makeSublayerIdTable error");
+}
+
 function makeSublayerIdTable(serviceUrl, idTable) {
   queryServer(serviceUrl, true, function(R) {
+    if (R.error) {
+      //idTable.error = R.error;
+      makeSublayerIdTable_fromAlt(serviceUrl, idTable, R.error);
+      return;
+    }
     for (let l in R.layers) {
       let o = R.layers[l];
       idTable[o.name] = o.id.toString();
