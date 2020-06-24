@@ -131,7 +131,7 @@ define([
           //unitAttrsInfo[id] = o;
         }
       };      //.bind(unitAttrsInfo);
-      let baseURL = szMapServiceLayerURL + "/";
+      let baseURL = szMapServiceLayerURLs[currServerNum] + "/";
       xmlhttp.open("GET", baseURL + id + "?f=pjson", true);
       xmlhttp.send();
     }

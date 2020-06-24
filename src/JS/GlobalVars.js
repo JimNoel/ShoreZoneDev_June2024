@@ -19,9 +19,6 @@ let maxSZFeatures = 6000;    // More than 2000 causes the browser to slow signif
 let maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
 let highlightSize = 15;
 
-//let aoosQueryBaseUrl = "https://servomatic9000.axiomalaska.com/spatial-imagery/alaska_shorezone/imageMetadata?callback=jQuery111107511455304335468_1552688607085&x={lon}&y={lat}&width=300&height=300&_=1552688607089";
-//let aoosPhotosBaseUrl = "https://servomatic9000.axiomalaska.com/photo-server/";
-
 let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
 
 let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
@@ -29,7 +26,8 @@ let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.ht
 //Map service URLs
 
 let serverNames = ["ps", "noaa"];
-let currServerNum = 0;    // Default value, sets default server to item in serverNames.
+let dfltServerNum = 0;    // Default value, sets default server to item in serverNames.
+let currServerNum = dfltServerNum;
                       // TODO: If server fails, change this value and rebuild service URLs
 
 let serverUrls = {
@@ -48,40 +46,26 @@ let svcPathTemplate = {
   }
 };
 
-function makeServiceUrl(serverNum, type, name) {
-  // Makes URL for a map service or virtual directory
-  let serverName = serverNames[serverNum];
-  let url = "https://" + serverUrls[serverName];
-  let svcTemplate = svcPathTemplate[serverName][type];
-  url += svcTemplate.replace("{name}", name);
-  console.log("Map service:  " + url);
-  return url;
+
+function makeServiceUrls(type, name) {
+  // Makes URLs for a map service or virtual directory
+  let serviceUrls = [];
+  for (let s=0; s<serverNames.length; s++) {
+    let serverName = serverNames[s];
+    let url = "https://" + serverUrls[serverName];
+    let svcTemplate = svcPathTemplate[serverName][type];
+    url += svcTemplate.replace("{name}", name);
+    serviceUrls[s] = url;
+  }
+  return serviceUrls;
 }
 
 
-  // Pacific States server URLs
-let szServerURLps = "https://maps.psmfc.org";
-let szRestServicesURLps = szServerURLps + "/server/rest/services/NOAA";
-let szMapServiceLayerURLps = szRestServicesURLps + "/ShoreZone/MapServer";
-
-  // NOAA server URLs
-let szServerURLnoaa = "https://alaskafisheries.noaa.gov";
-let szRestServicesURLnoaa = szServerURLnoaa + "/arcgis/rest/services";
-let szMapServiceLayerURLnoaa = szRestServicesURLnoaa + "/ShoreZone/MapServer";
-
-// Set default server URLs
-let szMapServiceLayerURL = makeServiceUrl(currServerNum, "service", "ShoreZone");
-let ssMapServiceLayerURL = makeServiceUrl(currServerNum, "service", "ShoreStation_2019");
-let faMapServiceLayerURL = makeServiceUrl(currServerNum, "service", "FishAtlas_wViews");
-let sslMapServiceLayerURL = makeServiceUrl(currServerNum, "service", "Ports_SSL");
-/*
-let szServerURL = szServerURLnoaa;
-let szRestServicesURL = szRestServicesURLnoaa;
-let szMapServiceLayerURL = szMapServiceLayerURLnoaa;
-let ssMapServiceLayerURL = szRestServicesURLnoaa + "/ShoreStation_2019/MapServer";
-let faMapServiceLayerURL = szRestServicesURLnoaa + "/FishAtlas_wViews/MapServer";
-let sslMapServiceLayerURL = szRestServicesURLnoaa + "/Ports_SSL/MapServer";
-*/
+// Set server URLs (2-item arrays, containing NOAA and PS URLs)
+let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
+let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
+let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_wViews");
+let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
 
 let szSublayerIDs = {};
 
@@ -147,7 +131,7 @@ let ssSpeciesDropdownHtml = '{Group}<br><br>';
 ssSpeciesDropdownHtml += '{Subgroup}<br><br>';
 ssSpeciesDropdownHtml += '{Species}<br><br>';
 ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssComFirst" name="ssCommSciOrder" value="common" checked onclick="ssWidget.filterDropdown(\'Species\',null,\'com\')">Common Name<br>';
-ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',,null,\'sci\')">Scientific Name<br>';
+ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
 ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'ssSpeciesPanel\', false, ssWidget)">Close</button>';
 
 let faSpeciesDropdownHtml = '{Species}<br><br>';
@@ -230,23 +214,14 @@ if (siteParsJSON !== "") {
   siteParsJSON = '{"' + siteParsJSON + '"}';
   let sitePars = JSON.parse(siteParsJSON);
 
-/*
-  let serverNum = serverNames.indexOf(sitePars["server"])
-  if (serverNum !== -1)
-    currServerNum = serverNum;
-*/
-
-  // switch between NOAA & PSMFC servers
-  if (sitePars["server"] === "noaa") {
-    szMapServiceLayerURL = szMapServiceLayerURLnoaa;
-    alert("Using SZ service on NOAA server");
-  }
-  else if (sitePars["server"] === "ps") {
-    szMapServiceLayerURL = szMapServiceLayerURLps;
-    ssMapServiceLayerURL = szRestServicesURLps + "/ShoreStation_2019/MapServer";
-    faMapServiceLayerURL = szRestServicesURLps + "/FishAtlas_wViews/MapServer";
-    sslMapServiceLayerURL = szRestServicesURLps + "/Ports_SSL/MapServer";
-    alert("Using SZ service on PSMFC server");
+  if (sitePars["server"]) {
+    currServerNum = serverNames.indexOf(sitePars["server"]);
+    if (currServerNum !== -1) {
+      dfltServerNum = currServerNum;
+      alert("Using " + serverNames[currServerNum] + " map services");
+    }
+    else
+      currServerNum = dfltServerNum;
   }
 
   // Use alternate offline app URL, if present in parameters
@@ -267,11 +242,11 @@ if (siteParsJSON !== "") {
 
 }
 
-makeSublayerIdTable(szMapServiceLayerURL, szSublayerIDs);
+makeSublayerIdTable(szMapServiceLayerURLs, szSublayerIDs);
 let ssSublayerIDs = {};
-makeSublayerIdTable(ssMapServiceLayerURL, ssSublayerIDs);
+makeSublayerIdTable(ssMapServiceLayerURLs, ssSublayerIDs);
 let faSublayerIDs = {};
-makeSublayerIdTable(faMapServiceLayerURL, faSublayerIDs);
+makeSublayerIdTable(faMapServiceLayerURLs, faSublayerIDs);
 
 let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let mainMediaServer = "https://maps.psmfc.org/shorezonedata/";
@@ -813,17 +788,25 @@ function queryServer(url, returnJson, responseHandler) {
   xmlhttp.send();
 }
 
-function makeSublayerIdTable_fromAlt(serviceUrl, idTable, error) {
+/*
+function makeSublayerIdTable_fromAlt(serviceUrls, idTable, error) {
   console.log("makeSublayerIdTable error");
 }
+*/
 
-function makeSublayerIdTable(serviceUrl, idTable) {
-  queryServer(serviceUrl, true, function(R) {
+function makeSublayerIdTable(serviceUrls, idTable) {
+  queryServer(serviceUrls[currServerNum], true, function(R) {
     if (R.error) {
-      //idTable.error = R.error;
-      makeSublayerIdTable_fromAlt(serviceUrl, idTable, R.error);
+      console.log("Map service error:  " + R.error.message);
+/*  // TODO: independent serverNums for each service?
+      if (currServerNum === dfltServerNum) {
+        currServerNum = 1 - currServerNum;
+        makeSublayerIdTable(serviceUrls, idTable);
+      }
+*/
       return;
     }
+    console.log("Map service:  " + serviceUrls[currServerNum]);
     for (let l in R.layers) {
       let o = R.layers[l];
       idTable[o.name] = o.id.toString();

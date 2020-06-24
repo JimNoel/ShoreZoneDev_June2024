@@ -204,8 +204,7 @@ define([
     }
 
     function addServiceLayers() {
-//*JN*/  szMapServiceLayerURL += "a";
-      szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURL,  {id: "szOpLayer", "opacity" : 1.0});
+      szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURLs[currServerNum],  {id: "szOpLayer", "opacity" : 1.0});
       szMapServiceLayer.when(function() {
         makeSzWidgets();
 /*    // Old code moved to makeSzWidgets()
@@ -358,7 +357,7 @@ define([
 */
       });
 
-      ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURL,  {id: "ssOpLayer", opacity: 1.0, listMode: "show"});
+      ssMapServiceLayer = new MapImageLayer(ssMapServiceLayerURLs[currServerNum],  {id: "ssOpLayer", opacity: 1.0, listMode: "show"});
       ssMapServiceLayer.when(function() {
         ssMapServiceLayer.sublayers = updateSublayerArgs(ssDisplayInfo, ssSublayerIDs);
         ssMapServiceLayer.visible = false;
@@ -798,7 +797,7 @@ define([
 
       // TODO: Sublayers IDs from titles?
       // TODO: Add Locales, Sites as (gray) background layers to map service?
-      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURL,  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
+      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[currServerNum],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
       faMapServiceLayer.when(function() {
         faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo, faSublayerIDs);
         faMapServiceLayer.visible = false;
@@ -1337,7 +1336,7 @@ define([
         console.log("Fish Atlas MapServiceLayer failed to load:  " + error);
       });
 
-      sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURL, {id: "sslOpLayer", "opacity" : 0.5});
+      sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURLs[currServerNum], {id: "sslOpLayer", "opacity" : 0.5});
 
       serviceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
 
