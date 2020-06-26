@@ -1141,7 +1141,8 @@ function download_csv(csv, dfltFileName) {
   downloadPanel.value = dfltFileName;
   setVisible(downloadPanel, true);
   let hiddenElement = getEl("hidden_downloadTable");
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);    // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
+  // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
 
 /*    // Attempt to keep track of when Chrome downloads bar appears/disappears.  Will probably discard.
   lastInnerHeight = window.innerHeight;
