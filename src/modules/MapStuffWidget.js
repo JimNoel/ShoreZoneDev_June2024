@@ -207,142 +207,6 @@ define([
       szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURLs[currServerNum],  {id: "szOpLayer", "opacity" : 1.0});
       szMapServiceLayer.when(function() {
         makeSzWidgets();
-/*    // Old code moved to makeSzWidgets()
-      szPhotoWidget = new PhotoPlaybackWidget({
-        objName: "szPhotoWidget",
-        panelName: "szPhotosPanel",
-        panelType: "media",
-        contentPaneId: "photoDiv",
-        baseName: "photo",
-        headerDivName:  "photoHeaderDiv",
-        disabledMsgInfix: "photo points",
-        disabledMsgDivName: "disabledMsg_photo",
-        mapServiceLayer: null,
-        noQuery: true,
-        trackingSymbolInfo: "assets/images/Camera24X24.png:24:24",
-        clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":8,     // invisible if 4th value in "color" is 0
-          "outline": {color: [ 0, 0, 255, 0 ] }},
-        popupTitle: "Photo Point",
-        clickableMsg: "Move camera to this location",
-        sync_photos: true,
-        photoResInsert: "stillphotos_lowres/280_",
-        relPathField: "RelPath",
-        fileNameField: "StillPhoto_FileName",
-        controlData: [
-          ['szPhoto_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
-          ['szPhoto_backwardButton', 'Play Backwards', 'w_left.png', 'playBackward'],
-          ['szPhoto_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
-          ['szPhoto_ForwardButton', 'Play Forwards', 'w_right.png', 'playForward'],
-          ['szPhoto_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
-        ],
-        customContextMenu: downloadOrigRes,
-        map: map,
-        view: view
-      });
-      extentDependentWidgets.push(szPhotoWidget);
-      szPhotoWidget.resizeImg();
-      photoWidgets.push(szPhotoWidget);
-
-      szVideoWidget = new VideoPanelWidget({
-        objName: "szVideoWidget",
-        panelName: "szVideoPanel",
-        sublayerIDs: szSublayerIDs,
-        panelType: "media",
-        contentPaneId: "videoDiv",
-        baseName: "video",
-        headerDivName:  "videoHeaderDiv",
-        disabledMsgInfix: "video points",
-        disabledMsgDivName: "disabledMsg_video",
-        //displayDivName: "#videoImageContainer",
-        mapServiceLayer: szMapServiceLayer,
-        layerName: "1s",
-        layerPath: "Video Flightline/1s",
-
-        // TODO:  Set up filter to query subset of points, when full set is greater than the service limit
-        //initWhere:  "DateTime_str like '%0'",    // example:  "n*(MP4_Seconds/n)=MP4_Seconds" returns just multiples of n
-
-        spatialRelationship: "contains",
-        featureOutFields: ["*"],
-        orderByFields: ["Date_Time"],
-        trackingSymbolInfo: "assets/images/video24X24.png:24:24",
-        clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,      //  invisible if 4th value in "color" is 0
-          "outline": {color: [ 128, 128, 128, 0 ] }},
-        popupTitle: "Video Point",
-        clickableMsg: "Move camera to this location",
-        syncTo: szPhotoWidget,
-        controlData: [
-          ['video_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
-          ['video_backwardButton', 'Play Backwards', 'w_left.png', 'playBackward'],
-          ['video_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
-          ['video_ForwardButton', 'Play Forwards', 'w_right.png', 'playForward'],
-          ['video_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
-        ],
-        map: map,
-        view: view
-      });
-      extentDependentWidgets.push(szVideoWidget);
-
-      szUnitsWidget = new UnitsPanelWidget({
-        objName: "szUnitsWidget",
-        widgetName: "szUnitsWidget",    // for reference to instance
-        tabName: "Units",
-        panelType: "table",
-        sublayerIDs: szSublayerIDs,
-        panelName: "szUnitsPanel",
-        contentPaneId: "unitsDiv",
-        baseName: "units",
-        headerDivName:  "unitsHeaderDiv",
-        displayDivName: "unitsContainer",
-        disabledMsgInfix: "units",
-        disabledMsgDivName: "disabledMsg_units",
-        mapServiceLayer: szMapServiceLayer,
-        layerName: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
-        layerPath: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
-        spatialRelationship: "contains",
-        idField: "PHY_IDENT",
-        featureOutFields:  ["PHY_IDENT"],     // Other fields will be added based on queries of map service layers
-        downloadExcludeFields: [],
-        orderByFields: ["PHY_IDENT"],
-        extraOutFields:  ["CMECS_1", "CMECS_2", "CMECS_3", "Length_M", "Slope_calc", "SHORE_PROB", "LOST_SHORE", "Fetch_max", "Wave_Dissipation", "Orient_dir", "Tidal_height", "CVI_Rank"],
-        specialFormatting: {      // Special HTML formatting for field values
-          PHY_IDENT: { colWidth: 100 },
-          HabClass: { colWidth: 100 },
-          BC_CLASS: { colWidth: 100 },
-          EXP_BIO: { colWidth: 80 },
-          Length_m: { colWidth: 80 },
-          CMECS_1: { colWidth: 130 },
-          CMECS_2: { colWidth: 130 },
-          CMECS_3: { colWidth: 130 }
-        },
-
-        showFieldsInPopup: "*",
-        //trackingSymbolInfo: "assets/images/video24X24.png:24:24",
-        hideMarkersAtStart: true,
-        clickableSymbolType: "extent",
-        clickableSymbolInfo: {
-          color: [ 255, 96, 96, 0.25 ],
-          style: "solid",
-          outline: null
-        },
-        highlightSymbolType: "polyline",
-        highlightSymbolInfo: {
-          color: "red",
-          style: "solid",
-          width: "4px"
-        },
-        popupTitle: "ShoreZone Unit",
-        clickableMsg: null,
-        map: map,
-        view: view
-      });
-      extentDependentWidgets.push(szUnitsWidget);
-
-      showPanelContents("video,photo,units", false);
-
-      siteTabs.sz.widgets = [szPhotoWidget, szVideoWidget, szUnitsWidget];
-*/
 
     }, function(error){
         console.log("szMapServiceLayer failed to load:  " + error);
@@ -1860,7 +1724,7 @@ define([
     view.ui.add({ component: llExpand, position: "top-right", index: 0});
 
     // NOAA offline app link
-    let olExpand = new Expand({
+    olExpand = new Expand({
       view: view,
       content: makeWidgetDiv("offlineAppPanel", "right")   ,
       expandIconClass: "esri-icon-download",
@@ -1950,7 +1814,7 @@ define([
     searchWidget = new Search({ view: view, maxSuggestions: 4 });
     view.ui.add(searchWidget, "bottom-right");
 
-    let cbCode = '<input type="checkbox" id="cbLimitSearchToExtent" checked onclick="cbSearchExtentHandler()">  Limit suggestions to current extent';
+    let cbCode = '<input type="checkbox" id="cbLimitSearchToExtent" onclick="cbSearchExtentHandler()">  Limit suggestions to current extent';
     searchWidget.container.appendChild(makeHtmlElement("DIV", "cbLimitToExtentDiv", null, null, cbCode));
 
     // Default source:  https://developers.arcgis.com/rest/geocode/api-reference/overview-world-geocoding-service.htm

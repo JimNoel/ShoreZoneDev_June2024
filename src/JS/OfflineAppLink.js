@@ -25,13 +25,13 @@ let extraInfo = "";
 let videoClipInfo = [];
 
 function updateDownloadDialog(vidCapCount, photoCount) {
-  let dlDataDialog = '<b>Select which images to include</b><br>';
+  dlDataDialog = '<b>Select which images to include</b><br>';
   dlDataDialog += '<input type="checkbox" id="cb_StillPhotos">&nbsp;&nbsp;Still Photos (' + photoCount + ' images targeted)<br>';
   if (vidCapCount>0) {
     dlDataDialog += '<input type="checkbox" id="cb_LowResVidCap">&nbsp;&nbsp;Low resolution video captures (' + vidCapCount + ' images targeted)<br>';
     dlDataDialog += '<input type="checkbox" id="cb_HighResVidCap">&nbsp;&nbsp;High resolution video captures (' + vidCapCount + ' images targeted)<br>';
   }
-  dlDataDialog += 'Description:&nbsp;&nbsp;<input type="text" id="text_Description" value="Spatial Data Extraction" size="30"><br>';
+  dlDataDialog += 'Description:&nbsp;&nbsp;<input type="text" id="text_Description" value="Spatial Data Extraction" size="30"><br><br>';
   dlDataDialog += '&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="downloadData();">Submit</button>';
   setContent("dlDataContent", dlDataDialog);
 }
@@ -60,25 +60,33 @@ function openOfflineApp() {
 
 
 function getResultData(result) {
-  console.log(result);
+  console.log("Data extract:  initial submitJob succeeded");
   let jobId = result.jobId;
   gp.getResultData(jobId, "Output_Zip_File_zip").then(function(result) {
+    console.log("Data extract:  Got ZIP file URL");
     zipURL = result.value.url.replace("/scratch/","/scratch/GroupDataExtract_output/");     // HACK: add GroupDataExtract_output subdirectory
     gp.getResultData(jobId, "outJSON").then(function(result) {
+      console.log("Data extract:  Got video clips info");
       let a = result.value.split(";");
       zipSizeText = a[0];
       videoClipInfo = a[1].split("@");
-
       showZipLink();
-
+    }, function(error) {
+      processError(error, "video clip URLs");
     });
+  }, function(error) {
+    processError(error, "ZIP file");
   });
 }
 
-function processError(error) {
-  setContent("dlDataContent", " Failed", true);
-  //alert("Failure");
-  console.log(error);
+function processError(error, context) {
+  setContent("dlDataContent", dlDataDialog);
+  if (!confirm("Sorry!  The download failed.  Try again later?  Hit OK to try again, or Cancel")) {
+    olExpand.expanded = false;
+  }
+  if (!context)
+    context = "submitJob";
+  console.log("Data extract ERROR:  " + context + ":  " + error);
 }
 
 function logProgress(value) {

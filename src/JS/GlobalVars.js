@@ -22,6 +22,7 @@ let highlightSize = 15;
 let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
 
 let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
+let dlDataDialog = "";
 
 //Map service URLs
 
@@ -293,6 +294,8 @@ let legendInfo = {};
 
 let searchWidget = null;
 let searchLocal = true;
+
+let olExpand = null;
 
 //  When a graphic is hovered over, these point to the graphic and the widget controlling the graphic
 let minHoverTime = 500;     // Minimum hover time (ms) over a graphic before a new popup opens up
