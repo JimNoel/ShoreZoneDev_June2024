@@ -502,14 +502,19 @@ define([
           baseName: "ssSpTable",
           headerDivName:  "ssSpTableHeaderDiv",
           //footerDivName:  "ssSpTableFooterDiv",
-          visibleHeaderElements: ['ssSpTableTableDownload', 'ssSpTableLabelSpan_featureCount'],
+          visibleHeaderElements: ['ssSpTableTableDownload', 'ssSpTableRadioFilter', 'ssSpTableLabelSpan_featureCount'],
           dropdownElements: [],
           featureOutFields: ["SppNameHtml", "Common_name"],
           downloadExcludeFields: [],
           tableHeaderTitle: "All Regions",
           displayDivName: "ssSpTableContainer",
           mapServiceLayer: ssMapServiceLayer,
-          dynamicLayerName: true,
+          //dynamicLayerName: true,
+          radioFilterInfo: {
+            buttons: ["Benthic marine algae:3", "Marine invertebrates:4", "All Species"],
+            whereField: "GroupID",
+            checked: 2
+          },
           dropDownInfo: [
             /*
                       { ddName: "Region",

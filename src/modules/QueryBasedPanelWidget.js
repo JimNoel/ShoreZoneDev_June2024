@@ -452,14 +452,20 @@ define([
         this.totalsLayerName = null;
         if (queryPars.totalsTableName)
           this.totalsLayerName = queryPars.totalsTableName;
-        if (queryPars.theWhere)
+        if (queryPars.theWhere) {
           theWhere = queryPars.theWhere;
+          this.initWhere = theWhere;
+        }
         if (queryPars.header) {
           //this.title = queryPars.header;
           getEl(this.draggablePanelId + "_headerText").innerText = queryPars.header;      // this.title;
         }
 
       } else {    // Do this only when query parameters are not already specified in the argument
+        if (this.radioFilterInfo) {
+          console.log("radioFilterInfo")
+          theWhere = addToWhere(theWhere, this.radioFilterInfo.where);
+        }
         if (this.dropDownInfo) {
           let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {

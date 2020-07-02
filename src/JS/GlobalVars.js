@@ -293,7 +293,7 @@ let listItem_VideoFlightline = null;
 let legendInfo = {};
 
 let searchWidget = null;
-let searchLocal = true;
+let searchLocal = false;
 
 let olExpand = null;
 
@@ -559,6 +559,12 @@ function setDropdownValue(ddInfo, value) {
   let ddDom = getEl(ddInfo.ddId);
   ddDom.value = value;
   ddInfo.SelectedOption = value;
+}
+
+function radioSelectHandler(w, where) {
+  console.log("radioSelectHandler");
+  w.radioFilterInfo.where = where;
+  w.runQuery(view.extent);  //, {theWhere: where});
 }
 
 function dropdownSelectHandler(w, index) {
@@ -1157,6 +1163,16 @@ function download_csv(csv, dfltFileName) {
 */
 
 }
+
+function addToWhere(where, newWhere) {
+  if (newWhere === "")
+    return where;
+  if (where !== "")
+    where += " AND ";
+  where += newWhere;
+  return where;
+}
+
 
 /* Unused functions
 

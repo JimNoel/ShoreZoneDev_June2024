@@ -613,6 +613,26 @@ define([
         if (this.tableHeaderTitle)
           headerContent.innerHTML += '&emsp;<label id="' + this.baseName + 'TableHeaderTitle" class="tableHeaderTitle">' + this.tableHeaderTitle + ' &emsp;</label>';
 
+        if (this.radioFilterInfo) {
+          let buttons = this.radioFilterInfo.buttons;
+          let checkedIndex = this.radioFilterInfo.checked;
+          let whereField = this.radioFilterInfo.whereField;
+          let name = 'stuff';
+          let radioHtml = '';
+          for (let b=0; b<buttons.length; b++) {
+            let A = buttons[b].split(":");
+            let where = '';
+            if (A[1])
+              where = whereField + "=" + A[1];
+            radioHtml += '<input type="radio" name="' + name + '" value="' + where + '"';
+            if (b === checkedIndex)
+              radioHtml += ' checked';
+            let functionCall = "radioSelectHandler(" + this.objName + ",'" + where + "')";
+            radioHtml += ' onclick="' + functionCall + '"><label>' + A[0] + '</label>&emsp; '
+          }
+          headerContent.innerHTML += '<span id="' + this.baseName + 'RadioFilter">' + radioHtml + '</span>';
+        }
+
         if (this.dropDownInfo) {
           for (d in this.dropDownInfo) {
             let ddItem = this.dropDownInfo[d];
