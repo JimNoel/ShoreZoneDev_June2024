@@ -376,7 +376,6 @@ define([
               },
               idField: 'Region',
               subTableDD: "Region",
-              //resetDDs:  ["Region", "Locale"],
               backgroundLayers: ["Field Stations"],
               filterBgLayer: "Regions",
               clickableSymbolType: "extent",
@@ -453,8 +452,6 @@ define([
                 },
               },
               idField: 'station',
-              //subTableDD: "Region",
-              //resetDDs:  ["Region", "Locale"],
               backgroundLayers: ["Regions"],
               //filterBgLayer: "Regions",
               clickableSymbolType: "point",
@@ -515,41 +512,6 @@ define([
             whereField: "GroupID",
             checked: 2
           },
-          dropDownInfo: [
-            /*
-                      { ddName: "Region",
-                        LayerNameAddOn: "",
-                        totalsLayerNameAddOn: "Regions",
-                        subLayerName: "Regions",
-                        ddOutFields: ["RegionName", "RegionID", "Envelope"],
-                        orderByFields: ["RegionName"],
-                        initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
-                        SelectedOption: "All",
-                        whereField: "RegionID"
-                      },
-                      { ddName: "Locale",
-                        LayerNameAddOn: "",
-                        totalsLayerNameAddOn: "Locales",
-                        subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
-                        ddOutFields: ["Locale", "LocaleID", "Envelope"],
-                        orderByFields: ["Locale"],
-                        initialOption: [ { label: "[All]", value: "All" } ],
-                        SelectedOption: "All",
-                        whereField: "LocaleID"
-                      },
-                      { ddName: "Species",
-                        LayerNameAddOn: "Species",
-                        totalsLayerNameAddOn: "Species",
-                        subLayerName: "vw_SpCatch_allAK",
-                        ddOutFields: ["Sp_CommonName", "SpCode"],
-                        orderByFields: ["Sp_CommonName"],
-                        initialOption: [ { label: "[All]", value: "All" } ],
-                        SelectedOption: "All",
-                        whereField: "SpCode",
-                        isAlpha: true
-                      }
-            */
-          ],
           currTab: 0,
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["SppNameHtml"],
@@ -563,38 +525,11 @@ define([
               colWidth: 100
             }
           },
-          /*
-                  tabInfo: [
-                    {
-                      tabName: 'Regions',
-                      tabTitle: 'Fish Atlas Regions',
-                      LayerNameAddOn: 'Regions',
-                      visibleHeaderElements: [],
-                      specialFormatting: {      // Special HTML formatting for field values
-                      },
-                      idField: 'Region'
-                    },
-                    {
-                      tabName: 'Locales',
-                      tabTitle: 'Fish Atlas Locales',
-                      LayerNameAddOn: 'Locales',
-                      visibleHeaderElements: [],
-                      specialFormatting: {      // Special HTML formatting for field values
-                      },
-                      idField: 'Locale'
-                    },
-                    {
-                      tabName: 'Sites',
-                      tabTitle: 'Fish Atlas Sites',
-                      LayerNameAddOn: 'Sites',
-                      visibleHeaderElements: [],
-                      idField: 'Site'
-                    }
-                    ],
-          */
-          layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+          layerBaseName: "vw_CatchStats_",
+          // All layers queried for data tables will have names that start with this.
+          // The QueryBasedPanelWidget method runQuery generates the full name
           //   using the current panel info and dropdown info for any dropdowns that have something selected.
-          //totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
+
           spatialRelationship: null,      // Using null as a flag to not filter spatially
           noGeometry: true
         });
@@ -664,8 +599,6 @@ define([
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
 
-      // TODO: Sublayers IDs from titles?
-      // TODO: Add Locales, Sites as (gray) background layers to map service?
       faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[currServerNum],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
       faMapServiceLayer.when(function() {
         faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo, faSublayerIDs);
@@ -846,7 +779,6 @@ define([
               },
               idField: 'Region',
               subTableDD: "Region",
-              //resetDDs: [0, 1],      //["Region", "Locale"],
               backgroundLayers: ["Sites"],
               filterBgLayer: "Regions",
               clickableSymbolType: "extent",
@@ -910,7 +842,6 @@ define([
               },
               idField: 'Locale',
               subTableDD: "Locale",
-              //resetDDs: [1],      //["Region", "Locale"],
               backgroundLayers: ["Regions"],
               filterBgLayer: "Locales_background",
               clickableSymbolType: "point",
@@ -1070,41 +1001,6 @@ define([
           displayDivName: "faSpTableContainer",
           mapServiceLayer: faMapServiceLayer,
           dynamicLayerName: true,
-          dropDownInfo: [
-            /*
-                      { ddName: "Region",
-                        LayerNameAddOn: "",
-                        totalsLayerNameAddOn: "Regions",
-                        subLayerName: "Regions",
-                        ddOutFields: ["RegionName", "RegionID", "Envelope"],
-                        orderByFields: ["RegionName"],
-                        initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
-                        SelectedOption: "All",
-                        whereField: "RegionID"
-                      },
-                      { ddName: "Locale",
-                        LayerNameAddOn: "",
-                        totalsLayerNameAddOn: "Locales",
-                        subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
-                        ddOutFields: ["Locale", "LocaleID", "Envelope"],
-                        orderByFields: ["Locale"],
-                        initialOption: [ { label: "[All]", value: "All" } ],
-                        SelectedOption: "All",
-                        whereField: "LocaleID"
-                      },
-                      { ddName: "Species",
-                        LayerNameAddOn: "Species",
-                        totalsLayerNameAddOn: "Species",
-                        subLayerName: "vw_SpCatch_allAK",
-                        ddOutFields: ["Sp_CommonName", "SpCode"],
-                        orderByFields: ["Sp_CommonName"],
-                        initialOption: [ { label: "[All]", value: "All" } ],
-                        SelectedOption: "All",
-                        whereField: "SpCode",
-                        isAlpha: true
-                      }
-            */
-          ],
           currTab: 0,
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["Catch DESC"],
@@ -1129,38 +1025,11 @@ define([
               useCommas: true
             },
           },
-  /*
-          tabInfo: [
-            {
-              tabName: 'Regions',
-              tabTitle: 'Fish Atlas Regions',
-              LayerNameAddOn: 'Regions',
-              visibleHeaderElements: [],
-              specialFormatting: {      // Special HTML formatting for field values
-              },
-              idField: 'Region'
-            },
-            {
-              tabName: 'Locales',
-              tabTitle: 'Fish Atlas Locales',
-              LayerNameAddOn: 'Locales',
-              visibleHeaderElements: [],
-              specialFormatting: {      // Special HTML formatting for field values
-              },
-              idField: 'Locale'
-            },
-            {
-              tabName: 'Sites',
-              tabTitle: 'Fish Atlas Sites',
-              LayerNameAddOn: 'Sites',
-              visibleHeaderElements: [],
-              idField: 'Site'
-            }
-            ],
-  */
-          layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+          layerBaseName: "vw_CatchStats_",
+          // All layers queried for data tables will have names that start with this.
+          // The QueryBasedPanelWidget method runQuery generates the full name
           //   using the current panel info and dropdown info for any dropdowns that have something selected.
-          //totalsBaseName: "vw_CatchStats_",   // When specified, use this as the base name for totals
+
           spatialRelationship: null,      // Using null as a flag to not filter spatially
           noGeometry: true
         });
