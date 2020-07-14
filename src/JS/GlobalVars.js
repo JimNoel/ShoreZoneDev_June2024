@@ -76,10 +76,12 @@ let faDisplayInfo = [
   {title: "Thermograph Sites"},
 */
   {title: "Regions"},
+/*
   {title: "Locales_background", visible: false, listMode: "hide"},
   {title: "Locales (point)"},
   {title: "vw_CatchStats_Locales", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_LocalesHabitats", visible: false, listMode: "hide"},
+*/
   {title: "Sites_background", visible: false, listMode: "hide"},
   {title: "Sites", visible: false},
   {title: "vw_CatchStats_Sites", visible: false, listMode: "hide"},
@@ -797,22 +799,10 @@ function queryServer(url, returnJson, responseHandler) {
   xmlhttp.send();
 }
 
-/*
-function makeSublayerIdTable_fromAlt(serviceUrls, idTable, error) {
-  console.log("makeSublayerIdTable error");
-}
-*/
-
 function makeSublayerIdTable(serviceUrls, idTable) {
   queryServer(serviceUrls[currServerNum], true, function(R) {
     if (R.error) {
       console.log("Map service error:  " + R.error.message);
-/*  // TODO: independent serverNums for each service?
-      if (currServerNum === dfltServerNum) {
-        currServerNum = 1 - currServerNum;
-        makeSublayerIdTable(serviceUrls, idTable);
-      }
-*/
       return;
     }
     console.log("Map service:  " + serviceUrls[currServerNum]);

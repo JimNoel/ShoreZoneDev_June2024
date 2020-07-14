@@ -619,7 +619,7 @@ define([
           displayDivName: "faContainer",
           disabledMsgDivName: "disabledMsg_fa",
           mapServiceLayer: faMapServiceLayer,
-          mapServiceSublayers: ["Regions", "Locales", "Sites"],
+          mapServiceSublayers: ["Regions", /*"Locales",*/ "Sites"],
           dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
@@ -632,6 +632,7 @@ define([
               SelectedOption: "All",
               whereField: "RegionID"
             },
+/*  // dropped from FA2020
             { ddName: "Locale",
               LayerNameAddOn: "",
               totalsLayerNameAddOn: "Locales",
@@ -642,6 +643,7 @@ define([
               SelectedOption: "All",
               whereField: "LocaleID"
             },
+*/
             { ddName: "Habitat",
               LayerNameAddOn: "Habitats",
               totalsLayerNameAddOn: "Habitats",
@@ -659,6 +661,7 @@ define([
 
             // The next 2 items may be removed in favor of 1 common habitat dropdown, if it is decided not to keep
             //    habitat selection independent between Region/Locale/Site tabs
+/*  // dropped from FA2020
             { ddName: "LocaleHabitat",
               ddTitle: "Habitat",     // Title text if it is not ddName value
               LayerNameAddOn: "Habitats",
@@ -674,6 +677,7 @@ define([
               whereField: "Habitat",
               isAlpha: true
             },
+*/
             { ddName: "SiteHabitat",
               ddTitle: "Habitat",     // Title text if it is not ddName value
               LayerNameAddOn: "Habitats",
@@ -719,6 +723,7 @@ define([
               htmlTemplate: '<button id="faSpeciesPanel_Button" onclick="expandDropdownPanel(\'faSpeciesPanel\', true)">Species Filter</button><div id="faSpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
               LayerNameAddOn: "Species",
+              totalsLayerNameAddOn: "Species",
             }
           ],
           speciesTableInfo : {
@@ -770,12 +775,21 @@ define([
                   html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt='' title='Show species table for this region'>"
                 },
                 SelRegionBtn: {
-                  title:  "Locales",
+                  title:  "Sites",
                   colWidth:  5,
                   plugInFields: ["RegionID", "Envelope"],
                   args: 'faWidget,{0},"{1}"',
-                  html:  gotoSubareasTemplate.replace("{area}", "locales for this region")
+                  html:  gotoSubareasTemplate.replace("{area}", "Sites for this region")
                 }
+/*
+                SelLocaleBtn: {
+                  title:  "Sites",
+                  colWidth:  8,
+                  plugInFields: ["LocaleID", "Envelope"],
+                  args: 'faWidget,{0},"{1}"',
+                  html: gotoSubareasTemplate.replace("{area}", "sites for this locale")
+                }
+*/
               },
               idField: 'Region',
               subTableDD: "Region",
@@ -790,6 +804,7 @@ define([
               mapServiceSublayerVisibility: [false, false, true]
               //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
             },
+/*
             {
               tabName: 'Locales',
               tabTitle: 'Fish Atlas Locales',
@@ -855,6 +870,7 @@ define([
                 size:12
               },
             },
+*/
             {
               tabName: 'Sites',
               subWidgetInfo: ["faPhotoWidget:SiteID:PhotoCount"],     // name of subwidget : filter field : column to check before running query
@@ -862,9 +878,9 @@ define([
               popupTitle: "Fish Atlas Site",
               popupExcludeCols: ["Photos"],
               LayerNameAddOn: 'Sites',
-              parentAreaType: 'Locales',
-              visibleHeaderElements: ['faTableDownload', /*'faRegion_ddWrapper',*/ 'faLocale_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropdownElements: ['faLocale_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpecies_ddWrapper'],
+              parentAreaType: 'Regions',
+              visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', /*'faLocale_ddWrapper',*/ 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper'],
               featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],

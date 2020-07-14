@@ -471,20 +471,24 @@ define([
           for (d in ddInfo) {
             let item = ddInfo[d];
             let itemWhere = null;
-            if (item.panelWhere) {
-              itemWhere = item.panelWhere;
-              item.panelWhereChanged = false;
-              getEl(item.uniqueName + "_closeButton").innerText = "Close";
-              this.ddLayerNameAddOn += item.LayerNameAddOn;
-            }
-            else if ((!item.expandPanelId) && (this.dropdownElements.includes(item.wrapperId)) && (item.SelectedOption !== "All")) {
-              let selOption = item.SelectedOption;
-              if (item.isAlpha)
-                selOption = "'" + selOption + "'";
-              this.ddLayerNameAddOn += item.LayerNameAddOn;
-              if (item.totalsLayerNameAddOn)
-                this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
-              itemWhere = item.whereField + "=" + selOption;
+            if (this.dropdownElements.includes(item.wrapperId)) {
+              if (item.panelWhere) {
+                itemWhere = item.panelWhere;
+                item.panelWhereChanged = false;
+                getEl(item.uniqueName + "_closeButton").innerText = "Close";
+                this.ddLayerNameAddOn += item.LayerNameAddOn;
+                if (item.totalsLayerNameAddOn)
+                  this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
+              }
+              else if ((!item.expandPanelId)  && (item.SelectedOption !== "All")) {
+                let selOption = item.SelectedOption;
+                if (item.isAlpha)
+                  selOption = "'" + selOption + "'";
+                this.ddLayerNameAddOn += item.LayerNameAddOn;
+                if (item.totalsLayerNameAddOn)
+                  this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
+                itemWhere = item.whereField + "=" + selOption;
+              }
             }
             if (itemWhere) {
               if (theWhere !== "")

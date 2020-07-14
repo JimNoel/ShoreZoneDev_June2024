@@ -413,7 +413,11 @@ define([
           let posTop = $(this.footerWrapper).position().top + 2;
           for (f in this.totalLabels) {
             let label = this.totalLabels[f];
-            let column = columns[label.colNum];
+            let column = null;      // columns[label.colNum];     // superceded by following lines
+            for (c in columns) {
+              if (columns[c].field === f)
+                column = columns[c];
+            }
             let colPos = $(column.headerNode.contents).position().left;
             if (this.baseName === "faSpTable")    //TODO:  This is not working correctly for draggable panels
               colPos = colPos - 300;              // Temporary HACK
@@ -782,13 +786,12 @@ define([
         this.totalLabels = {};
         for (f in fields) {
           let fieldName = fields[f];
-//         let colNum = this.tabInfo[this.currTab].featureOutFields.indexOf(fields[f]);
           let colNum = this.featureOutFields.indexOf(fields[f]);
           if (colNum === -1)
             this.totalLabels[fieldName] = null;
           else {
             this.totalLabels[fieldName] = {
-              colNum: colNum,
+              colNum: colNum,     // This is probably moot now, as column number is now based on a search of DGrid columns
               node: makeHtmlElement("LABEL", null, "totalBox", "position: absolute; top: 0; left: 0px", "Total")
             }
             this.footerWrapper.appendChild(this.totalLabels[fieldName].node);
