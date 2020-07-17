@@ -323,7 +323,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Species Data',
-            args: 'ssSpTableWidget,"vw_AlaskaSpecies",null,null,"All Regions"'
+            args: 'ssSpTableWidget,"vw_AlaskaSpecies",null,"","All Regions"'
           },
           currTab: 0,
           tabInfo: [
@@ -364,7 +364,7 @@ define([
                   colWidth:  20,
                   plugInFields: ["RegionalID", "Region"],
                   args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
-                  html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
+                  html:   spTableTemplate
                 },
                 SelRegionBtn: {
                   title:  "Stations",
@@ -441,7 +441,7 @@ define([
                   colWidth:  20,
                   plugInFields: ["station", "station"],
                   args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}"',
-                  html:   spTableTemplate,     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>",
+                  html:   spTableTemplate,
                   showWhen: "1"
                 },
                 hasProfile: {
@@ -728,7 +728,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions"'
+            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_","","All Regions"'
           },
           currTab: 0,
           featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
@@ -772,7 +772,7 @@ define([
                   colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
                   args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
-                  html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt='' title='Show species table for this region'>"
+                  html:   spTableTemplate
                 },
                 SelRegionBtn: {
                   title:  "Sites",
@@ -921,7 +921,7 @@ define([
                   colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
                   args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
-                  html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
+                  html:   spTableTemplate
                 },
                 SiteID: {
                   hidden: true

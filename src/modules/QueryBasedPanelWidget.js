@@ -452,7 +452,7 @@ define([
         this.totalsLayerName = null;
         if (queryPars.totalsTableName)
           this.totalsLayerName = queryPars.totalsTableName;
-        if (queryPars.theWhere) {
+        if (queryPars.theWhere !== null) {
           theWhere = queryPars.theWhere;
           this.initWhere = theWhere;
         }
