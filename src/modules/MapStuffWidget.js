@@ -440,7 +440,7 @@ define([
                   title:  "Species",
                   colWidth:  20,
                   plugInFields: ["station", "station"],
-                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}"',
+                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}",["abundance"]',
                   html:   spTableTemplate,
                   showWhen: "1"
                 },
@@ -523,6 +523,15 @@ define([
             Common_name: {
               title: "Common Name",
               colWidth: 100
+            },
+            abundance: {
+              title: "Abundance",   // TODO: Capitalize name in service?
+              longValue: {
+                R: "Rare",
+                F: "Few",
+                C: "Common",
+                A: "Abundant"
+              }
             }
           },
           layerBaseName: "vw_CatchStats_",
@@ -1857,13 +1866,13 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText) {
+    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFields) {
       console.log("openSpeciesTable");
       if (headerText)
         headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
       w.setHeaderItemVisibility();
       setDisplay(w.draggablePanelId, true);
-      w.runQuery(null, {tableName: tableName, totalsTableName: totalsTableName, theWhere: theWhere, header: headerText} );
+      w.runQuery(null, {tableName: tableName, totalsTableName: totalsTableName, theWhere: theWhere, header: headerText, extraFields: extraFields} );
     },
 
     constructor: function (kwArgs) {

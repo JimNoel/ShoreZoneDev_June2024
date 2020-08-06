@@ -255,7 +255,14 @@ define([
           for (a in features[i].attributes)
             if (features[i].attributes[a] !== null) {
 
-              let template = getIfExists(this,"specialFormatting." + a + ".html");
+              let longValue = getIfExists(this,"specialFormatting." + a + ".longValue");
+              if (longValue) {     // If longValue exists, use this to replace short value with long value
+                let newValue = longValue[features[i].attributes[a]];
+                if (newValue)
+                  features[i].attributes[a] = newValue;
+              }
+
+                let template = getIfExists(this,"specialFormatting." + a + ".html");
               if (template) {     // If template exists, use this to replace attribute value with HTML code
                 let fmtInfo = this.specialFormatting[a];
                 if (fmtInfo.showWhen) {

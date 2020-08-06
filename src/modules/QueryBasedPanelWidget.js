@@ -460,7 +460,9 @@ define([
           //this.title = queryPars.header;
           getEl(this.draggablePanelId + "_headerText").innerText = queryPars.header;      // this.title;
         }
-
+        if (queryPars.extraFields) {
+          this.query.outFields = this.query.outFields.concat(queryPars.extraFields);
+        }
       } else {    // Do this only when query parameters are not already specified in the argument
         if (this.radioFilterInfo) {
           console.log("radioFilterInfo")
