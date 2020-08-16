@@ -187,7 +187,7 @@ define([
         let tableColumns = [];
         let nonNullCount = new Object();
         nonNullList = new Object();       //Lists of unique values found
-        //let maxValue = new Object();
+        let maxChars = new Object();
         let columnStyleCSS = "";
 
         if (this.calcFields)
@@ -227,6 +227,7 @@ define([
 
 
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
+          // TODO: Possibly, use maxChars to modify colWidth
           let colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
           if (!colWidth)
             colWidth = (title.length) * 15;
@@ -236,7 +237,7 @@ define([
 
           nonNullCount[fields[i].name] = 0;
           nonNullList[fields[i].name] = [];     //Lists of unique values found
-          //maxValue[fields[i].name] = 0;
+          maxChars[fields[i].name] = 0;
         }
 
         // Create style-sheet for columns
@@ -281,9 +282,12 @@ define([
 
               if (features[i].attributes[a]) {
                 nonNullCount[a] += 1;
+                const v = features[i].attributes[a].toString();
+                let l = stripHtml(v).length;
+                if (l > maxChars[a])
+                  maxChars[a] = l;
                 const f = legendFilters.findIndex(obj => obj.fieldName === a);
                 if (f !== -1) {
-                  const v = features[i].attributes[a].toString();
                   if (!nonNullList[a].includes(v))
                     nonNullList[a].push(v);
                 }
@@ -644,6 +648,12 @@ define([
           headerContent.innerHTML += '<span id="' + this.baseName + 'RadioFilter">' + radioHtml + '</span>';
         }
 
+        if (this.optionalFieldInfo) {
+          let optionalFieldInfo = this.optionalFieldInfo;
+          let addlHeaderHtml = optionalFieldInfo.headerTemplate.replace(/\{0\}/g,optionalFieldInfo.checkboxId).replace("{w}",this.objName);
+          headerContent.innerHTML += '<span id="' + this.baseName + 'Extra">' + addlHeaderHtml + '</span>';
+        }
+
         if (this.dropDownInfo) {
           for (d in this.dropDownInfo) {
             let ddItem = this.dropDownInfo[d];
@@ -707,11 +717,14 @@ define([
         }
       };
 
-      this.setHeaderItemVisibility = function() {
+      this.setHeaderItemVisibility = function(addlNames) {
         for (let c=0; c< this.headerContent.children.length; c++)
           this.headerContent.children[c].style.display = "none";
-        for (c in this.visibleHeaderElements)
-          getEl(this.visibleHeaderElements[c]).style.display = "inline";
+        let nameList = this.visibleHeaderElements;
+        if (addlNames)
+          nameList = nameList.concat(addlNames);
+        for (c in nameList)
+          getEl(nameList[c]).style.display = "inline";
       }
 
       // Highlight row associated with the graphic feature, and return the DGrid row

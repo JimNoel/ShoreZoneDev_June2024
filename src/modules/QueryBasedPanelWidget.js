@@ -465,8 +465,13 @@ define([
         }
       } else {    // Do this only when query parameters are not already specified in the argument
         if (this.radioFilterInfo) {
-          console.log("radioFilterInfo")
           theWhere = addToWhere(theWhere, this.radioFilterInfo.where);
+        }
+        if (this.optionalFieldInfo) {
+          let i = getEl(this.optionalFieldInfo.checkboxId).checked ? 1 : 0;
+          this.layerName = this.optionalFieldInfo.tableNames[i];
+          this.query.outFields = this.featureOutFields.concat(this.optionalFieldInfo.fields[i]);
+          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         }
         if (this.dropDownInfo) {
           let ddInfo = this.dropDownInfo;

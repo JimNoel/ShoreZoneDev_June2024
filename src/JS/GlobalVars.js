@@ -564,8 +564,11 @@ function setDropdownValue(ddInfo, value) {
 }
 
 function radioSelectHandler(w, where) {
-  console.log("radioSelectHandler");
   w.radioFilterInfo.where = where;
+  w.runQuery(view.extent);  //, {theWhere: where});
+}
+
+function cbCheckedHandler(w) {
   w.runQuery(view.extent);  //, {theWhere: where});
 }
 

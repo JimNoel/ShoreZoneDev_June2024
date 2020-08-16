@@ -440,7 +440,7 @@ define([
                   title:  "Species",
                   colWidth:  20,
                   plugInFields: ["station", "station"],
-                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}",["abundance"]',
+                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}",ssSpTableWidget.optionalFieldInfo',
                   html:   spTableTemplate,
                   showWhen: "1"
                 },
@@ -510,7 +510,21 @@ define([
           radioFilterInfo: {
             buttons: ["Benthic marine algae:3", "Marine invertebrates:4", "All Species"],
             whereField: "GroupID",
+            where: "",
             checked: 2
+          },
+          optionalFieldInfo: {
+            checkboxId: 'cbBiobands',
+            headerElName: 'ssSpTableExtra',
+            headerTemplate: '<input type="checkbox" id="{0}" onclick="cbCheckedHandler({w})"><label for="{0}"> Show Biobands</label>',
+            tableNames: [
+              'vw_StationSpecies',
+              'vw_StationPoints_BiobandsSpecies'
+            ],
+            fields: [
+              ["abundance"],
+              ["abundance", "BandOrder", "BiobandName"]
+            ]
           },
           currTab: 0,
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
@@ -742,6 +756,7 @@ define([
           currTab: 0,
           featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
           tabInfo: [
+/*
             {
               tabName: 'Regions',
               tabTitle: 'Fish Atlas Regions',
@@ -790,15 +805,6 @@ define([
                   args: 'faWidget,{0},"{1}"',
                   html:  gotoSubareasTemplate.replace("{area}", "Sites for this region")
                 }
-/*
-                SelLocaleBtn: {
-                  title:  "Sites",
-                  colWidth:  8,
-                  plugInFields: ["LocaleID", "Envelope"],
-                  args: 'faWidget,{0},"{1}"',
-                  html: gotoSubareasTemplate.replace("{area}", "sites for this locale")
-                }
-*/
               },
               idField: 'Region',
               subTableDD: "Region",
@@ -1866,11 +1872,18 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFields) {
+    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo) {
       console.log("openSpeciesTable");
+      let extraFields = null;
+      let headerElName = null;
+      if (extraFieldInfo) {
+        let i = 0;
+        extraFields = extraFieldInfo.fields[i];
+        headerElName = extraFieldInfo.headerElName;
+      }
       if (headerText)
         headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
-      w.setHeaderItemVisibility();
+      w.setHeaderItemVisibility(headerElName);
       setDisplay(w.draggablePanelId, true);
       w.runQuery(null, {tableName: tableName, totalsTableName: totalsTableName, theWhere: theWhere, header: headerText, extraFields: extraFields} );
     },
