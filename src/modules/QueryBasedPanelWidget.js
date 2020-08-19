@@ -442,6 +442,8 @@ define([
         this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
       queryComplete = false;
 
+      this.query.orderByFields = this.orderByFields;
+
       this.ddLayerNameAddOn = "";
       this.ddTotalsLayerNameAddOn = "";
 
@@ -471,6 +473,7 @@ define([
           let i = getEl(this.optionalFieldInfo.checkboxId).checked ? 1 : 0;
           this.layerName = this.optionalFieldInfo.tableNames[i];
           this.query.outFields = this.featureOutFields.concat(this.optionalFieldInfo.fields[i]);
+          this.query.orderByFields = this.query.orderByFields.concat(this.optionalFieldInfo.order[i]);
           this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         }
         if (this.dropDownInfo) {
@@ -512,8 +515,6 @@ define([
       }
 
       this.query.where = theWhere;
-      this.query.orderByFields = this.orderByFields;
-
 
       this.queryTask.execute(this.query).then(function(results){
         this.queryPending = false;

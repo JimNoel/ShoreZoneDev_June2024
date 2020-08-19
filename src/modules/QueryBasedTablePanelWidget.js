@@ -18,15 +18,10 @@ let padLength = 10;     // left-pad numeric values to same string length (10), s
 let padChars = "&nbsp;";    // HTML space escape character
 
 let formatValue = function(value) {
-  if (value === null)
+  if (value===null || (typeof value)!=="number")
     return value;
   let formatting = this.f[this.n];
-/*
-  if (formatting.plugInFields)
-    return fillTemplate(value, formatting);
-  else
-*/
-    return formatNumber(value, formatting);
+  return formatNumber(value, formatting);
 }
 
 let formatNumber = function(value, formatting) {
@@ -39,7 +34,7 @@ let formatNumber = function(value, formatting) {
     newValue = value.toFixed(formatting.numDecimals);
   else if (formatting.dateFormat)
     newValue = formatNumber_Date(value);
-  newValue = padString(newValue, padLength, "left", padChars);
+  newValue = padString(newValue, padLength, "left", padChars);    // pad to the left, so numbers (as strings) sort correctly
 /*
   if (typeof value === "number")
     newValue = '<div style="text-align: right">' + newValue + '</div>';     // right-align if numeric
@@ -205,6 +200,7 @@ define([
           }
 
         for (let i=0; i<fields.length; i++) {
+/*
           // Use supplied title for column name
           let title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
           if (title === null)
@@ -213,10 +209,6 @@ define([
           let hidden = getIfExists(this,"specialFormatting." + fields[i].name + ".hidden");
 
           let formatter = formatValue.bind({f: this.specialFormatting, n: fields[i].name});
-/*
-          let plugInFields = getIfExists(this,"specialFormatting." + fields[i].name + ".plugInFields");
-          if (plugInFields)
-*/
 
           tableColumns.push({
             field: fields[i].name,
@@ -225,7 +217,6 @@ define([
             formatter: formatter
           });
 
-
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
           // TODO: Possibly, use maxChars to modify colWidth
           let colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
@@ -233,17 +224,19 @@ define([
             colWidth = (title.length) * 15;
 
           columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
-          //columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px; text-align: right} ";
 
+*/
           nonNullCount[fields[i].name] = 0;
           nonNullList[fields[i].name] = [];     //Lists of unique values found
           maxChars[fields[i].name] = 0;
         }
 
+/*
         // Create style-sheet for columns
         let sheet = document.createElement('style');
         sheet.innerHTML = columnStyleCSS;
         document.body.appendChild(sheet);
+*/
 
         let tableData = [];
 
@@ -303,6 +296,44 @@ define([
 
           tableData.push(features[i].attributes);
         }
+
+        for (let i=0; i<fields.length; i++) {
+          // Use supplied title for column name
+          let title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
+          if (title === null)
+            title = fields[i].alias;
+
+          let hidden = getIfExists(this,"specialFormatting." + fields[i].name + ".hidden");
+
+          let formatter = formatValue.bind({f: this.specialFormatting, n: fields[i].name});
+
+          tableColumns.push({
+            field: fields[i].name,
+            label: title,
+            hidden: hidden,
+            formatter: formatter
+          });
+
+          // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
+          // TODO: Possibly, use maxChars to modify colWidth
+          let colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
+          if (!colWidth)
+            colWidth = title.length * 15;
+            //colWidth = Math.max(title.length, maxChars[fields[i].name]) * 15;   // Use column title width, or length of longest value in column, whichever is largest
+
+          columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
+
+/*
+          nonNullCount[fields[i].name] = 0;
+          nonNullList[fields[i].name] = [];     //Lists of unique values found
+          maxChars[fields[i].name] = 0;
+*/
+        }
+
+        // Create style-sheet for columns
+        let sheet = document.createElement('style');
+        sheet.innerHTML = columnStyleCSS;
+        document.body.appendChild(sheet);
 
         filterLegend(this.mapServiceLayer.title, nonNullList);
 

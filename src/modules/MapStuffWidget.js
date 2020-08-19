@@ -523,8 +523,12 @@ define([
             ],
             fields: [
               ["abundance"],
-              ["abundance", "BandOrder", "BiobandName"]
-            ]
+              ["BandOrder", "BiobandName", "abundance"]
+            ],
+            order: [
+              [],
+              ["BandOrder"]
+            ],
           },
           currTab: 0,
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
@@ -532,21 +536,30 @@ define([
           specialFormatting: {      // Special HTML formatting for field values
             SppNameHtml: {
               title: "Species",
-              colWidth: 200
+              colWidth: 150
             },
             Common_name: {
               title: "Common Name",
-              colWidth: 100
+              colWidth: 150
             },
             abundance: {
               title: "Abundance",   // TODO: Capitalize name in service?
+              colWidth: 60,
               longValue: {
                 R: "Rare",
                 F: "Few",
                 C: "Common",
                 A: "Abundant"
               }
-            }
+            },
+            BandOrder: {
+              title: "Band #",
+              colWidth: 60
+            },
+            BiobandName: {
+              title: "Bioband",
+              colWidth: 80
+            },
           },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.
