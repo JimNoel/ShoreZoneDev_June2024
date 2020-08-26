@@ -57,11 +57,8 @@ function openOfflineApp() {
   }
 }
 
-
-
-function getResultData(result) {
-  console.log("Data extract:  initial submitJob succeeded");
-  let jobId = result.jobId;
+function getZipFileData(jobId, zipName) {
+  let gpTimeout = setTimeout(alert("Your data is ready!"), 10000);
   gp.getResultData(jobId, "Output_Zip_File_zip").then(function(result) {
     console.log("Data extract:  Got ZIP file URL");
     zipURL = result.value.url.replace("/scratch/","/scratch/GroupDataExtract_output/");     // HACK: add GroupDataExtract_output subdirectory
@@ -77,6 +74,29 @@ function getResultData(result) {
   }, function(error) {
     processError(error, "ZIP file");
   });
+}
+
+function getResultData(result) {
+  console.log("Data extract:  initial submitJob succeeded");
+  let jobId = result.jobId;
+  let gpTimeout = setTimeout(getZipFileData(jobId, "Output_Zip_File_zip"), 10000);   // delay a second
+/*
+  gp.getResultData(jobId, "Output_Zip_File_zip").then(function(result) {
+    console.log("Data extract:  Got ZIP file URL");
+    zipURL = result.value.url.replace("/scratch/","/scratch/GroupDataExtract_output/");     // HACK: add GroupDataExtract_output subdirectory
+    gp.getResultData(jobId, "outJSON").then(function(result) {
+      console.log("Data extract:  Got video clips info");
+      let a = result.value.split(";");
+      zipSizeText = a[0];
+      videoClipInfo = a[1].split("@");
+      showZipLink();
+    }, function(error) {
+      processError(error, "video clip URLs");
+    });
+  }, function(error) {
+    processError(error, "ZIP file");
+  });
+*/
 }
 
 function processError(error, context) {
@@ -105,7 +125,7 @@ function showZipLink() {
     let startTime = a[1].split("&")[0];
     let endTime = a[2];
     let newName = "360_" + fileName.split(".")[0] + "_" + startTime + "to" + endTime + ".mp4";
-    clipsHTML += '&nbsp;&nbsp;<a class="linkInPopup" href="' + clipUrl + '" download="' + newName + '"><u>' + newName + '</u></a><br>';
+    clipsHTML += '&nbsp;&nbsp;<a class="linkInPopup" target="_blank" href="' + clipUrl + '" download="' + newName + '"><u>' + newName + '</u></a><br>';
   }
   dlReadyContent += clipsHTML;
   setContent("dlDataContent", dlReadyContent);
@@ -131,5 +151,35 @@ function downloadData() {
     params.Get_HighRes = "1";
   outZipFileName = text_Description.value;
   setContent("dlDataContent", "Submitting query ..");
-  gp.submitJob(params).then(getResultData, processError, logProgress);
+  //gp.submitJob(params).then(getResultData, processError, logProgress);
+
+  gp.submitJob(params).then(function (jobInfo) {
+    var options = {
+      statusCallback: function (jobInfo1) {
+        console.log("statusCallback");
+        //logProgress(jobInfo1);
+      }
+    };
+    // once the job completes, add resulting layer to map
+    gp.waitForJobCompletion(jobInfo.jobId, options).then(function (jobInfo2) {
+      console.log("Job completed");
+    });
+  });
+
+  /*
+    gp.submitJob(params).then(function(jobInfo) {
+      var jobid = jobInfo.jobId;
+
+      var options = {
+        interval: 1500,
+        statusCallback: logProgress
+      };
+
+      gp.waitForJobCompletion(jobid, options).then(function() {
+        var results = gp.getResultData(jobid, "outJSON").then(function() {
+          console.log("Hello");
+        });
+      });
+    });
+  */
 }
