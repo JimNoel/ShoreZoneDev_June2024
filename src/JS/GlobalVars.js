@@ -5,6 +5,7 @@
 let debug_mode = "console";     // Possible values:  null (no debug message), "alert" (use alert dialog), [anything else] (use console)
 let justAK = false;
 
+let showPopups = true;
 let popupsDocked = false;
 
 /* Initial basemap.  Can be one of:
@@ -634,6 +635,17 @@ function checkbox_showFeatures_clickHandler(w, cb) {
   }
 }
 
+function checkbox_showPopups_clickHandler() {
+  showPopups = getEl("showPopupsCheckbox").checked;
+  if (!showPopups) {
+    // TODO:  Hide highlight of last feature
+    //let hoverLayer = currentHoveredGraphic.layer;
+    //hoverLayer.removeAll();
+    //currentHoveredGraphic.visible = false;
+    view.popup.close();
+  }
+}
+
 /*    // old Tristan code for speed slider
 function findAndChangePlaybackSpeed() {
   changePlaybackSpeed(document.getElementById('playback_speed_range').value);
@@ -876,6 +888,9 @@ let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' sr
 
 let unitsCb2_Id = "unitsCheckbox2_showFeatures";
 let showUnitsCheckbox2 = '<input id="' + unitsCb2_Id  + '" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget,unitsCheckbox2_showFeatures)"><span style="background-color: #ff6060; opacity: 0.25">&emsp;&emsp;</span>'
+
+let popupsCb_Id = "showPopupsCheckbox";
+let showPopupsCheckbox = '<input id="' + popupsCb_Id  + '" type="checkbox" checked onclick="checkbox_showPopups_clickHandler()"><span class="mapCheckboxText" >Show popups</span>'
 
 /* For pan/zoom-to-rectangle toggle */
 let panning = true;      // If not panning, then zooms to drawn rectangle

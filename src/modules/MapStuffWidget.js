@@ -1400,7 +1400,8 @@ define([
         dataRow = currentWidgetController.highlightAssociatedRow(currentHoveredGraphic)
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
-      hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
+      if (showPopups)
+        hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
     }
   };
 
@@ -1727,6 +1728,10 @@ define([
     let showUnitsDiv = document.createElement("DIV");
     showUnitsDiv.innerHTML = showUnitsCheckbox2;
     view.ui.add(showUnitsDiv, "bottom-left");
+
+    let showPopupsDiv = document.createElement("DIV");
+    showPopupsDiv.innerHTML = showPopupsCheckbox;
+    view.ui.add(showPopupsDiv, "bottom-left");
 
     // Add ESRI search widget to map
     searchWidget = new Search({ view: view, maxSuggestions: 4 });

@@ -161,7 +161,7 @@ define([
         //infoWin.alignment = "left";
         infoWin.open();
         this.clearAllHighlights();
-        this.highlightFeature(e.highlightGeometry);          // geometry);
+        this.highlightFeature(e.highlightGeometry);
       };
 
     },
