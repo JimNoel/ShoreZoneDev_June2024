@@ -104,6 +104,11 @@ let ssDisplayInfo = [
   {title: "vw_StationPoints_BiobandsSpecies", visible: false, listMode: "hide"}
 ];
 
+let lastSZExtent = null;
+let bhDiff = window.outerHeight - window.innerHeight;
+// Used to detect possible appearance/disappearance of file downloads bar.  (May also be affected by browser maximize, or appearance/disappearance of other browser elements.)
+// At start of refresh code, new value is calculated.  If this differs from current bhDiff, features are not refreshed, and bhDiff is updated with new value
+
 let videoClipURLs = "";    // For download of video clips for current extent
 
 let zoomInTemplate = "<img src='assets/images/i_zoomin.png' onclick='mapStuff.gotoExtent({args})' class='actionIcon' alt='' title='Zoom to this {area}'>";
@@ -148,8 +153,6 @@ faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" class="closeBu
 let lastInnerHeight = window.innerHeight;
 let innerHeight_noFileDownloadBar = lastInnerHeight;
 let innerHeight_withFileDownloadBar = null;
-let fileDownloadCount = 0;
-let downloadBarCycle = 0;
 
 let basemapIds = [
   "oceans",
@@ -729,6 +732,7 @@ function refreshSzFeatures() {
   resetCurrentFeatures();
   mapLoading = true;
   if (szFeatureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
+    lastSZExtent = view.extent;
     updateNoFeaturesMsg(extentDependentWidgets, "querying");
     if (szVideoWidget)
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
@@ -1160,16 +1164,6 @@ function download_csv(csv, dfltFileName) {
   let hiddenElement = getEl("hidden_downloadTable");
   // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-
-/*    // Attempt to keep track of when Chrome downloads bar appears/disappears.  Will probably discard.
-  lastInnerHeight = window.innerHeight;
-  fileDownloadCount += 1;
-  if (fileDownloadCount === 1) {
-    downloadBarCycle = 2;
-    innerHeight_noFileDownloadBar = lastInnerHeight;
-  }
-*/
-
 }
 
 function addToWhere(where, newWhere) {

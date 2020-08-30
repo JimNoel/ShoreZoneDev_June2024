@@ -41,6 +41,7 @@ define([
   "esri/widgets/Home",
   "esri/widgets/Locate",
   "esri/widgets/Popup",
+  "esri/widgets/ScaleBar",
   "esri/tasks/Geoprocessor",
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
@@ -62,7 +63,7 @@ define([
   "esri/core/Collection",
   "esri/core/Accessor",
   "dojo/domReady!"
-], function(declare, Basemap, watchUtils, Map, View, MapImageLayer, PortalItem, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, Geoprocessor, Query, QueryTask,
+], function(declare, Basemap, watchUtils, Map, View, MapImageLayer, PortalItem, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
             Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
@@ -1161,7 +1162,7 @@ define([
     //let extent3d = sceneViewExtent(view, 200);
     //let extent3d_geog = webMercatorUtils.webMercatorToGeographic(extent3d);
 
-/*
+/*  // Attempt at prequery for too many records
     //JN  Works, times out at 60s (~1M records).
       this.prequeryTask = new QueryTask(szMapServiceLayerURL + "/2");
       let maxNum = 6000;
@@ -1186,10 +1187,28 @@ define([
     if (lock_points)      // If point set is locked,
       return;             //    then don't reset or query new points
     if (settings.autoRefresh) {
-      refreshSzFeatures();
+      if (extentChangeIsSmall())
+        return;
+      // Check if change might be due to file downloads panel appearing/disappearing (change in bhDiff).  If so, skip refresh.
+      let newBhDiff = window.outerHeight - window.innerHeight;
+      if (Math.abs(newBhDiff-bhDiff) < 5)
+        refreshSzFeatures();
+      else
+        bhDiff = newBhDiff;
+      
     } else {
         setRefreshButtonVisibility(szFeatureRefreshDue);
     }
+  }
+
+  function extentChangeIsSmall() {
+    if (!lastSZExtent)
+      return false;
+    for (p of ['xmin', 'ymin', 'xmax', 'ymax']) {
+      if (Math.abs(lastSZExtent[p]-view.extent[p] ) > 100)
+        return false;
+    }
+    return true;
   }
 
   function bookmarkCurrentExtent(screenshot, newExtent) {
@@ -1236,37 +1255,12 @@ define([
 
     // TODO: use esri/core/watchUtils instead of the following "watch" calls?
 
-/*
-    window.watch("innerHeight", function(newValue, oldValue, property, object) {
-      console.log("window.innerHeight changed");
-    });
-*/
-
     // When "stationary" property changes to True, there is a new extent, so handle the extent change
     view.watch("stationary", function(newValue, oldValue, property, object) {
       if (siteTabs.visManager.currClassName !== "sz")
         return;
       if (view.stationary) {
         let bypass = false;
-/*
-        if ((fileDownloadCount > 1) && (window.innerHeight === lastInnerHeight))
-          fileDownloadCount -= 1;
-        else if (fileDownloadCount===1) {
-          if ((downloadBarCycle===2)  && (window.innerHeight < innerHeight_noFileDownloadBar)) {
-            // This condition should only be true immediately after the first download, when the downloads bar pops up
-            bypass = true;
-            downloadBarCycle = 1;
-            innerHeight_withFileDownloadBar = window.innerHeight;
-          }
-          if ((downloadBarCycle===1)  && (window.innerHeight===innerHeight_noFileDownloadBar)) {
-            // This condition should only be true immediately after opening the last download, when the downloads bar disappears
-            bypass = true;
-            downloadBarCycle = 0;
-            fileDownloadCount = 0;
-          }
-        }
-        lastInnerHeight = window.innerHeight;
-*/
         if (!bypass)
           handleExtentChange(view.extent);
       } else {
@@ -1378,10 +1372,6 @@ define([
         clearTimeout(hoverTimeout);
       return;
     }
-    // // Check for point that is both video and photo
-    // if (response.results.length > 1) {
-    //   alert("More than 1 hit!")
-    // };
 
     let i=0;      // Respond only to hits on "_Clickable" layers
     while (i<response.results.length && response.results[i].graphic.layer.id.slice(-10)!=="_Clickable")
@@ -1400,7 +1390,6 @@ define([
         dataRow = currentWidgetController.highlightAssociatedRow(currentHoveredGraphic)
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
-      if (showPopups)
         hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
     }
   };
@@ -1581,6 +1570,7 @@ define([
     view.container.ondrop = drop;
 
 /*  Upper-left widgets  */
+
     let homeWidget = new Home({
       view: view
     });
@@ -1732,6 +1722,15 @@ define([
     let showPopupsDiv = document.createElement("DIV");
     showPopupsDiv.innerHTML = showPopupsCheckbox;
     view.ui.add(showPopupsDiv, "bottom-left");
+
+    let scaleBar = new ScaleBar({
+      view: view,
+      style: "ruler",
+      unit: "metric"
+    });
+    view.ui.add(scaleBar, {
+      position: "bottom-left"
+    });
 
     // Add ESRI search widget to map
     searchWidget = new Search({ view: view, maxSuggestions: 4 });
