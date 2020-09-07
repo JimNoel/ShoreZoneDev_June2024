@@ -424,7 +424,12 @@ define([
                 },
                 CoastalClass: {
                   title:  "Coastal Class",
-                  colWidth:  35
+                  colWidth:  60,
+                  longValue: {
+                    lookupColName: "BC_CLASS",
+                    widget: "szUnitsWidget",
+                    removeUpTo: ","
+                  }
                 },
                 date_: {
                   title:  "Date Sampled",
@@ -1743,32 +1748,40 @@ define([
     searchWidget.on("suggest-start", function(event){
       if (searchLocal)
         this.activeSource.filter = {
-          geometry: view.extent
+          geometry: view.extent     // limit suggestiong to current extent
         };
       else
-        this.activeSource.filter = null;
+        this.activeSource.filter = {
+          geometry: szMapServiceLayer.fullExtent      // limit suggestiong to ShoreZone map service extent
+        };
       this.activeSource.countryCode = "US";
+      this.activeSource.categories = ["City", "Water Features", "Land Features"];
     });
 
-/*    // This filters search suggestions to initial extent
-    searchWidget.watch("activeSource", function() {
-      this.activeSource.filter = {
-        geometry: view.extent
-        //where: "name like '*Alaska*'"
-      };
+    searchWidget.on("suggest-complete", function(event){
+      console.log(event);
     });
 
-    // Code to handle search results with improper extents
-    searchWidget.goToOverride = function(view, goToParams) {
-      let type =  this.results[0].results[0].feature.geometry.type;
-      let tgt = goToParams.target.target;
-      let goToTarget = tgt;
-      return view.goTo({
-        center: tgt.center,
-        zoom: 8
-      }, goToParams.options);
-    };
-*/
+
+      /*    // This filters search suggestions to initial extent
+          searchWidget.watch("activeSource", function() {
+            this.activeSource.filter = {
+              geometry: view.extent
+              //where: "name like '*Alaska*'"
+            };
+          });
+
+          // Code to handle search results with improper extents
+          searchWidget.goToOverride = function(view, goToParams) {
+            let type =  this.results[0].results[0].feature.geometry.type;
+            let tgt = goToParams.target.target;
+            let goToTarget = tgt;
+            return view.goTo({
+              center: tgt.center,
+              zoom: 8
+            }, goToParams.options);
+          };
+      */
 
     /*  Bottom widgets  */
 

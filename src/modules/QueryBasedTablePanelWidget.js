@@ -250,10 +250,23 @@ define([
             if (features[i].attributes[a] !== null) {
 
               let longValue = getIfExists(this,"specialFormatting." + a + ".longValue");
-              if (longValue) {     // If longValue exists, use this to replace short value with long value
-                let newValue = longValue[features[i].attributes[a]];
-                if (newValue)
+              if (longValue) {          // If longValue exists, use this to replace short value with long value
+                if (longValue.lookupColName) {
+                  let widget = this;      // default:  look up values from a field in the current widget
+                  if (longValue.widget)
+                    widget = eval(longValue.widget);    // look up values from a field in another widget
+                  let value = features[i].attributes[a];
+                  let newValue = widget.attrValDescription(longValue.lookupColName, value);
+                  if (longValue.removeUpTo) {
+                    let p = newValue.indexOf(longValue.removeUpTo);
+                    newValue = newValue.slice(p+1);
+                  }
                   features[i].attributes[a] = newValue;
+                } else {      // Look up from explicit list contained in longValue object
+                  let newValue = longValue[features[i].attributes[a]];
+                  if (newValue)
+                    features[i].attributes[a] = newValue;
+                }
               }
 
                 let template = getIfExists(this,"specialFormatting." + a + ".html");
@@ -777,7 +790,6 @@ define([
       }
 
       this.rowHtmlToLines = function(row) {
-        //console.log("rowHtmlToLines");
         let th = this.grid.headerNode.getElementsByTagName("TH");
         let tr = row.element;
         let td = tr.getElementsByTagName("TD");

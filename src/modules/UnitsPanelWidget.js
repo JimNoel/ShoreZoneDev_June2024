@@ -87,17 +87,6 @@ define([
         }
       };
 
-/*
-      this.attrValDescription = function(a, attrs) {
-        let o = this.findAttrInfoObj(a);
-        if (o) {
-          return o.descrLookup[attrs[a]];
-        } else {
-          return attrs[a];
-        }
-      };
-
-*/
 
     },
 
