@@ -150,6 +150,7 @@ define([
         widgetName: "szUnitsWidget",    // for reference to instance
         tabName: "Units",
         panelType: "table",
+        columnsHideable: true,
         sublayerIDs: szSublayerIDs,
         panelName: "szUnitsPanel",
         contentPaneId: "unitsDiv",

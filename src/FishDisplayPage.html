@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Test FA and SS queries</title>
+  <style>
+    html, body {      padding: 0;      margin: 0;      height: 100%;      width: 100%;    }
+  </style>
+  <!--<link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">-->
+
+  <script type="text/javascript">
+    var dojoConfig = {
+      parseOnLoad: false,
+      paths: { noaa: location.pathname.replace(/\/[^/]+$/, '') + '/modules', }
+    };
+  </script>
+
+  <script src="https://js.arcgis.com/4.3/"></script>
+
+  <script>
+    require([
+      "noaa/FaSsQuery"
+    ], function(FaSsQuery){
+
+      var fa = 1;
+      var parts = [
+        "tableHTML",
+        "commHTML",
+        "sciHTML",
+        "famHTML",
+        "endTableHTML",
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ];
+
+      var parsJson = '{ "' + location.search.slice(1).toUpperCase().replace(/&/g,'", "').replace(/=/g,'":"') + '" }';
+      var pars = JSON.parse(parsJson);
+      var whereClause = "SPCODE='" + pars["SPCODE"] + "'";
+      var faQuery = new FaSsQuery("https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas/MapServer");
+
+
+      faQuery.submitQuery(11, whereClause, function(results) {
+        var attrs = results.features[0].attributes;
+        for (p in parts) {
+          var s = attrs[parts[p]].replace("http://mapping.fakr.noaa.gov/","https://alaskafisheries.noaa.gov/mapping/");
+          document.writeln(s);
+        }
+      });
+
+
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>

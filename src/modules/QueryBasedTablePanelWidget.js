@@ -202,11 +202,11 @@ define([
         for (let i=0; i<fields.length; i++) {
 /*
           // Use supplied title for column name
-          let title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
+          let title = getIfExists(this,spclFmtChain + ".title");
           if (title === null)
             title = fields[i].alias;
 
-          let hidden = getIfExists(this,"specialFormatting." + fields[i].name + ".hidden");
+          let hidden = getIfExists(this,spclFmtChain + ".hidden");
 
           let formatter = formatValue.bind({f: this.specialFormatting, n: fields[i].name});
 
@@ -219,7 +219,7 @@ define([
 
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
           // TODO: Possibly, use maxChars to modify colWidth
-          let colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
+          let colWidth = getIfExists(this,spclFmtChain + ".colWidth");
           if (!colWidth)
             colWidth = (title.length) * 15;
 
@@ -311,12 +311,13 @@ define([
         }
 
         for (let i=0; i<fields.length; i++) {
+          let spclFmtChain = "specialFormatting." + fields[i].name;
           // Use supplied title for column name
-          let title = getIfExists(this,"specialFormatting." + fields[i].name + ".title");
+          let title = getIfExists(this,spclFmtChain + ".title");
           if (title === null)
             title = fields[i].alias;
 
-          let hidden = getIfExists(this,"specialFormatting." + fields[i].name + ".hidden");
+          let hidden = getIfExists(this,spclFmtChain + ".hidden");
 
           let formatter = formatValue.bind({f: this.specialFormatting, n: fields[i].name});
 
@@ -329,7 +330,7 @@ define([
 
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
           // TODO: Possibly, use maxChars to modify colWidth
-          let colWidth = getIfExists(this,"specialFormatting." + fields[i].name + ".colWidth");
+          let colWidth = getIfExists(this,spclFmtChain + ".colWidth");
           if (!colWidth)
             colWidth = title.length * 15;
             //colWidth = Math.max(title.length, maxChars[fields[i].name]) * 15;   // Use column title width, or length of longest value in column, whichever is largest
@@ -357,8 +358,8 @@ define([
         // Hide any columns that don't have data
         for (let c=0; c<tableColumns.length; c++) {
           let col = tableColumns[c];
-          if (nonNullCount[col.field]===0)
-            col.hidden = true;       // TODO: sometimes can't show column subsequently?
+          if (this.columnsHideable)
+            col.hidden = (nonNullCount[col.field]===0)?true:false;
         }
 
         // Instantiate grid
