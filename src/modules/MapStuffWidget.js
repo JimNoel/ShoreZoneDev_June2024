@@ -776,7 +776,7 @@ define([
           currTab: 0,
           featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
           tabInfo: [
-/*
+
             {
               tabName: 'Regions',
               tabTitle: 'Fish Atlas Regions',
