@@ -357,6 +357,7 @@ define([
             titlePar = ' title="' + titlePar + '" disabled';
           else
             titlePar = '';
+          //titlePar += ' class="subTabLabel"';
           let buttonHtml = '<button id="' + item.tabId + '"' + titlePar + '>' + item.tabTitle + '</button>';
           panelTabs.innerHTML += buttonHtml + "&emsp;";
         }
