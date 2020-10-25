@@ -103,12 +103,9 @@ define([
       latest_img_subPath = this.photoResInsert + next_photo_point[this.fileNameField];
       if (this.relPathField)
         latest_img_subPath = next_photo_point[this.relPathField] + "/" + latest_img_subPath;
-      if (latest_img_subPath.search(/.jpeg/i)<0 && latest_img_subPath.search(/.jpg/i)<0)    // TODO: Handle ".jpeg"
+      if (latest_img_subPath.search(/.jpeg/i)<0 && latest_img_subPath.search(/.jpg/i)<0)
         latest_img_subPath += ".jpg";
-      let photoServer = PHOTO_SERVER;     // TODO:  Will probably set this.photoServer for szPhotoWidget as well
-      if (this.photoServer)
-        photoServer = this.photoServer;
-      let new_img_src = photoServer + latest_img_subPath;
+      let new_img_src = this.photoServer + latest_img_subPath;
       if (!latest_img_src || latest_img_src !== new_img_src) {
         photoSource1 = new_img_src;
         this.load_Photo(new_img_src);
@@ -172,9 +169,9 @@ define([
         if ( this.photoImage.attr("src") === '')
           return;
         console.log("on_image_error");
-        //PHOTO_SERVER = altMediaServer;
+        //szPhotoServer = altMediaServer;
         //update_photo(update_photo_latest_params);
-        if (e.target.src.includes(PHOTO_SERVER)) {    // Tried NOOA server and failed
+        if (e.target.src.includes(szPhotoServer)) {    // Tried NOOA server and failed
           let new_img_src = altMediaServer + latest_img_subPath;
           this.load_Photo(new_img_src);
           //load_AOOS_Photo(update_photo_latest_params["Picasa_UserID"], update_photo_latest_params["Picasa_AlbumID"], update_photo_latest_params["Picasa_PhotoID"], "");

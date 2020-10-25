@@ -5,6 +5,14 @@
 let debug_mode = "console";     // Possible values:  null (no debug message), "alert" (use alert dialog), [anything else] (use console)
 let justAK = false;
 
+// TODO: Put this near top
+let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
+let mainMediaServer = "https://maps.psmfc.org/shorezonedata/";
+let ssPhotoServer = "https://alaskafisheries.noaa.gov/mapping/shorestationdata/compress75/";
+let faPhotoServer = "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos_ReducedSize/";
+let szVideoServer = altMediaServer;
+let szPhotoServer = mainMediaServer;
+
 let showPopups = true;
 let popupsDocked = false;
 
@@ -255,18 +263,7 @@ makeSublayerIdTable(ssMapServiceLayerURLs, ssSublayerIDs);
 let faSublayerIDs = {};
 makeSublayerIdTable(faMapServiceLayerURLs, faSublayerIDs);
 
-let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
-let mainMediaServer = "https://maps.psmfc.org/shorezonedata/";
-let VIDEO_SERVER = altMediaServer;
-let PHOTO_SERVER = mainMediaServer;
-console.log("sz PHOTOS:  " + PHOTO_SERVER);
 let VIDEO_FOLDER = "video/";
-
-let current_photo_sub = "stillphotos_lowres";
-let current_photo_prefix = "280_";
-let current_video_file_prefix = "360_";
-let current_video_path_prefix = "midres_";
-
 let videoSnippetDownloadFolder = altMediaServer + VIDEO_FOLDER + "midres_mp4";
 let youtubeAspectRatio = 16/9;
 let photoAspectRatio = 4/3;
@@ -641,10 +638,6 @@ function checkbox_showFeatures_clickHandler(w, cb) {
 function checkbox_showPopups_clickHandler() {
   showPopups = getEl("showPopupsCheckbox").checked;
   if (!showPopups) {
-    // TODO:  Hide highlight of last feature
-    //let hoverLayer = currentHoveredGraphic.layer;
-    //hoverLayer.removeAll();
-    //currentHoveredGraphic.visible = false;
     view.popup.close();
   }
 }

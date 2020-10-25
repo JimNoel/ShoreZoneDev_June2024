@@ -218,7 +218,6 @@ define([
           });
 
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
-          // TODO: Possibly, use maxChars to modify colWidth
           let colWidth = getIfExists(this,spclFmtChain + ".colWidth");
           if (!colWidth)
             colWidth = (title.length) * 15;

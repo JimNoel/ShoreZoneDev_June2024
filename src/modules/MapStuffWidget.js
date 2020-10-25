@@ -87,6 +87,7 @@ define([
         popupTitle: "Photo Point",
         clickableMsg: "Move camera to this location",
         sync_photos: true,
+        photoServer: szPhotoServer,
         photoResInsert: "stillphotos_lowres/280_",
         relPathField: "RelPath",
         fileNameField: "StillPhoto_FileName",
@@ -594,7 +595,7 @@ define([
           mapServiceLayer: ssMapServiceLayer,
           layerName: "GVDATA_STNPHOTOS",
           featureOutFields: ["*"],
-          photoServer: "https://alaskafisheries.noaa.gov/mapping/shorestationdata/compress75/",      // TODO: Set up so this info appears near top of GlobarVars.js
+          photoServer: ssPhotoServer,
           relPathField: "FileLocation",
           fileNameField: "ImageFileName",
           captionFields: ["CaptionText", "Description"],
@@ -1101,7 +1102,7 @@ define([
                     mapServiceLayer: faMapServiceLayer,
                     layerName: "Photos_Sites",
                     featureOutFields: ["*"],
-                    photoServer: "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos_ReducedSize/",      // TODO: Set up so this info appears near top of GlobarVars.js
+                    photoServer: faPhotoServer,
                     //relPathField: "FileLocation",
                     fileNameField: "SitePhoto1",
                     captionFields: ["GenericCaption"],
