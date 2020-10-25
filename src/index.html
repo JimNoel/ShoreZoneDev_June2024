@@ -16,15 +16,22 @@
   <!--  Stylesheets -->
 <!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">-->
 
-<!--
-  <link rel="stylesheet" href="https://js.arcgis.com/4.15/dijit/themes/claro/claro.css">
-  <link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/css/main.css">
-  <link rel="stylesheet" href="https://js.arcgis.com/4.15/dojox/layout/resources/ExpandoPane.css"/>
--->
+  <!--  Updating from 4.14 to 4.17 -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.17/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/css/main.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.17/dojox/layout/resources/ExpandoPane.css"/>
 
-  <link rel="stylesheet" href="https://js.arcgis.com/4.14/dijit/themes/claro/claro.css">
-  <link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/css/main.css">
-  <link rel="stylesheet" href="https://js.arcgis.com/4.14/dojox/layout/resources/ExpandoPane.css"/>
+<!--
+  As of 4.15:
+  "dgrid styles are no longer globally included. If using dgrid in your web application, you will need to reference the stylesheet separately."
+  https://developers.arcgis.com/javascript/latest/guide/4.15/index.html
+  Need to replace with each new API version?
+  TODO:  Decide whether to remove unneeded files in "dgrid/css" folder
+-->
+  <link rel="stylesheet" href="dgrid/css/dgrid.css"/>
+  <!--
+    <link rel="stylesheet" href="dnd.css"/>
+  -->
 
   <link rel="stylesheet" href="SZ_wLayout.css"/>
 
@@ -39,8 +46,8 @@
   <!--  <script type="text/javascript" src="jquery.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-<!--  <script src="https://js.arcgis.com/4.15/"></script>-->
-  <script src="https://js.arcgis.com/4.14/"></script>
+
+    <script src="https://js.arcgis.com/4.17/"></script>
 
   <script src="JS/allAppsData.js" ></script>
   <script src="JS/GlobalVars.js" ></script>

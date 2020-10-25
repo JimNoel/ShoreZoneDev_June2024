@@ -1217,13 +1217,22 @@ define([
     return true;
   }
 
-  function bookmarkCurrentExtent(screenshot, newExtent) {
-    if (!newExtent)
-      newExtent = this;
+  function bookmarkCurrentExtent(screenshot) {
+    let newExtent = this.extent;
+    let newViewpoint = this.viewpoint;
     let km = Math.round(newExtent.width/1000) + " km";
     if (savedExtentsWidget.bookmarks.items.length === 0)
       km = "Initial Extent";
+
     let bookmark = new Bookmark({name: km, extent: newExtent});
+    //let bookmark = new Bookmark({name: km, viewpoint: newViewpoint});
+/*
+    TODO: Keep an eye on this.  Warning says:
+      [esri.webmap.Bookmark] ������ DEPRECATED - Property: extent ������️ Replacement: viewpoint ⚙️ Version: 4.17
+    However, when I use "viewpoint", jump to previous extent fails, and this message comes up:
+      [esri.webmap.Bookmark]  e {name: "invalid-viewpoint", details: Object, message: "'viewpoint.targetGeometry' should be an extent"}
+*/
+
     bookmark.index = savedExtentsWidget.bookmarks.length;
     if (screenshot)
       bookmark.thumbnail.url = screenshot.dataUrl;
@@ -1282,7 +1291,7 @@ define([
       if (extentIsBookmarked) {
         extentIsBookmarked = false;
       } else {
-          view.takeScreenshot({width: 200, height: 200}).then(bookmarkCurrentExtent.bind(view.extent));
+          view.takeScreenshot({width: 200, height: 200}).then(bookmarkCurrentExtent.bind(view));
           extentChanged = false;
       }
     });
@@ -1608,7 +1617,7 @@ define([
 
     savedExtentsWidget.on("select-bookmark", function(event){
       extentIsBookmarked = true;
-      currentBookmark = event.target.activeBookmark;      //parseInt(event.target.activeBookmark.name.split(":")[0]);
+      currentBookmark = event.bookmark;      //parseInt(event.target.activeBookmark.name.split(":")[0]);
       let prevButton = getEl("btn_prevExtent");
       let nextButton = getEl("btn_nextExtent");
       // TODO: Place IMG inside BUTTON tag, and use "dsiable" attribute
@@ -1759,9 +1768,11 @@ define([
       this.activeSource.categories = ["City", "Water Features", "Land Features"];
     });
 
+/*
     searchWidget.on("suggest-complete", function(event){
       console.log(event);
     });
+*/
 
 
       /*    // This filters search suggestions to initial extent
