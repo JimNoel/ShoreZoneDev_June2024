@@ -30,7 +30,7 @@ let formatNumber = function(value, formatting) {
   let newValue = value;
   if (formatting.useCommas)
     newValue = formatNumber_Commas(value);
-  else if (formatting.numDecimals)
+  else if (formatting.numDecimals >= 0)
     newValue = value.toFixed(formatting.numDecimals);
   else if (formatting.dateFormat)
     newValue = formatNumber_Date(value);
@@ -808,6 +808,7 @@ define([
 */
           if (!excludeCols.includes(colHeader)) {
             let value =row.data[this.grid.columns[i].field];
+            let origValue = value;
             if (colHeader === "" && value.includes("title=")) {
               let p = value.indexOf("title=");
               colHeader = value.slice(p).split("'")[1];
@@ -815,7 +816,10 @@ define([
             if (value) {
               if (typeof value === "string")
                 value = value.replace("actionIcon", "actionIconPopup");    // If it's an icon with class "actionIcon", change to class for display in popup
-              value = this.attrValDescription(th[i].field, value);
+              value = this.attrValDescription(th[i].field, value);      // Apply value description (SZ Units)
+              let formatter = this.grid.columns[i].formatter;
+              if (formatter && (typeof value)==="number")
+                value = formatter(value);     // Apply numeric format, if numeric
               if (colHeader !== "")
                 colHeader += ":";
               h += "<div><b>" + colHeader + "</b>&nbsp;&nbsp;" + value + "</div>";

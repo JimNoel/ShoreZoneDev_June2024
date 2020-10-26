@@ -168,13 +168,13 @@ define([
         featureOutFields:  ["PHY_IDENT"],     // Other fields will be added based on queries of map service layers
         downloadExcludeFields: [],
         orderByFields: ["PHY_IDENT"],
-        extraOutFields:  ["CMECS_1", "CMECS_2", "CMECS_3", "Length_M", "Slope_calc", "SHORE_PROB", "LOST_SHORE", "Fetch_max", "Wave_Dissipation", "Orient_dir", "Tidal_height", "CVI_Rank"],
+        extraOutFields:  ["CMECS_1", "CMECS_2", "CMECS_3", "LENGTH_M", "Slope_calc", "SHORE_PROB", "LOST_SHORE", "Fetch_max", "Wave_Dissipation", "Orient_dir", "Tidal_height", "CVI_Rank"],
         specialFormatting: {      // Special HTML formatting for field values
           PHY_IDENT: { colWidth: 100 },
           HabClass: { colWidth: 100 },
           BC_CLASS: { colWidth: 100 },
           EXP_BIO: { colWidth: 80 },
-          Length_m: { colWidth: 80 },
+          LENGTH_M: { colWidth: 80, numDecimals: 0 },   // TODO: Handle 0 value for numDecimals
           CMECS_1: { colWidth: 130 },
           CMECS_2: { colWidth: 130 },
           CMECS_3: { colWidth: 130 }
@@ -551,7 +551,7 @@ define([
               colWidth: 150
             },
             abundance: {
-              title: "Abundance",   // TODO: Capitalize name in service?
+              title: "Abundance",
               colWidth: 60,
               longValue: {
                 R: "Rare",
