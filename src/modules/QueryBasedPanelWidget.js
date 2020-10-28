@@ -474,8 +474,8 @@ define([
         }
         if (this.optionalFieldInfo) {
           let i = getEl(this.optionalFieldInfo.checkboxId).checked ? 1 : 0;
-          this.layerName = this.optionalFieldInfo.tableNames[i];
-          this.query.outFields = this.featureOutFields.concat(this.optionalFieldInfo.fields[i]);
+          this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
+          this.query.outFields = this.featureOutFields.concat(this.optionalFieldInfo.fields[this.currTab][i]);
           this.query.orderByFields = this.query.orderByFields.concat(this.optionalFieldInfo.order[i]);
           this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         }

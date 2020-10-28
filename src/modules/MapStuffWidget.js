@@ -326,7 +326,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Species Data',
-            args: 'ssSpTableWidget,"vw_AlaskaSpecies",null,"","All Regions"'
+            args: 'ssSpTableWidget,"vw_AlaskaSpecies",null,"","All Regions",null,0'
           },
           currTab: 0,
           tabInfo: [
@@ -366,7 +366,7 @@ define([
                   title:  "Species Data",
                   colWidth:  20,
                   plugInFields: ["RegionalID", "Region"],
-                  args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}"',
+                  args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}",null,1',
                   html:   spTableTemplate
                 },
                 SelRegionBtn: {
@@ -448,7 +448,7 @@ define([
                   title:  "Species",
                   colWidth:  20,
                   plugInFields: ["station", "station"],
-                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}",ssSpTableWidget.optionalFieldInfo',
+                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}",ssSpTableWidget.optionalFieldInfo,2',
                   html:   spTableTemplate,
                   showWhen: "1"
                 },
@@ -525,20 +525,32 @@ define([
             checkboxId: 'cbBiobands',
             headerElName: 'ssSpTableExtra',
             headerTemplate: '<input type="checkbox" id="{0}" onclick="cbCheckedHandler({w})"><label for="{0}"> Show Biobands</label>',
-            tableNames: [
+            tableNames: [     // [statewide, region, station]
+              [
+                'vw_AlaskaSpecies'
+              ],
+              [
+                'vw_RegionSpecies'
+              ],
+              [
               'vw_StationSpecies',
               'vw_StationPoints_BiobandsSpecies'
+              ]
             ],
-            fields: [
-              ["abundance"],
-              ["BandOrder", "BiobandName", "abundance"]
+            fields: [       // [statewide, region, station]
+              [[]],
+              [[]],
+              [
+                ["abundance"],
+                ["BandOrder", "BiobandName", "abundance"]
+              ]
             ],
             order: [
               [],
               ["BandOrder"]
             ],
           },
-          currTab: 0,
+          currTab: 0,     // No actual tabs, but 0=statewide, 1=region, and 2=station
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["SppNameHtml"],
           specialFormatting: {      // Special HTML formatting for field values
@@ -1915,13 +1927,15 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo) {
+    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab) {
+      if (currTab)
+        w.currTab = currTab;
       console.log("openSpeciesTable");
       let extraFields = null;
       let headerElName = null;
       if (extraFieldInfo) {
         let i = 0;
-        extraFields = extraFieldInfo.fields[i];
+        extraFields = extraFieldInfo.fields[w.currTab][i];
         headerElName = extraFieldInfo.headerElName;
       }
       if (headerText)
