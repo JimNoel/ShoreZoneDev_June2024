@@ -514,7 +514,7 @@ define([
           tableHeaderTitle: "All Regions",
           displayDivName: "ssSpTableContainer",
           mapServiceLayer: ssMapServiceLayer,
-          //dynamicLayerName: true,
+          dynamicLayerName: true,
           radioFilterInfo: {
             buttons: ["Benthic marine algae:3", "Marine invertebrates:4", "All Species"],
             whereField: "GroupID",
@@ -1930,6 +1930,7 @@ define([
     openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab) {
       if (currTab)
         w.currTab = currTab;
+      w.totalsLayerName = totalsTableName;
       console.log("openSpeciesTable");
       let extraFields = null;
       let headerElName = null;
@@ -1939,10 +1940,11 @@ define([
         headerElName = extraFieldInfo.headerElName;
       }
       if (headerText)
-        headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
+        w.headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
       w.setHeaderItemVisibility(headerElName);
       setDisplay(w.draggablePanelId, true);
-      w.runQuery(null, {tableName: tableName, totalsTableName: totalsTableName, theWhere: theWhere, header: headerText, extraFields: extraFields} );
+      w.runQuery(null);
+//      w.runQuery(null, {tableName: tableName, totalsTableName: totalsTableName, theWhere: theWhere, header: headerText, extraFields: extraFields} );
     },
 
     constructor: function (kwArgs) {

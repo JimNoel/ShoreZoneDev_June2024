@@ -451,16 +451,21 @@ define([
       this.ddTotalsLayerNameAddOn = "";
 
       if (queryPars) {
+/*
         if (queryPars.tableName)
           this.layerName = queryPars.tableName;
+*/
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         this.totalsLayerName = null;
+/*
         if (queryPars.totalsTableName)
           this.totalsLayerName = queryPars.totalsTableName;
+*/
         if (queryPars.theWhere !== null) {
           theWhere = queryPars.theWhere;
           this.initWhere = theWhere;
         }
+/*
         if (queryPars.header) {
           //this.title = queryPars.header;
           getEl(this.draggablePanelId + "_headerText").innerText = queryPars.header;      // this.title;
@@ -468,17 +473,22 @@ define([
         if (queryPars.extraFields) {
           this.query.outFields = this.query.outFields.concat(queryPars.extraFields);
         }
+*/
       } else {    // Do this only when query parameters are not already specified in the argument
-        if (this.radioFilterInfo) {
+        if (this.radioFilterInfo)
           theWhere = addToWhere(theWhere, this.radioFilterInfo.where);
-        }
+        if (this.headerText)
+          getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
+
+/*
         if (this.optionalFieldInfo) {
           let i = getEl(this.optionalFieldInfo.checkboxId).checked ? 1 : 0;
-          this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
           this.query.outFields = this.featureOutFields.concat(this.optionalFieldInfo.fields[this.currTab][i]);
           this.query.orderByFields = this.query.orderByFields.concat(this.optionalFieldInfo.order[i]);
+          this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
           this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         }
+*/
         if (this.dropDownInfo) {
           let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
@@ -511,9 +521,16 @@ define([
           }
         }
         if (this.dynamicLayerName) {    // Do this only if layer name changes, e.g. when querying on pre-grouped views
-          this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
+          if (this.optionalFieldInfo) {
+            let i = getEl(this.optionalFieldInfo.checkboxId).checked ? 1 : 0;
+            this.query.outFields = this.featureOutFields.concat(this.optionalFieldInfo.fields[this.currTab][i]);
+            this.query.orderByFields = this.query.orderByFields.concat(this.optionalFieldInfo.order[i]);
+            this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
+          } else {
+            this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
+            this.totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
+          }
           this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
-          this.totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
         }
       }
 
