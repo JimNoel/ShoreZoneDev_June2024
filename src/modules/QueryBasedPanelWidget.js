@@ -422,6 +422,7 @@ define([
     },
 
     runQuery: function(extent, queryPars) {
+      // TODO: modify initial open of species table
       if (extent) {
         let pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
         this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
