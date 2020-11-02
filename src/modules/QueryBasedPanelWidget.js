@@ -295,12 +295,11 @@ define([
 
     setActiveTab: function(index) {
       this.prevTab = this.currTab;
-      let tabId = this.tabInfo[this.prevTab].tabId;
-      getEl(tabId).className = "";
-//      getEl(tabId).className.replace(" active", "");
       this.currTab = index;
-      tabId = this.tabInfo[this.currTab].tabId;
-      getEl(tabId).className += " active";
+      if (!this.tabsHidden) {
+        getEl(this.tabInfo[this.prevTab].tabId).className = "";
+        getEl(this.tabInfo[this.currTab].tabId).className += " active";
+      }
 
       // Change parameters using settings of new tab
       for (o in this.tabInfo[index]) {
@@ -313,7 +312,8 @@ define([
       if (!this.tabInfo[index].calcFields)
         this.calcFields = null;
 
-      this.changeFeatureHandling();
+      if (this.clickableSymbolInfo)
+        this.changeFeatureHandling();
 
       this.setHeaderItemVisibility();
       this.runQuery(view.extent);
@@ -347,7 +347,7 @@ define([
       let panelTabs = null;
 
       // Header panel.  Optionally includes tabs if tabInfo is specified
-      if (tabInfo) {
+      if (tabInfo && !this.tabsHidden) {
         panelTabs = makeHtmlElement("div", "panelTabs_" + name, "tableHeaderTabs"+classAddOn);
         for (let t in tabInfo) {
           let item = tabInfo[t];

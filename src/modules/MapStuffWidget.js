@@ -515,6 +515,10 @@ define([
           displayDivName: "ssSpTableContainer",
           mapServiceLayer: ssMapServiceLayer,
           dynamicLayerName: true,
+            /*add for "tabbed" Species table */
+          layerNameTemplate: "vw_{0}Species",
+          tableHeaderTitleTemplate: "Species Data for {0}",
+            /*add for "tabbed" Species table */
           radioFilterInfo: {
             buttons: ["Benthic marine algae:3", "Marine invertebrates:4", "All Species"],
             whereField: "GroupID",
@@ -551,7 +555,33 @@ define([
             ],
           },
           currTab: 0,     // No actual tabs, but 0=statewide, 1=region, and 2=station
-          tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
+          tabsHidden: true,
+          //tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
+
+          tabInfo: [
+            {
+              tabName: 'Statewide',
+              tabTitle: 'All Regions',
+              LayerNameAddOn: 'Alaska',
+              //featureOutFields: [],
+              //orderByFields: [],
+            },
+            {
+              tabName: 'Region',
+              tabTitle: 'All Regions',
+              LayerNameAddOn: 'Alaska',
+              //featureOutFields: [],
+              //orderByFields: [],
+            },
+            {
+              tabName: 'Station',
+              tabTitle: 'All Regions',
+              LayerNameAddOn: 'Alaska',
+              //featureOutFields: [],
+              //orderByFields: [],
+            }
+          ],
+
           orderByFields: ["SppNameHtml"],
           specialFormatting: {      // Special HTML formatting for field values
             SppNameHtml: {
@@ -1928,8 +1958,9 @@ define([
     },
 
     openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab) {
-      if (currTab)
-        w.currTab = currTab;
+      w.setActiveTab(currTab);
+      //if (currTab)
+      //  w.currTab = currTab;
       w.totalsLayerName = totalsTableName;
       console.log("openSpeciesTable");
       let extraFields = null;
