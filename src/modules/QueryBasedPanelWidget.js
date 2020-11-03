@@ -451,45 +451,18 @@ define([
       this.ddLayerNameAddOn = "";
       this.ddTotalsLayerNameAddOn = "";
 
-      if (queryPars) {
-/*
-        if (queryPars.tableName)
-          this.layerName = queryPars.tableName;
-*/
+      if (queryPars) {    // Currently only applies when a table row is clicked, in which case the appropriate WHERE clause is included
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
         this.totalsLayerName = null;
-/*
-        if (queryPars.totalsTableName)
-          this.totalsLayerName = queryPars.totalsTableName;
-*/
         if (queryPars.theWhere !== null) {
           theWhere = queryPars.theWhere;
           this.initWhere = theWhere;
         }
-/*
-        if (queryPars.header) {
-          //this.title = queryPars.header;
-          getEl(this.draggablePanelId + "_headerText").innerText = queryPars.header;      // this.title;
-        }
-        if (queryPars.extraFields) {
-          this.query.outFields = this.query.outFields.concat(queryPars.extraFields);
-        }
-*/
       } else {    // Do this only when query parameters are not already specified in the argument
         if (this.radioFilterInfo)
           theWhere = addToWhere(theWhere, this.radioFilterInfo.where);
         if (this.headerText)
           getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
-
-/*
-        if (this.optionalFieldInfo) {
-          let i = getEl(this.optionalFieldInfo.checkboxId).checked ? 1 : 0;
-          this.query.outFields = this.featureOutFields.concat(this.optionalFieldInfo.fields[this.currTab][i]);
-          this.query.orderByFields = this.query.orderByFields.concat(this.optionalFieldInfo.order[i]);
-          this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
-          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
-        }
-*/
         if (this.dropDownInfo) {
           let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
@@ -521,6 +494,7 @@ define([
             }
           }
         }
+
         if (this.dynamicLayerName) {    // Do this only if layer name changes, e.g. when querying on pre-grouped views
           if (this.optionalFieldInfo) {
             let i = getEl(this.optionalFieldInfo.checkboxId).checked ? 1 : 0;
@@ -542,10 +516,6 @@ define([
         if (results.features.length > maxSZFeatures) {
           updateNoFeaturesMsg(extentDependentWidgets, "toomany");
         } else {
-/*
-          if (this.widgetName === "szUnitsWidget")
-            setDisplay("showUnitsDiv", true);     // Show secondary unit features checkbox
-*/
           this.processResults(results);
         }
       }.bind(this), function(error) {

@@ -556,32 +556,7 @@ define([
           },
           currTab: 0,     // No actual tabs, but 0=statewide, 1=region, and 2=station
           tabsHidden: true,
-          //tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
-
-          tabInfo: [
-            {
-              tabName: 'Statewide',
-              tabTitle: 'All Regions',
-              LayerNameAddOn: 'Alaska',
-              //featureOutFields: [],
-              //orderByFields: [],
-            },
-            {
-              tabName: 'Region',
-              tabTitle: 'All Regions',
-              LayerNameAddOn: 'Alaska',
-              //featureOutFields: [],
-              //orderByFields: [],
-            },
-            {
-              tabName: 'Station',
-              tabTitle: 'All Regions',
-              LayerNameAddOn: 'Alaska',
-              //featureOutFields: [],
-              //orderByFields: [],
-            }
-          ],
-
+          tabName: 'Items',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["SppNameHtml"],
           specialFormatting: {      // Special HTML formatting for field values
             SppNameHtml: {
@@ -814,7 +789,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_","","All Regions"'
+            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_","","All Regions",null,0'
           },
           currTab: 0,
           featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
@@ -858,7 +833,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
-                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}"',
+                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1',
                   html:   spTableTemplate
                 },
                 SelRegionBtn: {
@@ -998,7 +973,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
-                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}"',
+                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2',
                   html:   spTableTemplate
                 },
                 SiteID: {
@@ -1094,7 +1069,7 @@ define([
           tableHeaderTitle: "All Regions",
           displayDivName: "faSpTableContainer",
           mapServiceLayer: faMapServiceLayer,
-          dynamicLayerName: true,
+          //dynamicLayerName: true,
           currTab: 0,
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["Catch DESC"],
@@ -1958,11 +1933,15 @@ define([
     },
 
     openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab) {
-      w.setActiveTab(currTab);
-      //if (currTab)
-      //  w.currTab = currTab;
-      w.totalsLayerName = totalsTableName;
       console.log("openSpeciesTable");
+      if (currTab >= 0)
+        w.currTab = currTab;
+      w.layerName = tableName;
+      w.queryTask.url = w.mapServiceLayer.url + "/" + w.sublayerIDs[w.layerName];
+      w.totalsLayerName = totalsTableName;
+      w.initWhere = theWhere;
+      if (headerText)
+        w.headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
       let extraFields = null;
       let headerElName = null;
       if (extraFieldInfo) {
@@ -1970,12 +1949,9 @@ define([
         extraFields = extraFieldInfo.fields[w.currTab][i];
         headerElName = extraFieldInfo.headerElName;
       }
-      if (headerText)
-        w.headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
       w.setHeaderItemVisibility(headerElName);
       setDisplay(w.draggablePanelId, true);
       w.runQuery(null);
-//      w.runQuery(null, {tableName: tableName, totalsTableName: totalsTableName, theWhere: theWhere, header: headerText, extraFields: extraFields} );
     },
 
     constructor: function (kwArgs) {
