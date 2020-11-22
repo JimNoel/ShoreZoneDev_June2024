@@ -166,15 +166,15 @@ define([
 
       this.on_image_error = function(e) {
         // Called on image load error   param object e Event object
-        if ( this.photoImage.attr("src") === '')
+        if (this.photoImage.attr("src") === '')
           return;
         console.log("on_image_error");
-        //szPhotoServer = altMediaServer;
-        //update_photo(update_photo_latest_params);
-        if (e.target.src.includes(szPhotoServer)) {    // Tried NOOA server and failed
+        if (e.target.src.includes(szPhotoServer)) {    // Tried default server and failed
           let new_img_src = altMediaServer + latest_img_subPath;
           this.load_Photo(new_img_src);
-          //load_AOOS_Photo(update_photo_latest_params["Picasa_UserID"], update_photo_latest_params["Picasa_AlbumID"], update_photo_latest_params["Picasa_PhotoID"], "");
+        } else if (!e.target.src.includes("stillphotos/")) {    //  Lowres folder not available
+          // TODO?  This isn't working?  Fix missing lowres folder on server instead?
+          this.photoResInsert = "stillphotos/";
         } else {    // Tried AOOS, also failed
           setMessage(this.disabledMsgDivName, "Unable to find image.");
         }
@@ -211,7 +211,7 @@ define([
 
       this.photoImage.bind('load', this.on_image_load);
       this.photoImage.bind('abort', this.on_image_abort);
-      this.photoImage.bind('error', this.on_image_error);
+      this.photoImage.bind('error', this.on_image_error.bind(this));
 
       this.load_Photo = function(new_img_src) {
         latest_img_src = new_img_src;
