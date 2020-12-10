@@ -74,6 +74,7 @@ function makeServiceUrls(type, name) {
 // Set server URLs (2-item arrays, containing NOAA and PS URLs)
 let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
+//let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020_fGDB");
 let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_wViews");
 let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
 

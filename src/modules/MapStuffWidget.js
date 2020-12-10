@@ -676,6 +676,16 @@ define([
           headerDivName:  "faHeaderDiv",
           footerDivName:  "faFooterDiv",
           totalOutFields: ["Hauls", "Species", "Catch"],
+          //totalMethods: ["CountDistinct", "CountDistinct", "SumColumn"],
+          summaryInfo: {
+            totals: {
+              Catch: { labelId: "dunno"}
+            },
+            counts: {
+              Hauls: {},
+              Species: {}
+            }
+          },
           tableHeaderTitle: "All Regions",
           displayDivName: "faContainer",
           disabledMsgDivName: "disabledMsg_fa",

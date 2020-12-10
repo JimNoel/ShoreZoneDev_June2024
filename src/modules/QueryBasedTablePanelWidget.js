@@ -183,6 +183,10 @@ define([
         let nonNullCount = new Object();
         nonNullList = new Object();       //Lists of unique values found
         let maxChars = new Object();
+        let totals = null;
+        if (this.summaryInfo && this.summaryInfo.totals) {
+          totals = this.summaryInfo.totals;
+        }
         let columnStyleCSS = "";
 
         if (this.calcFields)
@@ -225,9 +229,14 @@ define([
           columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
 
 */
-          nonNullCount[fields[i].name] = 0;
-          nonNullList[fields[i].name] = [];     //Lists of unique values found
-          maxChars[fields[i].name] = 0;
+          // Initialize lists, counts, totals
+          let fName = fields[i].name;
+          nonNullCount[fName] = 0;
+          nonNullList[fName] = [];     //Lists of unique values found
+          maxChars[fName] = 0;
+          if (totals[fName]) {
+            totals[fName].value = 0;
+          }
         }
 
 /*
@@ -295,6 +304,9 @@ define([
                 if (f !== -1) {
                   if (!nonNullList[a].includes(v))
                     nonNullList[a].push(v);
+                }
+                if (totals[a]) {
+                  totals[a].value += features[i].attributes[a];
                 }
               }
           }
@@ -517,6 +529,10 @@ define([
 
       }
 
+      this.queryTotal = function() {
+
+      }
+
 
       this.setTotals = function(features) {
         if (!this.totalOutFields)
@@ -526,6 +542,28 @@ define([
             this.totalLabels[l].node.innerHTML = "0";
           return;
         }
+
+/*
+        let totals = this.summaryInfo.totals;
+        for (f in totals) {
+          this.totalLabels[f].node.innerHTML = formatNumber(totals[f].value, this.specialFormatting[f]);
+        }
+        this.repositionTotalLabels(this.grid.columns);
+        return;
+*/
+
+/*
+        let m = this.totalMethods;
+        for (let f=0; f<m.length; f++) {
+          if (m[f] === "CountDistinct")
+            console.log(m[f]);
+          else if (m[f] === "SumColumn") {
+            console.log(m[f]);
+
+          }
+        }
+*/
+
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.totalsLayerName].toString();
         this.query.outFields = this.totalOutFields;
         this.query.orderByFields = null;
@@ -537,6 +575,7 @@ define([
         }.bind(this), function(error) {
           console.log(this.baseName + ":  QueryTask for Totals failed.");
         }.bind(this));
+
       };
 
       this.processFeatures_Widget = function(features) {
@@ -544,6 +583,9 @@ define([
         this.setTotals(features);
       };
 
+      this.runCountQueries = function() {
+
+      }
 
       this.queryDropDownOptions = function(ddItem, where, comSci) {
         let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
