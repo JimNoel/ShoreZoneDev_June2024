@@ -676,14 +676,19 @@ define([
           headerDivName:  "faHeaderDiv",
           footerDivName:  "faFooterDiv",
           totalOutFields: ["Hauls", "Species", "Catch"],
-          //totalMethods: ["CountDistinct", "CountDistinct", "SumColumn"],
           summaryInfo: {
             totals: {
-              Catch: { labelId: "dunno"}
+              Catch: {}
             },
             counts: {
-              Hauls: {},
-              Species: {}
+              Hauls: {
+                tableName: "Events_flat",
+                countField: "EventID"
+              },
+              Species: {
+                tableName: "FishCounts_flat",
+                countField: "SpCode_noUN"
+              }
             }
           },
           tableHeaderTitle: "All Regions",
@@ -1076,6 +1081,12 @@ define([
           featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
           downloadExcludeFields: [],
           totalOutFields: ["Catch", "Count_measured"],
+          summaryInfo: {
+            totals: {
+              Catch: {},
+              Count_measured: {}
+            }
+          },
           tableHeaderTitle: "All Regions",
           displayDivName: "faSpTableContainer",
           mapServiceLayer: faMapServiceLayer,

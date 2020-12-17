@@ -183,7 +183,7 @@ define([
         let nonNullCount = new Object();
         nonNullList = new Object();       //Lists of unique values found
         let maxChars = new Object();
-        let totals = null;
+        let totals = {};
         if (this.summaryInfo && this.summaryInfo.totals) {
           totals = this.summaryInfo.totals;
         }
@@ -529,8 +529,21 @@ define([
 
       }
 
-      this.queryTotal = function() {
+      // Run queryTask.executeForCount to get counts of unique field values.  (Currently used in Fish Atlas, for counts of Hauls & Species.)
+      this.queryDistinctCounts = function(f) {
+        let countInfo = this.summaryInfo.counts[f];
+        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[countInfo.tableName];
 
+        let query = new Query();
+          query.where = this.query.where;
+          query.outFields = [countInfo.countField];
+          query.returnDistinctValues = true;
+
+        this.queryTask.executeForCount(query).then(function(results){
+          this.totalLabels[f].node.innerHTML = formatNumber(results, this.specialFormatting[f]);
+        }.bind(this), function(error) {
+          console.log(this.baseName + ":  QueryTask for distinct counts on " + f + " failed.");
+        }.bind(this));
       }
 
 
@@ -543,27 +556,19 @@ define([
           return;
         }
 
-/*
         let totals = this.summaryInfo.totals;
         for (f in totals) {
           this.totalLabels[f].node.innerHTML = formatNumber(totals[f].value, this.specialFormatting[f]);
         }
-        this.repositionTotalLabels(this.grid.columns);
-        return;
-*/
 
-/*
-        let m = this.totalMethods;
-        for (let f=0; f<m.length; f++) {
-          if (m[f] === "CountDistinct")
-            console.log(m[f]);
-          else if (m[f] === "SumColumn") {
-            console.log(m[f]);
-
-          }
+        let counts = this.summaryInfo.counts;
+        for (f in counts) {
+          this.queryDistinctCounts(f);
         }
-*/
 
+        this.repositionTotalLabels(this.grid.columns);
+
+/*    // Old method for getting totals from dedicated SQL Server views
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.totalsLayerName].toString();
         this.query.outFields = this.totalOutFields;
         this.query.orderByFields = null;
@@ -575,17 +580,15 @@ define([
         }.bind(this), function(error) {
           console.log(this.baseName + ":  QueryTask for Totals failed.");
         }.bind(this));
-
+*/
       };
+
 
       this.processFeatures_Widget = function(features) {
         this.makeTable(this.fields, features);
         this.setTotals(features);
       };
 
-      this.runCountQueries = function() {
-
-      }
 
       this.queryDropDownOptions = function(ddItem, where, comSci) {
         let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
