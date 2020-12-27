@@ -169,9 +169,10 @@ define([
         if (this.photoImage.attr("src") === '')
           return;
         console.log("on_image_error");
-        if (e.target.src.includes(szPhotoServer)) {    // Tried default server and failed
-          let new_img_src = altMediaServer + latest_img_subPath;
+        if (e.target.src.includes(mainSzMediaServer)) {    // Tried default server and failed
+          let new_img_src = altSzMediaServer + latest_img_subPath;
           this.load_Photo(new_img_src);
+          this.photoServer = altSzMediaServer;
         } else if (!e.target.src.includes("stillphotos/")) {    //  Lowres folder not available
           // TODO?  This isn't working?  Fix missing lowres folder on server instead?
           this.photoResInsert = "stillphotos/";

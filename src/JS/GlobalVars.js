@@ -6,12 +6,12 @@ let debug_mode = "console";     // Possible values:  null (no debug message), "a
 let justAK = false;
 
 // TODO: Put this near top
-let altMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
-let mainMediaServer = "https://maps.psmfc.org/shorezonedata/";
+let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
+let mainSzMediaServer = "https://maps.psmfc.org/shorezonedata/";
 let ssPhotoServer = "https://alaskafisheries.noaa.gov/mapping/shorestationdata/compress75/";
 let faPhotoServer = "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos_ReducedSize/";
-let szVideoServer = altMediaServer;
-let szPhotoServer = mainMediaServer;
+let szVideoServer = altSzMediaServer;
+let szPhotoServer = mainSzMediaServer;
 
 let showPopups = true;
 let popupsDocked = false;
@@ -74,7 +74,7 @@ function makeServiceUrls(type, name) {
 // Set server URLs (2-item arrays, containing NOAA and PS URLs)
 let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
-//let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020_fGDB");
+//let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
 let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_wViews");
 let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
 
@@ -265,7 +265,7 @@ let faSublayerIDs = {};
 makeSublayerIdTable(faMapServiceLayerURLs, faSublayerIDs);
 
 let VIDEO_FOLDER = "video/";
-let videoSnippetDownloadFolder = altMediaServer + VIDEO_FOLDER + "midres_mp4";
+let videoSnippetDownloadFolder = altSzMediaServer + VIDEO_FOLDER + "midres_mp4";
 let youtubeAspectRatio = 16/9;
 let photoAspectRatio = 4/3;
 

@@ -284,7 +284,7 @@ define([
         } else {
           showCurrentFeatures();
           startPointData = this.getFeatureAttributes(this.counter);
-          if (startPointData["hasVideo"]) {
+          if (startPointData["YouTubeID"]) {
             if (this.getFeatureCount() > 0) {
               this.updateMedia(startPointData);
             }
@@ -429,7 +429,7 @@ define([
                 p = L - 1;
                 incr = -1;
             }
-            while ((p>=0) && (p<L) && (!this.getFeatureAttributes(p)["hasVideo"]))
+            while ((p>=0) && (p<L) && (!this.getFeatureAttributes(p)["YouTubeID"]))
                 p = p + incr;
             if  ((p===-1) || (p===L))
                 return -1;
