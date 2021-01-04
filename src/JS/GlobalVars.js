@@ -28,7 +28,9 @@ let maxSZFeatures = 6000;    // More than 2000 causes the browser to slow signif
 let maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
 let highlightSize = 15;
 
-let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
+//let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
+let extractGpName = "SZDataExtract";
+let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/" + extractGpName + "/GPServer/" + extractGpName;     // URL for GroupDataExtract GP service
 
 let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
 let dlDataDialog = "";

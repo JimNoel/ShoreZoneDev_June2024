@@ -50,7 +50,8 @@ function sendRequest(theURL) {
 
 function openOfflineApp() {
   if (confirm("Do you want to download data and open the offline app?  If so, click OK, otherwise hit Cancel.")) {
-    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/OfflineDataExtract2/GPServer/OfflineDataExtract_JSON/submitJob?f=json&";
+    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/SZofflineDataExtract/GPServer/SZofflineDataExtract/submitJob?f=json&";
+//    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/OfflineDataExtract2/GPServer/OfflineDataExtract_JSON/submitJob?f=json&";
     let e = view.extent;
     theURL += "Extent=" + Math.round(e.xmin) + " " + Math.round(e.ymin) + " " + Math.round(e.xmax) + " " + Math.round(e.ymax);
     sendRequest(theURL);
@@ -60,7 +61,8 @@ function openOfflineApp() {
 function getZipFileData(jobId, zipName) {
   gp.getResultData(jobId, "Output_Zip_File_zip").then(function(result) {
     console.log("Data extract:  Got ZIP file URL");
-    zipURL = result.value.url.replace("/scratch/","/scratch/GroupDataExtract_output/");     // HACK: add GroupDataExtract_output subdirectory
+    let replString = "/scratch/" + extractGpName + "_output/";
+    zipURL = result.value.url.replace("/scratch/",replString);     // HACK: add {extractGpName}_output subdirectory
     gp.getResultData(jobId, "outJSON").then(function(result) {
       console.log("Data extract:  Got video clips info");
       let a = result.value.split(";");

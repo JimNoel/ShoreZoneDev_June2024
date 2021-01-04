@@ -40,6 +40,7 @@
       var parsJson = '{ "' + location.search.slice(1).toUpperCase().replace(/&/g,'", "').replace(/=/g,'":"') + '" }';
       var pars = JSON.parse(parsJson);
       var whereClause = "SPCODE='" + pars["SPCODE"] + "'";
+      // TODO:  Change to FishAtlas_wViews, add htmlCode_FishPages table to this, and replace FaSsQuery.js with appropriate code (use sublayerIDs rather than explicit layer number)
       var faQuery = new FaSsQuery("https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas/MapServer");
 
 

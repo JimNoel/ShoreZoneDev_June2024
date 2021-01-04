@@ -11,20 +11,6 @@
  *    -- perhaps other args for outFields and where clause?
  */
 
-/*
-function getFieldInfo(id) {
-  let xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function() {
-    if (this.readyState === 4 && this.status === 200) {
-      let A = JSON.parse(this.responseText);
-      //window.open(offlineAppURL + "?" + A.jobId, "Shorezone Offline");
-    }
-  };
-  let baseURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZoneFlexMapService/MapServer/"
-  xmlhttp.open("GET", baseURL + id + "?f=pjson", true);
-  xmlhttp.send();
-};
-*/
 
 define([
   "dojo/_base/declare",
