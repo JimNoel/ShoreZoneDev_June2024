@@ -675,18 +675,18 @@ define([
           baseName: "fa",
           headerDivName:  "faHeaderDiv",
           footerDivName:  "faFooterDiv",
-          totalOutFields: ["Hauls", "Species", "Catch"],
+          totalOutFields: ["Hauls", "NumSpecies", "Catch"],
           summaryInfo: {
             totals: {
               Catch: {}
             },
             counts: {
               Hauls: {
-                tableName: "Events_flat",
+                tableName: "vw_FishCounts_flat",      //"vw_Events_flat",
                 countField: "EventID"
               },
-              Species: {
-                tableName: "FishCounts_flat",
+              NumSpecies: {
+                tableName: "vw_FishCounts_flat",
                 countField: "SpCode_noUN"
               }
             }
@@ -702,8 +702,8 @@ define([
               LayerNameAddOn: "",
               totalsLayerNameAddOn: "Regions",
               subLayerName: "Regions",
-              ddOutFields: ["RegionName", "RegionID", "Envelope"],
-              orderByFields: ["RegionName"],
+              ddOutFields: ["Region", "RegionID", "RegionEnv"],
+              orderByFields: ["Region"],
               initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
               SelectedOption: "All",
               whereField: "RegionID"
@@ -807,7 +807,7 @@ define([
             args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_","","All Regions",null,0'
           },
           currTab: 0,
-          featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
+          featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
           tabInfo: [
 
             {
@@ -819,15 +819,15 @@ define([
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
               visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faHabitat_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
               dropdownElements: ['faHabitat_ddWrapper'],
-              featureOutFields: ["Envelope", "Region", "Hauls", "Species", "Catch", "RegionID"],
-              downloadExcludeFields: ["Envelope", "RegionID", "SelRegionBtn"],
+              featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
+              downloadExcludeFields: ["RegionEnv", "RegionID", "SelRegionBtn"],
               calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
               orderByFields: ["Region"],
               specialFormatting: {      // Special HTML formatting for field values
-                Envelope: {
+                RegionEnv: {
                   title:  "",
                   colWidth:  5,
-                  plugInFields: ["Envelope"],
+                  plugInFields: ["RegionEnv"],
                   args: '"{0}"',
                   html: zoomInTemplate.replace("{area}", "Region")
                 },
@@ -836,7 +836,8 @@ define([
                   colWidth: 10,
                   useCommas: true
                 },
-                Species: {
+                NumSpecies: {
+                  title: "Species",
                   colWidth: 10,
                   useCommas: true
                 },
@@ -854,7 +855,7 @@ define([
                 SelRegionBtn: {
                   title:  "Sites",
                   colWidth:  5,
-                  plugInFields: ["RegionID", "Envelope"],
+                  plugInFields: ["RegionID", "RegionEnv"],
                   args: 'faWidget,{0},"{1}"',
                   html:  gotoSubareasTemplate.replace("{area}", "Sites for this region")
                 }
@@ -949,7 +950,7 @@ define([
               parentAreaType: 'Regions',
               visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', /*'faLocale_ddWrapper',*/ 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper'],
-              featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "Species", "Catch", "SiteID", "PhotoCount"],
+              featureOutFields: [/*"Envelope", */"Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
@@ -976,7 +977,8 @@ define([
                   colWidth: 15,
                   useCommas: true
                 },
-                Species: {
+                NumSpecies: {
+                  title: "Species",
                   colWidth: 15,
                   useCommas: true
                 },

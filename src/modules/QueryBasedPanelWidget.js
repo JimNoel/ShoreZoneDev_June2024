@@ -591,6 +591,12 @@ define([
       }
       for (let n = 0; n < features.length; n++) {
         let g = features[n];
+
+        //  TODO: Remove this hack once the Regions feature class is fixed
+        if ((g.geometry.type==="polygon") && (g.attributes.Region==="Bering Sea")) {
+          g.geometry.rings[0].splice(19,1);
+        }
+
         let geom = g.geometry;
         if (g.geometry.type === "polyline")
           geom = g.geometry.extent;
