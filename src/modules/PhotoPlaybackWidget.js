@@ -173,7 +173,7 @@ define([
           let new_img_src = altSzMediaServer + latest_img_subPath;
           this.load_Photo(new_img_src);
           this.photoServer = altSzMediaServer;
-        } else if (!e.target.src.includes("stillphotos/")) {    //  Lowres folder not available
+        } else if (e.target.src.includes("stillphotos_lowres/")) {    //  Lowres folder not available
           // TODO?  This isn't working?  Fix missing lowres folder on server instead?
           this.photoResInsert = "stillphotos/";
         } else {    // Tried AOOS, also failed

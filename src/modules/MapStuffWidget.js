@@ -660,6 +660,10 @@ define([
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
 
+/*  Use this section when using the old FA database
+
+ */
+
       faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[currServerNum],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
       faMapServiceLayer.when(function() {
         faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo, faSublayerIDs);
@@ -708,18 +712,6 @@ define([
               SelectedOption: "All",
               whereField: "RegionID"
             },
-/*  // dropped from FA2020
-            { ddName: "Locale",
-              LayerNameAddOn: "",
-              totalsLayerNameAddOn: "Locales",
-              subLayerName: "vw_CatchStats_Locales",    //"Locales (area)",
-              ddOutFields: ["Locale", "LocaleID", "Envelope"],
-              orderByFields: ["Locale"],
-              initialOption: [ { label: "[All]", value: "All" } ],
-              SelectedOption: "All",
-              whereField: "LocaleID"
-            },
-*/
             { ddName: "Habitat",
               LayerNameAddOn: "Habitats",
               totalsLayerNameAddOn: "Habitats",
@@ -735,25 +727,8 @@ define([
               isAlpha: true
             },
 
-            // The next 2 items may be removed in favor of 1 common habitat dropdown, if it is decided not to keep
+            // The next item may be removed in favor of 1 common habitat dropdown, if it is decided not to keep
             //    habitat selection independent between Region/Locale/Site tabs
-/*  // dropped from FA2020
-            { ddName: "LocaleHabitat",
-              ddTitle: "Habitat",     // Title text if it is not ddName value
-              LayerNameAddOn: "Habitats",
-              totalsLayerNameAddOn: "Habitats",
-              options: [
-                { label: "All", value: "All" },
-                { label: "Bedrock", value: "Bedrock" },
-                { label: "Eelgrass", value: "Eelgrass" },
-                { label: "Kelp", value: "Kelp" },
-                { label: "Sand-Gravel", value: "Sand-Gravel" }
-              ],
-              SelectedOption: "All",
-              whereField: "Habitat",
-              isAlpha: true
-            },
-*/
             { ddName: "SiteHabitat",
               ddTitle: "Habitat",     // Title text if it is not ddName value
               LayerNameAddOn: "Habitats",
@@ -873,73 +848,6 @@ define([
               mapServiceSublayerVisibility: [false, false, true]
               //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
             },
-/*
-            {
-              tabName: 'Locales',
-              tabTitle: 'Fish Atlas Locales',
-              popupTitle: "Fish Atlas Locale",
-              LayerNameAddOn: 'Locales',
-              parentAreaType: 'Regions',
-              visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faLocaleHabitat_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropdownElements: ['faRegion_ddWrapper', 'faLocaleHabitat_ddWrapper'],
-              featureOutFields: ["Envelope", "Region", "MapID", "Locale", "Hauls", "Species", "Catch", "LocaleID"],
-              downloadExcludeFields: ["Envelope", "LocaleID", "SelLocaleBtn"],
-              calcFields:  [{name: "SelLocaleBtn", afterField: "LocaleID"}],
-              orderByFields: ["Region", "Locale"],
-              specialFormatting: {      // Special HTML formatting for field values
-                Envelope: {
-                  title:  "",
-                  colWidth:  5,
-                  plugInFields: ["Envelope"],
-                  args: '"{0}"',
-                  html: zoomInTemplate.replace("{area}", "Locale")
-                },
-                Region: { colWidth: 30 },
-                MapID: {
-                  colWidth: 10                },
-                Hauls: {
-                  colWidth: 12,
-                  useCommas: true
-                },
-                Species: {
-                  colWidth: 12,
-                  useCommas: true
-                },
-                Catch: {
-                  colWidth: 12,
-                  useCommas: true
-                },
-                LocaleID: {
-                  title:  "Fish Catch",
-                  colWidth:  12,
-                  plugInFields: ["LocaleID", "Locale"],
-                  args: 'faSpTableWidget,"vw_CatchStats_LocalesSpecies","vw_CatchStats_Locales","LocaleID={0}","{1}"',
-                  html:   spTableTemplate     //"<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt=''>"
-                },
-                SelLocaleBtn: {
-                  title:  "Sites",
-                  colWidth:  8,
-                  plugInFields: ["LocaleID", "Envelope"],
-                  args: 'faWidget,{0},"{1}"',
-                  html: gotoSubareasTemplate.replace("{area}", "sites for this locale")
-                }
-              },
-              idField: 'Locale',
-              subTableDD: "Locale",
-              backgroundLayers: ["Regions"],
-              filterBgLayer: "Locales_background",
-              clickableSymbolType: "point",
-              clickableSymbolInfo: {
-                style:"square",
-                color:[255,255,255,0.0],    //opacity was set at 1
-                outline: {  // autocasts as new SimpleLineSymbol()
-                  color: [ 128, 128, 128, 0.0 ],   //opacity was set at 1
-                  width: "0.5px"
-                },
-                size:12
-              },
-            },
-*/
             {
               tabName: 'Sites',
               subWidgetInfo: ["faPhotoWidget:SiteID:PhotoCount"],     // name of subwidget : filter field : column to check before running query
@@ -1016,39 +924,8 @@ define([
                 },
                 "size":4
               },
-/*
-              renderingInfo: {
-                field: "Habitat",
-                uniqueColors: {
-                  "Bedrock": "blue",
-                  "Eelgrass": "green",
-                  "Kelp": "red",
-                  "Sand-Gravel": "yellow"
-                },
-              }
-*/
 
             },
-/*
-            {
-              tabName: 'Temperature',
-              tabTitle: 'Temperature Data',
-              notAvailableMsg: 'Sorry, temperature data is not available yet.  Coming soon!',
-              popupTitle: "Thermograph",
-              LayerNameAddOn: 'Temperature',
-              featureOutFields: ["Region", "Hauls", "Species", "Catch"],
-              idField: 'Region'
-            },
-            {
-              tabName: 'Eelgrass',
-              tabTitle: 'Eelgrass Data',
-              notAvailableMsg: 'Sorry, eelgrass bed data is not available yet.  Coming soon!',
-              popupTitle: "Eelgrass Bed",
-              LayerNameAddOn: 'Eelgrass',
-              featureOutFields: ["Region", "Hauls", "Species", "Catch"],
-              idField: 'Region'
-            }
-*/
           ],
           layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
                                                 //   using the current panel info and dropdown info for any dropdowns that have something selected.
