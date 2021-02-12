@@ -455,7 +455,7 @@ define([
       speedHTML += '</span>';
 
       let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()' title='Click to lock in or unlock current set of video points' />";
-      let dlClipHTML = "";    // "&nbsp;&nbsp;<img id='dlClipImage' src='assets/images/floppy16x16.png' width='24' height='24' onclick='dlClipImage_clickHandler()' title='Click to download video clip for current extent' />";
+      let dlClipHTML = "";      // "&nbsp;&nbsp;<img id='dlClipImage' src='assets/images/floppy16x16.png' width='24' height='24' onclick='dlClipImage_clickHandler()' title='Click to download video clip for current extent' />";
 // TODO: Video clip download from download icon
       videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'videoTools', '', this.objName) + speedHTML + lockHTML + dlClipHTML;
 

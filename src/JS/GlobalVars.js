@@ -545,6 +545,10 @@ function showPanelContents(panelNames, show, disabledMsg) {
 
 /* Click Handlers */
 
+function dlClipImage_clickHandler() {
+  let theUrl = videoClipURLs.split(";")[1];
+}
+
 function lockImage_clickHandler() {
   szVideoWidget.setLockPoints(!lock_points);
 }
