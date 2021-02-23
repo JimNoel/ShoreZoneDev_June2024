@@ -463,7 +463,10 @@ define([
           theWhere = addToWhere(theWhere, this.radioFilterInfo.where);
         if (this.headerText)
           getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
+        let tempLayerName = null;
         if (this.dropDownInfo) {
+          if (this.maxLayerName)
+            tempLayerName = this.maxLayerName;
           let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
             let item = ddInfo[d];
@@ -477,15 +480,19 @@ define([
                 if (item.totalsLayerNameAddOn)
                   this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
               }
-              else if ((!item.expandPanelId)  && (item.SelectedOption !== "All")) {
-                let selOption = item.SelectedOption;
-                if (item.isAlpha)
-                  selOption = "'" + selOption + "'";
-                this.ddLayerNameAddOn += item.LayerNameAddOn;
-                if (item.totalsLayerNameAddOn)
-                  this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
-                itemWhere = item.whereField + "=" + selOption;
-              }
+              else if (!item.expandPanelId)
+                if (item.SelectedOption === "All") {
+                  if (tempLayerName)
+                    tempLayerName = tempLayerName.replace(item.totalsLayerNameAddOn, "");
+                } else {
+                  let selOption = item.SelectedOption;
+                  if (item.isAlpha)
+                    selOption = "'" + selOption + "'";
+                  this.ddLayerNameAddOn += item.LayerNameAddOn;
+                  if (item.totalsLayerNameAddOn)
+                    this.ddTotalsLayerNameAddOn += item.totalsLayerNameAddOn;
+                  itemWhere = item.whereField + "=" + selOption;
+                }
             }
             if (itemWhere) {
               if (theWhere !== "")
@@ -505,7 +512,9 @@ define([
             this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
             this.totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
           }
-          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
+          if (!tempLayerName)
+            tempLayerName = this.layerName;
+          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[tempLayerName];
         }
       }
 
@@ -591,12 +600,6 @@ define([
       }
       for (let n = 0; n < features.length; n++) {
         let g = features[n];
-
-        //  TODO: Remove this hack once the Regions feature class is fixed
-        if ((g.geometry.type==="polygon") && (g.attributes.Region==="Bering Sea")) {
-          g.geometry.rings[0].splice(19,1);
-        }
-
         let geom = g.geometry;
         if (g.geometry.type === "polyline")
           geom = g.geometry.extent;

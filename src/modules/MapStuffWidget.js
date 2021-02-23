@@ -1045,7 +1045,7 @@ define([
 /* Use this section when using the new FA2020 database */
       // TODO: Once all services are working again on the NOAA server, remove "1-" from "1-currServerNum"
       //   (Current setting is to use NOAA FA service while the other services are using PSMFC)
-      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[1-currServerNum],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
+      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[currServerNum],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
       faMapServiceLayer.when(function() {
         faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo, faSublayerIDs);
         faMapServiceLayer.visible = false;
@@ -1126,6 +1126,28 @@ define([
               isAlpha: true
             },
 
+            { ddName: "Gear",
+              LayerNameAddOn: "Gear",
+              totalsLayerNameAddOn: "Gear",
+              options: [
+                { label: "All", value: "All" },
+                { label: "beach seine", value: "beach seine" },
+                { label: "cast net", value: "cast net" },
+                { label: "crab pot", value: "crab pot" },
+                { label: "dip net", value: "dip net" },
+                { label: "fyke net", value: "fyke net" },
+                { label: "gillnet", value: "gillnet" },
+                { label: "hook and line", value: "hook and line" },
+                { label: "jig", value: "jig" },
+                { label: "minnow trap", value: "minnow trap" },
+                { label: "purse seine", value: "purse seine" },
+                { label: "trawl", value: "trawl" }
+              ],
+              SelectedOption: "All",
+              whereField: "GearBasic",
+              isAlpha: true
+            },
+
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
               LayerNameAddOn: "Species",
@@ -1160,7 +1182,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_","","All Regions",null,0'
+            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_","","All Regions",null,0,"vw_CatchStats_GearSpecies"'
           },
           currTab: 0,
           featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
@@ -1173,8 +1195,8 @@ define([
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
-              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faHabitat_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
-              dropdownElements: ['faHabitat_ddWrapper'],
+              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faHabitat_ddWrapper', 'faGear_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
+              dropdownElements: ['faHabitat_ddWrapper', 'faGear_ddWrapper'],
               featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
               downloadExcludeFields: ["RegionEnv", "RegionID", "SelRegionBtn"],
               calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
@@ -1205,7 +1227,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
-                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1',
+                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1,"vw_CatchStats_RegionsGearSpecies"',
                   html:   spTableTemplate
                 },
                 SelRegionBtn: {
@@ -1237,8 +1259,8 @@ define([
               popupExcludeCols: ["Photos"],
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Regions',
-              visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper'],
+              visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
               featureOutFields: ["Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
@@ -1279,7 +1301,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
-                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2',
+                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2,"vw_CatchStats_SitesGearSpecies"',
                   html:   spTableTemplate
                 },
                 SiteID: {
@@ -1336,8 +1358,34 @@ define([
           baseName: "faSpTable",
           headerDivName:  "faSpTableHeaderDiv",
           footerDivName:  "faSpTableFooterDiv",
-          visibleHeaderElements: ['faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
-          dropdownElements: [],
+          visibleHeaderElements: ['faSpTableGear_ddWrapper', 'faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
+          dropdownElements: ['faSpTableGear_ddWrapper'],
+          dynamicLayerName: true,     // TODO: handle this, for dropdowns added to Species Table
+          LayerNameAddOn: "",
+          //maxLayerName: "vw_CatchStats_SitesGearSpecies",
+          dropDownInfo: [
+            { ddName: "Gear",
+              LayerNameAddOn: "Gear",
+              totalsLayerNameAddOn: "Gear",
+              options: [
+                { label: "All", value: "All" },
+                { label: "beach seine", value: "beach seine" },
+                { label: "cast net", value: "cast net" },
+                { label: "crab pot", value: "crab pot" },
+                { label: "dip net", value: "dip net" },
+                { label: "fyke net", value: "fyke net" },
+                { label: "gillnet", value: "gillnet" },
+                { label: "hook and line", value: "hook and line" },
+                { label: "jig", value: "jig" },
+                { label: "minnow trap", value: "minnow trap" },
+                { label: "purse seine", value: "purse seine" },
+                { label: "trawl", value: "trawl" }
+              ],
+              SelectedOption: "All",
+              whereField: "GearBasic",
+              isAlpha: true
+            }
+          ],
           featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
           downloadExcludeFields: [],
           totalOutFields: ["Catch", "Count_measured"],
@@ -1350,7 +1398,6 @@ define([
           tableHeaderTitle: "All Regions",
           displayDivName: "faSpTableContainer",
           mapServiceLayer: faMapServiceLayer,
-          //dynamicLayerName: true,
           currTab: 0,
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["Catch DESC"],
@@ -1723,6 +1770,7 @@ define([
         getLegendHtml(n+1);
     }.bind({title: serviceLayer.title, n: n}), 5000);
 
+    //serviceLayer.url = serviceLayer.url.replace("_dev", "");    // JN: If a "_dev" service, revert to public version for legend
     queryServer(serviceLayer.url + "/legend", true, function(R) {
       legendInfo[this.title] = R.layers;
       getLegendHtml(n+1);
@@ -2213,8 +2261,7 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab) {
-      console.log("openSpeciesTable");
+    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName) {
       if (currTab >= 0)
         w.currTab = currTab;
       w.layerName = tableName;
@@ -2229,6 +2276,14 @@ define([
         let i = 0;
         extraFields = extraFieldInfo.fields[w.currTab][i];
         headerElName = extraFieldInfo.headerElName;
+      }
+      if (maxLayerName) {
+        w.maxLayerName = maxLayerName;
+        w.dynamicLayerName = true;
+      }
+      else {
+        w.maxLayerName = null;
+        w.dynamicLayerName = false;
       }
       w.setHeaderItemVisibility(headerElName);
       setDisplay(w.draggablePanelId, true);

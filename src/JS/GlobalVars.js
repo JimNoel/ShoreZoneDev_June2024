@@ -76,7 +76,8 @@ function makeServiceUrls(type, name) {
 // Set server URLs (2-item arrays, containing NOAA and PS URLs)
 let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
-let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
+//let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
+let faMapServiceLayerURLs = makeServiceUrls("service", "dev/FishAtlas_v2020_dev");
 //let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_wViews");
 let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
 
@@ -88,6 +89,7 @@ let faDisplayInfo = [
   {title: "Thermograph Sites"},
 */
   {title: "Regions"},
+  {title: "vw_CatchStats_RegionsGear", visible: false, listMode: "hide"},
 /*
   {title: "Locales_background", visible: false, listMode: "hide"},
   {title: "Locales (point)"},
@@ -97,6 +99,7 @@ let faDisplayInfo = [
   {title: "Sites_background", visible: false, listMode: "hide"},
   {title: "Sites", visible: false},
   {title: "vw_CatchStats_Sites", visible: false, listMode: "hide"},
+  {title: "vw_CatchStats_SitesGear", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesHabitats", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesSpecies", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesHabitatsSpecies", visible: false, listMode: "hide"}
