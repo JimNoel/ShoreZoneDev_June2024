@@ -334,6 +334,7 @@ define([
               tabName: 'Regions',
               tabTitle: 'ShoreStation Regions',
               popupTitle: "ShoreStation Region",
+              //maxLayerName: "vw_CatchStats_RegionsHabitatsGear",
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
               visibleHeaderElements: ['ssTableDownload', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures', 'ssIconSpeciesTable'],
@@ -396,6 +397,7 @@ define([
               tabTitle: 'ShoreStation Stations',
               popupTitle: "ShoreStation Stations",
               popupExcludeCols: ["Photos", "Profile"],
+              //maxLayerName: "vw_CatchStats_SitesHabitatsGearSpecies",
               LayerNameAddOn: "vw_StationPoints_",        //'Field Stations',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssTableDownload', 'ssRegion_ddWrapper', 'ssBioband_ddWrapper', 'ssSpeciesPanel_ddWrapper', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
@@ -660,391 +662,6 @@ define([
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
 
-/*  Use this section when using the old FA database
-      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[currServerNum],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
-      faMapServiceLayer.when(function() {
-        faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo, faSublayerIDs);
-        faMapServiceLayer.visible = false;
-
-        faWidget = new QueryBasedTablePanelWidget({
-          objName: "faWidget",
-          title: "Fish Atlas",
-          sublayerIDs: faSublayerIDs,
-          panelName: "faPanel",
-          panelType: "table",
-          contentPaneId: "faDiv",
-          baseName: "fa",
-          headerDivName:  "faHeaderDiv",
-          footerDivName:  "faFooterDiv",
-          totalOutFields: ["Hauls", "NumSpecies", "Catch"],
-          summaryInfo: {
-            totals: {
-              Catch: {}
-            },
-            counts: {
-              Hauls: {
-                tableName: "vw_FishCounts_flat",      //"vw_Events_flat",
-                countField: "EventID"
-              },
-              NumSpecies: {
-                tableName: "vw_FishCounts_flat",
-                countField: "SpCode_noUN"
-              }
-            }
-          },
-          tableHeaderTitle: "All Regions",
-          displayDivName: "faContainer",
-          disabledMsgDivName: "disabledMsg_fa",
-          mapServiceLayer: faMapServiceLayer,
-          mapServiceSublayers: ["Regions", "Sites"],
-          dynamicLayerName: true,
-          dropDownInfo: [
-            { ddName: "Region",
-              LayerNameAddOn: "",
-              totalsLayerNameAddOn: "Regions",
-              subLayerName: "Regions",
-              ddOutFields: ["Region", "RegionID", "RegionEnv"],
-              orderByFields: ["Region"],
-              initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
-              SelectedOption: "All",
-              whereField: "RegionID"
-            },
-            { ddName: "Habitat",
-              LayerNameAddOn: "Habitats",
-              totalsLayerNameAddOn: "Habitats",
-              options: [
-                { label: "All", value: "All" },
-                { label: "Bedrock", value: "Bedrock" },
-                { label: "Eelgrass", value: "Eelgrass" },
-                { label: "Kelp", value: "Kelp" },
-                { label: "Sand-Gravel", value: "Sand-Gravel" }
-              ],
-              SelectedOption: "All",
-              whereField: "Habitat",
-              isAlpha: true
-            },
-
-            // The next item may be removed in favor of 1 common habitat dropdown, if it is decided not to keep
-            //    habitat selection independent between Region/Locale/Site tabs
-            { ddName: "SiteHabitat",
-              ddTitle: "Habitat",     // Title text if it is not ddName value
-              LayerNameAddOn: "Habitats",
-              totalsLayerNameAddOn: "Habitats",
-              options: [
-                { label: "All", value: "All" },
-                { label: "Bedrock", value: "Bedrock" },
-                { label: "Eelgrass", value: "Eelgrass" },
-                { label: "Kelp", value: "Kelp" },
-                { label: "Sand-Gravel", value: "Sand-Gravel" }
-              ],
-              SelectedOption: "All",
-              whereField: "Habitat",
-              isAlpha: true
-            },
-
-            { ddName: "Species",
-              expandPanelId: "SpeciesPanel",
-              LayerNameAddOn: "Species",
-              totalsLayerNameAddOn: "Species",
-              subLayerName: "vw_CatchStats_Species",
-              ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
-              labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
-              orderByFields: ["Sp_CommonName"],
-              comSci: "com",
-              comSciSettings: {
-                com: {
-                  labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
-                  orderByFields: ["Sp_CommonName"]
-                },
-                sci: {
-                  labelTemplate: "*Sp_ScientificName, - ,*Sp_CommonName",
-                  orderByFields: ["Sp_ScientificName"]
-                }
-              },
-              initialOption: [ { label: "[All]", value: "All" } ],
-              SelectedOption: "All",
-              whereField: "SpCode",
-              isAlpha: true
-            },
-            { ddName: "SpeciesPanel",
-              ddTitle: "Species Filter",
-              htmlTemplate: '<button id="faSpeciesPanel_Button" onclick="expandDropdownPanel(\'faSpeciesPanel\', true)">Species Filter</button><div id="faSpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
-              SelectedOption: "All",
-              LayerNameAddOn: "Species",
-              totalsLayerNameAddOn: "Species",
-            }
-          ],
-          speciesTableInfo : {
-            iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_","","All Regions",null,0'
-          },
-          currTab: 0,
-          featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
-          tabInfo: [
-
-            {
-              tabName: 'Regions',
-              tabTitle: 'Fish Atlas Regions',
-              popupTitle: "Fish Atlas Region",
-              LayerNameAddOn: 'Regions',
-              parentAreaType: '',
-              // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
-              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faHabitat_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
-              dropdownElements: ['faHabitat_ddWrapper'],
-              featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
-              downloadExcludeFields: ["RegionEnv", "RegionID", "SelRegionBtn"],
-              calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
-              orderByFields: ["Region"],
-              specialFormatting: {      // Special HTML formatting for field values
-                RegionEnv: {
-                  title:  "",
-                  colWidth:  5,
-                  plugInFields: ["RegionEnv"],
-                  args: '"{0}"',
-                  html: zoomInTemplate.replace("{area}", "Region")
-                },
-                //Region: { colWidth: 10 },
-                Hauls: {
-                  colWidth: 10,
-                  useCommas: true
-                },
-                NumSpecies: {
-                  title: "Species",
-                  colWidth: 10,
-                  useCommas: true
-                },
-                Catch: {
-                  colWidth: 10,
-                  useCommas: true
-                },
-                RegionID: {
-                  title:  "Fish Catch",
-                  colWidth:  10,
-                  plugInFields: ["RegionID", "Region"],
-                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1',
-                  html:   spTableTemplate
-                },
-                SelRegionBtn: {
-                  title:  "Sites",
-                  colWidth:  5,
-                  plugInFields: ["RegionID", "RegionEnv"],
-                  args: 'faWidget,{0},"{1}"',
-                  html:  gotoSubareasTemplate.replace("{area}", "Sites for this region")
-                }
-              },
-              idField: 'Region',
-              subTableDD: "Region",
-              backgroundLayers: ["Sites"],
-              filterBgLayer: "Regions",
-              clickableSymbolType: "extent",
-              clickableSymbolInfo: {
-                color: [ 51,51, 204, 0.1 ],
-                style: "solid",
-                width: "2px"
-              },
-              mapServiceSublayerVisibility: [false, false, true]
-              //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
-            },
-            {
-              tabName: 'Sites',
-              subWidgetInfo: ["faPhotoWidget:SiteID:PhotoCount"],     // name of subwidget : filter field : column to check before running query
-              tabTitle: 'Fish Atlas Sites',
-              popupTitle: "Fish Atlas Site",
-              popupExcludeCols: ["Photos"],
-              LayerNameAddOn: 'Sites',
-              parentAreaType: 'Regions',
-              visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faSpeciesPanel_ddWrapper'],
-              featureOutFields: ["Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
-              downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
-              calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
-              orderByFields: ["Region", "Locale", "Site"],
-              specialFormatting: {      // Special HTML formatting for field values
-                Envelope: {
-                  title:  "",
-                  colWidth:  5,
-                  plugInFields: ["x", "y"],
-                  args: '"{0},{1},1000"',
-                  html: zoomInTemplate.replace("{area}", "Site")
-                },
-                Region: { colWidth: 30 },
-                Site: { colWidth: 15 },
-                Latitude: {
-                  colWidth: 20,
-                  numDecimals: 4
-                },
-                Longitude: {
-                  colWidth: 20,
-                  numDecimals: 4
-                },
-                Habitat: { colWidth: 20 },
-                Hauls: {
-                  colWidth: 15,
-                  useCommas: true
-                },
-                NumSpecies: {
-                  title: "Species",
-                  colWidth: 15,
-                  useCommas: true
-                },
-                Catch: {
-                  colWidth: 15,
-                  useCommas: true
-                },
-                FishCatch: {
-                  title:  "Fish Catch",
-                  colWidth:  20,
-                  plugInFields: ["SiteID", "Site"],
-                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2',
-                  html:   spTableTemplate
-                },
-                SiteID: {
-                  hidden: true
-                },
-                PhotoCount: {
-                  title:  "Photos",
-                  colWidth:  12,
-                  html:   "<img src='assets/images/Camera24X24.png' class='actionIcon' alt=''>",
-                  showWhen: 1
-                }
-              },
-              idField: 'SiteID',
-              backgroundLayers: ["Regions"],
-              filterBgLayer: "Sites_background",
-              clickableSymbolType: "point",
-              clickableSymbolInfo: {
-                "style":"circle",
-                "color":[255,255,255,0.0],
-                outline: {  // autocasts as new SimpleLineSymbol()
-                  color: [ 0, 0, 0, 0.0 ],
-                  width: "0.5px"
-                },
-                "size":4
-              },
-
-            },
-          ],
-          layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
-                                                //   using the current panel info and dropdown info for any dropdowns that have something selected.
-          spatialRelationship: null,      // Using null as a flag to not filter spatially
-          showFieldsInPopup: "*",
-
-          // TODO: Remove, and use something like setActiveTab in constructor
-          clickableSymbolType: "extent",
-          clickableSymbolInfo: {
-            color: [ 51,51, 204, 0.1 ],
-            style: "solid",
-            width: "2px"
-          },
-
-          hasTextOverlayLayer: true,
-          clickableMsg: null
-        });
-
-        faSpTableWidget = new QueryBasedTablePanelWidget({
-          objName: "faSpTableWidget",
-          title: "Fish Catch",
-          sublayerIDs: faSublayerIDs,
-          panelName: "faSpTablePanel",
-          panelType: "table",
-          draggablePanelId: "faSpTableDiv",
-          contentPaneId: "faSpTableDiv_content",
-          baseName: "faSpTable",
-          headerDivName:  "faSpTableHeaderDiv",
-          footerDivName:  "faSpTableFooterDiv",
-          visibleHeaderElements: ['faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
-          dropdownElements: [],
-          featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
-          downloadExcludeFields: [],
-          totalOutFields: ["Catch", "Count_measured"],
-          summaryInfo: {
-            totals: {
-              Catch: {},
-              Count_measured: {}
-            }
-          },
-          tableHeaderTitle: "All Regions",
-          displayDivName: "faSpTableContainer",
-          mapServiceLayer: faMapServiceLayer,
-          //dynamicLayerName: true,
-          currTab: 0,
-          tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
-          orderByFields: ["Catch DESC"],
-          specialFormatting: {      // Special HTML formatting for field values
-            Sp_CommonName: {
-              title: "Species",
-              colWidth: 200
-            },
-            Catch: {
-              title: "Catch",
-              colWidth: 80,
-              useCommas: true
-            },
-            AvgFL: {
-              title: "Average Length",
-              colWidth: 120,
-              numDecimals: 1
-            },
-            Count_measured: {
-              title: "# Measured",
-              colWidth: 120,
-              useCommas: true
-            },
-          },
-          layerBaseName: "vw_CatchStats_",
-          // All layers queried for data tables will have names that start with this.
-          // The QueryBasedPanelWidget method runQuery generates the full name
-          //   using the current panel info and dropdown info for any dropdowns that have something selected.
-
-          spatialRelationship: null,      // Using null as a flag to not filter spatially
-          noGeometry: true
-        });
-
-        // Fish Atlas photos
-        faPhotoWidget = new PhotoPlaybackWidget({
-                    objName: "faPhotoWidget",
-                    sublayerIDs: faSublayerIDs,
-                    panelName: "faPhotosPanel",
-                    panelType: "media",
-                    contentPaneId: "faPhotosDiv",
-                    baseName: "faPhoto",
-                    headerDivName:  "faPhotoHeaderDiv",
-                    disabledMsgInfix: "photo points",
-                    disabledMsgDivName: "disabledMsg_faPhoto",
-                    defaultDisabledMsg: 'Site photos can be seen by going to the "Fish Atlas Sites" tab and clicking on a row having a "photo" icon in the Photos column.',
-                    noDataMsg: "No photos available for this site.",
-                    mapServiceLayer: faMapServiceLayer,
-                    layerName: "Photos_Sites",
-                    featureOutFields: ["*"],
-                    photoServer: faPhotoServer,
-                    //relPathField: "FileLocation",
-                    fileNameField: "SitePhoto1",
-                    captionFields: ["GenericCaption"],
-                    noGeometry: true,
-                    controlData: [
-                      ['faPhoto_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
-                      ['faPhoto_backwardButton', 'Previous Photo', 'backward.png', 'playBackward'],
-                      ['faPhoto_pauseButton', 'Pause', 'w_close_red.png', 'pause'],
-                      ['faPhoto_ForwardButton', 'Next Photo', 'forward.png', 'playForward'],
-                      ['faPhoto_resetForwardButton', 'Reset to End', 'w_collapse.png', 'toEnd']
-                    ]
-        });
-        faPhotoWidget.resizeImg();
-        photoWidgets.push(faPhotoWidget);
-        siteTabs.fa.widgets = [faWidget, faPhotoWidget];
-
-        if (initTab === "faTab")
-          waitAndSelectChild();
-
-      }, function(error){
-        console.log("Fish Atlas MapServiceLayer failed to load:  " + error);
-      });
-
-/* */
-
-/* Use this section when using the new FA2020 database */
-      // TODO: Once all services are working again on the NOAA server, remove "1-" from "1-currServerNum"
-      //   (Current setting is to use NOAA FA service while the other services are using PSMFC)
       faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[currServerNum],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
       faMapServiceLayer.when(function() {
         faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo, faSublayerIDs);
@@ -1192,6 +809,7 @@ define([
               tabName: 'Regions',
               tabTitle: 'Fish Atlas Regions',
               popupTitle: "Fish Atlas Region",
+              maxLayerName: "vw_CatchStats_RegionsHabitatsGear",
               LayerNameAddOn: 'Regions',
               parentAreaType: '',
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
@@ -1257,6 +875,7 @@ define([
               tabTitle: 'Fish Atlas Sites',
               popupTitle: "Fish Atlas Site",
               popupExcludeCols: ["Photos"],
+              maxLayerName: "vw_CatchStats_SitesHabitatsGearSpecies",
               LayerNameAddOn: 'Sites',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
@@ -1360,9 +979,8 @@ define([
           footerDivName:  "faSpTableFooterDiv",
           visibleHeaderElements: ['faSpTableGear_ddWrapper', 'faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
           dropdownElements: ['faSpTableGear_ddWrapper'],
-          dynamicLayerName: true,     // TODO: handle this, for dropdowns added to Species Table
+          //dynamicLayerName: true,
           LayerNameAddOn: "",
-          //maxLayerName: "vw_CatchStats_SitesGearSpecies",
           dropDownInfo: [
             { ddName: "Gear",
               LayerNameAddOn: "Gear",
@@ -1470,7 +1088,7 @@ define([
       }, function(error){
         console.log("Fish Atlas MapServiceLayer failed to load:  " + error);
       });
-/**/
+
       sslMapServiceLayer = new MapImageLayer(sslMapServiceLayerURLs[currServerNum], {id: "sslOpLayer", "opacity" : 0.5});
 
       serviceLayers = [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer];
@@ -2266,7 +1884,7 @@ define([
         w.currTab = currTab;
       w.layerName = tableName;
       w.queryTask.url = w.mapServiceLayer.url + "/" + w.sublayerIDs[w.layerName];
-      w.totalsLayerName = totalsTableName;
+      //w.totalsLayerName = totalsTableName;
       w.initWhere = theWhere;
       if (headerText)
         w.headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;

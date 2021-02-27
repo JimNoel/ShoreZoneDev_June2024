@@ -453,7 +453,7 @@ define([
 
       if (queryPars) {    // Currently only applies when a table row is clicked, in which case the appropriate WHERE clause is included
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
-        this.totalsLayerName = null;
+        //this.totalsLayerName = null;
         if (queryPars.theWhere !== null) {
           theWhere = queryPars.theWhere;
           this.initWhere = theWhere;
@@ -463,10 +463,10 @@ define([
           theWhere = addToWhere(theWhere, this.radioFilterInfo.where);
         if (this.headerText)
           getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
-        let tempLayerName = null;
+        let workingLayerName = null;
         if (this.dropDownInfo) {
           if (this.maxLayerName)
-            tempLayerName = this.maxLayerName;
+            workingLayerName = this.maxLayerName;
           let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
             let item = ddInfo[d];
@@ -482,8 +482,8 @@ define([
               }
               else if (!item.expandPanelId)
                 if (item.SelectedOption === "All") {
-                  if (tempLayerName)
-                    tempLayerName = tempLayerName.replace(item.totalsLayerNameAddOn, "");
+                  if (workingLayerName)
+                    workingLayerName = workingLayerName.replace(item.totalsLayerNameAddOn, "");
                 } else {
                   let selOption = item.SelectedOption;
                   if (item.isAlpha)
@@ -510,11 +510,11 @@ define([
             this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
           } else {
             this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
-            this.totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
+            //this.totalsLayerName = this.layerBaseName + this.ddTotalsLayerNameAddOn;
           }
-          if (!tempLayerName)
-            tempLayerName = this.layerName;
-          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[tempLayerName];
+          if (!workingLayerName)
+            workingLayerName = this.layerName;
+          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[workingLayerName];
         }
       }
 
