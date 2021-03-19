@@ -1040,6 +1040,12 @@ define([
               useCommas: true
             },
           },
+          customRestService: {
+            serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+            sqlTemplate: "SELECT {F},Hauls,NumSpecies,Catch,Count_measured,AvgFL From (SELECT {G},COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
+            groupVars: "RegionID,RegionCode,Region,RegionEnv,SpCode,Sp_CommonName,Sp_ScientificName",
+            where: " WHERE RegionCode='AI'"
+          },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.
           // The QueryBasedPanelWidget method runQuery generates the full name

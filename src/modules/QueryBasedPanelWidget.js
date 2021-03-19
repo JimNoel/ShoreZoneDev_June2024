@@ -520,17 +520,31 @@ define([
 
       this.query.where = theWhere;
 
-      this.queryTask.execute(this.query).then(function(results){
-        this.queryPending = false;
-        if (results.features.length > maxSZFeatures) {
-          updateNoFeaturesMsg(extentDependentWidgets, "toomany");
-        } else {
-          this.processResults(results);
-        }
-      }.bind(this), function(error) {
+//      let queryExecute = this.queryTask.execute;
+//      queryExecute(this.query).then(function(results){
+
+      if (this.customRestService) {
+        let r = this.customRestService;
+        let sql = r.sqlTemplate.replace(/{G}/g, r.groupVars);
+        const fVars = 'F.' + r.groupVars.replace(/,/g,',F.');
+        sql = sql.replace(/{F}/g, fVars);
+        let theUrl = r.serviceUrl + sql + r.where;
+        queryServer(theUrl, false, this.queryResponseHandler)     // returnJson=false -- service already returns JSON
+      }
+
+      else this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
         this.queryPending = false;
         console.log(this.baseName + ":  QueryTask failed.");
       }.bind(this));
+    },
+
+    queryResponseHandler: function(results) {
+      this.queryPending = false;
+      if (results.features.length > maxSZFeatures) {
+        updateNoFeaturesMsg(extentDependentWidgets, "toomany");
+      } else {
+        this.processResults(results);
+      }
     },
 
     changeCurrentFeature: function(newIndex) {

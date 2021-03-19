@@ -301,7 +301,10 @@ define([
                 if (l > maxChars[a])
                   maxChars[a] = l;
                 const f = legendFilters.findIndex(obj => obj.fieldName === a);
-                if (f !== -1) {
+                let ddIndex = -1;
+                if (this.dropDownInfo)
+                  ddIndex = this.dropDownInfo.findIndex(obj => obj.ddName === a);
+                if ((f !== -1) || (ddIndex !== -1)) {
                   if (!nonNullList[a].includes(v))
                     nonNullList[a].push(v);
                 }
