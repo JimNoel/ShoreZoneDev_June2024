@@ -1042,9 +1042,9 @@ define([
           },
           customRestService: {
             serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
-            sqlTemplate: "SELECT {F},Hauls,NumSpecies,Catch,Count_measured,AvgFL From (SELECT {G},COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
-            groupVars: "RegionID,RegionCode,Region,RegionEnv,SpCode,Sp_CommonName,Sp_ScientificName",
-            where: " WHERE RegionCode='AI'"
+            sqlTemplate: "SELECT Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
+            groupVars: "RegionCode,Sp_CommonName",    // In this instance, RegionCode is additional grouping field,
+            where: " WHERE RegionCode='AI'"           //   to allow filtering by RegionCode
           },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.

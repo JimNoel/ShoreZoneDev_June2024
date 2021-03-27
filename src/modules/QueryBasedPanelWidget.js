@@ -529,7 +529,7 @@ define([
         const fVars = 'F.' + r.groupVars.replace(/,/g,',F.');
         sql = sql.replace(/{F}/g, fVars);
         let theUrl = r.serviceUrl + sql + r.where;
-        queryServer(theUrl, false, this.queryResponseHandler)     // returnJson=false -- service already returns JSON
+        queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
       }
 
       else this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
@@ -540,6 +540,8 @@ define([
 
     queryResponseHandler: function(results) {
       this.queryPending = false;
+      if (this.customRestService)
+        results = JSON.parse(results);
       if (results.features.length > maxSZFeatures) {
         updateNoFeaturesMsg(extentDependentWidgets, "toomany");
       } else {
