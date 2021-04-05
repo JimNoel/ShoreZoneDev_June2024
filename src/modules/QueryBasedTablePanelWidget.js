@@ -42,31 +42,6 @@ let formatNumber = function(value, formatting) {
   return newValue
 };
 
-/*
-let fillTemplate = function(value, formatting) {
-  if (!formatting)
-    return value;
-  let newValue = value;
-  let template = formatting.html;
-  if (template) {
-    if (formatting.showWhen) {
-      if (newValue === formatting.showWhen)
-        newValue = template;
-      else
-        newValue = "";
-    }
-    let plugInFields = formatting.plugInFields;
-    if ((newValue!=="") && plugInFields) {
-      let args = formatting.args;
-      for (p in plugInFields)
-        args = args.replace("{" + p + "}", features[i].attributes[plugInFields[p]]);
-      newValue = template.replace("{args}", args);
-    }
-  }
-  return newValue;
-}
-*/
-
 
 define([
   "dojo/_base/declare",

@@ -799,7 +799,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_","","All Regions",null,0,"vw_CatchStats_GearSpecies"'
+            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions",null,0,"vw_CatchStats_GearSpecies","Sp_CommonName"'
           },
           currTab: 0,
           featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
@@ -845,7 +845,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
-                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1,"vw_CatchStats_RegionsGearSpecies"',
+                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1,"vw_CatchStats_RegionsGearSpecies","RegionID,Sp_CommonName"',
                   html:   spTableTemplate
                 },
                 SelRegionBtn: {
@@ -920,7 +920,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
-                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2,"vw_CatchStats_SitesGearSpecies"',
+                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2,"vw_CatchStats_SitesGearSpecies","SiteID,Sp_CommonName"',
                   html:   spTableTemplate
                 },
                 SiteID: {
@@ -1043,8 +1043,8 @@ define([
           customRestService: {
             serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
             sqlTemplate: "SELECT Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
-            groupVars: "RegionCode,Sp_CommonName",    // In this instance, RegionCode is additional grouping field,
-            where: " WHERE RegionCode='AI'"           //   to allow filtering by RegionCode
+            groupVars: "RegionID,Sp_CommonName",    // In this instance, RegionID is additional grouping field,
+            where: " WHERE RegionID=1"           //   to allow filtering by RegionID
           },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.
@@ -1885,31 +1885,39 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName) {
+    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName, groupVars) {
       if (currTab >= 0)
         w.currTab = currTab;
-      w.layerName = tableName;
-      w.queryTask.url = w.mapServiceLayer.url + "/" + w.sublayerIDs[w.layerName];
-      //w.totalsLayerName = totalsTableName;
-      w.initWhere = theWhere;
       if (headerText)
         w.headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
-      let extraFields = null;
-      let headerElName = null;
-      if (extraFieldInfo) {
-        let i = 0;
-        extraFields = extraFieldInfo.fields[w.currTab][i];
-        headerElName = extraFieldInfo.headerElName;
+      if (w.customRestService) {
+        if (groupVars)
+          w.customRestService.groupVars = groupVars;
+        w.customRestService.where = "";
+        if (theWhere)
+          w.customRestService.where = " WHERE " + theWhere;
+
+      } else  {
+        w.layerName = tableName;
+        w.queryTask.url = w.mapServiceLayer.url + "/" + w.sublayerIDs[w.layerName];
+        w.initWhere = theWhere;
+        let extraFields = null;
+        let headerElName = null;
+        if (extraFieldInfo) {
+          let i = 0;
+          extraFields = extraFieldInfo.fields[w.currTab][i];
+          headerElName = extraFieldInfo.headerElName;
+        }
+        if (maxLayerName) {
+          w.maxLayerName = maxLayerName;
+          w.dynamicLayerName = true;
+        }
+        else {
+          w.maxLayerName = null;
+          w.dynamicLayerName = false;
+        }
+        w.setHeaderItemVisibility(headerElName);
       }
-      if (maxLayerName) {
-        w.maxLayerName = maxLayerName;
-        w.dynamicLayerName = true;
-      }
-      else {
-        w.maxLayerName = null;
-        w.dynamicLayerName = false;
-      }
-      w.setHeaderItemVisibility(headerElName);
       setDisplay(w.draggablePanelId, true);
       w.runQuery(null);
     },

@@ -437,6 +437,9 @@ define([
         }
       }
       let theWhere = "";
+      let theGroup = "";
+      if (this.customRestService)
+        theGroup = this.customRestService.groupVars;
 
       if (this.initWhere)
         theWhere = this.initWhere;
@@ -498,6 +501,7 @@ define([
               if (theWhere !== "")
                 theWhere += " AND ";
               theWhere += itemWhere;
+              theGroup += "," + item.whereField;
             }
           }
         }
@@ -525,10 +529,17 @@ define([
 
       if (this.customRestService) {
         let r = this.customRestService;
-        let sql = r.sqlTemplate.replace(/{G}/g, r.groupVars);
-        const fVars = 'F.' + r.groupVars.replace(/,/g,',F.');
+        let sql = r.sqlTemplate.replace(/{G}/g, theGroup);
+        const fVars = 'F.' + theGroup.replace(/,/g,',F.');
         sql = sql.replace(/{F}/g, fVars);
-        let theUrl = r.serviceUrl + sql + r.where;
+        if (theWhere === "")
+          theWhere = r.where;
+        else {
+          if (r.where)
+            theWhere = r.where + " AND " + theWhere;
+          else theWhere = r.where;
+        }
+        let theUrl = r.serviceUrl + sql + theWhere;
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
       }
 
