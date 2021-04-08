@@ -799,7 +799,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions",null,0,"vw_CatchStats_GearSpecies","Sp_CommonName"'
+            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions",null,0,"vw_CatchStats_GearSpecies","GearBasic,Sp_CommonName"'
           },
           currTab: 0,
           featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
@@ -845,7 +845,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
-                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1,"vw_CatchStats_RegionsGearSpecies","RegionID,Sp_CommonName"',
+                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1,"vw_CatchStats_RegionsGearSpecies","RegionID,GearBasic,Sp_CommonName"',
                   html:   spTableTemplate
                 },
                 SelRegionBtn: {
@@ -920,7 +920,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
-                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2,"vw_CatchStats_SitesGearSpecies","SiteID,Sp_CommonName"',
+                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2,"vw_CatchStats_SitesGearSpecies","SiteID,GearBasic,Sp_CommonName"',
                   html:   spTableTemplate
                 },
                 SiteID: {
@@ -1020,6 +1020,10 @@ define([
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["Catch DESC"],
           specialFormatting: {      // Special HTML formatting for field values
+            GearBasic: {
+              title: "Gear",
+              colWidth: 100
+            },
             Sp_CommonName: {
               title: "Species",
               colWidth: 200
@@ -1042,9 +1046,9 @@ define([
           },
           customRestService: {
             serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
-            sqlTemplate: "SELECT Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
-            groupVars: "RegionID,Sp_CommonName",    // In this instance, RegionID is additional grouping field,
-            where: " WHERE RegionID=1"           //   to allow filtering by RegionID
+            sqlTemplate: "SELECT GearBasic,Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
+            //groupVars: "RegionID,Sp_CommonName",    // In this instance, RegionID is additional grouping field,
+            //where: " WHERE RegionID=1"           //   to allow filtering by RegionID
           },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.

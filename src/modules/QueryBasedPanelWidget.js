@@ -501,7 +501,7 @@ define([
               if (theWhere !== "")
                 theWhere += " AND ";
               theWhere += itemWhere;
-              theGroup += "," + item.whereField;
+              //theGroup += "," + item.whereField;    // Not doing if DD field is also displayed in table
             }
           }
         }
@@ -535,9 +535,11 @@ define([
         if (theWhere === "")
           theWhere = r.where;
         else {
-          if (r.where)
-            theWhere = r.where + " AND " + theWhere;
-          else theWhere = r.where;
+// TODO:  This is not right yet
+          if (r.where && r.where!=="")
+              theWhere = r.where + " AND " + theWhere;
+          else
+            theWhere = "";
         }
         let theUrl = r.serviceUrl + sql + theWhere;
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
