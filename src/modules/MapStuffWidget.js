@@ -702,7 +702,7 @@ define([
           dropDownInfo: [
             { ddName: "Region",
               LayerNameAddOn: "",
-              totalsLayerNameAddOn: "Regions",
+              layerSubName: "Regions",
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionID", "RegionEnv"],
               orderByFields: ["Region"],
@@ -712,7 +712,7 @@ define([
             },
             { ddName: "Habitat",
               LayerNameAddOn: "Habitats",
-              totalsLayerNameAddOn: "Habitats",
+              layerSubName: "Habitats",
               options: [
                 { label: "All", value: "All" },
                 { label: "Bedrock", value: "Bedrock" },
@@ -730,7 +730,7 @@ define([
             { ddName: "SiteHabitat",
               ddTitle: "Habitat",     // Title text if it is not ddName value
               LayerNameAddOn: "Habitats",
-              totalsLayerNameAddOn: "Habitats",
+              layerSubName: "Habitats",
               options: [
                 { label: "All", value: "All" },
                 { label: "Bedrock", value: "Bedrock" },
@@ -745,7 +745,7 @@ define([
 
             { ddName: "Gear",
               LayerNameAddOn: "Gear",
-              totalsLayerNameAddOn: "Gear",
+              layerSubName: "Gear",
               options: [
                 { label: "All", value: "All" },
                 { label: "beach seine", value: "beach seine" },
@@ -768,7 +768,7 @@ define([
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
               LayerNameAddOn: "Species",
-              totalsLayerNameAddOn: "Species",
+              layerSubName: "Species",
               subLayerName: "vw_CatchStats_Species",
               ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
               labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
@@ -794,7 +794,7 @@ define([
               htmlTemplate: '<button id="faSpeciesPanel_Button" onclick="expandDropdownPanel(\'faSpeciesPanel\', true)">Species Filter</button><div id="faSpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
               LayerNameAddOn: "Species",
-              totalsLayerNameAddOn: "Species",
+              layerSubName: "Species",
             }
           ],
           speciesTableInfo : {
@@ -984,7 +984,7 @@ define([
           dropDownInfo: [
             { ddName: "Gear",
               LayerNameAddOn: "Gear",
-              totalsLayerNameAddOn: "Gear",
+              layerSubName: "Gear",
               options: [
                 { label: "All", value: "All" },
                 { label: "beach seine", value: "beach seine" },
