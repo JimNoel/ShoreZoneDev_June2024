@@ -474,14 +474,17 @@ define([
             let item = ddInfo[d];
             let itemWhere = null;
             if (this.dropdownElements.includes(item.wrapperId)) {
+              if (!item.expandPanelId) {      // This excludes dropdowns contained within expandPanels
+
+              }
               if (item.panelWhere) {
                 itemWhere = item.panelWhere;
                 item.panelWhereChanged = false;
                 getEl(item.uniqueName + "_closeButton").innerText = "Close";
                 this.ddLayerNameAddOn += item.LayerNameAddOn;
-              }
-              else if (!item.expandPanelId)
+              } else if (!item.expandPanelId) {
                 if (item.SelectedOption === "All") {
+                  // TODO: Get this to work for dropdowns within panels  (e.g. Groups, Subgroups, Species)
                   if (workingLayerName)
                     workingLayerName = workingLayerName.replace(item.layerSubName, "");
                 } else {
@@ -491,6 +494,7 @@ define([
                   this.ddLayerNameAddOn += item.LayerNameAddOn;
                   itemWhere = item.whereField + "=" + selOption;
                 }
+              }
             }
             if (itemWhere) {
               if (theWhere !== "")
@@ -508,7 +512,9 @@ define([
             this.query.orderByFields = this.query.orderByFields.concat(this.optionalFieldInfo.order[i]);
             this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
           } else {
-            this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
+            this.layerName = workingLayerName;
+            if (this.LayerNameAddOn)
+              this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
           }
           if (!workingLayerName)
             workingLayerName = this.layerName;
@@ -517,9 +523,6 @@ define([
       }
 
       this.query.where = theWhere;
-
-//      let queryExecute = this.queryTask.execute;
-//      queryExecute(this.query).then(function(results){
 
       if (this.customRestService) {
         let r = this.customRestService;

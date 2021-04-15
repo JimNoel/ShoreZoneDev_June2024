@@ -114,9 +114,13 @@ let ssDisplayInfo = [
   {title: "vw_StationPoints_Biobands", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_SpeciesGroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_SpeciesSubgroups", visible: false, listMode: "hide"},
+  {title: "vw_StationPoints_SpGroups", visible: false, listMode: "hide"},
+  {title: "vw_StationPoints_SpSubgroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_Species", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_BiobandsSpeciesGroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_BiobandsSpeciesSubgroups", visible: false, listMode: "hide"},
+  {title: "vw_StationPoints_BiobandsSpGroups", visible: false, listMode: "hide"},
+  {title: "vw_StationPoints_BiobandsSpSubgroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_BiobandsSpecies", visible: false, listMode: "hide"}
 ];
 
@@ -599,7 +603,8 @@ function dropdownSelectHandler(w, index) {
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);
     let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name (if contains " - ")
-    expandPanel.LayerNameAddOn = ddInfo.LayerNameAddOn;
+    expandPanel.layerSubName = expandPanel.allLayerSubNames.replace(ddInfo.layerSubName, "");
+    //expandPanel.LayerNameAddOn = ddInfo.LayerNameAddOn;
     if (buttonText === "[All]") {
       buttonText = "[All species]";
       if (ddInfo.parentDropdown) {      // Fall back to higher category, call function again recursively
@@ -607,7 +612,8 @@ function dropdownSelectHandler(w, index) {
         dropdownSelectHandler(w, parentDdInfo);
         return;
       } else {       // "All" selected at highest category, so no layer name add-on
-        expandPanel.LayerNameAddOn = "";
+        expandPanel.layerSubName = expandPanel.allLayerSubNames;
+        //expandPanel.LayerNameAddOn = "";
       }
     }
     getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonText;

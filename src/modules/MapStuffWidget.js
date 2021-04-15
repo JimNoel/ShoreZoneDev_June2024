@@ -248,7 +248,7 @@ define([
           dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
-              LayerNameAddOn: "",
+              layerSubName: "",
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionalID", "Envelope"],
               orderByFields: ["Region"],
@@ -258,7 +258,7 @@ define([
               isAlpha: true
             },
             { ddName: "Bioband",
-              LayerNameAddOn: "Biobands",
+              layerSubName: "Biobands",
               subLayerName: "vw_AlaskaBiobands",
               ddOutFields: ["BiobandName", "BiobandCode"],
               orderByFields: ["BiobandName"],
@@ -269,7 +269,7 @@ define([
             },
             { ddName: "Group",
               expandPanelId: "SpeciesPanel",
-              LayerNameAddOn: "SpeciesGroups",
+              layerSubName: "SpGroups",
               subLayerName: "vw_AlaskaSpeciesGroups",     // table for generating dropdown items
               ddOutFields: ["Group_", "GroupID"],
               orderByFields: ["Group_"],
@@ -281,7 +281,7 @@ define([
             },
             { ddName: "Subgroup",
               expandPanelId: "SpeciesPanel",
-              LayerNameAddOn: "SpeciesSubgroups",
+              layerSubName: "SpSubgroups",
               subLayerName: "vw_AlaskaSpeciesSubgroups",     // table for generating dropdown items
               ddOutFields: ["Subgroup", "SubgroupID"],
               orderByFields: ["Subgroup"],
@@ -294,7 +294,7 @@ define([
             },
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
-              LayerNameAddOn: "Species",
+              layerSubName: "Species",
               subLayerName: "vw_AlaskaSpecies",     // table for generating dropdown items
               ddOutFields: ["Common_name", "SppTxtCode", "SppName"],
               labelTemplate: "*Common_name, - ,*SppName",
@@ -320,7 +320,8 @@ define([
               ddTitle: "Species Filter",
               htmlTemplate: '<button id="ssSpeciesPanel_Button" onclick="expandDropdownPanel(\'ssSpeciesPanel\', true)">Species Filter</button><div id="ssSpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
-              LayerNameAddOn: "",
+              allLayerSubNames: "SpeciesSpSubgroupsSpGroups",
+              layerSubName: "SpeciesSpSubgroupsSpGroups",
               where: ""
             }
           ],
@@ -397,8 +398,8 @@ define([
               tabTitle: 'ShoreStation Stations',
               popupTitle: "ShoreStation Stations",
               popupExcludeCols: ["Photos", "Profile"],
-              //maxLayerName: "vw_CatchStats_SitesHabitatsGearSpecies",
-              LayerNameAddOn: "vw_StationPoints_",        //'Field Stations',
+              maxLayerName: "vw_StationPoints_BiobandsSpeciesSpSubgroupsSpGroups",
+              LayerNameAddOn: null,     // "vw_StationPoints_",        //'Field Stations',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssTableDownload', 'ssRegion_ddWrapper', 'ssBioband_ddWrapper', 'ssSpeciesPanel_ddWrapper', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
               dropdownElements: ['ssRegion_ddWrapper', 'ssBioband_ddWrapper', 'ssSpecies_ddWrapper', 'ssGroup_ddWrapper', 'ssSubgroup_ddWrapper', 'ssSpeciesPanel_ddWrapper'],
@@ -701,7 +702,6 @@ define([
           dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
-              LayerNameAddOn: "",
               layerSubName: "Regions",
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionID", "RegionEnv"],
@@ -711,7 +711,6 @@ define([
               whereField: "RegionID"
             },
             { ddName: "Habitat",
-              LayerNameAddOn: "Habitats",
               layerSubName: "Habitats",
               options: [
                 { label: "All", value: "All" },
@@ -729,7 +728,6 @@ define([
             //    habitat selection independent between Region/Locale/Site tabs
             { ddName: "SiteHabitat",
               ddTitle: "Habitat",     // Title text if it is not ddName value
-              LayerNameAddOn: "Habitats",
               layerSubName: "Habitats",
               options: [
                 { label: "All", value: "All" },
@@ -744,7 +742,6 @@ define([
             },
 
             { ddName: "Gear",
-              LayerNameAddOn: "Gear",
               layerSubName: "Gear",
               options: [
                 { label: "All", value: "All" },
@@ -767,7 +764,6 @@ define([
 
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
-              LayerNameAddOn: "Species",
               layerSubName: "Species",
               subLayerName: "vw_CatchStats_Species",
               ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
@@ -793,7 +789,6 @@ define([
               ddTitle: "Species Filter",
               htmlTemplate: '<button id="faSpeciesPanel_Button" onclick="expandDropdownPanel(\'faSpeciesPanel\', true)">Species Filter</button><div id="faSpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
-              LayerNameAddOn: "Species",
               layerSubName: "Species",
             }
           ],
@@ -810,7 +805,6 @@ define([
               tabTitle: 'Fish Atlas Regions',
               popupTitle: "Fish Atlas Region",
               maxLayerName: "vw_CatchStats_RegionsHabitatsGear",
-              LayerNameAddOn: 'Regions',
               parentAreaType: '',
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
               visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faHabitat_ddWrapper', 'faGear_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
@@ -876,7 +870,6 @@ define([
               popupTitle: "Fish Atlas Site",
               popupExcludeCols: ["Photos"],
               maxLayerName: "vw_CatchStats_SitesHabitatsGearSpecies",
-              LayerNameAddOn: 'Sites',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
