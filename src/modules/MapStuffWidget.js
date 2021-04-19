@@ -248,7 +248,7 @@ define([
           dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
-              layerSubName: "",
+              layerSubNames: "",
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionalID", "Envelope"],
               orderByFields: ["Region"],
@@ -258,7 +258,7 @@ define([
               isAlpha: true
             },
             { ddName: "Bioband",
-              layerSubName: "Biobands",
+              layerSubNames: "Biobands",
               subLayerName: "vw_AlaskaBiobands",
               ddOutFields: ["BiobandName", "BiobandCode"],
               orderByFields: ["BiobandName"],
@@ -269,7 +269,8 @@ define([
             },
             { ddName: "Group",
               expandPanelId: "SpeciesPanel",
-              layerSubName: "SpGroups",
+              inCombo: true,
+              layerSubNames: "SpGroups",
               subLayerName: "vw_AlaskaSpeciesGroups",     // table for generating dropdown items
               ddOutFields: ["Group_", "GroupID"],
               orderByFields: ["Group_"],
@@ -281,7 +282,8 @@ define([
             },
             { ddName: "Subgroup",
               expandPanelId: "SpeciesPanel",
-              layerSubName: "SpSubgroups",
+              inCombo: true,
+              layerSubNames: "SpSubgroups",
               subLayerName: "vw_AlaskaSpeciesSubgroups",     // table for generating dropdown items
               ddOutFields: ["Subgroup", "SubgroupID"],
               orderByFields: ["Subgroup"],
@@ -294,7 +296,8 @@ define([
             },
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
-              layerSubName: "Species",
+              inCombo: true,
+              layerSubNames: "Species",
               subLayerName: "vw_AlaskaSpecies",     // table for generating dropdown items
               ddOutFields: ["Common_name", "SppTxtCode", "SppName"],
               labelTemplate: "*Common_name, - ,*SppName",
@@ -320,8 +323,8 @@ define([
               ddTitle: "Species Filter",
               htmlTemplate: '<button id="ssSpeciesPanel_Button" onclick="expandDropdownPanel(\'ssSpeciesPanel\', true)">Species Filter</button><div id="ssSpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
-              allLayerSubNames: "SpeciesSpSubgroupsSpGroups",
-              layerSubName: "SpeciesSpSubgroupsSpGroups",
+              subDropDowns: ["Group", "Subgroup", "Species"],
+              layerSubNames: "SpeciesSpSubgroupsSpGroups",
               where: ""
             }
           ],
@@ -702,7 +705,7 @@ define([
           dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
-              layerSubName: "Regions",
+              layerSubNames: "Regions",
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionID", "RegionEnv"],
               orderByFields: ["Region"],
@@ -711,7 +714,7 @@ define([
               whereField: "RegionID"
             },
             { ddName: "Habitat",
-              layerSubName: "Habitats",
+              layerSubNames: "Habitats",
               options: [
                 { label: "All", value: "All" },
                 { label: "Bedrock", value: "Bedrock" },
@@ -728,7 +731,7 @@ define([
             //    habitat selection independent between Region/Locale/Site tabs
             { ddName: "SiteHabitat",
               ddTitle: "Habitat",     // Title text if it is not ddName value
-              layerSubName: "Habitats",
+              layerSubNames: "Habitats",
               options: [
                 { label: "All", value: "All" },
                 { label: "Bedrock", value: "Bedrock" },
@@ -742,7 +745,7 @@ define([
             },
 
             { ddName: "Gear",
-              layerSubName: "Gear",
+              layerSubNames: "Gear",
               options: [
                 { label: "All", value: "All" },
                 { label: "beach seine", value: "beach seine" },
@@ -764,7 +767,7 @@ define([
 
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
-              layerSubName: "Species",
+              layerSubNames: "Species",
               subLayerName: "vw_CatchStats_Species",
               ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
               labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
@@ -789,7 +792,7 @@ define([
               ddTitle: "Species Filter",
               htmlTemplate: '<button id="faSpeciesPanel_Button" onclick="expandDropdownPanel(\'faSpeciesPanel\', true)">Species Filter</button><div id="faSpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
-              layerSubName: "Species",
+              layerSubNames: "Species",
             }
           ],
           speciesTableInfo : {
@@ -977,7 +980,7 @@ define([
           dropDownInfo: [
             { ddName: "Gear",
               LayerNameAddOn: "Gear",
-              layerSubName: "Gear",
+              layerSubNames: "Gear",
               options: [
                 { label: "All", value: "All" },
                 { label: "beach seine", value: "beach seine" },

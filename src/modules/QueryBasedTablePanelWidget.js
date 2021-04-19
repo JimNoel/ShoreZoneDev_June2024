@@ -733,6 +733,7 @@ define([
             ddItem.wrapperId = ddItem.uniqueName + "_ddWrapper";
             //let ddSpanId = ddItem.ddId.replace("_","Span_");
             ddItem.wrapperDom = makeHtmlElement("span", ddItem.wrapperId, "dropdown");   // The SPAN for the dropdown, that will be added to the header
+            ddItem.excludedNames = ddItem.layerSubNames;
             if (!ddItem.expandPanelId)      // If it's part of an expand panel, element will be added to separate dropdown dialog later
               headerContent.appendChild(ddItem.wrapperDom);    // add the wrapper for the dropdown to the header
             let args = this.objName + ',' + d;

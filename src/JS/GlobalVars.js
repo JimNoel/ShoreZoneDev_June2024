@@ -596,14 +596,17 @@ function dropdownSelectHandler(w, index) {
   let ddElement = getEl(ddInfo.ddId);
   ddInfo.SelectedOption = ddElement.value;
   let selOption = ddInfo.options[ddElement.selectedIndex];
+  let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name (if contains " - ")
   let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
   if (newExtent)
     mapStuff.gotoExtent(newExtent);
+  ddInfo.excludedNames = "";
+  if (buttonText === "[All]")
+    ddInfo.excludedNames = ddInfo.layerSubNames;
 
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);
-    let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name (if contains " - ")
-    expandPanel.layerSubName = expandPanel.allLayerSubNames.replace(ddInfo.layerSubName, "");
+    expandPanel.excludedNames = expandPanel.layerSubNames.replace(ddInfo.layerSubNames, "");
     //expandPanel.LayerNameAddOn = ddInfo.LayerNameAddOn;
     if (buttonText === "[All]") {
       buttonText = "[All species]";
@@ -612,7 +615,7 @@ function dropdownSelectHandler(w, index) {
         dropdownSelectHandler(w, parentDdInfo);
         return;
       } else {       // "All" selected at highest category, so no layer name add-on
-        expandPanel.layerSubName = expandPanel.allLayerSubNames;
+        expandPanel.excludedNames = expandPanel.layerSubNames;
         //expandPanel.LayerNameAddOn = "";
       }
     }

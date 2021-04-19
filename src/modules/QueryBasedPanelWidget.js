@@ -474,19 +474,29 @@ define([
             let item = ddInfo[d];
             let itemWhere = null;
             if (this.dropdownElements.includes(item.wrapperId)) {
-              if (!item.expandPanelId) {      // This excludes dropdowns contained within expandPanels
 
-              }
               if (item.panelWhere) {
                 itemWhere = item.panelWhere;
                 item.panelWhereChanged = false;
                 getEl(item.uniqueName + "_closeButton").innerText = "Close";
+                item.excludedNames = item.layerSubNames;
+                let i = item.subDropDowns.length - 1;
+                do {
+                  let subDropDown = this.getddItem(item.subDropDowns[i]);
+                  if (subDropDown.SelectedOption === "All")
+                    i += -1;
+                  else {
+                    item.excludedNames = item.layerSubNames.replace(subDropDown.layerSubNames, "");
+                    i = -1;
+                  }
+                } while (i > -1);
+
                 this.ddLayerNameAddOn += item.LayerNameAddOn;
               } else if (!item.expandPanelId) {
                 if (item.SelectedOption === "All") {
                   // TODO: Get this to work for dropdowns within panels  (e.g. Groups, Subgroups, Species)
-                  if (workingLayerName)
-                    workingLayerName = workingLayerName.replace(item.layerSubName, "");
+                  //if (workingLayerName)
+                  //  workingLayerName = workingLayerName.replace(item.layerSubNames, "");
                 } else {
                   let selOption = item.SelectedOption;
                   if (item.isAlpha)
@@ -495,6 +505,10 @@ define([
                   itemWhere = item.whereField + "=" + selOption;
                 }
               }
+
+              if (!item.inCombo)       // This excludes "nested" dropdowns contained within expandPanels
+                workingLayerName = workingLayerName.replace(item.excludedNames, "");
+
             }
             if (itemWhere) {
               if (theWhere !== "")
