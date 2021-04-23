@@ -269,11 +269,11 @@ if (siteParsJSON !== "") {
 
 }
 
-makeSublayerIdTable(szMapServiceLayerURLs, szSublayerIDs);
+makeSublayerIdTable(szMapServiceLayerURLs[currServerNum], szSublayerIDs);
 let ssSublayerIDs = {};
-makeSublayerIdTable(ssMapServiceLayerURLs, ssSublayerIDs);
+makeSublayerIdTable(ssMapServiceLayerURLs[currServerNum], ssSublayerIDs);
 let faSublayerIDs = {};
-makeSublayerIdTable(faMapServiceLayerURLs, faSublayerIDs);
+makeSublayerIdTable(faMapServiceLayerURLs[currServerNum], faSublayerIDs);
 
 let VIDEO_FOLDER = "video/";
 let videoSnippetDownloadFolder = altSzMediaServer + VIDEO_FOLDER + "midres_mp4";
@@ -606,7 +606,7 @@ function dropdownSelectHandler(w, index) {
 
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);
-    expandPanel.excludedNames = expandPanel.layerSubNames.replace(ddInfo.layerSubNames, "");
+    //expandPanel.excludedNames = expandPanel.layerSubNames.replace(ddInfo.layerSubNames, "");
     //expandPanel.LayerNameAddOn = ddInfo.LayerNameAddOn;
     if (buttonText === "[All]") {
       buttonText = "[All species]";
@@ -615,7 +615,7 @@ function dropdownSelectHandler(w, index) {
         dropdownSelectHandler(w, parentDdInfo);
         return;
       } else {       // "All" selected at highest category, so no layer name add-on
-        expandPanel.excludedNames = expandPanel.layerSubNames;
+        //expandPanel.excludedNames = expandPanel.layerSubNames;
         //expandPanel.LayerNameAddOn = "";
       }
     }
@@ -814,24 +814,7 @@ function getDescendentLayer(layer, name) {
   return null;
 }
 
-function queryServer(url, returnJson, responseHandler) {
-  let xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function() {
-    if (this.readyState === 4 && this.status === 200) {
-      let R = this.responseText;
-      if (returnJson)
-        R = JSON.parse(R);
-      responseHandler(R);
-    } else {
-    }
-  };
-  let completeUrl = url;
-  if (returnJson)
-    completeUrl += "?f=pjson"
-  xmlhttp.open("GET", completeUrl, true);
-  xmlhttp.send();
-}
-
+/*
 function makeSublayerIdTable(serviceUrls, idTable) {
   queryServer(serviceUrls[currServerNum], true, function(R) {
     if (R.error) {
@@ -849,6 +832,7 @@ function makeSublayerIdTable(serviceUrls, idTable) {
     }
   });
 }
+*/
 
 function updateSublayerArgs(displayInfo, sublayerIDs) {    // Make arguments for specifying sublayers of map service layer
   for (let i=0; i<displayInfo.length; i++) {

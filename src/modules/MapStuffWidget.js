@@ -320,12 +320,13 @@ define([
               parentDropdown: "Subgroup",
             },
             { ddName: "SpeciesPanel",
+              inCombo: true,
               ddTitle: "Species Filter",
               htmlTemplate: '<button id="ssSpeciesPanel_Button" onclick="expandDropdownPanel(\'ssSpeciesPanel\', true)">Species Filter</button><div id="ssSpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
               subDropDowns: ["Group", "Subgroup", "Species"],
               layerSubNames: "SpeciesSpSubgroupsSpGroups",
-              where: ""
+              panelWhere: ""
             }
           ],
           speciesTableInfo : {
@@ -401,7 +402,7 @@ define([
               tabTitle: 'ShoreStation Stations',
               popupTitle: "ShoreStation Stations",
               popupExcludeCols: ["Photos", "Profile"],
-              maxLayerName: "vw_StationPoints_BiobandsSpeciesSpSubgroupsSpGroups",
+              maxLayerName: "vw_StationPoints_Biobands{SpeciesPanel}",
               LayerNameAddOn: null,     // "vw_StationPoints_",        //'Field Stations',
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssTableDownload', 'ssRegion_ddWrapper', 'ssBioband_ddWrapper', 'ssSpeciesPanel_ddWrapper', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],

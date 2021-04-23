@@ -34,4 +34,44 @@ function showSiteInfo() {
   alert("Website last modified on  " + document.lastModified);
 }
 
+function queryServer(url, returnJson, responseHandler) {
+  let xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState === 4 && this.status === 200) {
+      let R = this.responseText;
+      if (returnJson)
+        R = JSON.parse(R);
+      responseHandler(R);
+    } else {
+    }
+  };
+  let completeUrl = url;
+  if (returnJson)
+    completeUrl += "?f=pjson"
+  xmlhttp.open("GET", completeUrl, true);
+  xmlhttp.send();
+}
+
+function populateIdTable(R, idTable, onCompleteFunction) {
+  if (R.error) {
+    console.log("Map service error:  " + R.error.message);
+    return;
+  }
+  for (let l in R.layers) {
+    let o = R.layers[l];
+    idTable[o.name] = o.id.toString();
+  }
+  for (let t in R.tables) {
+    let o = R.tables[t];
+    idTable[o.name] = o.id.toString();
+  }
+  if (onCompleteFunction)
+    onCompleteFunction();
+}
+
+function makeSublayerIdTable(serviceUrl, idTable, onCompleteFunction) {
+  queryServer(serviceUrl, true, function(R) {
+    populateIdTable(R, idTable, onCompleteFunction);
+  });
+}
 
