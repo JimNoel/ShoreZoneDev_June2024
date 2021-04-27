@@ -451,7 +451,7 @@ define([
 
       this.query.orderByFields = this.orderByFields;
 
-      this.ddLayerNameAddOn = "";
+      //this.ddLayerNameAddOn = "";
 
       if (queryPars) {    // Currently only applies when a table row is clicked, in which case the appropriate WHERE clause is included
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
@@ -494,7 +494,7 @@ define([
                   item.panelWhereChanged = false;
                   getEl(item.uniqueName + "_closeButton").innerText = "Close";
                 }
-                  this.ddLayerNameAddOn += item.LayerNameAddOn;
+                //this.ddLayerNameAddOn += item.LayerNameAddOn;
 
               } else if (!item.expandPanelId) {     // This is for dropdowns which are contained within expandPanels
                 if (item.SelectedOption === "All") {
@@ -505,7 +505,7 @@ define([
                   let selOption = item.SelectedOption;
                   if (item.isAlpha)
                     selOption = "'" + selOption + "'";
-                  this.ddLayerNameAddOn += item.LayerNameAddOn;
+                  //this.ddLayerNameAddOn += item.LayerNameAddOn;
                   itemWhere = item.whereField + "=" + selOption;
                 }
               }
@@ -531,8 +531,6 @@ define([
             this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
           } else {
             this.layerName = workingLayerName;
-            if (this.LayerNameAddOn)
-              this.layerName = this.layerBaseName + this.LayerNameAddOn + this.ddLayerNameAddOn;
           }
           if (!workingLayerName)
             workingLayerName = this.layerName;
