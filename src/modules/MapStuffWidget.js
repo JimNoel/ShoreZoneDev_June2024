@@ -1045,7 +1045,8 @@ define([
           },
           customRestService: {
             serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
-            sqlTemplate: "SELECT GearBasic,Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
+// _noNULL            //sqlTemplate: "SELECT GearBasic,Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
+            sqlTemplate: "SELECT GearBasic,Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat GROUP BY {G}) AS F",
             //groupVars: "RegionID,Sp_CommonName",    // In this instance, RegionID is additional grouping field,
             //where: " WHERE RegionID=1"           //   to allow filtering by RegionID
           },
@@ -1913,11 +1914,11 @@ define([
         }
         if (maxLayerName) {
           w.maxLayerName = maxLayerName;
-          w.dynamicLayerName = true;
+          //w.dynamicLayerName = true;
         }
         else {
           w.maxLayerName = null;
-          w.dynamicLayerName = false;
+          //w.dynamicLayerName = false;
         }
         w.setHeaderItemVisibility(headerElName);
       }

@@ -421,51 +421,34 @@ define([
       view.popup.close();
     },
 
-    runQuery: function(extent, queryPars) {
-      // TODO: modify initial open of species table
-      if (extent) {
-        let pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
-        this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
-        if (this.query.spatialRelationship) {
-          this.query.geometry = new Extent({
-            spatialReference: extent.spatialReference,
-            xmin: extent.xmin + pad,
-            xmax: extent.xmax - pad,
-            ymin: extent.ymin + pad,
-            ymax: extent.ymax - pad
-          });
-        }
-      }
-      let theWhere = "";
-      let theGroup = "";
-      if (this.customRestService)
-        theGroup = this.customRestService.groupVars;
+    setDynamicQueryPars: function(theWhere, queryPars) {
+      // Build dynamic query parameters:  theWhere, query.outFields, query.orderByFields, queryTask.url
+
+      // default setting for .outFields, .orderByFields   (might be modified in buildQueryPars)
+      this.query.outFields = this.featureOutFields;
+      if (this.extraOutFields)                                                       // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
+        this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
+      this.query.orderByFields = this.orderByFields;
+
+      let workingLayerName = this.layerName;
 
       if (this.initWhere)
         theWhere = this.initWhere;
 
-      this.query.outFields = this.featureOutFields;
-      if (this.extraOutFields)                                                       // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
-        this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
-      queryComplete = false;
-
-      this.query.orderByFields = this.orderByFields;
-
-      //this.ddLayerNameAddOn = "";
-
-      if (queryPars) {    // Currently only applies when a table row is clicked, in which case the appropriate WHERE clause is included
-        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
+      // modifies theWhere
+      if (queryPars) {
+        // Currently only applies when a table row is clicked, in which case the appropriate WHERE clause is included
         //this.totalsLayerName = null;
         if (queryPars.theWhere !== null) {
           theWhere = queryPars.theWhere;
           this.initWhere = theWhere;
         }
-      } else {    // Do this only when query parameters are not already specified in the argument
+      } else {
+
         if (this.radioFilterInfo)
           theWhere = addToWhere(theWhere, this.radioFilterInfo.where);
-        if (this.headerText)
-          getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
-        let workingLayerName = null;
+
+        // modifies theWhere, workingLayerName
         if (this.dropDownInfo) {
           if (this.maxLayerName)
             workingLayerName = this.maxLayerName;
@@ -474,7 +457,6 @@ define([
             let item = ddInfo[d];
             let itemWhere = null;
             if (this.dropdownElements.includes(item.wrapperId)) {
-
               if (item.subDropDowns) {      // This is for expandPanels (containing subDropDowns)
                 let replacementName = "";
                 let i = item.subDropDowns.length - 1;
@@ -497,22 +479,15 @@ define([
                 //this.ddLayerNameAddOn += item.LayerNameAddOn;
 
               } else if (!item.expandPanelId) {     // This is for dropdowns which are contained within expandPanels
-                if (item.SelectedOption === "All") {
-                  // TODO: Get this to work for dropdowns within panels  (e.g. Groups, Subgroups, Species)
-                  //if (workingLayerName)
-                  //  workingLayerName = workingLayerName.replace(item.layerSubNames, "");
-                } else {
+                if (item.SelectedOption !== "All") {
                   let selOption = item.SelectedOption;
                   if (item.isAlpha)
                     selOption = "'" + selOption + "'";
-                  //this.ddLayerNameAddOn += item.LayerNameAddOn;
                   itemWhere = item.whereField + "=" + selOption;
                 }
               }
-
               if (!item.inCombo)       // This excludes expandPanels and their subDropDowns
                 workingLayerName = workingLayerName.replace(item.excludedNames, "");
-
             }
             if (itemWhere) {
               if (theWhere !== "")
@@ -523,45 +498,74 @@ define([
           }
         }
 
-        if (this.dynamicLayerName) {    // Do this only if layer name changes, e.g. when querying on pre-grouped views
-          if (this.optionalFieldInfo) {
-            let i = getEl(this.optionalFieldInfo.checkboxId).checked ? 1 : 0;
-            this.query.outFields = this.featureOutFields.concat(this.optionalFieldInfo.fields[this.currTab][i]);
-            this.query.orderByFields = this.query.orderByFields.concat(this.optionalFieldInfo.order[i]);
-            this.layerName = this.optionalFieldInfo.tableNames[this.currTab][i];
-          } else {
-            this.layerName = workingLayerName;
-          }
-          if (!workingLayerName)
-            workingLayerName = this.layerName;
-          this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[workingLayerName];
+        // modifies .outFields, .orderByFields, workingLayerName
+        if (this.optionalFieldInfo) {
+          // Currently, only applies to SS species table?
+          let OFI = this.optionalFieldInfo;
+          let i = getEl(OFI.checkboxId).checked ? 1 : 0;
+          this.query.outFields = this.featureOutFields.concat(OFI.fields[this.currTab][i]);
+          this.query.orderByFields = this.query.orderByFields.concat(OFI.order[i]);
+          workingLayerName = OFI.tableNames[this.currTab][i];
         }
       }
 
+      // TODO:  GVDATA_STNPHOTOS has Station in lowercase, while other tables/layers have it uppercase
+      //   Queries are case-sensitive, so either change GVDATA_STNPHOTOS to uppercase,
+      //   or use lower() function in query   (probably go with the former)
       this.query.where = theWhere;
+      this.layerName = workingLayerName;
+      if (this.dynamicLayerName)     // Do this only if layer name changes, e.g. when querying on pre-grouped views
+        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[workingLayerName];
+    },
 
-      if (this.customRestService) {
+    runQuery: function(extent, queryPars) {
+      // run query, populate headerText panel if headerText is available
+
+      queryComplete = false;
+      if (this.headerText)
+        getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
+      let theWhere = "";
+
+      if (this.customRestService) {     // using custom SQL Server REST service
         let r = this.customRestService;
-        let sql = r.sqlTemplate.replace(/{G}/g, theGroup);
-        const fVars = 'F.' + theGroup.replace(/,/g,',F.');
+        let sql = r.sqlTemplate.replace(/{G}/g, r.groupVars);
+        const fVars = 'F.' + r.groupVars.replace(/,/g,',F.');
         sql = sql.replace(/{F}/g, fVars);
         if (theWhere === "")
           theWhere = r.where;
         else {
-// TODO:  This is not right yet
           if (r.where && r.where!=="")
-              theWhere = r.where + " AND " + theWhere;
+            theWhere = r.where + " AND " + theWhere;
           else
             theWhere = "";
         }
         let theUrl = r.serviceUrl + sql + theWhere;
+        //let theUrl = r.serviceUrl.split("?")[0];
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
-      }
+        //queryServer(theUrl, false, this.queryResponseHandler.bind(this), "sql=" + sql + theWhere)     // returnJson=false -- service already returns JSON
+      } else {      // using ArcGIS map service
+        // If extent argument is supplied, set parameters for spatial query
+        if (extent) {
+          let pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
+          this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
+          if (this.query.spatialRelationship) {
+            this.query.geometry = new Extent({
+              spatialReference: extent.spatialReference,
+              xmin: extent.xmin + pad,
+              xmax: extent.xmax - pad,
+              ymin: extent.ymin + pad,
+              ymax: extent.ymax - pad
+            });
+          }
+        }
 
-      else this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
-        this.queryPending = false;
-        console.log(this.baseName + ":  QueryTask failed.");
-      }.bind(this));
+        this.setDynamicQueryPars(theWhere, queryPars);
+
+        this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
+          this.queryPending = false;
+          console.log(this.baseName + ":  QueryTask failed.");
+        }.bind(this));
+      }
     },
 
     queryResponseHandler: function(results) {

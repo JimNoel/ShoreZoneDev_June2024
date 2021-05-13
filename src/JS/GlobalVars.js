@@ -603,6 +603,17 @@ function dropdownSelectHandler(w, index) {
   ddInfo.excludedNames = "";
   if (buttonText === "[All]")
     ddInfo.excludedNames = ddInfo.layerSubNames;
+  else if (w.customRestService) {
+    // TODO: Not working right:  Service doesn't like WHERE clause!
+    //if (groupVars)
+    //  w.customRestService.groupVars = groupVars;
+    let theWhere = selOption.value;
+    if (ddInfo.isAlpha)
+      theWhere = "'" + theWhere + "'";
+    w.customRestService.where = "";
+    if (theWhere)
+      w.customRestService.where = " WHERE " + ddInfo.whereField + "=" + theWhere;
+  }
 
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);

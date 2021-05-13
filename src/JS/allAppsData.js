@@ -34,7 +34,7 @@ function showSiteInfo() {
   alert("Website last modified on  " + document.lastModified);
 }
 
-function queryServer(url, returnJson, responseHandler) {
+function queryServer(url, returnJson, responseHandler, postInfo) {
   let xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
@@ -47,9 +47,14 @@ function queryServer(url, returnJson, responseHandler) {
   };
   let completeUrl = url;
   if (returnJson)
-    completeUrl += "?f=pjson"
-  xmlhttp.open("GET", completeUrl, true);
-  xmlhttp.send();
+    completeUrl += "?f=pjson";
+  if (postInfo) {
+    xmlhttp.open("POST", completeUrl, true);
+    xmlhttp.send(postInfo);
+  } else {
+    xmlhttp.open("GET", completeUrl, true);
+    xmlhttp.send();
+  }
 }
 
 function populateIdTable(R, idTable, onCompleteFunction) {
