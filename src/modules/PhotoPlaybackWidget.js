@@ -235,8 +235,12 @@ define([
       }
 
       this.processFeatures_Widget = function(features) {
+        let hasPhotos = (this.features.length>0);
+        showPanelContents("video,photo,units", hasPhotos);
         let controlContainer = this.footerPanel.getElementsByClassName("playbackControlContainer")[0];
-        setVisible(controlContainer, this.features.length>0);
+        setVisible(controlContainer, hasPhotos);
+//        if (hasPhotos)
+//          this.sync_photos = false;
         if (this.captionFields)
           this.makeCaptions();
         this.toStart();
@@ -244,6 +248,7 @@ define([
 
 
       this.toStart = function() {
+        //*jn*/ this.sync_photos = false;
         if (this.sync_photos)
           return;             // Not allowed if syncing with video
         this.changeCurrentFeature(0);

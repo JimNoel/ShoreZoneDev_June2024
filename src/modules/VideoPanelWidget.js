@@ -281,6 +281,8 @@ define([
 
         if (this.counter === -1) {
           this.counter = 0;
+          showPanelContents("video", false);
+          updateNoFeaturesMsg([this] , "No video available");
         } else {
           showCurrentFeatures();
           startPointData = this.getFeatureAttributes(this.counter);

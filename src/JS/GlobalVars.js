@@ -78,8 +78,8 @@ function makeServiceUrls(type, name) {
 // Set server URLs (2-item arrays, containing NOAA and PS URLs)
 let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
-//let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
-let faMapServiceLayerURLs = makeServiceUrls("service", "dev/FishAtlas_v2020_dev");
+let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
+//let faMapServiceLayerURLs = makeServiceUrls("service", "dev/FishAtlas_v2020_dev");
 //let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_wViews");
 let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
 
@@ -747,6 +747,8 @@ function updateNoFeaturesMsg(widgets, status) {
     template = "<b>Too many points.  Zoom in further.</b>";
   else if (status === "zoomout")
     template = "No {1} in this view.<br><br>Zoom out or pan to see {1}.";
+  else
+    template = status;
   widgets.forEach(function(w, index, array) {
     setMessage(w.disabledMsgDivName, template.replace(/\{1\}/g, w.disabledMsgInfix));
   });
