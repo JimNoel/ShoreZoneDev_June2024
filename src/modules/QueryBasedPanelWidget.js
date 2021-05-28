@@ -568,6 +568,27 @@ define([
       }
     },
 
+    upDateDropdowns: function(currDDinfo) {
+      let ddInfo = this.dropDownInfo;
+      for (let d = 0; d < ddInfo.length; d++) {
+        let D = ddInfo[d];
+        if (D.liveUpdate && D!==currDDinfo) {
+          let theWhere = this.query.where;
+
+          // Remove current dropdown from WHERE clause
+          let A = theWhere.split(" AND ");
+          for (let i=0; i<A.length; i++) {
+            if (A[i].indexOf(D.whereField) !== -1)
+              A.splice(i);
+          }
+          theWhere = A.join(" AND ");
+
+          let selectedOption = D.SelectedOption;
+          this.filterDropdown(D.ddName, theWhere);
+        }
+      }
+    },
+
     queryResponseHandler: function(results) {
       this.queryPending = false;
       if (this.customRestService)

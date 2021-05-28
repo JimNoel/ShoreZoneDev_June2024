@@ -567,8 +567,60 @@ define([
         this.setTotals(features);
       };
 
+      this.processDropdownQueryResults = function(results, ddItem, w) {
+        ddItem.options = [];    // ddItem.initialOption;
+        let options = ddItem.options;
+        options.push(ddItem.initialOption[0]);
+        let ddFields = ddItem.ddOutFields;
+        for (let i=0;  i<results.features.length; i++) {
+          let a = results.features[i].attributes;
+          let v = a[ddFields[1]];
+          let extentStr = null;
+          if (a["Envelope"])
+            extentStr = a["Envelope"];
+          let theLabel = a[ddFields[0]];
+          if (ddItem.labelTemplate) {
+            theLabel = "";
+            let arr = ddItem.labelTemplate.split(",");
+            for (let j=0; j<arr.length; j++) {
+              if (arr[j].startsWith("*")) {
+                let s = a[arr[j].slice(1)];
+                if (s)    // Avoids adding "null" if s is null
+                  theLabel += s;
+              }
+              else
+                theLabel += arr[j];
+            }
+          }
+          options.push({
+            label: theLabel,
+            value: v,
+            extent: extentStr
+          });
+        }
+        w.makeDropdownOptionsHtml(ddItem)
+      };
 
       this.queryDropDownOptions = function(ddItem, where, comSci) {
+
+        if (ddItem.customRestService) {
+          // This section handles queries using the new custom REST service
+          let R = ddItem.customRestService;
+          let theUrl = R.serviceUrl + R.sqlTemplate;
+          if (where)
+            where = " WHERE " + where;
+          else
+            where = "";
+          theUrl = theUrl.replace("{w}", where);
+          queryServer(theUrl, false, function(results) {
+            results = JSON.parse(results);
+            this.processDropdownQueryResults(results, ddItem, this);
+            console.log("queryDropDownOptions response");
+          }.bind(this));
+          return;
+        }
+
+        // This remaining code handles the old style using ArcGIS mapping service
         let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
         let queryTask = new QueryTask(subLayerURL);
         let query = new Query();
@@ -585,40 +637,11 @@ define([
         query.where = ddItem.ddWhere;
         queryTask.query = query;
         queryTask.execute(query).then(function(results){
-          ddItem.options = [];    // ddItem.initialOption;
-          let options = ddItem.options;
-          options.push(ddItem.initialOption[0]);
-          let ddFields = ddItem.ddOutFields;
-          for (let i=0;  i<results.features.length; i++) {
-            let a = results.features[i].attributes;
-            let v = a[ddFields[1]];
-            let extentStr = null;
-            if (a["Envelope"])
-              extentStr = a["Envelope"];
-            let theLabel = a[ddFields[0]];
-            if (ddItem.labelTemplate) {
-              theLabel = "";
-              let arr = ddItem.labelTemplate.split(",");
-              for (let j=0; j<arr.length; j++) {
-                if (arr[j].startsWith("*")) {
-                  let s = a[arr[j].slice(1)];
-                  if (s)    // Avoids adding "null" if s is null
-                    theLabel += s;
-                }
-                else
-                  theLabel += arr[j];
-              }
-            }
-            options.push({
-              label: theLabel,
-              value: v,
-              extent: extentStr
-            });
-          }
-          this.w.makeDropdownOptionsHtml(ddItem)
+          this.w.processDropdownQueryResults(results, this.ddItem, this.w);
         }.bind({ddItem: ddItem, w: this}))/*.else({
           console.log("Query error in queryDropDownOptions");
         })*/;
+
       };
 
 
@@ -629,7 +652,10 @@ define([
           let extentStr = '';
           if (options[i].extent)
             extentStr = 'extent="' + options[i].extent + '" ';
-          theHtml += '<option ' + extentStr + 'value="' + options[i].value + '">' + options[i].label + '</option>';
+          let closeQuote = '"';
+          if (options[i].value === ddItem.SelectedOption)
+            closeQuote += " selected";
+          theHtml += '<option ' + extentStr + 'value="' + options[i].value + closeQuote + '>' + options[i].label + '</option>';
         }
         getEl(ddItem.ddId).innerHTML = theHtml;
       };
@@ -746,7 +772,7 @@ define([
               ddItem.wrapperDom.innerHTML = '&emsp;<LABEL class="boldLabel">' + ddTitle + ': </LABEL>';
               ddItem.wrapperDom.appendChild(ddItem.selectDom);
               ddItem.wrapperDom.innerHTML += '&emsp;';
-              if (ddItem.subLayerName) {
+              if (ddItem.subLayerName || ddItem.customRestService) {
                 this.queryDropDownOptions(ddItem, null);
               } else {
                 this.makeDropdownOptionsHtml(ddItem);

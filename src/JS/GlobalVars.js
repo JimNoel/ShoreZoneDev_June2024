@@ -124,6 +124,8 @@ let ssDisplayInfo = [
   {title: "vw_StationPoints_BiobandsSpecies", visible: false, listMode: "hide"}
 ];
 
+let gearDDtemplate = "SELECT GearBasic, GearBasic AS GearBasic2 FROM vw_FishCounts_flat {w} GROUP BY GearBasic ORDER BY GearBasic";
+
 let lastSZExtent = null;
 let bhDiff = window.outerHeight - window.innerHeight;
 // Used to detect possible appearance/disappearance of file downloads bar.  (May also be affected by browser maximize, or appearance/disappearance of other browser elements.)
@@ -241,6 +243,14 @@ if (siteParsJSON !== "") {
   siteParsJSON = '{"' + siteParsJSON + '"}';
   let sitePars = JSON.parse(siteParsJSON);
 
+  // If parameters contains "dev=1", then use NOAA server,
+  //   and (later) modify the FA URL to use the development (complete) version of the map service
+  let addDev = false;
+  if (sitePars["dev"]) {
+    sitePars["server"] = "noaa";
+    addDev = true;
+  }
+
   if (sitePars["server"]) {
     currServerNum = serverNames.indexOf(sitePars["server"]);
     if (currServerNum !== -1) {
@@ -249,6 +259,8 @@ if (siteParsJSON !== "") {
     }
     else
       currServerNum = dfltServerNum;
+    if (addDev)
+      faMapServiceLayerURLs[currServerNum] = faMapServiceLayerURLs[currServerNum].replace("services/","services/dev/").replace("/MapServer","_dev/MapServer");
   }
 
   // Use alternate offline app URL, if present in parameters
@@ -617,8 +629,6 @@ function dropdownSelectHandler(w, index) {
 
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);
-    //expandPanel.excludedNames = expandPanel.layerSubNames.replace(ddInfo.layerSubNames, "");
-    //expandPanel.LayerNameAddOn = ddInfo.LayerNameAddOn;
     if (buttonText === "[All]") {
       buttonText = "[All species]";
       if (ddInfo.parentDropdown) {      // Fall back to higher category, call function again recursively
@@ -653,6 +663,7 @@ function dropdownSelectHandler(w, index) {
   }
 
   w.runQuery(view.extent);
+  w.upDateDropdowns(ddInfo);
 }
 
 // TODO:  Generalize, so not specific to szUnitsWidget

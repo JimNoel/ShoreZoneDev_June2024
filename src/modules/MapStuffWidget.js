@@ -747,22 +747,15 @@ define([
 
             { ddName: "Gear",
               layerSubNames: "Gear",
-              options: [
-                { label: "All", value: "All" },
-                { label: "beach seine", value: "beach seine" },
-                { label: "cast net", value: "cast net" },
-                { label: "crab pot", value: "crab pot" },
-                { label: "dip net", value: "dip net" },
-                { label: "fyke net", value: "fyke net" },
-                { label: "gillnet", value: "gillnet" },
-                { label: "hook and line", value: "hook and line" },
-                { label: "jig", value: "jig" },
-                { label: "minnow trap", value: "minnow trap" },
-                { label: "purse seine", value: "purse seine" },
-                { label: "trawl", value: "trawl" }
-              ],
+              ddOutFields: ["GearBasic", "GearBasic2"],
+              customRestService: {
+                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                sqlTemplate: gearDDtemplate
+              },
+              initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "GearBasic",
+              liveUpdate: true,
               isAlpha: true
             },
 
@@ -982,23 +975,15 @@ define([
           //LayerNameAddOn: "",
           dropDownInfo: [
             { ddName: "Gear",
-              //LayerNameAddOn: "Gear",
               layerSubNames: "Gear",
-              options: [
-                { label: "All", value: "All" },
-                { label: "beach seine", value: "beach seine" },
-                { label: "cast net", value: "cast net" },
-                { label: "crab pot", value: "crab pot" },
-                { label: "dip net", value: "dip net" },
-                { label: "fyke net", value: "fyke net" },
-                { label: "gillnet", value: "gillnet" },
-                { label: "hook and line", value: "hook and line" },
-                { label: "jig", value: "jig" },
-                { label: "minnow trap", value: "minnow trap" },
-                { label: "purse seine", value: "purse seine" },
-                { label: "trawl", value: "trawl" }
-              ],
+              ddOutFields: ["GearBasic", "GearBasic2"],
+              customRestService: {
+                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                sqlTemplate: gearDDtemplate
+              },
+              initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
+              liveUpdate: true,
               whereField: "GearBasic",
               isAlpha: true
             }
@@ -1246,7 +1231,8 @@ define([
 
     // When "stationary" property changes to True, there is a new extent, so handle the extent change
     view.watch("stationary", function(newValue, oldValue, property, object) {
-      if (siteTabs.visManager.currClassName !== "sz")
+      //if (siteTabs.visManager.currClassName === "ss")   // Allows update of FA points, as well as SZ
+      if (siteTabs.visManager.currClassName !== "sz")     // Original response to just SZ
         return;
       if (view.stationary) {
         let bypass = false;
