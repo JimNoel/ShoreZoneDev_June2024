@@ -570,6 +570,8 @@ define([
       this.processDropdownQueryResults = function(results, ddItem, w) {
         ddItem.options = [];    // ddItem.initialOption;
         let options = ddItem.options;
+        if (ddItem.summaryOption)
+          options.push(ddItem.summaryOption);
         options.push(ddItem.initialOption[0]);
         let ddFields = ddItem.ddOutFields;
         for (let i=0;  i<results.features.length; i++) {
@@ -759,7 +761,8 @@ define([
             ddItem.wrapperId = ddItem.uniqueName + "_ddWrapper";
             //let ddSpanId = ddItem.ddId.replace("_","Span_");
             ddItem.wrapperDom = makeHtmlElement("span", ddItem.wrapperId, "dropdown");   // The SPAN for the dropdown, that will be added to the header
-            ddItem.excludedNames = ddItem.layerSubNames;
+            if (ddItem.layerSubNames)     // Only do if not using customRestService
+              ddItem.excludedNames = ddItem.layerSubNames;
             if (!ddItem.expandPanelId)      // If it's part of an expand panel, element will be added to separate dropdown dialog later
               headerContent.appendChild(ddItem.wrapperDom);    // add the wrapper for the dropdown to the header
             let args = this.objName + ',' + d;
@@ -773,7 +776,8 @@ define([
               ddItem.wrapperDom.appendChild(ddItem.selectDom);
               ddItem.wrapperDom.innerHTML += '&emsp;';
               if (ddItem.subLayerName || ddItem.customRestService) {
-                this.queryDropDownOptions(ddItem, null);
+                if (!ddItem.noInitialQuery)
+                  this.queryDropDownOptions(ddItem, null);
               } else {
                 this.makeDropdownOptionsHtml(ddItem);
               }

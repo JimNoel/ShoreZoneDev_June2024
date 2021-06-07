@@ -465,7 +465,8 @@ define([
                   if (subDropDown.SelectedOption === "All")
                     i += -1;
                   else {
-                    replacementName = subDropDown.layerSubNames;
+                    if (ddItem.layerSubNames)     // Only do if not using customRestService
+                      replacementName = subDropDown.layerSubNames;
                     i = -1;
                   }
                 } while (i > -1);
@@ -568,12 +569,14 @@ define([
       }
     },
 
-    upDateDropdowns: function(currDDinfo) {
+    upDateDropdowns: function(currDDinfo, where) {
       let ddInfo = this.dropDownInfo;
       for (let d = 0; d < ddInfo.length; d++) {
         let D = ddInfo[d];
-        if (D.liveUpdate && D!==currDDinfo) {
+        if (D.liveUpdate && D!==currDDinfo && this.visibleHeaderElements.includes(D.wrapperId)) {
           let theWhere = this.query.where;
+          if (where)
+            theWhere = where;
 
           // Remove current dropdown from WHERE clause
           let A = theWhere.split(" AND ");

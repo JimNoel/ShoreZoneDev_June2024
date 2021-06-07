@@ -912,7 +912,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
-                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2,"vw_CatchStats_SitesGearSpecies","SiteID,GearBasic,Sp_CommonName"',
+                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2,"vw_CatchStats_SitesGearSpecies","SiteID,GearBasic,Sp_CommonName",["faSpTableDates_ddWrapper"]',
                   html:   spTableTemplate
                 },
                 SiteID: {
@@ -970,12 +970,12 @@ define([
           headerDivName:  "faSpTableHeaderDiv",
           footerDivName:  "faSpTableFooterDiv",
           visibleHeaderElements: ['faSpTableGear_ddWrapper', 'faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
-          dropdownElements: ['faSpTableGear_ddWrapper'],
+          dropdownElements: ['faSpTableGear_ddWrapper', 'faSpTableEvents_ddWrapper'],
           //dynamicLayerName: true,
           //LayerNameAddOn: "",
           dropDownInfo: [
             { ddName: "Gear",
-              layerSubNames: "Gear",
+              //layerSubNames: "Gear",    // Not needed here since the parent Species table is using a customRestService
               ddOutFields: ["GearBasic", "GearBasic2"],
               customRestService: {
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
@@ -986,6 +986,19 @@ define([
               liveUpdate: true,
               whereField: "GearBasic",
               isAlpha: true
+            },
+            { ddName: "Dates",
+              ddOutFields: ["Date", "EventID"],
+              customRestService: {
+                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                sqlTemplate: "SELECT EventID,format(Date,'MM/dd/yyyy') AS Date FROM vw_FishCounts_flat {w} GROUP BY EventID,Date ORDER BY Date"
+              },
+              summaryOption: { label: "Species Sum", value: "Sum" },
+              initialOption: [ { label: "[All]", value: "All" } ],
+              SelectedOption: "Sum",
+              liveUpdate: true,
+              whereField: "EventID",
+              noInitialQuery: true
             }
           ],
           featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
@@ -1875,7 +1888,10 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName, groupVars) {
+    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName, groupVars, addlVisibleHeaders) {
+      if (addlVisibleHeaders)
+        w.visibleHeaderElements = w.visibleHeaderElements.concat(addlVisibleHeaders);
+      w.setHeaderItemVisibility();
       if (currTab >= 0)
         w.currTab = currTab;
       if (headerText)
@@ -1910,6 +1926,8 @@ define([
       }
       setDisplay(w.draggablePanelId, true);
       w.runQuery(null);
+      for (let d=0; d<w.dropDownInfo.length; d++)
+        w.upDateDropdowns(w.dropDownInfo[d], theWhere);
     },
 
     constructor: function (kwArgs) {
