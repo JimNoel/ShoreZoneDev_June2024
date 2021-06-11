@@ -650,6 +650,7 @@ define([
       this.makeDropdownOptionsHtml = function(ddItem) {
         let options = ddItem.options;
         let theHtml = '';
+        ddItem.SelectedOption = ddItem.initialSelectedOption;
         for (i in options) {
           let extentStr = '';
           if (options[i].extent)
@@ -775,6 +776,7 @@ define([
               ddItem.wrapperDom.innerHTML = '&emsp;<LABEL class="boldLabel">' + ddTitle + ': </LABEL>';
               ddItem.wrapperDom.appendChild(ddItem.selectDom);
               ddItem.wrapperDom.innerHTML += '&emsp;';
+              ddItem.initialSelectedOption = ddItem.SelectedOption
               if (ddItem.subLayerName || ddItem.customRestService) {
                 if (!ddItem.noInitialQuery)
                   this.queryDropDownOptions(ddItem, null);

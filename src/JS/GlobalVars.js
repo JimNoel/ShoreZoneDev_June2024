@@ -601,6 +601,19 @@ function cbCheckedHandler(w) {
   w.runQuery(view.extent);  //, {theWhere: where});
 }
 
+function whereFromDDInfo(ddInfo) {
+  let ddElement = getEl(ddInfo.ddId);
+  let selOption = ddInfo.options[ddElement.selectedIndex];
+  let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name (if contains " - ")
+  if (["[All]", "Sum"].includes(buttonText))
+    return "";
+  let theWhere = selOption.value;
+  if (ddInfo.isAlpha)
+    theWhere = "'" + theWhere + "'";
+  theWhere = ddInfo.whereField + "=" + theWhere;
+  return theWhere;
+}
+
 function dropdownSelectHandler(w, index) {
   let ddInfo = index;     // allows using actual ddInfo object for "index", rather than numeric index
   if (typeof index !== "object")
@@ -613,19 +626,23 @@ function dropdownSelectHandler(w, index) {
   if (newExtent)
     mapStuff.gotoExtent(newExtent);
   ddInfo.excludedNames = "";
+  /*
+    let r = w.customRestService;
+    if (r)
+      r.where = r.baseWhere;
+  */
   if (buttonText === "[All]")
     ddInfo.excludedNames = ddInfo.layerSubNames;
-  else if (w.customRestService) {
+/*
+  else if (r) {
     // TODO: Not working right:  Service doesn't like WHERE clause!
-    //if (groupVars)
-    //  w.customRestService.groupVars = groupVars;
     let theWhere = selOption.value;
     if (ddInfo.isAlpha)
       theWhere = "'" + theWhere + "'";
-    w.customRestService.where = "";
     if (theWhere)
-      w.customRestService.where = " WHERE " + ddInfo.whereField + "=" + theWhere;
+      r.where = " WHERE " + ddInfo.whereField + "=" + theWhere;
   }
+*/
 
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);

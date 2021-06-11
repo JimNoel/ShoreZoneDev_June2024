@@ -793,7 +793,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,"vw_CatchStats_Species","vw_CatchStats_",null,"All Regions",null,0,"vw_CatchStats_GearSpecies","GearBasic,Sp_CommonName"'
+            args: 'faSpTableWidget,null,null,"All Regions",null,0,null,"Sp_CommonName"'
           },
           currTab: 0,
           featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
@@ -838,7 +838,7 @@ define([
                   title:  "Fish Catch",
                   colWidth:  10,
                   plugInFields: ["RegionID", "Region"],
-                  args: 'faSpTableWidget,"vw_CatchStats_RegionsSpecies","vw_CatchStats_Regions","RegionID={0}","{1}",null,1,"vw_CatchStats_RegionsGearSpecies","RegionID,GearBasic,Sp_CommonName"',
+                  args: 'faSpTableWidget,null,"RegionID={0}","{1}",null,1,null,"Sp_CommonName"',
                   html:   spTableTemplate
                 },
                 SelRegionBtn: {
@@ -912,7 +912,8 @@ define([
                   title:  "Fish Catch",
                   colWidth:  20,
                   plugInFields: ["SiteID", "Site"],
-                  args: 'faSpTableWidget,"vw_CatchStats_SitesSpecies","vw_CatchStats_Sites","SiteID={0}","{1}",null,2,"vw_CatchStats_SitesGearSpecies","SiteID,GearBasic,Sp_CommonName",["faSpTableDates_ddWrapper"]',
+                  //args: 'faSpTableWidget,null,null,"SiteID={0}","{1}",null,2,null,"SiteID,GearBasic,Sp_CommonName",["faSpTableDates_ddWrapper"]',
+                  args: 'faSpTableWidget,null,"SiteID={0}","{1}",null,2,null,"Sp_CommonName",["faSpTableDates_ddWrapper"]',
                   html:   spTableTemplate
                 },
                 SiteID: {
@@ -981,23 +982,27 @@ define([
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
                 sqlTemplate: gearDDtemplate
               },
+              summaryOption: { label: "[Combined]", value: "Sum" },
               initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               liveUpdate: true,
               whereField: "GearBasic",
+              columnField: "GearBasic",
               isAlpha: true
             },
             { ddName: "Dates",
-              ddOutFields: ["Date", "EventID"],
+              ddOutFields: ["DateStr", "EventID"],
+              // TODO: After service is republished, just use "DateStr" instead of "format(..."
               customRestService: {
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
-                sqlTemplate: "SELECT EventID,format(Date,'MM/dd/yyyy') AS Date FROM vw_FishCounts_flat {w} GROUP BY EventID,Date ORDER BY Date"
+                sqlTemplate: "SELECT EventID,DateStr,Date FROM vw_FishCounts_flat {w} GROUP BY EventID,DateStr,Date ORDER BY Date"
               },
-              summaryOption: { label: "Species Sum", value: "Sum" },
+              summaryOption: { label: "[Combined]", value: "Sum" },
               initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "Sum",
               liveUpdate: true,
               whereField: "EventID",
+              columnField: "DateStr",
               noInitialQuery: true
             }
           ],
@@ -1043,10 +1048,9 @@ define([
           },
           customRestService: {
             serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
-// _noNULL            //sqlTemplate: "SELECT GearBasic,Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNULL GROUP BY {G}) AS F",
-            sqlTemplate: "SELECT GearBasic,Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat GROUP BY {G}) AS F",
-            //groupVars: "RegionID,Sp_CommonName",    // In this instance, RegionID is additional grouping field,
-            //where: " WHERE RegionID=1"           //   to allow filtering by RegionID
+            innerSQL: "SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat {W} GROUP BY {G}",
+            outerSQL: "SELECT {G},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
+            //sqlTemplate: "SELECT GearBasic,Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat GROUP BY {G}) AS F",
           },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.
@@ -1888,7 +1892,7 @@ define([
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, tableName, totalsTableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName, groupVars, addlVisibleHeaders) {
+    openSpeciesTable: function(w, tableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName, groupVars, addlVisibleHeaders) {
       if (addlVisibleHeaders)
         w.visibleHeaderElements = w.visibleHeaderElements.concat(addlVisibleHeaders);
       w.setHeaderItemVisibility();
@@ -1897,12 +1901,14 @@ define([
       if (headerText)
         w.headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
       if (w.customRestService) {
+        let r = w.customRestService;
+        if (r.outerSQL)
+          r.sqlTemplate = r.outerSQL.replace("{innerSQL}",r.innerSQL);
         if (groupVars)
-          w.customRestService.groupVars = groupVars;
-        w.customRestService.where = "";
+          r.groupVars = groupVars;
+        r.baseWhere = "";
         if (theWhere)
-          w.customRestService.where = " WHERE " + theWhere;
-
+          r.baseWhere = theWhere;
       } else  {
         w.layerName = tableName;
         w.queryTask.url = w.mapServiceLayer.url + "/" + w.sublayerIDs[w.layerName];
@@ -1925,9 +1931,12 @@ define([
         w.setHeaderItemVisibility(headerElName);
       }
       setDisplay(w.draggablePanelId, true);
+      for (let d=0; d<w.dropDownInfo.length; d++) {
+        let ddItem = w.dropDownInfo[d];
+        ddItem.SelectedOption = ddItem.initialSelectedOption;
+        w.upDateDropdowns(ddItem, theWhere);
+      }
       w.runQuery(null);
-      for (let d=0; d<w.dropDownInfo.length; d++)
-        w.upDateDropdowns(w.dropDownInfo[d], theWhere);
     },
 
     constructor: function (kwArgs) {

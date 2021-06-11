@@ -529,9 +529,27 @@ define([
 
       if (this.customRestService) {     // using custom SQL Server REST service
         let r = this.customRestService;
-        let sql = r.sqlTemplate.replace(/{G}/g, r.groupVars);
-        const fVars = 'F.' + r.groupVars.replace(/,/g,',F.');
-        sql = sql.replace(/{F}/g, fVars);
+        let groupVars = r.groupVars;
+        theWhere = r.baseWhere;
+        if (this.dropDownInfo) {
+          let D = this.dropDownInfo;
+          let ddFields = "";
+          for (let d=0; d<D.length; d++) {
+            if (this.visibleHeaderElements.includes(D[d].wrapperId)) {
+              if (D[d].SelectedOption==="All") {
+                if (D[d].columnField)
+                  ddFields += D[d].columnField + ",";
+              } else if (D[d].SelectedOption!=="Sum") {
+                if (theWhere)
+                  theWhere += " AND ";
+                theWhere += whereFromDDInfo(D[d]);
+              }
+            }
+          }
+          groupVars = ddFields + groupVars;
+        }
+        let sql = r.sqlTemplate.replace(/{G}/g, groupVars);
+/*
         if (theWhere === "")
           theWhere = r.where;
         else {
@@ -540,10 +558,13 @@ define([
           else
             theWhere = "";
         }
-        let theUrl = r.serviceUrl + sql + theWhere;
-        //let theUrl = r.serviceUrl.split("?")[0];
+*/
+        if (theWhere !== "")
+          theWhere = "WHERE " + theWhere;
+        sql = sql.replace("{W}", theWhere);
+        let theUrl = r.serviceUrl + sql;
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
-        //queryServer(theUrl, false, this.queryResponseHandler.bind(this), "sql=" + sql + theWhere)     // returnJson=false -- service already returns JSON
+
       } else {      // using ArcGIS map service
         // If extent argument is supplied, set parameters for spatial query
         if (extent) {
@@ -585,8 +606,6 @@ define([
               A.splice(i);
           }
           theWhere = A.join(" AND ");
-
-          let selectedOption = D.SelectedOption;
           this.filterDropdown(D.ddName, theWhere);
         }
       }
