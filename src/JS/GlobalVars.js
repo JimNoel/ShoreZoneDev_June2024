@@ -680,7 +680,7 @@ function dropdownSelectHandler(w, index) {
   }
 
   w.runQuery(view.extent);
-  w.upDateDropdowns(ddInfo);
+  //w.upDateDropdowns(ddInfo, w.baseWhere);
 }
 
 // TODO:  Generalize, so not specific to szUnitsWidget

@@ -564,6 +564,7 @@ define([
         sql = sql.replace("{W}", theWhere);
         let theUrl = r.serviceUrl + sql;
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
+        this.upDateDropdowns(ddInfo, theWhere);
 
       } else {      // using ArcGIS map service
         // If extent argument is supplied, set parameters for spatial query

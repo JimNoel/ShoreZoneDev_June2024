@@ -87,6 +87,7 @@ define([
       this.store = null;
       this.grid = null;
       this.selectedRow = null;
+      this.origVisibleHeaderElements = this.visibleHeaderElements
 
       this.downloadTableData = function() {
         if (!this.downloadExcludeFields) {

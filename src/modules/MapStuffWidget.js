@@ -1893,6 +1893,7 @@ define([
     },
 
     openSpeciesTable: function(w, tableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName, groupVars, addlVisibleHeaders) {
+      w.visibleHeaderElements = w.origVisibleHeaderElements
       if (addlVisibleHeaders)
         w.visibleHeaderElements = w.visibleHeaderElements.concat(addlVisibleHeaders);
       w.setHeaderItemVisibility();
