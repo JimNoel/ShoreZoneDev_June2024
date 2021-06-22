@@ -2,7 +2,7 @@
   --NoaaBgColor: #6884B3;
   --panelBgColor: #ccc;
   --tableHeaderBgColor: navajowhite;
-  --tableHeaderTabsColor: cornsilk;
+  --tableHeaderTabsColor: #A1BCE3;      /*cornsilk;*/
 }
 
 html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: var(--NoaaBgColor);
@@ -126,7 +126,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
   .tablePanelEnabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4;
       visibility: visible; display: flex; flex-flow: column;}
     .tableHeaderDiv  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 25px;}
-    .tableHeaderDivEP  {padding: 0; overflow:hidden; background-color: var(--tableHeaderBgColor); flex: 0 1 44px;}
+    .tableHeaderDivEP  {padding: 0; overflow:hidden; /*border-top: 1px solid #4e4e4e;*/ background-color: var(--tableHeaderBgColor); flex: 0 1 44px;}
     .tableContainerDiv  {padding: 0; overflow:hidden; background-color:rgb(208,215,225); flex: 1 1 auto;}
     .tableFooterDiv  {padding: 0; overflow:hidden; background-color: #EEF5FF; flex: 0 1 31px;}
     .tableFooterDivEP  {padding: 0; overflow:hidden; background-color: #EEF5FF; flex: 0 1 50px;}
@@ -144,6 +144,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 .tableHeaderTabs button, .tableHeaderTabsEP button {
     background-color: var(--tableHeaderTabsColor);
     border: none;
+    /*border-bottom: #4e4e4e;*/
     outline: none;
     cursor: pointer;
     border-top-left-radius: 5px;
@@ -158,6 +159,8 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 /* Create an active/current tablink class */
 .tableHeaderTabs button.active, .tableHeaderTabsEP button.active {
     background-color: var(--tableHeaderBgColor);
+    /*z-index: 50;*/
+    border: 1px solid #4e4e4e;
 }
 
 

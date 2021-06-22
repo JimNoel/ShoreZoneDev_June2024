@@ -872,7 +872,7 @@ define([
               parentAreaType: 'Regions',
               visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
-              featureOutFields: ["Region", "Locale", "Site", "Latitude", "Longitude", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
+              featureOutFields: ["Region", "Locale", "Site", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
@@ -886,14 +886,6 @@ define([
                 },
                 Region: { colWidth: 30 },
                 Site: { colWidth: 15 },
-                Latitude: {
-                  colWidth: 20,
-                  numDecimals: 4
-                },
-                Longitude: {
-                  colWidth: 20,
-                  numDecimals: 4
-                },
                 Habitat: { colWidth: 20 },
                 Hauls: {
                   colWidth: 15,
