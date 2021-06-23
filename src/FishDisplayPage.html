@@ -43,7 +43,7 @@
       var whereClause = "SPCODE='" + pars["SPCODE"] + "'";
 
       let serviceUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas_v2020/MapServer";
-      let layerName = "HTMLCODE_FISHPAGES";
+      let subLayerName = "HTMLCODE_FISHPAGES";
       let layerNum = null;
       let idTable = {};
 
@@ -60,7 +60,7 @@
       }
 
       makeSublayerIdTable(serviceUrl, idTable, function() {
-        layerNum = idTable[layerName];
+        layerNum = idTable[subLayerName];
         buildPage();
       })
 

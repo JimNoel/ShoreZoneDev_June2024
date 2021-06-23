@@ -6,7 +6,7 @@
  *
  * Constructor arguments:
  *    mapServiceLayer: MapImageLayer
- *    layerName: String     name of a sublayer of mapServiceLayer
+ *    subLayerName: String     name of a sublayer of mapServiceLayer
  *    panel: ContentPane    panel where processed query results are displayed
  *    -- perhaps other args for outFields and where clause?
  */
@@ -247,7 +247,7 @@ define([
   },
 
 
-    //constructor: function(/*MapImageLayer*/ mapServiceLayer, /*String*/ layerName, /*String*/ symbolURL){
+    //constructor: function(/*MapImageLayer*/ mapServiceLayer, /*String*/ subLayerName, /*String*/ symbolURL){
     constructor: function(/*Object*/ kwArgs){
         
       lang.mixin(this, kwArgs);

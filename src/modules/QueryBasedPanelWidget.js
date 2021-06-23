@@ -6,7 +6,7 @@
  *
  * Constructor arguments:
  *    mapServiceLayer: MapImageLayer
- *    layerName: String     name of a sublayer of mapServiceLayer
+ *    subLayerName: String     name of a sublayer of mapServiceLayer
  *    panel: ContentPane    panel where processed query results are displayed
  *    -- perhaps other args for outFields and where clause?
  */
@@ -78,13 +78,13 @@ define([
         if (!this.backgroundLayers)
           return;
         let displayLayers = this.backgroundLayers.slice();
-        displayLayers.push(this.layerName);
+        displayLayers.push(this.subLayerName);
         if (this.filterBgLayer  && (this.query.where !== ""))
           displayLayers.push(this.filterBgLayer);
         let layers = this.mapServiceLayer.sublayers.items;
         for (let i=0; i<layers.length; i++) {
           layers[i].visible = displayLayers.includes(layers[i].title);
-          if (layers[i].title === this.layerName)
+          if (layers[i].title === this.subLayerName)
             layers[i].definitionExpression = this.query.where;
         }
       };
@@ -237,7 +237,7 @@ define([
       if (!this.noQuery) {
         if (!this.orderByFields)
           this.orderByFields = [];      // If orderByFields hasn't been specified in MapStuffWidget, then default to empty array
-        let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.layerName];
+        let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.subLayerName];
         this.queryTask = new QueryTask(subLayerURL);
         let q = new Query();
         q.returnGeometry = true;
@@ -430,7 +430,7 @@ define([
         this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
       this.query.orderByFields = this.orderByFields;
 
-      let workingLayerName = this.layerName;
+      let workingLayerName = this.subLayerName;
 
       if (this.initWhere)
         theWhere = this.initWhere;
@@ -514,7 +514,7 @@ define([
       //   Queries are case-sensitive, so either change GVDATA_STNPHOTOS to uppercase,
       //   or use lower() function in query   (probably go with the former)
       this.query.where = theWhere;
-      this.layerName = workingLayerName;
+      this.subLayerName = workingLayerName;
       if (this.dynamicLayerName)     // Do this only if layer name changes, e.g. when querying on pre-grouped views
         this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[workingLayerName];
     },

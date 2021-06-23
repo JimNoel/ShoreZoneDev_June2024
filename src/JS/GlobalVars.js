@@ -1231,20 +1231,6 @@ function addToWhere(where, newWhere) {
  return L.split("/");
  }
 
-function getSubLayerID(mapImageLayer, subLayerName) {
-  let li = mapImageLayer.allSublayers;
-  for (let i=0; i<li.length; i++) {
-    //if (li.items[i].title.indexOf(subLayerName) !== -1)      // option to find when layer has DB prefixes
-    if (li.items[i].title === subLayerName)
-      return li.items[i].id;
-  }
-  return -1;
-}
-
-function getSubLayerUrl(mapImageLayer, subLayerName) {
-  return this.mapServiceLayer.url + "/" + getSubLayerID(mapImageLayer, subLayerName).toString();
-}
-
 function simulateMouseEvent(el, evType) {
   let event = new MouseEvent(evType, {
     view: window,

@@ -118,7 +118,7 @@ define([
         disabledMsgDivName: "disabledMsg_video",
         //displayDivName: "#videoImageContainer",
         mapServiceLayer: szMapServiceLayer,
-        layerName: "1s",
+        subLayerName: "1s",
         layerPath: "Video Flightline/1s",
 
         // TODO:  Set up filter to query subset of points, when full set is greater than the service limit
@@ -161,7 +161,7 @@ define([
         disabledMsgInfix: "units",
         disabledMsgDivName: "disabledMsg_units",
         mapServiceLayer: szMapServiceLayer,
-        layerName: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
+        subLayerName: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
         layerPath: "Mapped Shoreline",      // "AK_Unit_lines_wAttrs",
         spatialRelationship: "contains",
         idField: "PHY_IDENT",
@@ -331,7 +331,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Species Data',
-            args: 'ssSpTableWidget,"vw_AlaskaSpecies",null,"","All Regions",null,0'
+            args: 'ssSpTableWidget,"vw_AlaskaSpecies","","All Regions",null,0'
           },
           currTab: 0,
           tabInfo: [
@@ -372,7 +372,7 @@ define([
                   title:  "Species Data",
                   colWidth:  20,
                   plugInFields: ["RegionalID", "Region"],
-                  args: 'ssSpTableWidget,"vw_RegionSpecies",null,"RegionalID=&#039;{0}&#039;","{1}",null,1',
+                  args: 'ssSpTableWidget,"vw_RegionSpecies","RegionalID=&#039;{0}&#039;","{1}",null,1',
                   html:   spTableTemplate
                 },
                 SelRegionBtn: {
@@ -455,7 +455,7 @@ define([
                   title:  "Species",
                   colWidth:  20,
                   plugInFields: ["station", "station"],
-                  args: 'ssSpTableWidget,"vw_StationSpecies",null,"station=&#039;{0}&#039;","{1}",ssSpTableWidget.optionalFieldInfo,2',
+                  args: 'ssSpTableWidget,"vw_StationSpecies","station=&#039;{0}&#039;","{1}",ssSpTableWidget.optionalFieldInfo,2',
                   html:   spTableTemplate,
                   showWhen: "1"
                 },
@@ -617,7 +617,7 @@ define([
           defaultDisabledMsg: 'Station photos can be seen by going to the "ShoreStation Stations" tab and clicking on a row having a "photo" icon in the Photos column.',
           noDataMsg: "No photos available for this station.",
           mapServiceLayer: ssMapServiceLayer,
-          layerName: "GVDATA_STNPHOTOS",
+          subLayerName: "GVDATA_STNPHOTOS",
           featureOutFields: ["*"],
           photoServer: ssPhotoServer,
           relPathField: "FileLocation",
@@ -650,7 +650,7 @@ define([
           defaultDisabledMsg: 'Station profiles can be seen by going to the "ShoreStation Stations" tab and clicking on a row having a "graph" icon in the Profiles column.',
           noDataMsg: "No profile available for this station.",
           mapServiceLayer: ssMapServiceLayer,
-          layerName: "SHORESTATIONS_STATIONPROFILE_FLAT",
+          subLayerName: "SHORESTATIONS_STATIONPROFILE_FLAT",
           featureOutFields: ["*"],
           orderByFields: ["Point"],
           titleTemplate: "Shore Station: {0}",
@@ -1067,7 +1067,7 @@ define([
                     defaultDisabledMsg: 'Site photos can be seen by going to the "Fish Atlas Sites" tab and clicking on a row having a "photo" icon in the Photos column.',
                     noDataMsg: "No photos available for this site.",
                     mapServiceLayer: faMapServiceLayer,
-                    layerName: "Photos_Sites",
+                    subLayerName: "Photos_Sites",
                     featureOutFields: ["*"],
                     photoServer: faPhotoServer,
                     //relPathField: "FileLocation",
@@ -1903,8 +1903,8 @@ define([
         if (theWhere)
           r.baseWhere = theWhere;
       } else  {
-        w.layerName = tableName;
-        w.queryTask.url = w.mapServiceLayer.url + "/" + w.sublayerIDs[w.layerName];
+        w.subLayerName = tableName;
+        w.queryTask.url = w.mapServiceLayer.url + "/" + w.sublayerIDs[w.subLayerName];
         w.initWhere = theWhere;
         let extraFields = null;
         let headerElName = null;
@@ -1924,11 +1924,12 @@ define([
         w.setHeaderItemVisibility(headerElName);
       }
       setDisplay(w.draggablePanelId, true);
-      for (let d=0; d<w.dropDownInfo.length; d++) {
-        let ddItem = w.dropDownInfo[d];
-        ddItem.SelectedOption = ddItem.initialSelectedOption;
-        w.upDateDropdowns(ddItem, theWhere);
-      }
+      if (w.dropDownInfo)
+        for (let d=0; d<w.dropDownInfo.length; d++) {
+          let ddItem = w.dropDownInfo[d];
+          ddItem.SelectedOption = ddItem.initialSelectedOption;
+          w.upDateDropdowns(ddItem, theWhere);
+        }
       w.runQuery(null);
     },
 
