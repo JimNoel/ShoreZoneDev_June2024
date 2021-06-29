@@ -245,7 +245,7 @@ define([
           displayDivName: "ssContainer",
           disabledMsgDivName: "disabledMsg_ss",
           mapServiceLayer: ssMapServiceLayer,
-          dynamicLayerName: true,
+          //dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
               layerSubNames: "",
@@ -521,7 +521,7 @@ define([
           tableHeaderTitle: "All Regions",
           displayDivName: "ssSpTableContainer",
           mapServiceLayer: ssMapServiceLayer,
-          dynamicLayerName: true,
+          //dynamicLayerName: true,
             /*add for "tabbed" Species table */
           layerNameTemplate: "vw_{0}Species",
           tableHeaderTitleTemplate: "Species Data for {0}",
@@ -703,7 +703,7 @@ define([
           disabledMsgDivName: "disabledMsg_fa",
           mapServiceLayer: faMapServiceLayer,
           mapServiceSublayers: ["Regions", "Sites"],
-          dynamicLayerName: true,
+          //dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
               layerSubNames: "Regions",
@@ -1904,7 +1904,7 @@ define([
           r.baseWhere = theWhere;
       } else  {
         w.subLayerName = tableName;
-        w.queryTask.url = w.mapServiceLayer.url + "/" + w.sublayerIDs[w.subLayerName];
+        w.queryTask.url = w.mapServiceQueryUrl();      // w.mapServiceLayer.url + "/" + w.sublayerIDs[w.subLayerName];
         w.initWhere = theWhere;
         let extraFields = null;
         let headerElName = null;

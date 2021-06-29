@@ -511,14 +511,15 @@ define([
       // Run queryTask.executeForCount to get counts of unique field values.  (Currently used in Fish Atlas, for counts of Hauls & Species.)
       this.queryDistinctCounts = function(f) {
         let countInfo = this.summaryInfo.counts[f];
-        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[countInfo.tableName];
 
+        let queryTask = new QueryTask();
+        queryTask.url = this.mapServiceQueryUrl(countInfo.tableName);      // this.mapServiceLayer.url + "/" + this.sublayerIDs[countInfo.tableName];
         let query = new Query();
           query.where = this.query.where;
           query.outFields = [countInfo.countField];
           query.returnDistinctValues = true;
 
-        this.queryTask.executeForCount(query).then(function(results){
+        queryTask.executeForCount(query).then(function(results){
           this.totalLabels[f].node.innerHTML = formatNumber(results, this.specialFormatting[f]);
         }.bind(this), function(error) {
           console.log(this.baseName + ":  QueryTask for distinct counts on " + f + " failed.");
@@ -546,20 +547,6 @@ define([
         }
 
         this.repositionTotalLabels(this.grid.columns);
-
-/*    // Old method for getting totals from dedicated SQL Server views
-        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.totalsLayerName].toString();
-        this.query.outFields = this.totalOutFields;
-        this.query.orderByFields = null;
-        this.queryTask.execute(this.query).then(function(results){
-          let totalValues = results.features[0].attributes;
-          for (a in totalValues)
-            this.totalLabels[a].node.innerHTML = formatNumber(totalValues[a], this.specialFormatting[a]);
-          this.repositionTotalLabels(this.grid.columns);
-        }.bind(this), function(error) {
-          console.log(this.baseName + ":  QueryTask for Totals failed.");
-        }.bind(this));
-*/
       };
 
 
@@ -624,7 +611,7 @@ define([
         }
 
         // This remaining code handles the old style using ArcGIS mapping service
-        let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
+        let subLayerURL = this.mapServiceQueryUrl(ddItem.subLayerName);     // this.mapServiceLayer.url + "/" + this.sublayerIDs[ddItem.subLayerName];
         let queryTask = new QueryTask(subLayerURL);
         let query = new Query();
         query.outFields = ddItem.ddOutFields;
