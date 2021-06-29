@@ -237,8 +237,8 @@ define([
       if (!this.noQuery) {
         if (!this.orderByFields)
           this.orderByFields = [];      // If orderByFields hasn't been specified in MapStuffWidget, then default to empty array
-        let subLayerURL = this.mapServiceLayer.url + "/" + this.sublayerIDs[this.subLayerName];
-        this.queryTask = new QueryTask(subLayerURL);
+        //let subLayerURL = this.mapServiceQueryUrl();
+        this.queryTask = new QueryTask();       //(subLayerURL);
         let q = new Query();
         q.returnGeometry = true;
         q.spatialRelationship = this.spatialRelationship;      //"contains";
@@ -246,6 +246,12 @@ define([
         q.where = "";
         this.query = q;
       }
+    },
+
+    mapServiceQueryUrl: function(tableName) {
+      if (!tableName)
+        tableName = this.subLayerName;
+      return (this.mapServiceLayer.url + "/" + this.sublayerIDs[tableName]);
     },
 
     changeFeatureHandling: function() {
@@ -426,11 +432,9 @@ define([
 
       // default setting for .outFields, .orderByFields   (might be modified in buildQueryPars)
       this.query.outFields = this.featureOutFields;
-      if (this.extraOutFields)                                                       // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
+      if (this.extraOutFields)                                                        // Currently only applies to szUnitsWidget, which generates .featureOutFields from queries on the map service
         this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
       this.query.orderByFields = this.orderByFields;
-
-      let workingLayerName = this.subLayerName;
 
       if (this.initWhere)
         theWhere = this.initWhere;
@@ -448,10 +452,10 @@ define([
         if (this.radioFilterInfo)
           theWhere = addToWhere(theWhere, this.radioFilterInfo.where);
 
-        // modifies theWhere, workingLayerName
+        // modifies theWhere, this.subLayerName
         if (this.dropDownInfo) {
           if (this.maxLayerName)
-            workingLayerName = this.maxLayerName;
+            this.subLayerName = this.maxLayerName;
           let ddInfo = this.dropDownInfo;
           for (d in ddInfo) {
             let item = ddInfo[d];
@@ -470,7 +474,7 @@ define([
                     i = -1;
                   }
                 } while (i > -1);
-                workingLayerName = workingLayerName.replace("{"+item.ddName+"}", replacementName);
+                this.subLayerName = this.subLayerName.replace("{"+item.ddName+"}", replacementName);
 
                 if (item.panelWhere) {
                   itemWhere = item.panelWhere;
@@ -488,7 +492,7 @@ define([
                 }
               }
               if (!item.inCombo)       // This excludes expandPanels and their subDropDowns
-                workingLayerName = workingLayerName.replace(item.excludedNames, "");
+                this.subLayerName = this.subLayerName.replace(item.excludedNames, "");
             }
             if (itemWhere) {
               if (theWhere !== "")
@@ -499,14 +503,14 @@ define([
           }
         }
 
-        // modifies .outFields, .orderByFields, workingLayerName
+        // modifies .outFields, .orderByFields, this.subLayerName
         if (this.optionalFieldInfo) {
           // Currently, only applies to SS species table?
           let OFI = this.optionalFieldInfo;
           let i = getEl(OFI.checkboxId).checked ? 1 : 0;
           this.query.outFields = this.featureOutFields.concat(OFI.fields[this.currTab][i]);
           this.query.orderByFields = this.query.orderByFields.concat(OFI.order[i]);
-          workingLayerName = OFI.tableNames[this.currTab][i];
+          this.subLayerName = OFI.tableNames[this.currTab][i];
         }
       }
 
@@ -514,59 +518,45 @@ define([
       //   Queries are case-sensitive, so either change GVDATA_STNPHOTOS to uppercase,
       //   or use lower() function in query   (probably go with the former)
       this.query.where = theWhere;
-      this.subLayerName = workingLayerName;
-      if (this.dynamicLayerName)     // Do this only if layer name changes, e.g. when querying on pre-grouped views
-        this.queryTask.url = this.mapServiceLayer.url + "/" + this.sublayerIDs[workingLayerName];
+      //if (this.dynamicLayerName)     // Do this only if layer name changes, e.g. when querying on pre-grouped views
+        this.queryTask.url = this.mapServiceQueryUrl();     // this.mapServiceLayer.url + "/" + this.sublayerIDs[this.subLayerName];
+    },
+
+    customRestServiceSQL: function() {
+      let r = this.customRestService;
+      let groupVars = r.groupVars;
+      let theWhere = r.baseWhere;
+      if (this.dropDownInfo) {
+        let D = this.dropDownInfo;
+        let ddFields = "";
+        for (let d=0; d<D.length; d++) {
+          if (this.visibleHeaderElements.includes(D[d].wrapperId)) {
+            if (D[d].SelectedOption==="All") {
+              if (D[d].columnField)
+                ddFields += D[d].columnField + ",";
+            } else if (D[d].SelectedOption!=="Sum") {
+              if (theWhere)
+                theWhere += " AND ";
+              theWhere += whereFromDDInfo(D[d]);
+            }
+          }
+        }
+        groupVars = ddFields + groupVars;
+      }
+      let sql = r.sqlTemplate.replace(/{G}/g, groupVars);
+      if (theWhere !== "")
+        theWhere = "WHERE " + theWhere;
+      sql = sql.replace("{W}", theWhere);
+      return {sql: sql, where: theWhere} ;
     },
 
     runQuery: function(extent, queryPars) {
       // run query, populate headerText panel if headerText is available
-
       queryComplete = false;
       if (this.headerText)
         getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
       let theWhere = "";
-
-      if (this.customRestService) {     // using custom SQL Server REST service
-        let r = this.customRestService;
-        let groupVars = r.groupVars;
-        theWhere = r.baseWhere;
-        if (this.dropDownInfo) {
-          let D = this.dropDownInfo;
-          let ddFields = "";
-          for (let d=0; d<D.length; d++) {
-            if (this.visibleHeaderElements.includes(D[d].wrapperId)) {
-              if (D[d].SelectedOption==="All") {
-                if (D[d].columnField)
-                  ddFields += D[d].columnField + ",";
-              } else if (D[d].SelectedOption!=="Sum") {
-                if (theWhere)
-                  theWhere += " AND ";
-                theWhere += whereFromDDInfo(D[d]);
-              }
-            }
-          }
-          groupVars = ddFields + groupVars;
-        }
-        let sql = r.sqlTemplate.replace(/{G}/g, groupVars);
-/*
-        if (theWhere === "")
-          theWhere = r.where;
-        else {
-          if (r.where && r.where!=="")
-            theWhere = r.where + " AND " + theWhere;
-          else
-            theWhere = "";
-        }
-*/
-        if (theWhere !== "")
-          theWhere = "WHERE " + theWhere;
-        sql = sql.replace("{W}", theWhere);
-        let theUrl = r.serviceUrl + sql;
-        queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
-        this.upDateDropdowns(ddInfo, theWhere);
-
-      } else {      // using ArcGIS map service
+      if (!this.customRestService) {          // using ArcGIS map service
         // If extent argument is supplied, set parameters for spatial query
         if (extent) {
           let pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
@@ -581,13 +571,18 @@ define([
             });
           }
         }
-
         this.setDynamicQueryPars(theWhere, queryPars);
-
         this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
           this.queryPending = false;
           console.log(this.baseName + ":  QueryTask failed.");
         }.bind(this));
+      } else {                                // using custom SQL Server REST service
+        let urlInfo = this.customRestServiceSQL();
+        let theUrl = this.customRestService.serviceUrl + urlInfo.sql;
+        queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
+        // TODO:  Okay now?
+        this.upDateDropdowns(this.dropDownInfo, urlInfo.where);
+
       }
     },
 
