@@ -23,6 +23,7 @@ let zipSizeText = "";
 let zipURL = "";
 let extraInfo = "";
 let videoClipInfo = [];
+let startTime = null;
 
 function updateDownloadDialog(vidCapCount, photoCount) {
   dlDataDialog = '<b>Select which images to include</b><br>';
@@ -44,14 +45,15 @@ function sendRequest(theURL) {
       window.open(offlineAppURL + "?" + A.jobId, "Shorezone Offline");
     }
   };
+  console.log(theURL);
   xmlhttp.open("GET", theURL, true);
   xmlhttp.send();
 }
 
 function openOfflineApp() {
   if (confirm("Do you want to download data and open the offline app?  If so, click OK, otherwise hit Cancel.")) {
-    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/SZofflineDataExtract/GPServer/SZofflineDataExtract/submitJob?f=json&";
-//    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/OfflineDataExtract2/GPServer/OfflineDataExtract_JSON/submitJob?f=json&";
+//    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/SZofflineDataExtract/GPServer/SZofflineDataExtract/submitJob?f=json&";
+    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/OfflineDataExtract2/GPServer/OfflineDataExtract_JSON/submitJob?f=json&";
     let e = view.extent;
     theURL += "Extent=" + Math.round(e.xmin) + " " + Math.round(e.ymin) + " " + Math.round(e.xmax) + " " + Math.round(e.ymax);
     sendRequest(theURL);
@@ -78,6 +80,9 @@ function getZipFileData(jobId, zipName) {
 }
 
 function getResultData(result) {
+  let endTime = Date.now();
+  let elapsedMinutes = (endTime-startTime)/(60*1000);
+  console.log("GP request completed in " + elapsedMinutes.toFixed(2) + " minutes");
   let jobId = result.jobId;
   getZipFileData(jobId, "Output_Zip_File_zip");
 }
@@ -135,6 +140,7 @@ function downloadData() {
   outZipFileName = text_Description.value;
   setContent("dlDataContent", "Submitting query ..");
 
+  startTime = Date.now();
   gp.submitJob(params).then(function (jobInfo) {
     var options = {
       statusCallback: logProgress

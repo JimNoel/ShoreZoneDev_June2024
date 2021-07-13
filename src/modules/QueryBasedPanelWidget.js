@@ -427,8 +427,9 @@ define([
       view.popup.close();
     },
 
+    // TODO:  queryPars currently consists of just queryPars.theWhere, so find a way to consolidate theWhere and queryPars
     setDynamicQueryPars: function(theWhere, queryPars) {
-      // Build dynamic query parameters:  theWhere, query.outFields, query.orderByFields, queryTask.url
+      // Build dynamic query parameters for map service query:  query.where, query.outFields, query.orderByFields, queryTask.url
 
       // default setting for .outFields, .orderByFields   (might be modified in buildQueryPars)
       this.query.outFields = this.featureOutFields;
@@ -436,13 +437,11 @@ define([
         this.query.outFields = this.query.outFields.concat(this.extraOutFields);     //   layers, but also requires fields not displayed in the service, specified by .extraOutFields
       this.query.orderByFields = this.orderByFields;
 
-      if (this.initWhere)
+      if (this.initWhere)     // If initWhere is present, this overrides theWhere provided in the argument
         theWhere = this.initWhere;
 
       // modifies theWhere
-      if (queryPars) {
-        // Currently only applies when a table row is clicked, in which case the appropriate WHERE clause is included
-        //this.totalsLayerName = null;
+      if (queryPars) {        // Currently only applies when a table row is clicked, in which case the appropriate WHERE clause is included
         if (queryPars.theWhere !== null) {
           theWhere = queryPars.theWhere;
           this.initWhere = theWhere;
@@ -582,7 +581,6 @@ define([
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
         // TODO:  Okay now?
         this.upDateDropdowns(this.dropDownInfo, urlInfo.where);
-
       }
     },
 

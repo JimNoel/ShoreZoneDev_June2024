@@ -34,7 +34,7 @@ let highlightSize = 15;
 let extractGpName = "SZDataExtract";
 let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/" + extractGpName + "/GPServer/" + extractGpName;     // URL for GroupDataExtract GP service
 
-let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
+let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline_test/index.html";
 let dlDataDialog = "";
 
 //Map service URLs
