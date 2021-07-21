@@ -513,6 +513,21 @@ define([
         }
       }
 
+      if (this.binaryFilter) {
+        // TODO: Rename distance10px
+        let distance10px = view.toMap({x:20,y:0}).x - view.toMap({x:0,y:0}).x;
+        let skipValue = distance10px/avg1sDist;
+        let numZeros = Math.ceil(Math.log2(skipValue));
+        let binaryFilter = "MP4_Seconds_Binary ";
+        if (numZeros <= 12)
+          binaryFilter += "like '%" + "0".repeat(numZeros) + "'";
+        else
+          binaryFilter += "= '000000000000'";
+        if (theWhere !== "")
+          theWhere += " AND ";
+        theWhere += binaryFilter;
+      }
+
       // TODO:  GVDATA_STNPHOTOS has Station in lowercase, while other tables/layers have it uppercase
       //   Queries are case-sensitive, so either change GVDATA_STNPHOTOS to uppercase,
       //   or use lower() function in query   (probably go with the former)

@@ -125,12 +125,15 @@ define([
         //initWhere:  "DateTime_str like '%0'",    // example:  "n*(MP4_Seconds/n)=MP4_Seconds" returns just multiples of n
 
         spatialRelationship: "contains",
+        binaryFilter: "MP4_Seconds_Binary like '%0000'",
         featureOutFields: ["*"],
         orderByFields: ["Date_Time"],
         trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,      //  invisible if 4th value in "color" is 0
+        clickableSymbolInfo: {"style":"circle", "color":[0,0,255,1], "size":3,      //  invisible if 4th value in "color" is 0
           "outline": {color: [ 128, 128, 128, 0 ] }},
+//        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,      //  invisible if 4th value in "color" is 0
+//          "outline": {color: [ 128, 128, 128, 0 ] }},
         popupTitle: "Video Point",
         clickableMsg: "Move camera to this location",
         syncTo: szPhotoWidget,
@@ -1158,6 +1161,7 @@ define([
 */
 
     szFeatureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
+/*temp*/  szFeatureRefreshDue = true;
     if (lock_points)      // If point set is locked,
       return;             //    then don't reset or query new points
     if (settings.autoRefresh) {

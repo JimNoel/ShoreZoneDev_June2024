@@ -29,12 +29,13 @@ let minVideoLOD = 12;
 let maxSZFeatures = 6000;    // More than 2000 causes the browser to slow significantly  (for example, 5000 points causes 10-minute hang-up)
 let maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
 let highlightSize = 15;
+let avg1sDist = 70;           // rough average distance between 1s points, in meters;
 
 //let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/GroupDataExtract_new/GPServer/GroupDataExtract_new";     // URL for GroupDataExtract GP service
 let extractGpName = "SZDataExtract";
 let gpUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/" + extractGpName + "/GPServer/" + extractGpName;     // URL for GroupDataExtract GP service
 
-let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline_test/index.html";
+let offlineAppURL = "https://alaskafisheries.noaa.gov/mapping/szOffline/index.html";
 let dlDataDialog = "";
 
 //Map service URLs
@@ -76,7 +77,8 @@ function makeServiceUrls(type, name) {
 
 
 // Set server URLs (2-item arrays, containing NOAA and PS URLs)
-let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
+//let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
+let szMapServiceLayerURLs = makeServiceUrls("service", "aTest_ShoreZone");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
 let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
 //let faMapServiceLayerURLs = makeServiceUrls("service", "dev/FishAtlas_v2020_dev");
