@@ -52,8 +52,8 @@ function sendRequest(theURL) {
 
 function openOfflineApp() {
   if (confirm("Do you want to download data and open the offline app?  If so, click OK, otherwise hit Cancel.")) {
-//    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/SZofflineDataExtract/GPServer/SZofflineDataExtract/submitJob?f=json&";
-    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/OfflineDataExtract2/GPServer/OfflineDataExtract_JSON/submitJob?f=json&";
+    let theURL = gpUrl_offlineExtract + "/submitJob?f=json&";
+//    let theURL = "https://alaskafisheries.noaa.gov/arcgis/rest/services/OfflineDataExtract2/GPServer/OfflineDataExtract_JSON/submitJob?f=json&";
     let e = view.extent;
     theURL += "Extent=" + Math.round(e.xmin) + " " + Math.round(e.ymin) + " " + Math.round(e.xmax) + " " + Math.round(e.ymax);
     sendRequest(theURL);
@@ -98,7 +98,7 @@ function processError(error, context) {
 }
 
 function logProgress(value) {
-  setContent("dlDataContent", ".", true);
+  setContent("dlDataContent", " .", true);
   console.log(value.jobStatus);
 }
 
@@ -138,7 +138,7 @@ function downloadData() {
   if (cb_HighResVidCap.checked)
     params.Get_HighRes = "1";
   outZipFileName = text_Description.value;
-  setContent("dlDataContent", "Submitting query ..");
+  setContent("dlDataContent", "Submitting query . .");
 
   startTime = Date.now();
   gp.submitJob(params).then(function (jobInfo) {

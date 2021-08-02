@@ -82,7 +82,7 @@ define([
         noQuery: true,
         trackingSymbolInfo: "assets/images/Camera24X24.png:24:24",
         clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":8,     // invisible if 4th value in "color" is 0
+        clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":6,     // invisible if 4th value in "color" is 0
           "outline": {color: [ 0, 0, 255, 0 ] }},
         popupTitle: "Photo Point",
         clickableMsg: "Move camera to this location",
@@ -125,12 +125,12 @@ define([
         //initWhere:  "DateTime_str like '%0'",    // example:  "n*(MP4_Seconds/n)=MP4_Seconds" returns just multiples of n
 
         spatialRelationship: "contains",
-        binaryFilter: "MP4_Seconds_Binary like '%0000'",
+        //useBinaryFilter: true,
         featureOutFields: ["*"],
         orderByFields: ["Date_Time"],
         trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
-        clickableSymbolInfo: {"style":"circle", "color":[0,0,255,1], "size":3,      //  invisible if 4th value in "color" is 0
+        clickableSymbolInfo: {"style":"circle", "color":[255,0,0,1], "size":6,      //  invisible if 4th value in "color" is 0
           "outline": {color: [ 128, 128, 128, 0 ] }},
 //        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,      //  invisible if 4th value in "color" is 0
 //          "outline": {color: [ 128, 128, 128, 0 ] }},
@@ -1160,8 +1160,10 @@ define([
       }.bind(this));
 */
 
-    szFeatureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
-/*temp*/  szFeatureRefreshDue = true;
+    if (szVideoWidget && szVideoWidget.useBinaryFilter)
+      szFeatureRefreshDue = true;
+    else
+      szFeatureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
     if (lock_points)      // If point set is locked,
       return;             //    then don't reset or query new points
     if (settings.autoRefresh) {
@@ -1814,7 +1816,7 @@ define([
 
   function initMap() {
 //    getLegendHtml(0);     // Trying this here...  Move back to original spot if it goes wrong...
-    gp = new Geoprocessor(gpUrl);
+    gp = new Geoprocessor(gpUrl_extract);
     addServiceLayers();
     map = new Map({
       basemap: "hybrid",

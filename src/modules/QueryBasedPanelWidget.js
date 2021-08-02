@@ -513,7 +513,7 @@ define([
         }
       }
 
-      if (this.binaryFilter) {
+      if (this.useBinaryFilter) {
         // TODO: Rename distance10px
         let distance10px = view.toMap({x:20,y:0}).x - view.toMap({x:0,y:0}).x;
         let skipValue = distance10px/avg1sDist;
