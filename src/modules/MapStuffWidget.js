@@ -17,11 +17,11 @@ let sslMapServiceLayer;
 let siteTabs = new Object({
   tabs: ["sz", "fa", "ss"],
   spatialFilterTabs: ["sz", "fa"],
-  currTab: "sz"
+  currTab: "sz",
+  sz: {},
+  fa: {},
+  ss: {}
 });
-siteTabs.sz = {};
-siteTabs.fa = {};
-siteTabs.ss = {};
 
 let mapLoading = false;
 
@@ -862,7 +862,7 @@ define([
               filterBgLayer: "Regions",
               clickableSymbolType: "extent",
               clickableSymbolInfo: {
-                color: [ 51,51, 204, 0.1 ],
+                color: [51, 51, 204, 0.0 ],     // 4th value was 0.1 -- changed to 0 for no fill
                 style: "solid",
                 width: "2px"
               },
@@ -1165,7 +1165,7 @@ define([
       }.bind(this));
 */
 
-    if (siteTabs.visManager.currClassName === "sz") {
+    if (siteTabs.currTab === "sz") {
       if (szVideoWidget && szVideoWidget.useBinaryFilter)
         szFeatureRefreshDue = true;
       else
@@ -1184,7 +1184,7 @@ define([
       } else {
         setRefreshButtonVisibility(szFeatureRefreshDue);
       }
-    } else if (siteTabs.visManager.currClassName === "fa") {
+    } else if (siteTabs.currTab === "fa") {
       faWidget.runQuery(view.extent);
     }
   }
@@ -1254,7 +1254,7 @@ define([
 
     // When "stationary" property changes to True, there is a new extent, so handle the extent change
     view.watch("stationary", function(newValue, oldValue, property, object) {
-      if (!siteTabs.spatialFilterTabs.includes(siteTabs.visManager.currClassName))
+      if (!siteTabs.spatialFilterTabs.includes(siteTabs.currTab))
         return;
       if (view.stationary) {
         let bypass = false;

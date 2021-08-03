@@ -343,7 +343,7 @@
       mapStuff = new MapStuffWidget();
 
       let FaSsMsg = "Sorry, @ has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.";
-      siteTabs.visManager = makeClassArrayVisibilityObject( {classNames: siteTabs.tabs, currClassName: siteTabs.currTab} );
+      makeClassArrayVisibilityObject(siteTabs);
       let flexSiteURL = "https://alaskafisheries.noaa.gov/mapping/szflex/index.html?L=B";
       let SZ3dUnitsSiteURL = "https://alaskafisheries.noaa.gov/mapping/jstest/szunits3d.html";
 
@@ -369,7 +369,7 @@
       function switchTo(className) {
         if (!siteTabs[className].widgets)
           return;
-        siteTabs.visManager.promoteClass(className);
+        siteTabs.promoteClass(className);
         let widgets = siteTabs[className].widgets;
         for (i in widgets) {
           if (widgets[i].disabledMsgInfix)      // Hide panel if it uses a "disabled" message

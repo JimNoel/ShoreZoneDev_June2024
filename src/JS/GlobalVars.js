@@ -887,13 +887,13 @@ function updateSublayerArgs(displayInfo, sublayerIDs) {    // Make arguments for
   return displayInfo;
 }
 
-function makeClassArrayVisibilityObject(/*Object*/ obj) {  // Initialize obj with "classNames" array and "currClassName".  For example:  {classNames: ["sz", "fa", "ss"], currClassName: "sz"}
+function makeClassArrayVisibilityObject(obj) {  // On function call, "obj" should be siteTabs
   // Using an array of css class names, manages the display of all HTML elements that have been assigned one of the classes in the array.
   // Calling .promoteClass with "newClassName" will make "newClassName" elements visible, and hide elements using any of the other class names in the array.
   // This is done by creating a style sheet element using the class names, and setting css "display" values for these
 
   obj.promoteClass = function(newClassName) {
-    let cNames = this.classNames;
+    let cNames = this.tabs;
     let s = "";
     for (c in cNames) {
       s += "." + cNames[c] + " {display: ";
@@ -903,13 +903,12 @@ function makeClassArrayVisibilityObject(/*Object*/ obj) {  // Initialize obj wit
       s += "}  ";
     }
     this.styleSheet.innerHTML = s;
-    this.currClassName = newClassName;
+    this.currTab = newClassName;
   }
 
   obj.styleSheet = document.createElement('style');
   document.body.appendChild(obj.styleSheet);
-  obj.promoteClass(obj.currClassName);
-  return(obj);
+  obj.promoteClass(obj.currTab);
 }
 
 function openNewTab(url) {
