@@ -376,7 +376,7 @@
             showPanelContents(widgets[i].baseName, false);
           // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
           if (widgets[i].tabInfo && !widgets[i].grid)
-            widgets[i].setActiveTab(0);
+            widgets[i].setActiveTab(widgets[i].currTab);
         }
         setGraphicsLayersVisibilities(className);
         dijit.byId(className + "MediaBC").resize();   // This is needed to handle "disappearing photo panel" issue

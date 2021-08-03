@@ -893,18 +893,17 @@ function makeClassArrayVisibilityObject(/*Object*/ obj) {  // Initialize obj wit
   // This is done by creating a style sheet element using the class names, and setting css "display" values for these
 
   obj.promoteClass = function(newClassName) {
-    with (this) {
-      let s = "";
-      for (c in classNames) {
-        s += "." + classNames[c] + " {display: ";
-        if (classNames[c]===newClassName)
-          s += "block";
-        else s += "none";
-        s += "}  ";
-      }
-      styleSheet.innerHTML = s;
-      currClassName = newClassName;
+    let cNames = this.classNames;
+    let s = "";
+    for (c in cNames) {
+      s += "." + cNames[c] + " {display: ";
+      if (cNames[c]===newClassName)
+        s += "block";
+      else s += "none";
+      s += "}  ";
     }
+    this.styleSheet.innerHTML = s;
+    this.currClassName = newClassName;
   }
 
   obj.styleSheet = document.createElement('style');

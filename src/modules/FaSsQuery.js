@@ -22,17 +22,15 @@ define([
     submitQuery: function(tableID, whereClause, handler) {
       this.queryTask = new QueryTask(this.serviceUrl + "/" + tableID);
       this.query = new Query();
-      with (this.query) {
-        outFields =  ["*"];
-        if (whereClause)
-          where = whereClause;
-        else
-          where = "1=1";
-      }
+      let q = this.query;
+      q.outFields =  ["*"];
+      if (whereClause)
+        q.where = whereClause;
+      else
+        q.where = "1=1";
       this.queryTask.execute(this.query).then(function(results){
         handler(results);
       });
-
       console.log("submitQuery");
     }
 

@@ -14,7 +14,11 @@ let faMapServiceLayer;
 let ssMapServiceLayer;
 let sslMapServiceLayer;
 
-let siteTabs = new Object({tabs: ["sz", "fa", "ss"], currTab: "sz"});
+let siteTabs = new Object({
+  tabs: ["sz", "fa", "ss"],
+  spatialFilterTabs: ["sz", "fa"],
+  currTab: "sz"
+});
 siteTabs.sz = {};
 siteTabs.fa = {};
 siteTabs.ss = {};
@@ -798,7 +802,7 @@ define([
             iconLabel: 'Total Fish Catch',
             args: 'faSpTableWidget,null,null,"All Regions",null,0,null,"Sp_CommonName"'
           },
-          currTab: 0,
+          currTab: 1,
           featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
           tabInfo: [
 
@@ -939,7 +943,8 @@ define([
           ],
           layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
                                                 //   using the current panel info and dropdown info for any dropdowns that have something selected.
-          spatialRelationship: null,      // Using null as a flag to not filter spatially
+          spatialRelationship: "intersects",
+          //spatialRelationship: null,      // Using null as a flag to not filter spatially
           showFieldsInPopup: "*",
 
           // TODO: Remove, and use something like setActiveTab in constructor
@@ -1160,24 +1165,27 @@ define([
       }.bind(this));
 */
 
-    if (szVideoWidget && szVideoWidget.useBinaryFilter)
-      szFeatureRefreshDue = true;
-    else
-      szFeatureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
-    if (lock_points)      // If point set is locked,
-      return;             //    then don't reset or query new points
-    if (settings.autoRefresh) {
-      if (extentChangeIsSmall())
-        return;
-      // Check if change might be due to file downloads panel appearing/disappearing (change in bhDiff).  If so, skip refresh.
-      let newBhDiff = window.outerHeight - window.innerHeight;
-      if (Math.abs(newBhDiff-bhDiff) < 5)
-        refreshSzFeatures();
+    if (siteTabs.visManager.currClassName === "sz") {
+      if (szVideoWidget && szVideoWidget.useBinaryFilter)
+        szFeatureRefreshDue = true;
       else
-        bhDiff = newBhDiff;
-      
-    } else {
+        szFeatureRefreshDue = (newExtent.width/1000 < maxExtentWidth);
+      if (lock_points)      // If point set is locked,
+        return;             //    then don't reset or query new points
+      if (settings.autoRefresh) {
+        if (extentChangeIsSmall())
+          return;
+        // Check if change might be due to file downloads panel appearing/disappearing (change in bhDiff).  If so, skip refresh.
+        let newBhDiff = window.outerHeight - window.innerHeight;
+        if (Math.abs(newBhDiff-bhDiff) < 5)
+          refreshSzFeatures();
+        else
+          bhDiff = newBhDiff;
+      } else {
         setRefreshButtonVisibility(szFeatureRefreshDue);
+      }
+    } else if (siteTabs.visManager.currClassName === "fa") {
+      faWidget.runQuery(view.extent);
     }
   }
 
@@ -1246,8 +1254,7 @@ define([
 
     // When "stationary" property changes to True, there is a new extent, so handle the extent change
     view.watch("stationary", function(newValue, oldValue, property, object) {
-      //if (siteTabs.visManager.currClassName === "ss")   // Allows update of FA points, as well as SZ
-      if (siteTabs.visManager.currClassName !== "sz")     // Original response to just SZ
+      if (!siteTabs.spatialFilterTabs.includes(siteTabs.visManager.currClassName))
         return;
       if (view.stationary) {
         let bypass = false;
