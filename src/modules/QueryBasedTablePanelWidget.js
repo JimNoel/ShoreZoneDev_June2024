@@ -591,7 +591,21 @@ define([
         w.makeDropdownOptionsHtml(ddItem)
       };
 
-      this.queryDropDownOptions = function(ddItem, where, comSci) {
+      this.updateAllDropdowns = function(theWhere) {
+        if (!this.dropDownInfo)
+          return;
+        for (let d=0; d<this.dropDownInfo.length; d++) {
+          let ddItem = this.dropDownInfo[d];
+          if (!ddItem.SelectedOption)
+            ddItem.SelectedOption = ddItem.initialSelectedOption;
+          if (ddItem.liveUpdate && this.visibleHeaderElements.includes(ddItem.wrapperId))
+            this.upDateDropdown(ddItem, theWhere);
+        }
+      };
+
+      this.filterDropdown = function(ddItem, where, comSci) {
+        if (typeof ddItem === "string")     // ddItem argument can be either object or string.  If string, reset to appropriate object
+          ddItem = this.getddItem(ddItem);
 
         if (ddItem.customRestService) {
           // This section handles queries using the new custom REST service
@@ -605,7 +619,7 @@ define([
           queryServer(theUrl, false, function(results) {
             results = JSON.parse(results);
             this.processDropdownQueryResults(results, ddItem, this);
-            console.log("queryDropDownOptions response");
+            console.log("filterDropdown response");
           }.bind(this));
           return;
         }
@@ -629,7 +643,7 @@ define([
         queryTask.execute(query).then(function(results){
           this.w.processDropdownQueryResults(results, this.ddItem, this.w);
         }.bind({ddItem: ddItem, w: this}))/*.else({
-          console.log("Query error in queryDropDownOptions");
+          console.log("Query error in filterDropdown");
         })*/;
 
       };
@@ -682,9 +696,11 @@ define([
 
       };
 
+/*
       this.filterDropdown = function(ddName, where, comSci) {
         this.queryDropDownOptions(this.getddItem(ddName), where, comSci);
       };
+*/
 
       this.handleDependentDropdowns = function(ddInfo) {
         console.log("handleDependentDropdowns");
@@ -767,7 +783,7 @@ define([
               ddItem.initialSelectedOption = ddItem.SelectedOption
               if (ddItem.subLayerName || ddItem.customRestService) {
                 if (!ddItem.noInitialQuery)
-                  this.queryDropDownOptions(ddItem, null);
+                  this.filterDropdown(ddItem, null);
               } else {
                 this.makeDropdownOptionsHtml(ddItem);
               }

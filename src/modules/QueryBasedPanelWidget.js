@@ -595,11 +595,26 @@ define([
         let theUrl = this.customRestService.serviceUrl + urlInfo.sql;
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
         // TODO:  Okay now?
-        this.upDateDropdowns(this.dropDownInfo, urlInfo.where);
+        if (this.dropDownInfo)
+          this.updateAllDropdowns(urlInfo.where);
+//        this.upDateDropdown(null, urlInfo.where);
       }
     },
 
-    upDateDropdowns: function(currDDinfo, where) {
+    upDateDropdown: function(currDDinfo, where) {      // What if currDDinfo is null?
+      let theWhere = this.query.where;
+      if (where)
+        theWhere = where;
+
+      // Remove current dropdown from WHERE clause
+      let A = theWhere.split(" AND ");
+      for (let i=0; i<A.length; i++) {
+        if (A[i].indexOf(currDDinfo.whereField) !== -1)
+          A.splice(i);
+      }
+      theWhere = A.join(" AND ");
+      this.filterDropdown(currDDinfo, theWhere);
+/*
       let ddInfo = this.dropDownInfo;
       for (let d = 0; d < ddInfo.length; d++) {
         let D = ddInfo[d];
@@ -618,6 +633,7 @@ define([
           this.filterDropdown(D.ddName, theWhere);
         }
       }
+*/
     },
 
     queryResponseHandler: function(results) {

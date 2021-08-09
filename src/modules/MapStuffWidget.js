@@ -1937,12 +1937,15 @@ define([
         w.setHeaderItemVisibility(headerElName);
       }
       setDisplay(w.draggablePanelId, true);
+      w.updateAllDropdowns(theWhere);
+/*
       if (w.dropDownInfo)
         for (let d=0; d<w.dropDownInfo.length; d++) {
           let ddItem = w.dropDownInfo[d];
           ddItem.SelectedOption = ddItem.initialSelectedOption;
-          w.upDateDropdowns(ddItem, theWhere);
+          w.upDateDropdown(ddItem, theWhere);
         }
+*/
       w.runQuery(null);
     },
 
