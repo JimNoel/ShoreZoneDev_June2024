@@ -991,19 +991,20 @@ define([
               isAlpha: true
             },
             { ddName: "Dates",
-              ddOutFields: ["DateStr", "EventID"],
+              ddOutFields: ["DateStr"],
               // TODO: After service is republished, just use "DateStr" instead of "format(..."
               customRestService: {
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
-                sqlTemplate: "SELECT EventID,DateStr,Date FROM vw_FishCounts_flat {w} GROUP BY EventID,DateStr,Date ORDER BY Date"
+                sqlTemplate: "SELECT DateStr FROM vw_FishCounts_flat {w} GROUP BY DateStr ORDER BY DateStr"
               },
               summaryOption: { label: "[Combined]", value: "Sum" },
               initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "Sum",
               liveUpdate: true,
-              whereField: "EventID",
+              whereField: "DateStr",
               columnField: "DateStr",
-              noInitialQuery: true
+              noInitialQuery: true,
+              isAlpha: true
             }
           ],
           featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
@@ -1024,6 +1025,10 @@ define([
           specialFormatting: {      // Special HTML formatting for field values
             GearBasic: {
               title: "Gear",
+              colWidth: 100
+            },
+            DateStr: {
+              title: "Date",
               colWidth: 100
             },
             Sp_CommonName: {

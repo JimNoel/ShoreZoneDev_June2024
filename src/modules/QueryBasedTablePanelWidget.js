@@ -564,7 +564,9 @@ define([
         let ddFields = ddItem.ddOutFields;
         for (let i=0;  i<results.features.length; i++) {
           let a = results.features[i].attributes;
-          let v = a[ddFields[1]];
+          let v = a[ddFields[0]];
+          if (ddFields.length >= 2)    // If only 1 item in ddFields, set v to that, otherwise set v to the 2nd item.
+            v = a[ddFields[1]];
           let extentStr = null;
           if (a["Envelope"])
             extentStr = a["Envelope"];
@@ -594,6 +596,8 @@ define([
       this.updateAllDropdowns = function(theWhere) {
         if (!this.dropDownInfo)
           return;
+        if (theWhere)
+          theWhere = theWhere.replace(/WHERE /i,"");      // Remove leading WHERE
         for (let d=0; d<this.dropDownInfo.length; d++) {
           let ddItem = this.dropDownInfo[d];
           if (!ddItem.SelectedOption)
@@ -652,7 +656,8 @@ define([
       this.makeDropdownOptionsHtml = function(ddItem) {
         let options = ddItem.options;
         let theHtml = '';
-        ddItem.SelectedOption = ddItem.initialSelectedOption;
+        if (!ddItem.SelectedOption)
+          ddItem.SelectedOption = ddItem.initialSelectedOption;
         for (i in options) {
           let extentStr = '';
           if (options[i].extent)
