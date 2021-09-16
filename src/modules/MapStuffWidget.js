@@ -36,6 +36,7 @@ define([
   "esri/layers/MapImageLayer",
   "esri/portal/PortalItem",
   "esri/webmap/Bookmark",
+  "esri/widgets/Attribution",
   "esri/widgets/Bookmarks",
   "esri/widgets/Expand",
    "esri/widgets/LayerList",
@@ -57,6 +58,7 @@ define([
   "noaa/ChartPanelWidget",
   "esri/geometry/Extent",
   "esri/geometry/Point",
+  "esri/geometry/Polyline",
   "esri/geometry/Polygon",
   "esri/geometry/support/webMercatorUtils",
   "esri/layers/GraphicsLayer",
@@ -67,10 +69,10 @@ define([
   "esri/core/Collection",
   "esri/core/Accessor",
   "dojo/domReady!"
-], function(declare, Basemap, watchUtils, Map, View, MapImageLayer, PortalItem, Bookmark, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
+], function(declare, Basemap, watchUtils, Map, View, MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
-            Extent, Point, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
+            Extent, Point, Polyline, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
 
     function makeSzWidgets() {
       szPhotoWidget = new PhotoPlaybackWidget({
@@ -124,9 +126,6 @@ define([
         mapServiceLayer: szMapServiceLayer,
         subLayerName: "1s",
         layerPath: "Video Flightline/1s",
-
-        // TODO:  Set up filter to query subset of points, when full set is greater than the service limit
-        //initWhere:  "DateTime_str like '%0'",    // example:  "n*(MP4_Seconds/n)=MP4_Seconds" returns just multiples of n
 
         spatialRelationship: "contains",
         //useBinaryFilter: true,
@@ -1352,20 +1351,59 @@ define([
     // Handle mouse-move events:  Update map coordinate display, and check for mouse over graphic features
     view.on('pointer-move', [], function(e){
       let screenPoint = {x: e.x, y: e.y};
-      let mapPoint = view.toMap(screenPoint);
 
+      if (multiZoomLevels) {
+        if (mapHoverTimeout)
+          clearTimeout(mapHoverTimeout);
+        mapHoverTimeout = setTimeout(function(){
+          getMouseLocSZdata(screenPoint);
+        }, minMapHoverTime);      // delay popup
+        return;
+      }
+
+      let mapPoint = view.toMap(screenPoint);
       if (!mapPoint) {
         console.log("3D point is outside globe");
         return;
       }
       let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);    //szVideoWidget._webMercatorToGeographic(mapPoint);
-      dom.byId("coordinates").innerHTML = decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y);
-
+      let posDisplay = decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y);
+      if (typeof showMapCoords !== "undefined")
+        posDisplay = Math.round(mapPoint.x) + ", " + Math.round(mapPoint.y);
+      dom.byId("coordinates").innerHTML = posDisplay;
       view.hitTest(screenPoint).then(handleGraphicHits);
-
     });
   }
 
+  function getMouseLocSZdata(screenPoint) {
+    let radius = mapHoverRadius;
+    if (view.extent.width/1000 > mapHoverRadius)
+      radius = mapPreHoverRadius;
+    let mapPoint = view.toMap(screenPoint);
+    let queryExtent = mapStuff.makePointExtent(mapPoint, radius);
+    showExtentBox(queryExtent);
+/*
+    let zoomRectFillSymbol = {
+      type: "simple-fill", // autocasts as new SimpleFillSymbol()
+      color: [227, 0, 0, 0.2],
+      outline: { // autocasts as new SimpleLineSymbol()
+        color: [0, 0, 255],
+        width: 1
+      }
+    };
+    extentGraphic = new Graphic({
+      geometry: queryExtent,
+      symbol: zoomRectFillSymbol
+    });
+    view.graphics.removeAll();
+    view.graphics.add(extentGraphic);
+*/
+    if (radius === mapHoverRadius)
+      szVideoWidget.runQuery(queryExtent);
+    else
+      szVideoWidget.findNearestPoint(queryExtent, mapPoint);
+    console.log(screenPoint);
+  };
 
   // If mouse if over a video/photo graphic, open popup allowing moving the "camera" to this point
   function handleGraphicHits(response) {
@@ -1392,7 +1430,7 @@ define([
         dataRow = currentWidgetController.highlightAssociatedRow(currentHoveredGraphic)
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
-        hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
+      hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
     }
   };
 
@@ -1490,6 +1528,8 @@ define([
       // This option collapses groups when nothing under them is visible at the current extent
       item.open = item.visibleAtCurrentScale;
       item.watch("visibleAtCurrentScale", function() {
+        if (item.layer.title === "Ports SSL")
+          return;
         item.open = item.visibleAtCurrentScale;
         if (item.panel)
           item.panel.open = (item.visible && item.visibleAtCurrentScale);
@@ -1560,7 +1600,12 @@ define([
         listItem_10s_legendHtml = item.panel.content.innerHTML;
         modify_LayerListItem_VideoFlightline();
       }
-
+      if (item.layer.title === "Unit Info")
+        item.open = false;
+      if (item.layer.title.startsWith("FishAtlas"))
+        item.open = false;
+      if (item.layer.title.startsWith("ShoreStation"))
+        item.open = false;
     };
 
     llExpand.content = wrapperWithOpacitySlider(layerListWidget.domNode, "Layers");
@@ -1572,7 +1617,21 @@ define([
     view.container.ondragover = drag_over;
     view.container.ondrop = drop;
 
-/*  Upper-left widgets  */
+    let a = makeHtmlElement("div", "attributionDiv");
+    view.container.appendChild(a);
+
+    view.ui.padding = {
+      "bottom": 20,
+      "top": 5,
+      "right": 5,
+      "left": 5
+    }
+
+    view.ui.move("attribution", "manual");
+    view.ui.find("attribution").container.className = "esri-widget-top";    // Atribution goes in special DIV at top of map
+
+
+    /*  Upper-left widgets  */
 
     let homeWidget = new Home({
       view: view
@@ -1728,16 +1787,16 @@ define([
 
     let scaleBar = new ScaleBar({
       view: view,
-      style: "ruler",
+      style: "line",      // other option is "ruler"
       unit: "metric"
     });
-    view.ui.add(scaleBar, {
-      position: "bottom-left"
-    });
-
     // Add ESRI search widget to map
     searchWidget = new Search({ view: view, maxSuggestions: 4 });
     view.ui.add(searchWidget, "bottom-right");
+
+    view.ui.add(scaleBar, {
+      position: "bottom-right"
+    });
 
     let cbCode = '<input type="checkbox" id="cbLimitSearchToExtent" onclick="cbSearchExtentHandler()">  Limit suggestions to current extent';
     searchWidget.container.appendChild(makeHtmlElement("DIV", "cbLimitToExtentDiv", null, null, cbCode));
@@ -1840,10 +1899,7 @@ define([
       map: map,
       center: [-152, 62.5], // longitude, latitude
       constraints: {maxScale: 4000},
-      zoom: 4               // MapView
-      //scale: 50000000,     // SceneView:  Sets the initial scale
-      //sliderOrientation : "horizontal",
-      //sliderStyle: "large"
+      zoom: 4
     });
 
     addMapWatchers();
@@ -1860,7 +1916,43 @@ define([
 
   return declare(null, {
 
-    gotoExtent: function(extText) {
+  showExtentBox: function(extent) {
+    let boundaryPoints = Polygon.fromExtent(extent).rings[0];
+    let pLine = {
+      type: "polyline",
+      paths: boundaryPoints
+    }
+    let zoomRectFillSymbol = {
+      type: "simple-lne", // autocasts as new SimpleFillSymbol()
+      color: [0, 0, 255],
+      width: 1,
+      style: "short-dot"
+    };
+    let extentGraphic = new Graphic({
+      geometry: pLine,
+      symbol: {
+        type: "simple-line",  // autocasts as new SimpleLineSymbol()
+        color: "lightblue",
+        width: "2px",
+        style: "short-dot"      }
+    });
+    view.graphics.removeAll();
+    view.graphics.add(extentGraphic);
+  },
+
+  makePointExtent: function(mapPoint, radius) {
+    let pointExtent = new Extent({
+      xmin: mapPoint.x - radius,
+      xmax: mapPoint.x + radius,
+      ymin: mapPoint.y - radius,
+      ymax: mapPoint.y + radius,
+      spatialReference: view.spatialReference
+    });
+    return pointExtent;
+  },
+
+
+  gotoExtent: function(extText) {
       let a = extText.split(",");
       let newExtent = null;
       if (a.length > 3)

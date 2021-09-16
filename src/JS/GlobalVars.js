@@ -30,6 +30,7 @@ let maxSZFeatures = 6000;    // More than 2000 causes the browser to slow signif
 let maxExtentWidth = 100;     // maximal extent in kilometers for video   -- dropped back from 100 because it's too slow
 let highlightSize = 15;
 let avg1sDist = 70;           // rough average distance between 1s points, in meters;
+let videoFeatureSpacing = 100;     // Minimum number of pixels (horizontal) between video features
 
 let gpUrlTemplate = "https://alaskafisheries.noaa.gov/arcgis/rest/services/{0}/GPServer/{0}";     // URL for GroupDataExtract GP service
 let extractGpName = "SZDataExtract";
@@ -330,11 +331,21 @@ let olExpand = null;
 
 //  When a graphic is hovered over, these point to the graphic and the widget controlling the graphic
 let minHoverTime = 500;     // Minimum hover time (ms) over a graphic before a new popup opens up
-//let hitTestStartTime = null;
-//let candidateGraphic = null;
 let currentHoveredGraphic = null;
 let currentWidgetController = null;
 let hoverTimeout;
+
+let multiZoomLevels = false;    // If true, will use the following vars to query on smaller part of current extent
+//  When a region of the map is hovered over, queries on SZ data for hovered location are started
+let minMapHoverTime = 1000;     // Minimum hover time (ms) before queries on hovered location are started
+let mapHoverTimeout = null;
+let mapHoverRadius = 1000;    // "radius" of square centered at current mouse position (in meters)
+let mapPreHoverRadius = 10000;    // "radius" of square centered at current mouse position (in meters)
+
+/*  DEVELOPMENT OPTIONS
+let showingExtentBox = false;     // If true, show area being queried for video points
+let showMapCoords = false;         // If true, show map coordinates in meters instead of Lat & Lon
+*/
 
 let image_message_timeout = false;
 
@@ -793,9 +804,10 @@ function refreshSzFeatures() {
   if (szFeatureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
     lastSZExtent = view.extent;
     updateNoFeaturesMsg(extentDependentWidgets, "querying");
-    if (szVideoWidget)
+    if (szVideoWidget) {
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
-    if (szUnitsWidget)
+    }
+    if (szUnitsWidget && (view.extent.width/1000 < maxExtentWidth))
       szUnitsWidget.runQuery(view.extent);         // 3D: use extent3d?
   } else {
     updateNoFeaturesMsg(extentDependentWidgets, "zoomin");
@@ -1155,9 +1167,9 @@ function containerChangeCallBack(newValue, oldValue, property, object) {
 // On right-click of SZ photo, bypasses default context menu and allows download of original resolution photo
 function downloadOrigRes(e) {
   let imgSrc = this.getElementsByTagName("IMG")[0].src;
-  let lowResInesrt = "_lowres/280_";
-  let midResInesrt = "_midres/560_";
-  let origResSrc = imgSrc.replace(lowResInesrt,"/").replace(midResInesrt,"/");
+  let lowResInsert = "_lowres/280_";
+  let midResInsert = "_midres/560_";
+  let origResSrc = imgSrc.replace(lowResInsert,"/").replace(midResInsert,"/");
   if (confirm("Do you want to download this photo?")) {
     /*    // Still can't get it to download straight to file file rather than open in new tab.
               let theStyle = "position: absolute; left:" + e.clientX + "px; top:" + e.clientY + "px; width:200px; height:50px; z-index: 10; background-color: white";

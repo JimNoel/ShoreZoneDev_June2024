@@ -14,9 +14,10 @@
 define([
   "dojo/_base/declare",
   "dojo/_base/lang",
+  "esri/views/MapView",
   "noaa/QueryBasedPanelWidget",
   "noaa/PhotoPlaybackWidget"
-], function(declare, lang, QueryBasedPanelWidget, PhotoPlaybackWidget){
+], function(declare, lang, View, QueryBasedPanelWidget, PhotoPlaybackWidget){
 
   // private vars and functions here
 
@@ -56,6 +57,7 @@ define([
 
     try {
       let currentTime = e.target.currentTime
+console.log("Current video time:  " + currentTime);
       let duration = e.target.duration
       let current_progress = currentTime/duration
 
@@ -83,14 +85,43 @@ define([
 
       //#### VIDEOS ####
 
+      let nextTime = 10000;     // Videos are all less than 4000 seconds, so this is an upper limit
       cur_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
-      //let msg = youtube_player.getVideoUrl().split("=")[2] + ":  " + youtube_player.getCurrentTime();
-      //console.log(msg);
-      //console.log(cur_vid_pt);
+/*binaryFilter*/
+      if (szVideoWidget.counter < szVideoWidget.getFeatureCount()) {
+        nxt_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter + 1);
+        nextTime = nxt_vid_pt.MP4_Seconds;
+        console.log("nextTime:  " + nextTime);
+      }
+
+      /*  INTERPOLATION  (not currently used)
+            time_now = new Date()
+
+            // Interpolation betwenn waypoints
+            if (typeof last_LatLongSend === "undefined" || time_now-last_LatLongSend >= LatLongSendRate) {
+
+              t = 1000*(szVideoWidget.getVideoPosition() - cur_vid_pt["MP4_Seconds"]) / (nxt_vid_pt["DATE_TIME"]-cur_vid_pt["DATE_TIME"])
+
+              let nxt_lat = nxt_vid_pt["LAT_DDEG"];
+              let nxt_lng = nxt_vid_pt["LON_DDEG"];
+
+              if (cur_vid_pt && nxt_vid_pt) {
+                nxt_lat = cur_vid_pt["LAT_DDEG"] * (1.0-t) + nxt_vid_pt["LAT_DDEG"] * (t)
+                nxt_lng = cur_vid_pt["LON_DDEG"] * (1.0-t) + nxt_vid_pt["LON_DDEG"] * (t)
+              }
+
+              szVideoWidget.moveToFeature(nxt_lng, nxt_lat);
+              //videoLatLonHandler(nxt_lat, nxt_lng, cur_vid_pt["VIDEOTAPE"], cur_vid_pt["DATE_TIME"]);
+
+              last_LatLongSend = time_now
+            }
+      /**/
 
       // Check if playback has gone beyond current point
       //console.log("onVideoProgress:  VIDEOS:  " + currentTime + ", " + cur_vid_pt.MP4_Seconds);
-      if (currentTime - cur_vid_pt.MP4_Seconds >= 1) {      // Check if enough time has passed to go to the next point    // initWhere: (for example, change 1 to 10)
+//      if (currentTime - cur_vid_pt.MP4_Seconds >= 1) {      // Check if enough time has passed to go to the next point
+      if (currentTime >= nextTime) {      // Check if enough time has passed to go to the next point
+        console.log("Moving to next video feature");
         szVideoWidget.counter += 1;
         if (szVideoWidget.counter < szVideoWidget.getFeatureCount())  {
           nxt_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
@@ -108,29 +139,6 @@ define([
           console.log("Pause due to end of points.");
         }
       }
-
-/*  INTERPOLATION  (not currently used)
-      time_now = new Date()
-
-      // Interpolation betwenn waypoints
-      if (typeof last_LatLongSend === "undefined" || time_now-last_LatLongSend >= LatLongSendRate) {
-
-        t = 1000*(szVideoWidget.getVideoPosition() - cur_vid_pt["MP4_Seconds"]) / (nxt_vid_pt["DATE_TIME"]-cur_vid_pt["DATE_TIME"])
-
-        let nxt_lat = nxt_vid_pt["LAT_DDEG"];
-        let nxt_lng = nxt_vid_pt["LON_DDEG"];
-
-        if (cur_vid_pt && nxt_vid_pt) {
-          nxt_lat = cur_vid_pt["LAT_DDEG"] * (1.0-t) + nxt_vid_pt["LAT_DDEG"] * (t)
-          nxt_lng = cur_vid_pt["LON_DDEG"] * (1.0-t) + nxt_vid_pt["LON_DDEG"] * (t)
-        }
-
-        szVideoWidget.moveToFeature(nxt_lng, nxt_lat);
-        //videoLatLonHandler(nxt_lat, nxt_lng, cur_vid_pt["VIDEOTAPE"], cur_vid_pt["DATE_TIME"]);
-
-        last_LatLongSend = time_now
-      }
-*/
 
 
     } catch(e) {
@@ -254,10 +262,51 @@ define([
 
       this.clickableSymbolGap = settings.photoGap/2;
 
+      // TODO:  Do I need to do something about this?
       this.query.where = "(MP4_Seconds IS NOT NULL) AND (MP4_Seconds >= -1)";
       this.playbackRate = 1.0;
       this.noFeaturesPanels.push(this.syncTo);
 
+      this.findNearestPoint = function(extent, mapPoint) {
+        queryComplete = false;
+        this.query.geometry = extent;
+        this.query.orderByFields = null;
+        this.query.where = "1=1";
+        this.queryTask.url = this.mapServiceQueryUrl("VIDEOSUBSET_1000M");
+        this.queryTask.execute(this.query).then(function(response) {
+          let features = response.features;
+          if (features.length === 0)
+            return;
+          let f = null;
+          let minDist = Number.MAX_VALUE;
+          for (let i=0; i<features.length; i++) {
+            let g = features[i].geometry;
+            let distSqr = Math.pow(g.x-mapPoint.x, 2) + Math.pow(g.y-mapPoint.y, 2);
+            if (distSqr < minDist) {
+              minDist = distSqr;
+              f = i;
+            }
+          }
+          let queryExtent = mapStuff.makePointExtent(features[f].geometry, mapHoverRadius);
+          this.displayMapMagnifier(queryExtent);
+          this.runQuery(queryExtent);
+        }.bind(this), function(error) {
+          console.log("Nearest point query failed");
+        });
+      };
+
+      this.displayMapMagnifier = function(extent) {
+        let infoWin = view.popup;
+        infoWin.content = "<div id='magViewDiv' class='MagMapDiv'>";
+        let magView = new View({
+          container: "magViewDiv",
+          map: map,
+          center: [-152, 62.5], // longitude, latitude
+          constraints: {maxScale: 4000},
+          zoom: 4
+        });
+        infoWin.open();
+      };
 
       this.processFeatures_Widget = function(features) {
         pausePlayback("video");
@@ -448,6 +497,10 @@ define([
 */
 
       this.setSyncPhotos(true);
+
+      /*binaryFilter    --temporarily turning off photo-sync when using binary filter on video points*/
+      if (this.useBinaryFilter)
+        this.setSyncPhotos(false);
 
       let speedHTML = '<span class="photoCount" style="position: absolute; right: 5px; bottom: 5px; width: 60px;">';
       speedHTML += '<img id="speedDecrIcon" src="assets/images/minus_12x12_red.png" style="position: absolute; bottom: 1px; left: 0" title="Click to reduce playback speed." onclick="nudgePlaybackSpeed(-1)"/>';

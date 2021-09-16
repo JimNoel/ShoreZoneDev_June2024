@@ -70,6 +70,7 @@ function onPlayerStateChange(event) {
 
 function CheckVideoProgress() {
   let duration = youtube_player.getDuration();
+  //console.log("YT video time:  " && szVideoWidget.getVideoPosition());
   szVideoWidget.update_track(szVideoWidget.getVideoPosition(), duration);
 }
 

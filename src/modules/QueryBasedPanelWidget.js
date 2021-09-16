@@ -139,11 +139,11 @@ define([
         //infoWin.container.style.maxHeight = "300px";
         //infoWin.container.setAttribute("style", "max-height: 300px;");
 
+        infoWin.title = this.popupTitle;    // this.baseName + " point";
         if (row)
           infoWin.content = this.rowHtmlToLines(row);
         else {
           attrs = e.attributes;
-          infoWin.title = this.popupTitle;    // this.baseName + " point";
           infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
         }
 
@@ -428,7 +428,7 @@ define([
     },
 
     // TODO:  queryPars currently consists of just queryPars.theWhere, so find a way to consolidate theWhere and queryPars
-    setDynamicQueryPars: function(theWhere, queryPars) {
+    setDynamicQueryPars: function(theWhere, queryPars, serviceName) {
       // Build dynamic query parameters for map service query:  query.where, query.outFields, query.orderByFields, queryTask.url
 
       // default setting for .outFields, .orderByFields   (might be modified in buildQueryPars)
@@ -513,10 +513,10 @@ define([
         }
       }
 
+/*binaryFilter*/
       if (this.useBinaryFilter) {
-        // TODO: Rename distance10px
-        let distance10px = view.toMap({x:20,y:0}).x - view.toMap({x:0,y:0}).x;
-        let skipValue = distance10px/avg1sDist;
+        let spacing_meters = view.toMap({x:videoFeatureSpacing,y:0}).x - view.toMap({x:0,y:0}).x;
+        let skipValue = spacing_meters/avg1sDist;
         let numZeros = Math.ceil(Math.log2(skipValue));
         let binaryFilter = "MP4_Seconds_Binary ";
         if (numZeros <= 12)
@@ -532,8 +532,12 @@ define([
       //   Queries are case-sensitive, so either change GVDATA_STNPHOTOS to uppercase,
       //   or use lower() function in query   (probably go with the former)
       this.query.where = theWhere;
-      //if (this.dynamicLayerName)     // Do this only if layer name changes, e.g. when querying on pre-grouped views
-        this.queryTask.url = this.mapServiceQueryUrl();     // this.mapServiceLayer.url + "/" + this.sublayerIDs[this.subLayerName];
+      if (!serviceName) {
+        serviceName = null;
+      } else {
+        this.query.orderByFields = null;
+      }
+      this.queryTask.url = this.mapServiceQueryUrl(serviceName);     // this.mapServiceLayer.url + "/" + this.sublayerIDs[this.subLayerName];
     },
 
     customRestServiceSQL: function() {
@@ -564,7 +568,7 @@ define([
       return {sql: sql, where: theWhere} ;
     },
 
-    runQuery: function(extent, queryPars) {
+    runQuery: function(extent, queryPars, serviceName) {
       // run query, populate headerText panel if headerText is available
       queryComplete = false;
       if (this.headerText)
@@ -573,19 +577,23 @@ define([
       if (!this.customRestService) {          // using ArcGIS map service
         // If extent argument is supplied, set parameters for spatial query
         if (extent) {
-          let pad = extent.width/50;      // Shrink query extent by 4%, to ensure that graphic points and markers are well within view
+          let padSide = extent.width/22;      // Shrink query extent to ensure that graphic points and markers are well within view
+          let padTop = extent.width/35;      // Shrink query extent to ensure that graphic points and markers are well within view
+          let padBottom = extent.width/16;      // Shrink query extent to ensure that graphic points and markers are well within view
           this.query.geometry = null;     // By default, no spatial filter unless there is a spatialRelationship defined
           if (this.query.spatialRelationship) {
             this.query.geometry = new Extent({
               spatialReference: extent.spatialReference,
-              xmin: extent.xmin + pad,
-              xmax: extent.xmax - pad,
-              ymin: extent.ymin + pad,
-              ymax: extent.ymax - pad
+              xmin: extent.xmin + padSide,
+              xmax: extent.xmax - padSide,
+              ymin: extent.ymin + padBottom,
+              ymax: extent.ymax - padTop
             });
-          }
+          };
+          if (typeof showingExtentBox !== "undefined")
+            mapStuff.showExtentBox(this.query.geometry);
         }
-        this.setDynamicQueryPars(theWhere, queryPars);
+        this.setDynamicQueryPars(theWhere, queryPars, serviceName);
         this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
           this.queryPending = false;
           console.log(this.baseName + ":  QueryTask failed.");
