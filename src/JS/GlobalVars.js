@@ -2,7 +2,6 @@
  * Created by Jim on 4/15/2016.
  */
 
-let debug_mode = "console";     // Possible values:  null (no debug message), "alert" (use alert dialog), [anything else] (use console)
 let justAK = false;
 
 // TODO: Put this near top
@@ -80,8 +79,9 @@ function makeServiceUrls(type, name) {
 
 
 // Set server URLs (2-item arrays, containing NOAA and PS URLs)
-let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
-//let szMapServiceLayerURLs = makeServiceUrls("service", "aTest_ShoreZone");
+//let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
+let szMapServiceLayerURLs = makeServiceUrls("service", "sz_dev");
+//let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone_w1000mVideo");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
 let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
 //let faMapServiceLayerURLs = makeServiceUrls("service", "dev/FishAtlas_v2020_dev");
@@ -146,17 +146,51 @@ let initialExtentThumbnail = null;
 
 let settings = {
   autoRefresh: true,
-  photoGap: 50
+  photoGap: 50,
+  magViewWidth: 10,
+//  DEVELOPMENT OPTIONS
+  showingExtentBox: true,     // If true, show area being queried for video points
+  showMapCoords: false,         // If true, show map coordinates in meters instead of Lat & Lon
+  allZoomLevels: false    // If true, will query on smaller part of current extent when zoomed out
 };
+
+function changeSetting() {
+  let S = "";
+  for (p in settings) {
+    if (S !== "")
+      S += "&";
+    S += p + ":" + settings[p];
+  }
+  let T = "S";
+  let settingPairs = prompt("Change property values:", S).split("&");
+  for (i=0; i<settingPairs.length; i++) {
+    let pair = settingPairs[i].split(":");
+    let parName = pair[0];
+    let par = settings[parName];
+    let v = pair[1];
+    if (typeof par === "number")
+      v = Number(v);
+    if (typeof par === "boolean") {
+      if (v.toLowerCase() === "true")
+        v = true;
+      else
+        v = false;
+    }
+    settings[parName] = v;
+  }
+};
+
 let settingsHtml = '<h3>Settings</h3>';
 settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
 settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
+settingsHtml += '<h4>Map magnifier width in km: <input type="number" id="input_magViewWidth" style="width: 6ch" onchange="magViewWidthInputHandler()" value="' + settings.magViewWidth + '"></h4>';
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
+settingsHtml += '<button id="rawSettingsButton" onclick="changeSetting()">Raw Settings</button>';
 
-let tableDownloadHtml = '<strong>Table download</strong><br><br>'
+  let tableDownloadHtml = '<strong>Table download</strong><br><br>'
   + '<label for="text_dlFileName">Download file name: </label><input type="text" id="text_dlFileName"><br><br>'
   + '&emsp; <button onclick = "doTableDownload()">Download</button>&emsp;<button onclick="doTableDownload(true)">Cancel</button><br><br>'
   + '<i>The current table will be downloaded as a comma-delimited (CSV) file.<br>'
@@ -253,6 +287,7 @@ if (siteParsJSON !== "") {
   let addDev = false;
   if (sitePars["dev"]) {
     sitePars["server"] = "noaa";
+    //getEl("rawSettingsButton").style.visibility = "visible";
     addDev = true;
   }
 
@@ -335,17 +370,10 @@ let currentHoveredGraphic = null;
 let currentWidgetController = null;
 let hoverTimeout;
 
-let multiZoomLevels = false;    // If true, will use the following vars to query on smaller part of current extent
 //  When a region of the map is hovered over, queries on SZ data for hovered location are started
 let minMapHoverTime = 1000;     // Minimum hover time (ms) before queries on hovered location are started
 let mapHoverTimeout = null;
 let mapHoverRadius = 1000;    // "radius" of square centered at current mouse position (in meters)
-let mapPreHoverRadius = 10000;    // "radius" of square centered at current mouse position (in meters)
-
-/*  DEVELOPMENT OPTIONS
-let showingExtentBox = false;     // If true, show area being queried for video points
-let showMapCoords = false;         // If true, show map coordinates in meters instead of Lat & Lon
-*/
 
 let image_message_timeout = false;
 
@@ -377,6 +405,10 @@ function photoGapInputHandler() {
   settings.photoGap = parseInt(getEl("input_photoGap").value);
   szPhotoWidget.clickableSymbolGap = settings.photoGap;
   //refreshSzFeatures();
+}
+
+function magViewWidthInputHandler() {
+  settings.magViewWidth = parseInt(getEl("input_magViewWidth").value);
 }
 
 function cbShowMediaHandler(w, isPhotos) {
@@ -805,6 +837,7 @@ function refreshSzFeatures() {
     lastSZExtent = view.extent;
     updateNoFeaturesMsg(extentDependentWidgets, "querying");
     if (szVideoWidget) {
+      szVideoWidget.noMarkers = szVideoWidget.preQueryMarkers;
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
     }
     if (szUnitsWidget && (view.extent.width/1000 < maxExtentWidth))
@@ -1158,10 +1191,6 @@ function relOffset(el, tgtDiv) {
 
 function cbSearchExtentHandler() {
   searchLocal = getEl("cbLimitSearchToExtent").checked;
-}
-
-function containerChangeCallBack(newValue, oldValue, property, object) {
-  console.log("containerChangeCallBack");
 }
 
 // On right-click of SZ photo, bypasses default context menu and allows download of original resolution photo

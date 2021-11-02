@@ -267,45 +267,41 @@ console.log("Current video time:  " + currentTime);
       this.playbackRate = 1.0;
       this.noFeaturesPanels.push(this.syncTo);
 
-      this.findNearestPoint = function(extent, mapPoint) {
+      this.getEntryPoints = function(extent, mapPoint) {
         queryComplete = false;
         this.query.geometry = extent;
-        this.query.orderByFields = null;
-        this.query.where = "1=1";
-        this.queryTask.url = this.mapServiceQueryUrl("VIDEOSUBSET_1000M");
+        this.query.orderByFields = ["VIDEOTAPE", "MP4_Secs_div1000"];
+        this.query.where = "";     //"1=1";
+        this.query.groupByFieldsForStatistics = ["VIDEOTAPE", "MP4_Secs_div1000"];
+        this.query.outStatistics = [
+          {
+            "statisticType": "min",
+            "onStatisticField": "MP4_Seconds",
+            "outStatisticFieldName": "Start_MP4_Seconds"
+          }
+        ];
+
+        this.queryTask.url = this.mapServiceQueryUrl();     //this.mapServiceQueryUrl("VIDEOSAMPLES_250M");
         this.queryTask.execute(this.query).then(function(response) {
           let features = response.features;
           if (features.length === 0)
             return;
-          let f = null;
-          let minDist = Number.MAX_VALUE;
-          for (let i=0; i<features.length; i++) {
-            let g = features[i].geometry;
-            let distSqr = Math.pow(g.x-mapPoint.x, 2) + Math.pow(g.y-mapPoint.y, 2);
-            if (distSqr < minDist) {
-              minDist = distSqr;
-              f = i;
-            }
-          }
-          let queryExtent = mapStuff.makePointExtent(features[f].geometry, mapHoverRadius);
-          this.displayMapMagnifier(queryExtent);
-          this.runQuery(queryExtent);
+          let a = features[0].attributes;
+          let minSecs = a.Start_MP4_Seconds;
+          let maxSecs = minSecs + 999;      // This ensures that the query will not attempt to return more than 1000 features
+          let where = "VIDEOTAPE='" + a.VIDEOTAPE + "' AND ";
+          where += "MP4_Seconds>=" + minSecs + " AND MP4_Seconds<=" + maxSecs;
+          this.query.groupByFieldsForStatistics = null;
+          this.query.outStatistics = null;
+          this.noMarkers = false;
+          this.runQuery(extent, {theWhere: where});
         }.bind(this), function(error) {
           console.log("Nearest point query failed");
         });
       };
 
-      this.displayMapMagnifier = function(extent) {
-        let infoWin = view.popup;
-        infoWin.content = "<div id='magViewDiv' class='MagMapDiv'>";
-        let magView = new View({
-          container: "magViewDiv",
-          map: map,
-          center: [-152, 62.5], // longitude, latitude
-          constraints: {maxScale: 4000},
-          zoom: 4
-        });
-        infoWin.open();
+      this.updateMapMagnifier = function(extent) {
+        magView.extent = extent;
       };
 
       this.processFeatures_Widget = function(features) {

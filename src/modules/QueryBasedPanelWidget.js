@@ -95,7 +95,7 @@ define([
 
       // Initial processing of features, common to all inherited widgets
       this.processFeatures = function(features) {
-        if (!this.noGeometry)
+        if (!this.noGeometry && !this.noMarkers)
           this.makeClickableGraphics(this.features);
         if (this.featureCountTemplate)
           getEl(this.featureCountElId).innerHTML = this.featureCountTemplate.replace("{0}",features.length).replace("{1}", this.tabName);
@@ -590,10 +590,11 @@ define([
               ymax: extent.ymax - padTop
             });
           };
-          if (typeof showingExtentBox !== "undefined")
+          if (settings.showingExtentBox)
             mapStuff.showExtentBox(this.query.geometry);
         }
         this.setDynamicQueryPars(theWhere, queryPars, serviceName);
+        /*JN*/  this.query.num = 1000;
         this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
           this.queryPending = false;
           console.log(this.baseName + ":  QueryTask failed.");

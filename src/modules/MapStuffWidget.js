@@ -8,6 +8,7 @@
 
 let map;
 let view;
+let magView;
 
 let szMapServiceLayer;
 let faMapServiceLayer;
@@ -126,6 +127,7 @@ define([
         mapServiceLayer: szMapServiceLayer,
         subLayerName: "1s",
         layerPath: "Video Flightline/1s",
+        preQueryMarkers: settings.allZoomLevels,
 
         spatialRelationship: "contains",
         //useBinaryFilter: true,
@@ -1352,13 +1354,10 @@ define([
     view.on('pointer-move', [], function(e){
       let screenPoint = {x: e.x, y: e.y};
 
-      if (multiZoomLevels) {
-        if (mapHoverTimeout)
-          clearTimeout(mapHoverTimeout);
-        mapHoverTimeout = setTimeout(function(){
-          getMouseLocSZdata(screenPoint);
-        }, minMapHoverTime);      // delay popup
-        return;
+      if (!magView.updating) {
+        let radius = view.extent.width/100;
+        let mapPoint = view.toMap(screenPoint);
+        szVideoWidget.updateMapMagnifier(mapStuff.makePointExtent(mapPoint, radius));
       }
 
       let mapPoint = view.toMap(screenPoint);
@@ -1368,40 +1367,34 @@ define([
       }
       let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);    //szVideoWidget._webMercatorToGeographic(mapPoint);
       let posDisplay = decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y);
-      if (typeof showMapCoords !== "undefined")
+      if (settings.showMapCoords)
         posDisplay = Math.round(mapPoint.x) + ", " + Math.round(mapPoint.y);
       dom.byId("coordinates").innerHTML = posDisplay;
+
+      if (settings.allZoomLevels) {     //  && !lock_points
+        if (mapHoverTimeout)
+          clearTimeout(mapHoverTimeout);
+        mapHoverTimeout = setTimeout(function(){
+          getMouseLocSZdata(screenPoint);
+        }, minMapHoverTime);      // delay popup
+        return;
+      }
+
       view.hitTest(screenPoint).then(handleGraphicHits);
     });
   }
 
   function getMouseLocSZdata(screenPoint) {
-    let radius = mapHoverRadius;
-    if (view.extent.width/1000 > mapHoverRadius)
-      radius = mapPreHoverRadius;
+    let radius = view.extent.width/100;
     let mapPoint = view.toMap(screenPoint);
-    let queryExtent = mapStuff.makePointExtent(mapPoint, radius);
-    showExtentBox(queryExtent);
-/*
-    let zoomRectFillSymbol = {
-      type: "simple-fill", // autocasts as new SimpleFillSymbol()
-      color: [227, 0, 0, 0.2],
-      outline: { // autocasts as new SimpleLineSymbol()
-        color: [0, 0, 255],
-        width: 1
-      }
-    };
-    extentGraphic = new Graphic({
-      geometry: queryExtent,
-      symbol: zoomRectFillSymbol
-    });
-    view.graphics.removeAll();
-    view.graphics.add(extentGraphic);
-*/
+/*JN*/    let queryRadius = radius;    // 3800;
+    let queryExtent = mapStuff.makePointExtent(mapPoint, queryRadius);
+    mapStuff.showExtentBox(queryExtent);
+    szVideoWidget.updateMapMagnifier(mapStuff.makePointExtent(mapPoint, radius));
     if (radius === mapHoverRadius)
       szVideoWidget.runQuery(queryExtent);
     else
-      szVideoWidget.findNearestPoint(queryExtent, mapPoint);
+      szVideoWidget.getEntryPoints(queryExtent, mapPoint);
     console.log(screenPoint);
   };
 
@@ -1432,7 +1425,7 @@ define([
         clearTimeout(hoverTimeout);
       hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
     }
-  };
+  }
 
   function clearAllHoverGraphics() {
   }
@@ -1717,6 +1710,33 @@ define([
     settingsExpand.content.innerHTML = settingsHtml;
     view.ui.add(settingsExpand, "top-right");
 
+
+    // mouse neighborhood magnifier map widget
+    //infoWin.content = "<div id='magViewDiv' class='magMapDiv'></div>";
+
+    let magnifierExpand = new Expand({
+      view: view,
+      content: makeWidgetDiv("magnifierPanel", "right")   ,
+      expanded: true,
+      expandIconClass: "esri-icon-search",
+      expandTooltip: "Click here to show the map magnifier.",
+      collapseTooltip: "Hide magnifier widget"
+    });
+/*
+    let magnifierHtml = '<h3>Magnifier</h3><div id="magMapDiv"></div>';
+    magnifierExpand.content.innerHTML = magnifierHtml;
+    view.ui.add(magnifierExpand, "top-right");
+    magView = new View({
+      container: "magMapDiv",
+      map: map,
+      extent: view.extent,
+      //center: [-148, 60.0], // longitude, latitude
+      //constraints: {maxScale: 4000},
+      //zoom: 4
+    });
+*/
+
+
     let refreshFeaturesDiv = document.createElement("DIV");
     refreshFeaturesDiv.innerHTML = refreshFeaturesHtml;
     view.ui.add(refreshFeaturesDiv, "top-right");
@@ -1885,6 +1905,25 @@ define([
 
   };
 
+  function initViewPopup() {
+/*
+    let infoWin = view.popup;
+    infoWin.content = "<div id='magViewDiv' class='magMapDiv'></div>";
+    magView = new View({
+      container: "magViewDiv",
+      map: map,
+      //extent: view.extent,
+      center: [-148, 60.0], // longitude, latitude
+      constraints: {maxScale: 4000},
+      zoom: 4
+    });
+    infoWin.open();
+    magView.extent = view.extent;
+*/
+  };
+
+
+
   function initMap() {
 //    getLegendHtml(0);     // Trying this here...  Move back to original spot if it goes wrong...
     gp = new Geoprocessor(gpUrl_extract);
@@ -1901,6 +1940,20 @@ define([
       constraints: {maxScale: 4000},
       zoom: 4
     });
+
+    let magnifierHtml = '<h3>Magnifier</h3><div id="magMapDiv"></div>';
+    let magExpandDiv = makeHtmlElement("div", "magExpandDiv", null, null, magnifierHtml);
+    document.body.appendChild(magExpandDiv);
+
+    //magnifierExpand.content.innerHTML = magnifierHtml;
+    //view.ui.add(magnifierExpand, "top-right");
+    magView = new View({
+      container: "magMapDiv",
+      map: map,
+      extent: view.extent
+    });
+
+    initViewPopup();
 
     addMapWatchers();
     addMapWidgets();
@@ -1938,6 +1991,7 @@ define([
     });
     view.graphics.removeAll();
     view.graphics.add(extentGraphic);
+    magView.graphics.add(extentGraphic);
   },
 
   makePointExtent: function(mapPoint, radius) {
