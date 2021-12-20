@@ -16,7 +16,8 @@
   <!--  Stylesheets -->
 <!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">-->
 
-  <!--  Updating from 4.14 to 4.17 -->
+  <!--  Updating from 4.17 to 4.21 -->
+  <!--  TODO:  Versions 4.18 to 4.21, dGrid cells are rendered literally, rather than as HTML!  -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.17/dijit/themes/claro/claro.css">
     <link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/css/main.css">
     <link rel="stylesheet" href="https://js.arcgis.com/4.17/dojox/layout/resources/ExpandoPane.css"/>
@@ -362,6 +363,10 @@
           if (confirm("Open the ShoreZone 3D Units demo site?"))
             window.open(SZ3dUnitsSiteURL);
           return;
+        }
+        if (tabID === "faTab" && !fa2020msgShown) {
+          alert("Thank you for visiting the Nearshore Fish Atlas website.  The site is currently undergoing extensive upgrades in data availability and functionality.  While still operational, only a limited number of features are enabled at this time.  Thanks for your patience as we work towards bringing new content to you in early 2022.");
+          fa2020msgShown = true;
         }
         let className = tabID.slice(0,2);
         switchTo(className);

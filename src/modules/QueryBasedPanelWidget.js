@@ -594,7 +594,7 @@ define([
             mapStuff.showExtentBox(this.query.geometry);
         }
         this.setDynamicQueryPars(theWhere, queryPars, serviceName);
-        /*JN*/  this.query.num = 1000;
+        //*JN*/  this.query.num = 1000;
         this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
           this.queryPending = false;
           console.log(this.baseName + ":  QueryTask failed.");

@@ -117,8 +117,8 @@ define([
 
       lang.mixin(this, kwArgs);
 
-      if (this.photoServer)
-        console.log(this.panelName + " PHOTOS:  " + this.photoServer);
+      //if (this.photoServer)
+      //  console.log(this.panelName + " PHOTOS:  " + this.photoServer);
 
       this.clickableSymbolGap = settings.photoGap;
 

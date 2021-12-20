@@ -63,6 +63,7 @@ let svcPathTemplate = {
   }
 };
 
+let fa2020msgShown = false;
 
 function makeServiceUrls(type, name) {
   // Makes URLs for a map service or virtual directory
@@ -79,8 +80,8 @@ function makeServiceUrls(type, name) {
 
 
 // Set server URLs (2-item arrays, containing NOAA and PS URLs)
-//let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
-let szMapServiceLayerURLs = makeServiceUrls("service", "sz_dev");
+let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
+//let szMapServiceLayerURLs = makeServiceUrls("service", "sz_dev");
 //let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone_w1000mVideo");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
 let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
@@ -243,6 +244,7 @@ let initExpandoCollapsed = false;
 const legendFilters = [
   {serviceName: "ShoreZone", fieldName: "HabClass", layerTitle: "Habitat Class", delimiter: ","},
   {serviceName: "ShoreZone", fieldName: "BC_CLASS", layerTitle: "Coastal Class", delimiter: ","},
+//  {serviceName: "ShoreZone", fieldName: "SHORETYPE", layerTitle: "Coastal Class", delimiter: ","},     // to eventually replace "BC_CLASS"
   {serviceName: "ShoreZone", fieldName: "ESI", layerTitle: "Environmental Sensitivity Index (ESI)", delimiter: ","}
 ];
 
@@ -572,6 +574,11 @@ function setDisplay(id, value) {
   el.style.display = display;
 }
 
+function toggleVisibility(id) {
+  // toggle visibility of HTML element
+  setVisible(id,!isVisible(id));
+}
+
 function setVisible(id, value) {
   // Show/hide HTML element
   el = getEl(id);
@@ -584,11 +591,11 @@ function setVisible(id, value) {
 }
 
 function isVisible(id) {
-  // Show/hide HTML element
+  // Returns visibility of HTML element
   el = getEl(id);
   if (!el)
     return false;
-  if (el.style.visibility in ["visible", "inherit"])
+  if (el.style.visibility==="visible" || el.style.visibility==="inherit")
     return true;
   else
     return false;
@@ -976,6 +983,8 @@ function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
 let szFeatureRefreshDue = false;      // True if extent has changed and new features have not been generated yet
 let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' src='assets/images/refresh24x24.png' onclick='refreshSzFeatures()' height='32px' width='32px' title='Click to refresh features' />";
 
+let toggleMagnifierHtml = "<img id='toggleMagnifierDiv' src='assets/images/MapMagnifier.png' class='mapWidget_Hidden' onclick='toggleMapWidgetVisibility(\"MagnifierDiv\")' height='24px' width='24px' title='Click for detailed view at mouse position' />";
+
 let unitsCb2_Id = "unitsCheckbox2_showFeatures";
 let showUnitsCheckbox2 = '<input id="' + unitsCb2_Id  + '" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget,unitsCheckbox2_showFeatures)"><span style="background-color: #ff6060; opacity: 0.25">&emsp;&emsp;</span>'
 
@@ -1256,6 +1265,19 @@ function addToWhere(where, newWhere) {
   where += newWhere;
   return where;
 }
+
+
+function toggleMapWidgetVisibility(widgetID) {
+  let newStatus = !isVisible(widgetID);
+  setVisible(widgetID, newStatus);
+  let theClass = "mapWidget_";
+  if (newStatus === true)
+    theClass += "Visible";
+  else
+    theClass += "Hidden";
+  getEl("toggle" + widgetID).className = theClass;
+}
+
 
 
 /* Unused functions

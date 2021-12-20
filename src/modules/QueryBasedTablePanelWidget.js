@@ -623,7 +623,7 @@ define([
           queryServer(theUrl, false, function(results) {
             results = JSON.parse(results);
             this.processDropdownQueryResults(results, ddItem, this);
-            console.log("filterDropdown response");
+            //console.log("filterDropdown response");
           }.bind(this));
           return;
         }

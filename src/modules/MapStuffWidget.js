@@ -32,6 +32,7 @@ define([
   "esri/core/watchUtils",
   "esri/Map",
   "esri/views/MapView",
+  //"esri/views/Magnifier",
   //"esri/views/SceneView",
   // SceneView produces this error:  GET http://localhost:63342/FDFA6052-1C12-4655-B658-0DBF2414422D/253/aHR0cDovL2pzLmFyY2dpcy5jb20vNC4zL2Vzcmkvd29ya2Vycy9tdXRhYmxlV29ya2VyLmpz 404 (Not Found)
   "esri/layers/MapImageLayer",
@@ -70,7 +71,7 @@ define([
   "esri/core/Collection",
   "esri/core/Accessor",
   "dojo/domReady!"
-], function(declare, Basemap, watchUtils, Map, View, MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
+], function(declare, Basemap, watchUtils, Map, View, /*Magnifier,*/ MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
             Extent, Point, Polyline, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
@@ -181,6 +182,7 @@ define([
           PHY_IDENT: { colWidth: 100 },
           HabClass: { colWidth: 100 },
           BC_CLASS: { colWidth: 100 },
+//          SHORETYPE: { colWidth: 100 },     // to eventually replace "BC_CLASS"
           EXP_BIO: { colWidth: 80 },
           LENGTH_M: { colWidth: 80, numDecimals: 0 },   // TODO: Handle 0 value for numDecimals
           CMECS_1: { colWidth: 130 },
@@ -415,6 +417,7 @@ define([
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssTableDownload', 'ssRegion_ddWrapper', 'ssBioband_ddWrapper', 'ssSpeciesPanel_ddWrapper', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
               dropdownElements: ['ssRegion_ddWrapper', 'ssBioband_ddWrapper', 'ssSpecies_ddWrapper', 'ssGroup_ddWrapper', 'ssSubgroup_ddWrapper', 'ssSpeciesPanel_ddWrapper'],
+//              featureOutFields: ["LocaleConcat", "station", "ExpBio", "BC_CLASS", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
               featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
               downloadExcludeFields: ["Envelope", "hasPhotos", "hasSpecies", "hasProfile"],
               orderByFields: ["station"],
@@ -443,6 +446,7 @@ define([
                   title:  "Coastal Class",
                   colWidth:  60,
                   longValue: {
+//                    lookupColName: "SHORETYPE",     // to eventually replace "BC_CLASS"
                     lookupColName: "BC_CLASS",
                     widget: "szUnitsWidget",
                     removeUpTo: ","
@@ -1219,6 +1223,7 @@ define([
       [esri.webmap.Bookmark] ������ DEPRECATED - Property: extent ������️ Replacement: viewpoint ⚙️ Version: 4.17
     However, when I use "viewpoint", jump to previous extent fails, and this message comes up:
       [esri.webmap.Bookmark]  e {name: "invalid-viewpoint", details: Object, message: "'viewpoint.targetGeometry' should be an extent"}
+OKAY NOW?
 */
 
     bookmark.index = savedExtentsWidget.bookmarks.length;
@@ -1237,6 +1242,14 @@ define([
 */
 
     view.when(function() {
+/*    // ESRI Magnifier widget
+      let M = view.magnifier;
+      M.factor = 10;
+      M.visible = true;
+      const offset = M.size / 2;
+      M.offset = { x: offset, y: offset };
+*/
+
       //searchWidget.activeSource.filter = {geometry: view.extent};
       //homeExtent = view.extent;
       map.basemap = startBasemap;   //HACK:  Because inital basemap setting of "oceans" messes up initial extent and zooming
@@ -1352,10 +1365,13 @@ define([
 
     // Handle mouse-move events:  Update map coordinate display, and check for mouse over graphic features
     view.on('pointer-move', [], function(e){
+      //view.magnifier.position = { x: e.x, y: e.y };     // ESRI Magnifier widget
+
       let screenPoint = {x: e.x, y: e.y};
 
-      if (!magView.updating) {
-        let radius = view.extent.width/100;
+      if (isVisible("MagnifierDiv") && !magView.updating) {
+        let radius = 80000;       // view.extent.width/100;     // Using constant radius rather than fraction of current extent
+        // console.log(radius);
         let mapPoint = view.toMap(screenPoint);
         szVideoWidget.updateMapMagnifier(mapStuff.makePointExtent(mapPoint, radius));
       }
@@ -1604,7 +1620,6 @@ define([
     llExpand.content = wrapperWithOpacitySlider(layerListWidget.domNode, "Layers");
   }
 
-
   function addMapWidgets() {
 
     view.container.ondragover = drag_over;
@@ -1714,6 +1729,7 @@ define([
     // mouse neighborhood magnifier map widget
     //infoWin.content = "<div id='magViewDiv' class='magMapDiv'></div>";
 
+/*
     let magnifierExpand = new Expand({
       view: view,
       content: makeWidgetDiv("magnifierPanel", "right")   ,
@@ -1722,19 +1738,25 @@ define([
       expandTooltip: "Click here to show the map magnifier.",
       collapseTooltip: "Hide magnifier widget"
     });
-/*
+*/
+
+
     let magnifierHtml = '<h3>Magnifier</h3><div id="magMapDiv"></div>';
-    magnifierExpand.content.innerHTML = magnifierHtml;
-    view.ui.add(magnifierExpand, "top-right");
+    let MagnifierDiv = makeHtmlElement("div", "MagnifierDiv", null, "visibility:hidden", magnifierHtml);
+    document.body.appendChild(MagnifierDiv);
+
+    //magnifierExpand.content.innerHTML = magnifierHtml;
+    //view.ui.add(magnifierExpand, "top-right");
     magView = new View({
       container: "magMapDiv",
       map: map,
-      extent: view.extent,
-      //center: [-148, 60.0], // longitude, latitude
-      //constraints: {maxScale: 4000},
-      //zoom: 4
+      extent: view.extent
     });
-*/
+
+    let toggleMagnifierDiv = document.createElement("DIV");
+    toggleMagnifierDiv.innerHTML = toggleMagnifierHtml;
+    view.ui.add(toggleMagnifierDiv, "top-left");
+
 
 
     let refreshFeaturesDiv = document.createElement("DIV");
@@ -1833,14 +1855,21 @@ define([
         };
       this.activeSource.countryCode = "US";
       this.activeSource.categories = ["City", "Water Features", "Land Features"];
+      //this.activeSource.defaultZoomScale  = 10000;
     });
 
 /*
     searchWidget.on("suggest-complete", function(event){
       console.log(event);
     });
-*/
 
+    searchWidget.on("select-result", function(event){
+      if (event.result.extent.width > 4000000)
+        event.source.zoomScale = 5000;
+        //event.result.extent.expand(0.1);
+      console.log("The selected search result: ", event);
+    });
+*/
 
       /*    // This filters search suggestions to initial extent
           searchWidget.watch("activeSource", function() {
@@ -1849,8 +1878,10 @@ define([
               //where: "name like '*Alaska*'"
             };
           });
+      */
 
           // Code to handle search results with improper extents
+/*
           searchWidget.goToOverride = function(view, goToParams) {
             let type =  this.results[0].results[0].feature.geometry.type;
             let tgt = goToParams.target.target;
@@ -1860,7 +1891,7 @@ define([
               zoom: 8
             }, goToParams.options);
           };
-      */
+*/
 
     /*  Bottom widgets  */
 
@@ -1941,18 +1972,6 @@ define([
       zoom: 4
     });
 
-    let magnifierHtml = '<h3>Magnifier</h3><div id="magMapDiv"></div>';
-    let magExpandDiv = makeHtmlElement("div", "magExpandDiv", null, null, magnifierHtml);
-    document.body.appendChild(magExpandDiv);
-
-    //magnifierExpand.content.innerHTML = magnifierHtml;
-    //view.ui.add(magnifierExpand, "top-right");
-    magView = new View({
-      container: "magMapDiv",
-      map: map,
-      extent: view.extent
-    });
-
     initViewPopup();
 
     addMapWatchers();
@@ -1970,6 +1989,8 @@ define([
   return declare(null, {
 
   showExtentBox: function(extent) {
+  /*JN*/ if (!extent)
+      return;
     let boundaryPoints = Polygon.fromExtent(extent).rings[0];
     let pLine = {
       type: "polyline",

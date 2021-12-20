@@ -343,7 +343,7 @@ console.log("Current video time:  " + currentTime);
       this.setVideoPosition = function(progress) {
         if (youtube_id) {
           if (youtube_ready() /*&& youtube_player.getVideoUrl()*/) {
-            console.log("https://www.youtube.com/watch?v=" + youtube_id + "&feature=youtu.be&t=" + progress);
+            //console.log("https://www.youtube.com/watch?v=" + youtube_id + "&feature=youtu.be&t=" + progress);
             try {
               youtube_player.seekTo(progress, true);
             } catch(e) {
