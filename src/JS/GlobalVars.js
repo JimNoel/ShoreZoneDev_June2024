@@ -14,7 +14,8 @@ let szPhotoServer = mainSzMediaServer;
 
 let CustomRestServiceURL = "https://alaskafisheries.noaa.gov/mapping/faREST/sql";
 
-let showPopups = true;
+let showPopupsDefault = true;
+let showPopups = showPopupsDefault;
 let popupsDocked = false;
 
 /* Initial basemap.  Can be one of:
@@ -91,19 +92,22 @@ let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
 
 let szSublayerIDs = {};
 
-let faDisplayInfo = [
-/*
-  {title: "Eelgrass Beds"},
-  {title: "Thermograph Sites"},
+
+/* Sublayer display settings.
+     "listMode" (default "show") determines whether the sublayer shows up in the LayerList
+     "visible"  (default "true") determines whether the sublayer is currently visible in the map
 */
+
+/*
+let szDisplayInfo = [
+  {title: "AK_UNIT_LINES_WATTRS", visible: false, listMode: "hide"},
+  {title: "AK_UNIT_LINES_WATTRS_wXSHR", visible: false, listMode: "hide"},
+];
+*/
+
+let faDisplayInfo = [
   {title: "Regions"},
   {title: "vw_CatchStats_RegionsGear", visible: false, listMode: "hide"},
-/*
-  {title: "Locales_background", visible: false, listMode: "hide"},
-  {title: "Locales (point)"},
-  {title: "vw_CatchStats_Locales", visible: false, listMode: "hide"},
-  {title: "vw_CatchStats_LocalesHabitats", visible: false, listMode: "hide"},
-*/
   {title: "Sites_background", visible: false, listMode: "hide"},
   {title: "Sites", visible: false},
   {title: "vw_CatchStats_Sites", visible: false, listMode: "hide"},
@@ -987,6 +991,8 @@ let toggleMagnifierHtml = "<img id='toggleMagnifierDiv' src='assets/images/MapMa
 
 let unitsCb2_Id = "unitsCheckbox2_showFeatures";
 let showUnitsCheckbox2 = '<input id="' + unitsCb2_Id  + '" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget,unitsCheckbox2_showFeatures)"><span style="background-color: #ff6060; opacity: 0.25">&emsp;&emsp;</span>'
+let showUnitsDiv = document.createElement("DIV");
+showUnitsDiv.innerHTML = showUnitsCheckbox2;
 
 let popupsCb_Id = "showPopupsCheckbox";
 let showPopupsCheckbox = '<input id="' + popupsCb_Id  + '" type="checkbox" checked onclick="checkbox_showPopups_clickHandler()"><span class="mapCheckboxText" >Show popups</span>'

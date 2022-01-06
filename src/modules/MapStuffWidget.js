@@ -219,6 +219,7 @@ define([
     function addServiceLayers() {
       szMapServiceLayer =  new MapImageLayer(szMapServiceLayerURLs[currServerNum],  {id: "szOpLayer", "opacity" : 1.0});
       szMapServiceLayer.when(function() {
+        //szMapServiceLayer.sublayers = updateSublayerArgs(szDisplayInfo, szSublayerIDs);
         makeSzWidgets();
 
     }, function(error){
@@ -417,7 +418,7 @@ define([
               parentAreaType: 'Regions',
               visibleHeaderElements: ['ssTableDownload', 'ssRegion_ddWrapper', 'ssBioband_ddWrapper', 'ssSpeciesPanel_ddWrapper', 'ssTableHeaderTitle', 'ssLabelSpan_featureCount', 'ssCheckboxSpan_showFeatures'],
               dropdownElements: ['ssRegion_ddWrapper', 'ssBioband_ddWrapper', 'ssSpecies_ddWrapper', 'ssGroup_ddWrapper', 'ssSubgroup_ddWrapper', 'ssSpeciesPanel_ddWrapper'],
-//              featureOutFields: ["LocaleConcat", "station", "ExpBio", "BC_CLASS", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
+//             featureOutFields: ["LocaleConcat", "station", "ExpBio", "BC_CLASS", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
               featureOutFields: ["LocaleConcat", "station", "ExpBio", "CoastalClass", "date_", "hasPhotos", "hasSpecies", "hasProfile"],
               downloadExcludeFields: ["Envelope", "hasPhotos", "hasSpecies", "hasProfile"],
               orderByFields: ["station"],
@@ -865,11 +866,20 @@ define([
               subTableDD: "Region",
               backgroundLayers: ["Sites"],
               filterBgLayer: "Regions",
+              noPopups: true,
               clickableSymbolType: "extent",
               clickableSymbolInfo: {
                 color: [51, 51, 204, 0.0 ],     // 4th value was 0.1 -- changed to 0 for no fill
                 style: "solid",
-                width: "2px"
+                width: "2px",
+                outline: null
+              },
+              highlightSymbolType: "extent",
+              highlightSymbolInfo: {
+                color: [51, 51, 204, 0.2 ],     // 4th value was 0.1 -- changed to 0 for no fill
+                style: "solid",
+                width: "2px",
+                outline: null
               },
               mapServiceSublayerVisibility: [false, false, true]
               //textOverlayPars: null     // IMPORTANT:  Otherwise, will retain previous text overlay settings on tab switch
@@ -931,7 +941,7 @@ define([
                 }
               },
               idField: 'SiteID',
-              backgroundLayers: ["Regions"],
+              backgroundLayers: [],     // ["Regions"],
               filterBgLayer: "Sites_background",
               clickableSymbolType: "point",
               clickableSymbolInfo: {
@@ -1407,6 +1417,12 @@ OKAY NOW?
     let queryExtent = mapStuff.makePointExtent(mapPoint, queryRadius);
     mapStuff.showExtentBox(queryExtent);
     szVideoWidget.updateMapMagnifier(mapStuff.makePointExtent(mapPoint, radius));
+
+/*JN*/
+if (view.extent.width > 8000000)
+  return;
+/*JN*/
+/*JN*/    queryExtent = view.extent;
     if (radius === mapHoverRadius)
       szVideoWidget.runQuery(queryExtent);
     else
@@ -1819,13 +1835,11 @@ OKAY NOW?
     });
     view.ui.add(bgExpand, "bottom-left");
 
-    let showUnitsDiv = document.createElement("DIV");
-    showUnitsDiv.innerHTML = showUnitsCheckbox2;
-    view.ui.add(showUnitsDiv, "bottom-left");
-
     let showPopupsDiv = document.createElement("DIV");
     showPopupsDiv.innerHTML = showPopupsCheckbox;
     view.ui.add(showPopupsDiv, "bottom-left");
+
+    view.ui.add(showUnitsDiv, "bottom-left");
 
     let scaleBar = new ScaleBar({
       view: view,

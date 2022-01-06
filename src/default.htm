@@ -115,9 +115,13 @@
       <span style="position:absolute; left:50px; top:180px;">
 	    <label class="subTitle">Choose a database</label><br />
 	    
-	    <input type="radio" name="rgInitialTab" id="radioSZvideo" class="radioButton" value="szVideo" onclick="setInitTab('szSimple')" checked />
+	    <input type="radio" name="rgInitialTab" id="radioSZvideo" class="radioButton" value="szVideo" onclick="setInitTab('szSimple')" />
 	        <label for="radioSZ" class="radioText">ShoreZone Video</label><br />
-	    <input type="radio" name="rgInitialTab" id="radioSZ" class="radioButton" value="sz" onclick="setInitTab('sz')" />
+				  <div style="padding-left: 50px">
+				  	<i >Simple version without data tables,<br/> for viewing video and photos</i>
+					</div><br/>
+
+	    <input type="radio" name="rgInitialTab" id="radioSZ" class="radioButton" value="sz" onclick="setInitTab('sz')" checked />
 	        <label for="radioSZ" class="radioText">ShoreZone Data</label><br />
 	    <input type="radio" name="rgInitialTab" id="radioFA" class="radioButton" value="fa" onclick="setInitTab('fa')" />
 	        <label for="radioFA" class="radioText">Nearshore Fish Atlas</label><br />
@@ -128,11 +132,11 @@
       </span>
 
 
-		<span id="szVideoPreviewWrapper" style="position:absolute; left:350px; top:180px; width:400px; visibility: inherit">
+		<span id="szVideoPreviewWrapper" style="position:absolute; left:350px; top:180px; width:400px; visibility: hidden">
 			<img alt="preview image" src="assets/images/layoutPreview_szVideo.PNG" style="position:relative; top:10px; height:140px"/>
 		</span>
 
-      <span id="layoutPreviewWrapper" style="position:absolute; left:350px; top:180px; width:400px; visibility: hidden">
+      <span id="layoutPreviewWrapper" style="position:absolute; left:350px; top:180px; width:400px; visibility: inherit">
 	    	<label class="subTitle">Choose a desktop configuration</label>
         <span class="spanLayout" style="left:0px; top:50px">
 	    		<input type="radio" class="radioBtnLayout" id="h2" name="rgImageLayout" value="h2" onclick="setInitLayout('h2')" checked />
@@ -149,22 +153,16 @@
       </span>
 	</form>
 
-        <button onclick="openSZJS()" style="position:absolute; left:120px; top:370px; font-family:Calibri; font-weight:bold; font-size:28pt;
+        <button onclick="openSZJS()" style="position:absolute; left:120px; top:420px; font-family:Calibri; font-weight:bold; font-size:28pt;
               box-shadow: 0px 6px 0px 0px rgba(56, 93, 138, 1),
                             0px 5px 12px 0px rgba(0, 0, 0, 0.6),
                             inset 0px 0px 10px -5px rgba(0, 0, 0, 1);
             padding:0px; background-color:#4F81BD; width:1.43in; height:0.6in;">Start</button>   
 
-				<p style="position:absolute; left:50px; top:720px;">
-					The old Flex version of the website may be accessed <a href="#" onclick="openSZFlex()" style="color: purple">here</a>.<br>
-					Please note that the Flex version will be removed by the end of 2020.
-				</p>
-
-
-        <a href="#" onclick="openNewTab('szapps.htm')" style="position:absolute; left:40px; top:460px; color:Black; font-size:10pt">ShoreZone GDB and REST services</a>
+        <a href="#" onclick="openNewTab('szapps.htm')" style="position:absolute; left:40px; top:510px; color:Black; font-size:10pt">Downloadable geodatabases and REST services</a>
         
 
-    <img src="assets/images/ShoreZone_southeastAK_2008.JPG" style="position:absolute; top:500px; left:0px; height:2.27in; width:8in;"/>
+    <img src="assets/images/ShoreZone_southeastAK_2008.JPG" style="position:absolute; top:550px; left:0px; height:2.27in; width:8in;"/>
 
 		<script type="application/javascript">
 			getEl("noaaLinks").innerHTML = noaaLinksContent

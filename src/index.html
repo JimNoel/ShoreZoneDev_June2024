@@ -375,6 +375,7 @@
       function switchTo(className) {
         if (!siteTabs[className].widgets)
           return;
+        setVisible(showUnitsDiv, className==="sz");
         siteTabs.promoteClass(className);
         let widgets = siteTabs[className].widgets;
         for (i in widgets) {

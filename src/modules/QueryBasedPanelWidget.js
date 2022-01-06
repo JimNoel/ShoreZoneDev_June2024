@@ -259,33 +259,38 @@ define([
       this.setHighlightRendering();
     },
 
+  makeSymbol(symbolInfo, symbolType) {
+    let symbol = null;
+    if (symbolType === "text")
+      symbol = new TextSymbol(symbolInfo);
+    if (symbolType === "point")
+      symbol = new SimpleMarkerSymbol(symbolInfo);
+    else if (symbolType === "polyline")
+      symbol = new SimpleLineSymbol(symbolInfo);
+    else if (symbolType === "polygon" || symbolType === "extent")
+      symbol = new SimpleFillSymbol(symbolInfo);
+    return symbol;
+  },
 
-  setClickableRendering: function() {
-      if (this.clickableSymbolType === "text")
-        this.clickableSymbol = new TextSymbol(this.clickableSymbolInfo);
-      if (this.clickableSymbolType === "point")
-        this.clickableSymbol = new SimpleMarkerSymbol(this.clickableSymbolInfo);
-      else if (this.clickableSymbolType === "polyline")
-        this.clickableSymbol = new SimpleLineSymbol(this.clickableSymbolInfo);
-      else if (this.clickableSymbolType === "polygon" || this.clickableSymbolType === "extent")
-        this.clickableSymbol = new SimpleFillSymbol(this.clickableSymbolInfo);
+    setClickableRendering: function() {
+      this.clickableSymbol = this.makeSymbol(this.clickableSymbolInfo, this.clickableSymbolType);
       this.clickableLayer.renderer = new SimpleRenderer(this.clickableSymbol);
     },
 
 
     setHighlightRendering: function() {
-      if (!this.highlightSymbolInfo) {
-        this.highlightSymbol = this.clickableSymbol.clone();
-        // So far, the only ones that don't have separate highlightSymbolInfo are Points
-        this.highlightSymbol.color.a = 0;
-        this.highlightSymbol.outline.color = "red";     // For points, border of point symbol.  For polygons, border of polygon.
-        this.highlightSymbol.outline.width = "2px";
-        this.highlightSymbol.size = highlightSize;   // += 5;      // (For polygons, this is meaningless, but also harmless.)
+      if (this.highlightSymbolInfo) {
+        this.highlightSymbol = this.makeSymbol(this.highlightSymbolInfo, this.highlightSymbolType);
       } else {
-        if (this.highlightSymbolType === "polyline")
-          this.highlightSymbol = new SimpleLineSymbol(this.highlightSymbolInfo);
+        this.highlightSymbol = this.clickableSymbol.clone();
+        this.highlightSymbol.color.a = 0;
+        if (this.highlightSymbol.outline) {
+          this.highlightSymbol.outline.color = "red";     // For points, border of point symbol.  For polygons, border of polygon.
+          this.highlightSymbol.outline.width = "2px";
+        }
+        this.highlightSymbol.size = highlightSize;   // += 5;      // (For polygons, this is meaningless, but also harmless.)
       }
-      this.highlightLayer.renderer = new SimpleRenderer(this.highlightSymbol);
+    this.highlightLayer.renderer = new SimpleRenderer(this.highlightSymbol);
     },
 
 
@@ -307,15 +312,17 @@ define([
         getEl(this.tabInfo[this.currTab].tabId).className += " active";
       }
 
+      let tabInfo = this.tabInfo[index];
+
       // Change parameters using settings of new tab
-      for (o in this.tabInfo[index]) {
-        this[o] = this.tabInfo[index][o];
+      for (o in tabInfo) {
+        this[o] = tabInfo[o];
       }
 
       // Reset to null any parameters not specified in new tab info
-      if (!this.tabInfo[index].textOverlayPars)
+      if (!tabInfo.textOverlayPars)
         this.textOverlayPars = null;
-      if (!this.tabInfo[index].calcFields)
+      if (!tabInfo.calcFields)
         this.calcFields = null;
 
       if (this.clickableSymbolInfo)
@@ -324,6 +331,12 @@ define([
       this.setHeaderItemVisibility();
       this.runQuery(view.extent);
       this.makeFooterElements();
+
+      showPopups = showPopupsDefault;
+      if (tabInfo.noPopups) {
+        showPopups = false;
+      }
+      getEl("showPopupsCheckbox").checked = showPopups;
     },
 
     tabClickHandler: function(evt) {
