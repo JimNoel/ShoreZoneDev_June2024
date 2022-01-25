@@ -920,12 +920,11 @@ define([
 /*JN*/
               customRestService: {
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
-                groupVars: "Region,Site,Habitat",
+                groupVars: "Region,Locale,Site,Habitat",
                 prefix: "F.",
-                innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch," +
-                  "SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM dbo.vw_FishCounts_flat_noNULL " +
-                  "GROUP BY {G},SiteID",
-                outerSQL: "SELECT {G2},F.SiteID,Hauls,NumSpecies,Catch,Count_measured,AvgFL,dbo.vw_SitePhotoCounts.PhotoCount,SITES_POINTS.Shape FROM ({innerSQL}) AS F " +
+                innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
+                  "FROM dbo.vw_FishCounts_flat_noNULL GROUP BY {G},SiteID",
+                outerSQL: "SELECT {G2},Hauls,NumSpecies,Catch,F.SiteID,dbo.vw_SitePhotoCounts.PhotoCount,SITES_POINTS.Shape FROM ({innerSQL}) AS F " +
                   "INNER JOIN SITES_POINTS ON F.SiteID = SITES_POINTS.SiteID LEFT OUTER JOIN  vw_SitePhotoCounts ON SITES_POINTS.SiteID = vw_SitePhotoCounts.SiteID",
                 baseWhere: ""
               },
