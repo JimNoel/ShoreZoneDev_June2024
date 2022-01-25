@@ -66,6 +66,12 @@ define([
 
 
       this.processResults = function(results) {
+
+if (test) {
+  let s = '{"fields":[{"name":"Region","alias":"Region"},{"name":"SiteID","alias":"SiteID"},{"name":"Site","alias":"Site"},{"name":"Habitat","alias":"Habitat"},{"name":"Hauls","alias":"Hauls"},{"name":"NumSpecies","alias":"NumSpecies"},{"name":"Catch","alias":"Catch"},{"name":"PhotoCount","alias":"PhotoCount"}],"features":[{"attributes":{"Region":"Gulf of Alaska","SiteID":2724,"Site":"n2724","Habitat":"","Hauls":1,"NumSpecies":1,"Catch":111,"PhotoCount":null},"geometry":{"x":-16380996.2829,"y":8605968.659599997,"z":null,"m":null,"type":"point"}},{"attributes":{"Region":"Gulf of Alaska","SiteID":2728,"Site":"n2728","Habitat":"","Hauls":1,"NumSpecies":1,"Catch":2,"PhotoCount":null},"geometry":{"x":-16329451.6517,"y":8476160.236599997,"z":null,"m":null,"type":"point"}},{"attributes":{"Region":"Gulf of Alaska","SiteID":2731,"Site":"n2731","Habitat":"","Hauls":1,"NumSpecies":1,"Catch":1,"PhotoCount":null},"geometry":{"x":-16477268.3507,"y":8467296.71,"z":null,"m":null,"type":"point"}},{"attributes":{"Region":"Gulf of Alaska","SiteID":2738,"Site":"n2738","Habitat":"","Hauls":1,"NumSpecies":2,"Catch":1407,"PhotoCount":null},"geometry":{"x":-16412218.3499,"y":8555193.722900003,"z":null,"m":null,"type":"point"}}]}';
+  results = JSON.parse(s);
+}
+
         let features = results.features;
         this.features = features;
         this.fields = results.fields;
@@ -77,6 +83,10 @@ define([
       this.setDisplayLayers = function() {
         if (!this.backgroundLayers)
           return;
+if (test) {
+  this.subLayerName = "vw_FishCounts_flat";
+  this.query.where = "GearBasic='other'";
+}
         let displayLayers = this.backgroundLayers.slice();
         displayLayers.push(this.subLayerName);
         if (this.filterBgLayer  && (this.query.where !== ""))
@@ -481,7 +491,7 @@ define([
                   if (subDropDown.SelectedOption === "All")
                     i += -1;
                   else {
-                    if (ddItem.layerSubNames)     // Only do if not using customRestService
+                    if (item.layerSubNames)     // Only do if not using customRestService
                       replacementName = subDropDown.layerSubNames;
                     i = -1;
                   }
@@ -568,15 +578,24 @@ define([
             } else if (D[d].SelectedOption!=="Sum") {
               if (theWhere)
                 theWhere += " AND ";
-              theWhere += whereFromDDInfo(D[d]);
+              let prefix = "";
+              if (r.prefix && r.groupVars.split(",").includes(D[d].whereField))
+                prefix = r.prefix;
+              theWhere += whereFromDDInfo(D[d], prefix);
             }
           }
         }
         groupVars = ddFields + groupVars;
       }
+      if (r.outerSQL)
+        r.sqlTemplate = r.outerSQL.replace("{innerSQL}",r.innerSQL);
       let sql = r.sqlTemplate.replace(/{G}/g, groupVars);
+      if (r.prefix) {
+        let groupVars2 = r.prefix + groupVars.split(",").join(","+r.prefix);
+        sql = sql.replace(/{G2}/g, groupVars2);
+      }
       if (theWhere !== "")
-        theWhere = "WHERE " + theWhere;
+        theWhere = " WHERE " + theWhere;
       sql = sql.replace("{W}", theWhere);
       return {sql: sql, where: theWhere} ;
     },
@@ -614,13 +633,12 @@ define([
         }.bind(this));
       } else {                                // using custom SQL Server REST service
         let urlInfo = this.customRestServiceSQL();
-        let theUrl = this.customRestService.serviceUrl + urlInfo.sql;
+        let theUrl = this.customRestService.serviceUrl + urlInfo.sql + " " + urlInfo.where;
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
-        // TODO:  Okay now?
-        if (this.dropDownInfo)
-          this.updateAllDropdowns(urlInfo.where);
-//        this.upDateDropdown(null, urlInfo.where);
+        theWhere = urlInfo.where;
       }
+      if (this.dropDownInfo)
+        this.updateAllDropdowns(theWhere);
     },
 
     upDateDropdown: function(currDDinfo, where) {      // What if currDDinfo is null?
@@ -636,26 +654,6 @@ define([
       }
       theWhere = A.join(" AND ");
       this.filterDropdown(currDDinfo, theWhere);
-/*
-      let ddInfo = this.dropDownInfo;
-      for (let d = 0; d < ddInfo.length; d++) {
-        let D = ddInfo[d];
-        if (D.liveUpdate && D!==currDDinfo && this.visibleHeaderElements.includes(D.wrapperId)) {
-          let theWhere = this.query.where;
-          if (where)
-            theWhere = where;
-
-          // Remove current dropdown from WHERE clause
-          let A = theWhere.split(" AND ");
-          for (let i=0; i<A.length; i++) {
-            if (A[i].indexOf(D.whereField) !== -1)
-              A.splice(i);
-          }
-          theWhere = A.join(" AND ");
-          this.filterDropdown(D.ddName, theWhere);
-        }
-      }
-*/
     },
 
     queryResponseHandler: function(results) {

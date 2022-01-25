@@ -1,6 +1,8 @@
 /**
- * Created by Jim on 4/15/2016.
+ * Global variables and functions
  */
+
+let test = false;    // For trying out things before comitting to code
 
 let justAK = false;
 
@@ -114,7 +116,8 @@ let faDisplayInfo = [
   {title: "vw_CatchStats_SitesGear", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesHabitats", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesSpecies", visible: false, listMode: "hide"},
-  {title: "vw_CatchStats_SitesHabitatsSpecies", visible: false, listMode: "hide"}
+  {title: "vw_CatchStats_SitesHabitatsSpecies", visible: false, listMode: "hide"},
+  {title: "vw_FishCounts_flat", visible: false, listMode: "hide"}
 ];
 
 let ssDisplayInfo = [
@@ -356,6 +359,9 @@ let ssSpTableWidget = null;
 let ssPhotoWidget = null;
 let ssProfileWidget = null;
 let faPhotoWidget = null;
+
+let dfltInitialOption = [ { label: "[All]", value: "All" } ];
+
 
 let gp = null;      // for Geoprocessor
 let llExpand = null;
@@ -659,7 +665,7 @@ function cbCheckedHandler(w) {
   w.runQuery(view.extent);  //, {theWhere: where});
 }
 
-function whereFromDDInfo(ddInfo) {
+function whereFromDDInfo(ddInfo, prefix="") {
   let ddElement = getEl(ddInfo.ddId);
   let selOption = ddInfo.options[ddElement.selectedIndex];
   let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name (if contains " - ")
@@ -669,7 +675,7 @@ function whereFromDDInfo(ddInfo) {
   if (ddInfo.isAlpha)
     theWhere = "'" + theWhere + "'";
   theWhere = ddInfo.whereField + "=" + theWhere;
-  return theWhere;
+  return prefix + theWhere;
 }
 
 function dropdownSelectHandler(w, index) {
@@ -684,23 +690,8 @@ function dropdownSelectHandler(w, index) {
   if (newExtent)
     mapStuff.gotoExtent(newExtent);
   ddInfo.excludedNames = "";
-  /*
-    let r = w.customRestService;
-    if (r)
-      r.where = r.baseWhere;
-  */
   if (buttonText === "[All]")
     ddInfo.excludedNames = ddInfo.layerSubNames;
-/*
-  else if (r) {
-    // TODO: Not working right:  Service doesn't like WHERE clause!
-    let theWhere = selOption.value;
-    if (ddInfo.isAlpha)
-      theWhere = "'" + theWhere + "'";
-    if (theWhere)
-      r.where = " WHERE " + ddInfo.whereField + "=" + theWhere;
-  }
-*/
 
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);

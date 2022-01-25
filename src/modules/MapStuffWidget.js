@@ -716,17 +716,28 @@ define([
           disabledMsgDivName: "disabledMsg_fa",
           mapServiceLayer: faMapServiceLayer,
           mapServiceSublayers: ["Regions", "Sites"],
+          subLayerName: "vw_FishCounts_flat",             // for customRestService
           //dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
               layerSubNames: "Regions",
               subLayerName: "Regions",
-              ddOutFields: ["Region", "RegionID", "RegionEnv"],
+              ddOutFields: ["Region", "RegionCode", "RegionEnv"],
+//              ddOutFields: ["Region", "RegionID", "RegionEnv"],
               orderByFields: ["Region"],
               initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
               SelectedOption: "All",
-              whereField: "RegionID"
+              whereField: "RegionCode",
+//              whereField: "RegionID",
+              isAlpha: true,
+              customRestService: {
+                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                sqlTemplate: "SELECT Region,RegionCode,RegionEnv FROM vw_FishCounts_flat {w} GROUP BY Region,RegionCode,RegionEnv ORDER BY Region"
+//                sqlTemplate: "SELECT Region,RegionID,RegionEnv FROM vw_FishCounts_flat {w} GROUP BY Region,RegionID,RegionEnv ORDER BY Region"
+              },
+              liveUpdate: true
             },
+/*
             { ddName: "Habitat",
               layerSubNames: "Habitats",
               options: [
@@ -740,22 +751,31 @@ define([
               whereField: "Habitat",
               isAlpha: true
             },
+*/
 
             // The next item may be removed in favor of 1 common habitat dropdown, if it is decided not to keep
             //    habitat selection independent between Region/Locale/Site tabs
             { ddName: "SiteHabitat",
               ddTitle: "Habitat",     // Title text if it is not ddName value
               layerSubNames: "Habitats",
-              options: [
-                { label: "All", value: "All" },
-                { label: "Bedrock", value: "Bedrock" },
-                { label: "Eelgrass", value: "Eelgrass" },
-                { label: "Kelp", value: "Kelp" },
-                { label: "Sand-Gravel", value: "Sand-Gravel" }
-              ],
+              /*
+                            options: [
+                              { label: "All", value: "All" },
+                              { label: "Bedrock", value: "Bedrock" },
+                              { label: "Eelgrass", value: "Eelgrass" },
+                              { label: "Kelp", value: "Kelp" },
+                              { label: "Sand-Gravel", value: "Sand-Gravel" }
+                            ],
+              */
               SelectedOption: "All",
               whereField: "Habitat",
-              isAlpha: true
+              isAlpha: true,
+              customRestService: {
+                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                sqlTemplate: "SELECT Habitat FROM vw_FishCounts_flat {w} GROUP BY Habitat ORDER BY Habitat"
+              },
+              ddOutFields: ["Habitat"],
+              liveUpdate: true
             },
 
             { ddName: "Gear",
@@ -793,7 +813,12 @@ define([
               initialOption: [ { label: "[All]", value: "All" } ],
               SelectedOption: "All",
               whereField: "SpCode",
-              isAlpha: true
+              isAlpha: true,
+              customRestService: {
+                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName FROM vw_FishCounts_flat {w} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY Sp_CommonName"
+              },
+              liveUpdate: true
             },
             { ddName: "SpeciesPanel",
               ddTitle: "Species Filter",
@@ -819,8 +844,8 @@ define([
               maxLayerName: "vw_CatchStats_RegionsHabitatsGear",
               parentAreaType: '',
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
-              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faHabitat_ddWrapper', 'faGear_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
-              dropdownElements: ['faHabitat_ddWrapper', 'faGear_ddWrapper'],
+              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
+              dropdownElements: ['faSiteHabitat_ddWrapper', 'faGear_ddWrapper'],
               featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
               downloadExcludeFields: ["RegionEnv", "RegionID", "SelRegionBtn"],
               calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
@@ -890,10 +915,25 @@ define([
               tabTitle: 'Fish Atlas Sites',
               popupTitle: "Fish Atlas Site",
               popupExcludeCols: ["Photos"],
-              maxLayerName: "vw_CatchStats_SitesHabitatsGear{SpeciesPanel}",
+              maxLayerName: "vw_CatchStats_SitesHabitatsGearSpecies",
+//              maxLayerName: "vw_CatchStats_SitesHabitatsGear{SpeciesPanel}",
+/*JN*/
+              customRestService: {
+                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                groupVars: "Region,Site,Habitat",
+                prefix: "F.",
+                innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch," +
+                  "SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM dbo.vw_FishCounts_flat_noNULL " +
+                  "GROUP BY {G},SiteID",
+                outerSQL: "SELECT {G2},F.SiteID,Hauls,NumSpecies,Catch,Count_measured,AvgFL,dbo.vw_SitePhotoCounts.PhotoCount,SITES_POINTS.Shape FROM ({innerSQL}) AS F " +
+                  "INNER JOIN SITES_POINTS ON F.SiteID = SITES_POINTS.SiteID LEFT OUTER JOIN  vw_SitePhotoCounts ON SITES_POINTS.SiteID = vw_SitePhotoCounts.SiteID",
+                baseWhere: ""
+              },
+/*JN*/
               parentAreaType: 'Regions',
               visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
+              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpecies_ddWrapper'],
+//              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
               featureOutFields: ["Region", "Locale", "Site", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
@@ -1070,7 +1110,6 @@ define([
             serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
             innerSQL: "SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat {W} GROUP BY {G}",
             outerSQL: "SELECT {G},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
-            //sqlTemplate: "SELECT GearBasic,Sp_CommonName,Catch,Count_measured,AvgFL From (SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL*Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat GROUP BY {G}) AS F",
           },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.
@@ -2094,6 +2133,7 @@ if (view.extent.width > 8000000)
         w.headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
       if (w.customRestService) {
         let r = w.customRestService;
+        w.customRestService_buildSqlTemplate(r);
         if (r.outerSQL)
           r.sqlTemplate = r.outerSQL.replace("{innerSQL}",r.innerSQL);
         if (groupVars)

@@ -560,6 +560,8 @@ define([
         let options = ddItem.options;
         if (ddItem.summaryOption)
           options.push(ddItem.summaryOption);
+        if (!ddItem.initialOption)
+          ddItem.initialOption = dfltInitialOption;
         options.push(ddItem.initialOption[0]);
         let ddFields = ddItem.ddOutFields;
         for (let i=0;  i<results.features.length; i++) {
@@ -584,11 +586,12 @@ define([
                 theLabel += arr[j];
             }
           }
-          options.push({
-            label: theLabel,
-            value: v,
-            extent: extentStr
-          });
+          if (theLabel !== "")
+            options.push({
+              label: theLabel,
+              value: v,
+              extent: extentStr
+            });
         }
         w.makeDropdownOptionsHtml(ddItem)
       };
@@ -602,7 +605,7 @@ define([
           let ddItem = this.dropDownInfo[d];
           if (!ddItem.SelectedOption)
             ddItem.SelectedOption = ddItem.initialSelectedOption;
-          if (ddItem.liveUpdate && this.visibleHeaderElements.includes(ddItem.wrapperId))
+          if (ddItem.liveUpdate && this.dropdownElements.includes(ddItem.wrapperId))
             this.upDateDropdown(ddItem, theWhere);
         }
       };
