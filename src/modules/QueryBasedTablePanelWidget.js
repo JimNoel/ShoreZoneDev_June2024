@@ -556,13 +556,13 @@ define([
       };
 
       this.processDropdownQueryResults = function(results, ddItem, w) {
-        ddItem.options = [];    // ddItem.initialOption;
+        ddItem.options = [];    // ddItem.noSelOption;
         let options = ddItem.options;
-        if (ddItem.summaryOption)
-          options.push(ddItem.summaryOption);
-        if (!ddItem.initialOption)
-          ddItem.initialOption = dfltInitialOption;
-        options.push(ddItem.initialOption[0]);
+        if (ddItem.showColumnOption)
+          options.push(ddItem.showColumnOption);
+        if (!ddItem.noSelOption)
+          ddItem.noSelOption = dfltNoSelOption;
+        options.push(ddItem.noSelOption[0]);
         let ddFields = ddItem.ddOutFields;
         for (let i=0;  i<results.features.length; i++) {
           let a = results.features[i].attributes;
@@ -573,24 +573,30 @@ define([
           if (a["Envelope"])
             extentStr = a["Envelope"];
           let theLabel = a[ddFields[0]];
-          if (ddItem.labelTemplate) {
+          let buttonLabel = theLabel;       // "buttonLabel" stores the text that will be displayed on the dropdown button, to indicate the current selection
+          if (ddItem.labelTemplate) {       // "labelTemplate" is used for multi-field options, for example:  "[common name] - [scientific name]"
             theLabel = "";
+            buttonLabel = null;
             let arr = ddItem.labelTemplate.split(",");
             for (let j=0; j<arr.length; j++) {
               if (arr[j].startsWith("*")) {
                 let s = a[arr[j].slice(1)];
-                if (s)    // Avoids adding "null" if s is null
+                if (s) {              // Avoids adding "null" if s is null
                   theLabel += s;
+                  if (!buttonLabel)
+                    buttonLabel = s;    // Set "buttonLabel" to first non-null value
+                }
               }
               else
                 theLabel += arr[j];
             }
           }
-          if (theLabel !== "")
+          if (buttonLabel)      // If all fields used in generating the label are null, then don't include
             options.push({
               label: theLabel,
               value: v,
-              extent: extentStr
+              extent: extentStr,
+              buttonLabel: buttonLabel
             });
         }
         w.makeDropdownOptionsHtml(ddItem)

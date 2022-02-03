@@ -263,7 +263,7 @@ define([
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionalID", "Envelope"],
               orderByFields: ["Region"],
-              initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+              noSelOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136", buttonLabel: "[All Alaska regions]" } ],
               SelectedOption: "All",
               whereField: "RegionalID",
               isAlpha: true
@@ -273,7 +273,7 @@ define([
               subLayerName: "vw_AlaskaBiobands",
               ddOutFields: ["BiobandName", "BiobandCode"],
               orderByFields: ["BiobandName"],
-              initialOption: [ { label: "[All]", value: "All" }],
+              noSelOption: dfltNoSelOption,
               SelectedOption: "All",
               whereField: "BiobandCode",
               isAlpha: true
@@ -285,7 +285,7 @@ define([
               subLayerName: "vw_AlaskaSpeciesGroups",     // table for generating dropdown items
               ddOutFields: ["Group_", "GroupID"],
               orderByFields: ["Group_"],
-              initialOption: [ { label: "[All]", value: "All" } ],
+              noSelOption: dfltNoSelOption,
               SelectedOption: "All",
               whereField: "GroupID",
               isAlpha: false,
@@ -298,7 +298,7 @@ define([
               subLayerName: "vw_AlaskaSpeciesSubgroups",     // table for generating dropdown items
               ddOutFields: ["Subgroup", "SubgroupID"],
               orderByFields: ["Subgroup"],
-              initialOption: [ { label: "[All]", value: "All" } ],
+              noSelOption: dfltNoSelOption,
               SelectedOption: "All",
               whereField: "SubgroupID",
               isAlpha: false,
@@ -324,7 +324,7 @@ define([
                   orderByFields: ["SppName"]
                 }
               },
-              initialOption: [ { label: "[All]", value: "All" } ],
+              noSelOption: dfltNoSelOption,
               SelectedOption: "All",
               whereField: "SppTxtCode",
               isAlpha: true,
@@ -725,8 +725,9 @@ define([
               ddOutFields: ["Region", "RegionCode", "RegionEnv"],
 //              ddOutFields: ["Region", "RegionID", "RegionEnv"],
               orderByFields: ["Region"],
-              initialOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136" } ],
+              noSelOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136", buttonLabel: "[All Alaska regions]" } ],
               SelectedOption: "All",
+              groupField: "RegionCode",
               whereField: "RegionCode",
 //              whereField: "RegionID",
               isAlpha: true,
@@ -785,8 +786,10 @@ define([
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
                 sqlTemplate: gearDDtemplate
               },
-              initialOption: [ { label: "[All]", value: "All" } ],
+              noSelOption: dfltNoSelOption,
               SelectedOption: "All",
+              columnField: "GearBasic",
+              groupField: "GearBasic",
               whereField: "GearBasic",
               liveUpdate: true,
               isAlpha: true
@@ -810,7 +813,7 @@ define([
                   orderByFields: ["Sp_ScientificName"]
                 }
               },
-              initialOption: [ { label: "[All]", value: "All" } ],
+              noSelOption: dfltNoSelOption,
               SelectedOption: "All",
               whereField: "SpCode",
               isAlpha: true,
@@ -921,11 +924,11 @@ define([
               customRestService: {
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
                 groupVars: "Region,Locale,Site,Habitat",
-                prefix: "F.",
-                innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
-                  "FROM dbo.vw_FishCounts_flat_noNULL GROUP BY {G},SiteID",
-                outerSQL: "SELECT {G2},Hauls,NumSpecies,Catch,F.SiteID,dbo.vw_SitePhotoCounts.PhotoCount,SITES_POINTS.Shape FROM ({innerSQL}) AS F " +
-                  "INNER JOIN SITES_POINTS ON F.SiteID = SITES_POINTS.SiteID LEFT OUTER JOIN  vw_SitePhotoCounts ON SITES_POINTS.SiteID = vw_SitePhotoCounts.SiteID",
+                //prefix: "F.",
+                  innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
+                    "FROM dbo.vw_FishCounts_flat_noNULL GROUP BY {G},SiteID",
+                  outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,F.SiteID,PhotoCount,Shape FROM ({innerSQL}) AS F " +
+                    "INNER JOIN (SELECT SiteID,Shape From SITES_POINTS) AS S ON F.SiteID = S.SiteID LEFT OUTER JOIN vw_SitePhotoCounts ON S.SiteID = vw_SitePhotoCounts.SiteID",
                 baseWhere: ""
               },
 /*JN*/
@@ -947,6 +950,7 @@ define([
                 },
                 Region: { colWidth: 30 },
                 Site: { colWidth: 15 },
+                GearBasic: {title: "Gear"},
                 Habitat: { colWidth: 20 },
                 Hauls: {
                   colWidth: 15,
@@ -1036,8 +1040,8 @@ define([
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
                 sqlTemplate: gearDDtemplate
               },
-              summaryOption: { label: "[Combined]", value: "Sum" },
-              initialOption: [ { label: "[All]", value: "All" } ],
+              showColumnOption: dfltShowColumnOption,
+              noSelOption: dfltNoSelOption,
               SelectedOption: "All",
               liveUpdate: true,
               whereField: "GearBasic",
@@ -1051,9 +1055,9 @@ define([
                 serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
                 sqlTemplate: "SELECT DateStr FROM vw_FishCounts_flat {w} GROUP BY DateStr ORDER BY DateStr"
               },
-              summaryOption: { label: "[Combined]", value: "Sum" },
-              initialOption: [ { label: "[All]", value: "All" } ],
-              SelectedOption: "Sum",
+              showColumnOption: dfltShowColumnOption,
+              noSelOption: dfltNoSelOption,
+              SelectedOption: "All",
               liveUpdate: true,
               whereField: "DateStr",
               columnField: "DateStr",

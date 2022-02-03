@@ -360,7 +360,8 @@ let ssPhotoWidget = null;
 let ssProfileWidget = null;
 let faPhotoWidget = null;
 
-let dfltInitialOption = [ { label: "[All]", value: "All" } ];
+let dfltNoSelOption = [ { label: "[All]", value: "All", buttonLabel: "[All]" } ];
+let dfltShowColumnOption = [ { label: "[Show column]", value: "showCol", buttonLabel: "[Show column]" } ];
 
 
 let gp = null;      // for Geoprocessor
@@ -668,8 +669,7 @@ function cbCheckedHandler(w) {
 function whereFromDDInfo(ddInfo, prefix="") {
   let ddElement = getEl(ddInfo.ddId);
   let selOption = ddInfo.options[ddElement.selectedIndex];
-  let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name (if contains " - ")
-  if (["[All]", "Sum"].includes(buttonText))
+  if (["All", "showCol"].includes(selOption.buttonLabel))
     return "";
   let theWhere = selOption.value;
   if (ddInfo.isAlpha)
@@ -685,18 +685,22 @@ function dropdownSelectHandler(w, index) {
   let ddElement = getEl(ddInfo.ddId);
   ddInfo.SelectedOption = ddElement.value;
   let selOption = ddInfo.options[ddElement.selectedIndex];
-  let buttonText = selOption.label.split(" - ")[0];     // Strip the scientific name (if contains " - ")
+
+  // This is the text that will be displayed on the button, to indicate what is currently selected
+  //let buttonText = selOption.label.split(" - ")[0];     // If the label contains " - ", set buttonText to everything to the left of that.  This handles Species dropdowns,
+                                                                // where labels are expressed as "[common name] - [scientific name]" or vice-versa
+
   let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
   if (newExtent)
     mapStuff.gotoExtent(newExtent);
   ddInfo.excludedNames = "";
-  if (buttonText === "[All]")
+  if (selOption.buttonLabel === "[All]")
     ddInfo.excludedNames = ddInfo.layerSubNames;
 
   if (ddInfo.expandPanelId) {
     let expandPanel = w.getddItem(ddInfo.expandPanelId);
-    if (buttonText === "[All]") {
-      buttonText = "[All species]";
+    if (selOption.buttonLabel === "[All]") {
+      //buttonText = "[All species]";
       if (ddInfo.parentDropdown) {      // Fall back to higher category, call function again recursively
         let parentDdInfo = w.getddItem(ddInfo.parentDropdown);
         dropdownSelectHandler(w, parentDdInfo);
@@ -706,7 +710,7 @@ function dropdownSelectHandler(w, index) {
         //expandPanel.LayerNameAddOn = "";
       }
     }
-    getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonText;
+    getEl(expandPanel.uniqueName + "_Button").innerHTML = selOption.buttonLabel;
 
     if (!ddInfo.dependentDropdowns)
       expandDropdownPanel(expandPanel.uniqueName, false);     // No widget specified, so query is not run

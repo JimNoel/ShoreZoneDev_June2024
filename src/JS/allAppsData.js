@@ -39,10 +39,16 @@ function queryServer(url, returnJson, responseHandler, postInfo) {
   xmlhttp.onreadystatechange = function() {
     if (this.readyState === 4 && this.status === 200) {
       let R = this.responseText;
+      if (R.slice(0,6) === "ERROR:") {
+        alert(R);
+        console.log(R);
+        return;
+      }
       if (returnJson)
         R = JSON.parse(R);
       responseHandler(R);
     } else {
+      console.log("readyState: " + this.readyState + "     status: " + this.status);
     }
   };
   let completeUrl = url;

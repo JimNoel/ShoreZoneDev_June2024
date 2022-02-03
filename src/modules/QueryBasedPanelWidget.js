@@ -66,12 +66,6 @@ define([
 
 
       this.processResults = function(results) {
-
-if (test) {
-  let s = '{"fields":[{"name":"Region","alias":"Region"},{"name":"SiteID","alias":"SiteID"},{"name":"Site","alias":"Site"},{"name":"Habitat","alias":"Habitat"},{"name":"Hauls","alias":"Hauls"},{"name":"NumSpecies","alias":"NumSpecies"},{"name":"Catch","alias":"Catch"},{"name":"PhotoCount","alias":"PhotoCount"}],"features":[{"attributes":{"Region":"Gulf of Alaska","SiteID":2724,"Site":"n2724","Habitat":"","Hauls":1,"NumSpecies":1,"Catch":111,"PhotoCount":null},"geometry":{"x":-16380996.2829,"y":8605968.659599997,"z":null,"m":null,"type":"point"}},{"attributes":{"Region":"Gulf of Alaska","SiteID":2728,"Site":"n2728","Habitat":"","Hauls":1,"NumSpecies":1,"Catch":2,"PhotoCount":null},"geometry":{"x":-16329451.6517,"y":8476160.236599997,"z":null,"m":null,"type":"point"}},{"attributes":{"Region":"Gulf of Alaska","SiteID":2731,"Site":"n2731","Habitat":"","Hauls":1,"NumSpecies":1,"Catch":1,"PhotoCount":null},"geometry":{"x":-16477268.3507,"y":8467296.71,"z":null,"m":null,"type":"point"}},{"attributes":{"Region":"Gulf of Alaska","SiteID":2738,"Site":"n2738","Habitat":"","Hauls":1,"NumSpecies":2,"Catch":1407,"PhotoCount":null},"geometry":{"x":-16412218.3499,"y":8555193.722900003,"z":null,"m":null,"type":"point"}}]}';
-  results = JSON.parse(s);
-}
-
         let features = results.features;
         this.features = features;
         this.fields = results.fields;
@@ -83,10 +77,6 @@ if (test) {
       this.setDisplayLayers = function() {
         if (!this.backgroundLayers)
           return;
-if (test) {
-  this.subLayerName = "vw_FishCounts_flat";
-  this.query.where = "GearBasic='other'";
-}
         let displayLayers = this.backgroundLayers.slice();
         displayLayers.push(this.subLayerName);
         if (this.filterBgLayer  && (this.query.where !== ""))
@@ -565,35 +555,44 @@ if (test) {
 
     customRestServiceSQL: function() {
       let r = this.customRestService;
-      let groupVars = r.groupVars;
+      let selDDFields = "";
+      let groupDDFields = "";
       let theWhere = r.baseWhere;
       if (this.dropDownInfo) {
         let D = this.dropDownInfo;
-        let ddFields = "";
         for (let d=0; d<D.length; d++) {
           if (this.visibleHeaderElements.includes(D[d].wrapperId)) {
-            if (D[d].SelectedOption==="All") {
-              if (D[d].columnField)
-                ddFields += D[d].columnField + ",";
-            } else if (D[d].SelectedOption!=="Sum") {
-              if (theWhere)
-                theWhere += " AND ";
-              let prefix = "";
-              if (r.prefix && r.groupVars.split(",").includes(D[d].whereField))
-                prefix = r.prefix;
-              theWhere += whereFromDDInfo(D[d], prefix);
+            if (D[d].SelectedOption !== "All") {
+              if (D[d].groupField)
+                groupDDFields += D[d].groupField + ",";
+              if (D[d].SelectedOption === "showCol") {
+                if (D[d].columnField)
+                  selDDFields += D[d].columnField + ",";
+              } else {      // i.e. if a specific value has been selected
+                if (theWhere)
+                  theWhere += " AND ";
+                let prefix = "";
+                if (r.prefix && r.groupVars.split(",").includes(D[d].whereField))
+                  prefix = r.prefix;
+                theWhere += whereFromDDInfo(D[d], prefix);
+              }
             }
           }
         }
-        groupVars = ddFields + groupVars;
+        //let selVars = selDDFields + groupVars;
+        //let groupVars = groupDDFields + groupVars;
       }
       if (r.outerSQL)
         r.sqlTemplate = r.outerSQL.replace("{innerSQL}",r.innerSQL);
-      let sql = r.sqlTemplate.replace(/{G}/g, groupVars);
+      let sql = r.sqlTemplate.replace(/{S}/g, selDDFields + r.groupVars);
+      sql = sql.replace(/{G}/g, groupDDFields + r.groupVars);
+/*
       if (r.prefix) {
         let groupVars2 = r.prefix + groupVars.split(",").join(","+r.prefix);
-        sql = sql.replace(/{G2}/g, groupVars2);
+        sql = sql.replace(/{S}/g, groupVars2);
       }
+*/
+      this.query.where = theWhere;      // Set query.where for ESRI Map Service display
       if (theWhere !== "")
         theWhere = " WHERE " + theWhere;
       sql = sql.replace("{W}", theWhere);
