@@ -48,7 +48,7 @@ function queryServer(url, returnJson, responseHandler, postInfo) {
         R = JSON.parse(R);
       responseHandler(R);
     } else {
-      console.log("readyState: " + this.readyState + "     status: " + this.status);
+      //console.log("readyState: " + this.readyState + "     status: " + this.status);
     }
   };
   let completeUrl = url;

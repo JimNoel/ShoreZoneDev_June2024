@@ -623,7 +623,7 @@ define([
         if (ddItem.customRestService) {
           // This section handles queries using the new custom REST service
           let R = ddItem.customRestService;
-          let theUrl = R.serviceUrl + R.sqlTemplate;
+          let theUrl = R.serviceUrl + "?sql=" + R.sqlTemplate;
           if (where)
             where = " WHERE " + where;
           else
@@ -820,7 +820,7 @@ define([
           this.cbID = this.baseName + 'Checkbox_showFeatures';
           let cbSpanId = this.cbID.replace("_","Span_");
           let args = this.objName + ',' + this.cbID;
-          let cbHtml = '&emsp;<input id="' + this.cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show markers&emsp;';
+          let cbHtml = '&emsp;<input id="' + this.cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show popups&emsp;';
           //titleEl.innerHTML = '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           getEl(this.cbID).checked = this.clickableLayer.visible;

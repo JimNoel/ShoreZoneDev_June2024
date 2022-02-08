@@ -732,7 +732,7 @@ define([
 //              whereField: "RegionID",
               isAlpha: true,
               customRestService: {
-                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                serviceUrl: faRestServiceURL,
                 sqlTemplate: "SELECT Region,RegionCode,RegionEnv FROM vw_FishCounts_flat {w} GROUP BY Region,RegionCode,RegionEnv ORDER BY Region"
 //                sqlTemplate: "SELECT Region,RegionID,RegionEnv FROM vw_FishCounts_flat {w} GROUP BY Region,RegionID,RegionEnv ORDER BY Region"
               },
@@ -772,7 +772,7 @@ define([
               whereField: "Habitat",
               isAlpha: true,
               customRestService: {
-                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                serviceUrl: faRestServiceURL,
                 sqlTemplate: "SELECT Habitat FROM vw_FishCounts_flat {w} GROUP BY Habitat ORDER BY Habitat"
               },
               ddOutFields: ["Habitat"],
@@ -783,7 +783,7 @@ define([
               layerSubNames: "Gear",
               ddOutFields: ["GearBasic", "GearBasic2"],
               customRestService: {
-                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                serviceUrl: faRestServiceURL,
                 sqlTemplate: gearDDtemplate
               },
               noSelOption: dfltNoSelOption,
@@ -818,7 +818,7 @@ define([
               whereField: "SpCode",
               isAlpha: true,
               customRestService: {
-                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                serviceUrl: faRestServiceURL,
                 sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName FROM vw_FishCounts_flat {w} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY Sp_CommonName"
               },
               liveUpdate: true
@@ -834,7 +834,7 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,null,null,"All Regions",null,0,null,"Sp_CommonName"'
+            args: 'faSpTableWidget,null,null,"All Regions",null,0,null,"SiteID,Sp_CommonName"'
           },
           currTab: 1,
           featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
@@ -844,7 +844,20 @@ define([
               tabName: 'Regions',
               tabTitle: 'Fish Atlas Regions',
               popupTitle: "Fish Atlas Region",
-              maxLayerName: "vw_CatchStats_RegionsHabitatsGear",
+              //maxLayerName: "vw_CatchStats_RegionsHabitatsGear",
+
+              /*JN*/
+              customRestService: {
+                serviceUrl: faRestServiceURL,
+                groupVars: "Region",
+                innerSQL: "SELECT {G},RegionCode,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
+                  "FROM dbo.vw_FishCounts_flat_noNULL GROUP BY {G},RegionCode",
+                outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,Shape FROM ({innerSQL}) AS F " +
+                  "INNER JOIN (SELECT RegionCode,Shape From REGIONS_FISHATLAS) AS S ON F.RegionCode = S.RegionCode",
+                baseWhere: ""
+              },
+              /*JN*/
+
               parentAreaType: '',
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
               visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
@@ -918,11 +931,10 @@ define([
               tabTitle: 'Fish Atlas Sites',
               popupTitle: "Fish Atlas Site",
               popupExcludeCols: ["Photos"],
-              maxLayerName: "vw_CatchStats_SitesHabitatsGearSpecies",
-//              maxLayerName: "vw_CatchStats_SitesHabitatsGear{SpeciesPanel}",
+              //maxLayerName: "vw_CatchStats_SitesHabitatsGearSpecies",
 /*JN*/
               customRestService: {
-                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                serviceUrl: faRestServiceURL,
                 groupVars: "Region,Locale,Site,Habitat",
                 //prefix: "F.",
                   innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
@@ -1037,7 +1049,7 @@ define([
               //layerSubNames: "Gear",    // Not needed here since the parent Species table is using a customRestService
               ddOutFields: ["GearBasic", "GearBasic2"],
               customRestService: {
-                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                serviceUrl: faRestServiceURL,
                 sqlTemplate: gearDDtemplate
               },
               showColumnOption: dfltShowColumnOption,
@@ -1052,7 +1064,7 @@ define([
               ddOutFields: ["DateStr"],
               // TODO: After service is republished, just use "DateStr" instead of "format(..."
               customRestService: {
-                serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+                serviceUrl: faRestServiceURL,
                 sqlTemplate: "SELECT DateStr FROM vw_FishCounts_flat {w} GROUP BY DateStr ORDER BY DateStr"
               },
               showColumnOption: dfltShowColumnOption,
@@ -1110,7 +1122,7 @@ define([
             },
           },
           customRestService: {
-            serviceUrl: "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=",
+            serviceUrl: faRestServiceURL,
             innerSQL: "SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat {W} GROUP BY {G}",
             outerSQL: "SELECT {G},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
           },
@@ -2136,7 +2148,6 @@ if (view.extent.width > 8000000)
         w.headerText = w.title + " for " + headerText;     //"Fish Catch for " + headerText;
       if (w.customRestService) {
         let r = w.customRestService;
-        w.customRestService_buildSqlTemplate(r);
         if (r.outerSQL)
           r.sqlTemplate = r.outerSQL.replace("{innerSQL}",r.innerSQL);
         if (groupVars)
@@ -2167,14 +2178,6 @@ if (view.extent.width > 8000000)
       }
       setDisplay(w.draggablePanelId, true);
       w.updateAllDropdowns(theWhere);
-/*
-      if (w.dropDownInfo)
-        for (let d=0; d<w.dropDownInfo.length; d++) {
-          let ddItem = w.dropDownInfo[d];
-          ddItem.SelectedOption = ddItem.initialSelectedOption;
-          w.upDateDropdown(ddItem, theWhere);
-        }
-*/
       w.runQuery(null);
     },
 

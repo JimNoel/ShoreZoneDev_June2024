@@ -14,7 +14,7 @@ let faPhotoServer = "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/Site
 let szVideoServer = altSzMediaServer;
 let szPhotoServer = mainSzMediaServer;
 
-let CustomRestServiceURL = "https://alaskafisheries.noaa.gov/mapping/faREST/sql";
+let faRestServiceURL = "https://alaskafisheries.noaa.gov/mapping/faREST/sql";
 
 let showPopupsDefault = true;
 let showPopups = showPopupsDefault;
