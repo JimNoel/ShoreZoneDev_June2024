@@ -218,7 +218,7 @@ define([
 
       this.processFeatures_Widget = function(features) {
         let hasPhotos = (this.features.length>0);
-        showPanelContents("video,photo,units", hasPhotos);
+        showEnabledDisabled("video,photo,units", hasPhotos);
         let controlContainer = this.footerPanel.getElementsByClassName("playbackControlContainer")[0];
         setVisible(controlContainer, hasPhotos);
 //        if (hasPhotos)

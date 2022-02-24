@@ -442,7 +442,7 @@ define([
                   w.runQuery(null, {theWhere});
                 }
               } else {
-                showPanelContents(w.baseName, false, w.noDataMsg);
+                showEnabledDisabled(w.baseName, false, w.noDataMsg);
               }
             }
           }

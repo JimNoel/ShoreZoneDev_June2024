@@ -326,8 +326,8 @@ console.log("Current video time:  " + currentTime);
 
         if (this.counter === -1) {
           this.counter = 0;
-          showPanelContents("video", false);
-          updateNoFeaturesMsg([this] , "No video available");
+          showEnabledDisabled("video", false);
+          //updateNoFeaturesMsg([this] , "No video available");
         } else {
           showCurrentFeatures();
           startPointData = this.getFeatureAttributes(this.counter);

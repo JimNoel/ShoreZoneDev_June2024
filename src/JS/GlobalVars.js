@@ -530,20 +530,22 @@ function setContent(elName, text, append) {
   el.innerHTML = newContent;
 }
 
-function setMessage(elName, text, visible, fade) {
+function setMessage(elName, text, /*visible,*/ fade) {
   // Show message in "elName"
   let el = getEl(elName);
   if (!el)
     return;
+/*
   if (visible === undefined)
     visible = true;
-  if (image_message_timeout) clearTimeout(image_message_timeout);
   if (visible)
     el.style.visibility = "inherit";
   else
     el.style.visibility = "hidden";
+*/
   if (text)
     el.innerHTML = text;
+  if (image_message_timeout) clearTimeout(image_message_timeout);
   if (fade)
     image_message_timeout = setTimeout(function() {el.style.visibility = "hidden";}, fade);
 }
@@ -618,7 +620,7 @@ function isVisible(id) {
     return false;
 }
 
-function showPanelContents(panelNames, show, disabledMsg) {
+function showEnabledDisabled(panelNames, show, disabledMsg) {
   /*
    Shows or hides the contents of a panel.
    To use, there must be a DIV named:    "panelEnabled_" + name
@@ -837,7 +839,12 @@ function updateNoFeaturesMsg(widgets, status) {
   else
     template = status;
   widgets.forEach(function(w, index, array) {
-    setMessage(w.disabledMsgDivName, template.replace(/\{1\}/g, w.disabledMsgInfix));
+    if (w.disabledMsgDivName) {
+      let msg = template.replace(/\{1\}/g, w.disabledMsgInfix);
+      getEl(w.disabledMsgDivName).innerHTML = msg;
+      showEnabledDisabled(w.baseName, msg==="");
+      //setMessage(w.disabledMsgDivName, msg);
+    }
   });
   //setDisplay("showUnitsDiv", false);      // Hide secondary unit features checkbox
 }
@@ -847,7 +854,7 @@ function refreshSzFeatures() {
   mapLoading = true;
   if (szFeatureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
     lastSZExtent = view.extent;
-    updateNoFeaturesMsg(extentDependentWidgets, "querying");
+    //updateNoFeaturesMsg(extentDependentWidgets, "querying");
     if (szVideoWidget) {
       szVideoWidget.noMarkers = szVideoWidget.preQueryMarkers;
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
@@ -855,14 +862,14 @@ function refreshSzFeatures() {
     if (szUnitsWidget && (view.extent.width/1000 < maxExtentWidth))
       szUnitsWidget.runQuery(view.extent);         // 3D: use extent3d?
   } else {
-    updateNoFeaturesMsg(extentDependentWidgets, "zoomin");
+    //updateNoFeaturesMsg(extentDependentWidgets, "zoomin");
   }
   setRefreshButtonVisibility(false);
 }
 
 function resetCurrentFeatures() {
   setDisabled("offlineAppButton", true);    // This is directly setting the "disabled" attribute of the button in the OfflineAppLink widget
-  showPanelContents("video,photo,units", false);
+  //showEnabledDisabled("video,photo,units", false);
   extentDependentWidgets.forEach(function(w, index, array) {
     w.clearGraphics();
   });
@@ -871,7 +878,7 @@ function resetCurrentFeatures() {
 
 function showCurrentFeatures() {
   setDisabled("offlineAppButton", false);   // This is directly setting the "disabled" attribute of the button in the OfflineAppLink widget
-  showPanelContents("video,photo,units", true);
+  //showEnabledDisabled("video,photo,units", true);
 }
 
 

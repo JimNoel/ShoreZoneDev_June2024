@@ -212,7 +212,7 @@ define([
       });
       extentDependentWidgets.push(szUnitsWidget);
 
-      showPanelContents("video,photo,units", false);
+      showEnabledDisabled("video,photo,units", false);
       siteTabs.sz.widgets = [szPhotoWidget, szVideoWidget, szUnitsWidget];
     }
 
@@ -1099,6 +1099,8 @@ define([
           tableHeaderTitle: "All Regions",
           displayDivName: "faSpTableContainer",
           mapServiceLayer: faMapServiceLayer,
+          disabledMsgDivName: "disabledMsg_faSpTable",
+          disabledMsgInfix: "species",
           currTab: 0,
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["Catch DESC"],
@@ -1269,7 +1271,7 @@ define([
         setRefreshButtonVisibility(szFeatureRefreshDue);
       }
     } else if (siteTabs.currTab === "fa") {
-      updateNoFeaturesMsg([faWidget], "querying");
+      //updateNoFeaturesMsg([faWidget], "querying");
       faWidget.runQuery(view.extent);
     }
   }

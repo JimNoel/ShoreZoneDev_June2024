@@ -53,25 +53,31 @@ define([
       if (this.defaultDisabledMsg)
         setMessage(this.disabledMsgDivName, this.defaultDisabledMsg);
 
+
+/*
       this.setPanelVisibility = function(f) {
         if (f.length===0) {
           if (this.disabledMsgInfix) {
             updateNoFeaturesMsg(this.noFeaturesPanels , "zoomout");
-            showPanelContents(this.baseName, false);
+            showEnabledDisabled(this.baseName, false);
           }
           return true;
         }
-        showPanelContents(this.baseName, true);
+        showEnabledDisabled(this.baseName, true);
         return false;
       };
+*/
 
 
       this.processResults = function(results) {
         let features = results.features;
         this.features = features;
+        if (features.length === 0)
+          return;
         this.fields = results.fields;
         this.setDisplayLayers();
-        this.setPanelVisibility(features);
+        updateNoFeaturesMsg(this.noFeaturesPanels, "");
+        //this.setPanelVisibility(features);
         this.processFeatures(features);
       };
 
@@ -610,7 +616,8 @@ define([
       if (this.headerText)
         getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
       let theWhere = "";
-      this.setPanelVisibility([]);      // Hide table div, show message div  (empty array forces this)
+      updateNoFeaturesMsg(this.noFeaturesPanels, "querying");
+      //this.setPanelVisibility([]);      // Hide table div, show message div  (empty array forces this)
       if (!this.customRestService) {          // using ArcGIS map service
         // If extent argument is supplied, set parameters for spatial query
         if (extent) {
@@ -673,7 +680,7 @@ define([
       if (this.customRestService)
         results = JSON.parse(results);
       if (results.features.length > maxSZFeatures) {
-        updateNoFeaturesMsg(extentDependentWidgets, "toomany");
+        //updateNoFeaturesMsg(extentDependentWidgets, "toomany");
       } else {
         this.processResults(results);
       }
