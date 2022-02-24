@@ -323,9 +323,10 @@ define([
           let colWidth = getIfExists(this,spclFmtChain + ".colWidth");
           if (!colWidth)
             colWidth = title.length * 15;
-            //colWidth = Math.max(title.length, maxChars[fields[i].name]) * 15;   // Use column title width, or length of longest value in column, whichever is largest
-
-          columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
+          let bgColorCss = "";
+          if (this.extraColumns && this.extraColumns.includes(fields[i].name))
+            bgColorCss = "background-color: cornsilk;"
+          columnStyleCSS += ".dataTable .field-" + fields[i].name + " {width: " + colWidth + "px;" + bgColorCss + "} ";
 
 /*
           nonNullCount[fields[i].name] = 0;
@@ -562,7 +563,7 @@ define([
           options.push(ddItem.showColumnOption);
         if (!ddItem.noSelOption)
           ddItem.noSelOption = dfltNoSelOption;
-        options.push(ddItem.noSelOption[0]);
+        options.push(ddItem.noSelOption);
         let ddFields = ddItem.ddOutFields;
         for (let i=0;  i<results.features.length; i++) {
           let a = results.features[i].attributes;
@@ -628,7 +629,7 @@ define([
             where = " WHERE " + where;
           else
             where = "";
-          theUrl = theUrl.replace("{w}", where);
+          theUrl = theUrl.replace("{W}", where);
           queryServer(theUrl, false, function(results) {
             results = JSON.parse(results);
             this.processDropdownQueryResults(results, ddItem, this);

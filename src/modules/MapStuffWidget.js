@@ -263,7 +263,7 @@ define([
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionalID", "Envelope"],
               orderByFields: ["Region"],
-              noSelOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136", buttonLabel: "[All Alaska regions]" } ],
+              noSelOption: { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136", buttonLabel: "[All Alaska regions]" },
               SelectedOption: "All",
               whereField: "RegionalID",
               isAlpha: true
@@ -723,18 +723,15 @@ define([
               layerSubNames: "Regions",
               subLayerName: "Regions",
               ddOutFields: ["Region", "RegionCode", "RegionEnv"],
-//              ddOutFields: ["Region", "RegionID", "RegionEnv"],
               orderByFields: ["Region"],
-              noSelOption: [ { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136", buttonLabel: "[All Alaska regions]" } ],
+              noSelOption: { label: "[All Alaska regions]", value: "All", extent: "-19224680, 6821327, -14019624, 11811136", buttonLabel: "[All Alaska regions]" },
               SelectedOption: "All",
               groupField: "RegionCode",
               whereField: "RegionCode",
-//              whereField: "RegionID",
               isAlpha: true,
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT Region,RegionCode,RegionEnv FROM vw_FishCounts_flat {w} GROUP BY Region,RegionCode,RegionEnv ORDER BY Region"
-//                sqlTemplate: "SELECT Region,RegionID,RegionEnv FROM vw_FishCounts_flat {w} GROUP BY Region,RegionID,RegionEnv ORDER BY Region"
+                sqlTemplate: "SELECT Region,RegionCode,RegionEnv FROM vw_FishCounts_flat {W} GROUP BY Region,RegionCode,RegionEnv ORDER BY Region"
               },
               liveUpdate: true
             },
@@ -769,11 +766,12 @@ define([
                             ],
               */
               SelectedOption: "All",
+              groupField: "Habitat",
               whereField: "Habitat",
               isAlpha: true,
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT Habitat FROM vw_FishCounts_flat {w} GROUP BY Habitat ORDER BY Habitat"
+                sqlTemplate: "SELECT Habitat FROM vw_FishCounts_flat {W} GROUP BY Habitat ORDER BY Habitat"
               },
               ddOutFields: ["Habitat"],
               liveUpdate: true
@@ -786,7 +784,8 @@ define([
                 serviceUrl: faRestServiceURL,
                 sqlTemplate: gearDDtemplate
               },
-              noSelOption: dfltNoSelOption,
+              showColumnOption: dfltShowColumnOption,
+              noSelOption: dfltNoSelOption_extraField,
               SelectedOption: "All",
               columnField: "GearBasic",
               groupField: "GearBasic",
@@ -819,7 +818,7 @@ define([
               isAlpha: true,
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName FROM vw_FishCounts_flat {w} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY Sp_CommonName"
+                sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName FROM vw_FishCounts_flat {W} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY Sp_CommonName"
               },
               liveUpdate: true
             },
@@ -834,7 +833,8 @@ define([
           ],
           speciesTableInfo : {
             iconLabel: 'Total Fish Catch',
-            args: 'faSpTableWidget,null,null,"All Regions",null,0,null,"SiteID,Sp_CommonName"'
+            // w, [tableName], [theWhere], headerText, [extraFieldInfo], currTab, [maxLayerName], groupVars, [addlVisibleHeaders], selVars
+            args: 'faSpTableWidget,null,null,"All Regions",null,0,null,"Sp_CommonName",null,"Sp_CommonName"'
           },
           currTab: 1,
           featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
@@ -851,7 +851,7 @@ define([
                 serviceUrl: faRestServiceURL,
                 groupVars: "Region",
                 innerSQL: "SELECT {G},RegionCode,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
-                  "FROM dbo.vw_FishCounts_flat_noNULL GROUP BY {G},RegionCode",
+                  "FROM dbo.vw_FishCounts_flat_noNULL {W} GROUP BY {G},RegionCode",
                 outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,Shape FROM ({innerSQL}) AS F " +
                   "INNER JOIN (SELECT RegionCode,Shape From REGIONS_FISHATLAS) AS S ON F.RegionCode = S.RegionCode",
                 baseWhere: ""
@@ -875,6 +875,10 @@ define([
                   html: zoomInTemplate.replace("{area}", "Region")
                 },
                 //Region: { colWidth: 10 },
+                GearBasic: GearColumnFormat,    /* {
+                  title: "Gear",
+                  colWidth: 30
+                },  */
                 Hauls: {
                   colWidth: 10,
                   useCommas: true
@@ -938,7 +942,7 @@ define([
                 groupVars: "Region,Locale,Site,Habitat",
                 //prefix: "F.",
                   innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
-                    "FROM dbo.vw_FishCounts_flat_noNULL GROUP BY {G},SiteID",
+                    "FROM dbo.vw_FishCounts_flat_noNULL {W} GROUP BY {G},SiteID",
                   outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,F.SiteID,PhotoCount,Shape FROM ({innerSQL}) AS F " +
                     "INNER JOIN (SELECT SiteID,Shape From SITES_POINTS) AS S ON F.SiteID = S.SiteID LEFT OUTER JOIN vw_SitePhotoCounts ON S.SiteID = vw_SitePhotoCounts.SiteID",
                 baseWhere: ""
@@ -949,6 +953,7 @@ define([
               dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpecies_ddWrapper'],
 //              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
               featureOutFields: ["Region", "Locale", "Site", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
+              extraColumns: ["GearBasic"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
@@ -962,7 +967,10 @@ define([
                 },
                 Region: { colWidth: 30 },
                 Site: { colWidth: 15 },
-                GearBasic: {title: "Gear"},
+                GearBasic: GearColumnFormat,    /* {
+                  title: "Gear",
+                  colWidth: 30
+                },  */
                 Habitat: { colWidth: 20 },
                 Hauls: {
                   colWidth: 15,
@@ -995,6 +1003,7 @@ define([
                   showWhen: 1
                 }
               },
+              disabledMsgInfix: "sites",
               idField: 'SiteID',
               backgroundLayers: [],     // ["Regions"],
               filterBgLayer: "Sites_background",
@@ -1053,9 +1062,10 @@ define([
                 sqlTemplate: gearDDtemplate
               },
               showColumnOption: dfltShowColumnOption,
-              noSelOption: dfltNoSelOption,
+              noSelOption: dfltNoSelOption_extraField,
               SelectedOption: "All",
               liveUpdate: true,
+              groupField: "GearBasic",
               whereField: "GearBasic",
               columnField: "GearBasic",
               isAlpha: true
@@ -1065,10 +1075,10 @@ define([
               // TODO: After service is republished, just use "DateStr" instead of "format(..."
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT DateStr FROM vw_FishCounts_flat {w} GROUP BY DateStr ORDER BY DateStr"
+                sqlTemplate: "SELECT DateStr FROM vw_FishCounts_flat {W} GROUP BY DateStr ORDER BY DateStr"
               },
               showColumnOption: dfltShowColumnOption,
-              noSelOption: dfltNoSelOption,
+              noSelOption: dfltNoSelOption_extraField,
               SelectedOption: "All",
               liveUpdate: true,
               whereField: "DateStr",
@@ -1093,10 +1103,10 @@ define([
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["Catch DESC"],
           specialFormatting: {      // Special HTML formatting for field values
-            GearBasic: {
+            GearBasic: GearColumnFormat,    /* {
               title: "Gear",
               colWidth: 100
-            },
+            },  */
             DateStr: {
               title: "Date",
               colWidth: 100
@@ -1124,7 +1134,7 @@ define([
           customRestService: {
             serviceUrl: faRestServiceURL,
             innerSQL: "SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat {W} GROUP BY {G}",
-            outerSQL: "SELECT {G},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
+            outerSQL: "SELECT {S},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
           },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.
@@ -1259,6 +1269,7 @@ define([
         setRefreshButtonVisibility(szFeatureRefreshDue);
       }
     } else if (siteTabs.currTab === "fa") {
+      updateNoFeaturesMsg([faWidget], "querying");
       faWidget.runQuery(view.extent);
     }
   }
@@ -2137,7 +2148,20 @@ if (view.extent.width > 8000000)
       this.gotoExtent(extText);
     },
 
-    openSpeciesTable: function(w, tableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName, groupVars, addlVisibleHeaders) {
+    openSpeciesTable: function(/*args*/ w, tableName, theWhere, headerText, extraFieldInfo, currTab, maxLayerName, groupVars, addlVisibleHeaders, selVars) {
+/*
+      let w = args.w;
+      let tableName = args.tableName;
+      let theWhere = args.theWhere;
+      let headerText = args.headerText;
+      let extraFieldInfo = args.extraFieldInfo;
+      let currTab = args.currTab;
+      let maxLayerName = args.maxLayerName;
+      let groupVars = args.groupVars;
+      let addlVisibleHeaders = args.addlVisibleHeaders;
+      let selectVars = args.selectVars;
+*/
+
       w.visibleHeaderElements = w.origVisibleHeaderElements
       if (addlVisibleHeaders)
         w.visibleHeaderElements = w.visibleHeaderElements.concat(addlVisibleHeaders);
@@ -2152,6 +2176,8 @@ if (view.extent.width > 8000000)
           r.sqlTemplate = r.outerSQL.replace("{innerSQL}",r.innerSQL);
         if (groupVars)
           r.groupVars = groupVars;
+        if (selVars)
+          r.selVars = selVars;
         r.baseWhere = "";
         if (theWhere)
           r.baseWhere = theWhere;

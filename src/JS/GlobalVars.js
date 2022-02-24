@@ -137,7 +137,7 @@ let ssDisplayInfo = [
   {title: "vw_StationPoints_BiobandsSpecies", visible: false, listMode: "hide"}
 ];
 
-let gearDDtemplate = "SELECT GearBasic, GearBasic AS GearBasic2 FROM vw_FishCounts_flat {w} GROUP BY GearBasic ORDER BY GearBasic";
+let gearDDtemplate = "SELECT GearBasic, GearBasic AS GearBasic2 FROM vw_FishCounts_flat {W} GROUP BY GearBasic ORDER BY GearBasic";
 
 let lastSZExtent = null;
 let bhDiff = window.outerHeight - window.innerHeight;
@@ -360,8 +360,14 @@ let ssPhotoWidget = null;
 let ssProfileWidget = null;
 let faPhotoWidget = null;
 
-let dfltNoSelOption = [ { label: "[All]", value: "All", buttonLabel: "[All]" } ];
-let dfltShowColumnOption = [ { label: "[Show column]", value: "showCol", buttonLabel: "[Show column]" } ];
+let dfltNoSelOption = { label: "[All]", value: "All", buttonLabel: "[All]" };
+let dfltNoSelOption_extraField = { label: "[Combined]", value: "All", buttonLabel: "[Combined]" };
+let dfltShowColumnOption =  { label: "[Show column]", value: "showCol", buttonLabel: "[Show column]" } ;
+
+let GearColumnFormat = {
+  title: "Gear",
+  colWidth: 20
+};
 
 
 let gp = null;      // for Geoprocessor

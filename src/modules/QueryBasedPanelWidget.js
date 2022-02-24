@@ -559,7 +559,10 @@ define([
       let r = this.customRestService;
       if (r.outerSQL)
         r.sqlTemplate = r.outerSQL.replace("{innerSQL}",r.innerSQL);
-      let sql = r.sqlTemplate.replace(/{S}/g, selDDFields + r.groupVars);
+      let selVars = r.selVars;
+      if (!selVars)
+        selVars = r.groupVars;
+      let sql = r.sqlTemplate.replace(/{S}/g, selDDFields + selVars);
       sql = sql.replace(/{G}/g, groupDDFields + r.groupVars);
       return sql;
     },
@@ -607,6 +610,7 @@ define([
       if (this.headerText)
         getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
       let theWhere = "";
+      this.setPanelVisibility([]);      // Hide table div, show message div  (empty array forces this)
       if (!this.customRestService) {          // using ArcGIS map service
         // If extent argument is supplied, set parameters for spatial query
         if (extent) {
@@ -637,7 +641,7 @@ define([
         let geomType = "";
         if (this.clickableSymbolType && this.clickableSymbolType!=="point")
           geomType = "polygon";
-        let theUrl = this.customRestService.serviceUrl+ "?geomType=" + geomType + "&sql=" + urlInfo.sql + " " + urlInfo.where;
+        let theUrl = this.customRestService.serviceUrl+ "?geomType=" + geomType + "&sql=" + urlInfo.sql;      // + " " + urlInfo.where;
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
         theWhere = urlInfo.where;
       }
