@@ -429,9 +429,10 @@ define([
 
             for (let i=0; i<subWidgetInfo.length; i++) {
               let A = subWidgetInfo[i].split(":");
-              let dataPresentField = A[2];
+              //let dataPresentField = A[2];
+              let cellValue = row.data[A[2]];
               let w = eval(A[0]);
-              if (row.data[dataPresentField] !== "") {
+              if (cellValue && cellValue!=="") {      // (sometimes the query can return NULL instead of empty string)
                 let whereField = A[1];
                 let theValue = stripHtml(row.data[whereField]);
                 if (A[3] === "string")                  // Check if string or numeric.  If numeric, A[3] probably isn't there.
@@ -442,7 +443,8 @@ define([
                   w.runQuery(null, {theWhere});
                 }
               } else {
-                showEnabledDisabled(w.baseName, false, w.noDataMsg);
+                updateNoFeaturesMsg([w], w.noDataMsg);
+                //showEnabledDisabled(w.baseName, false, w.noDataMsg);
               }
             }
           }

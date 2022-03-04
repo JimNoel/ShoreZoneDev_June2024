@@ -50,30 +50,20 @@ define([
       this.initFeatureHandling();
       this.addPanelHtml();
 
-      if (this.defaultDisabledMsg)
-        setMessage(this.disabledMsgDivName, this.defaultDisabledMsg);
+      this.setDefaultDisabledMsg = function() {
+        if (this.defaultDisabledMsg)
+          setMessage(this.disabledMsgName, this.defaultDisabledMsg);
+      }
 
-
-/*
-      this.setPanelVisibility = function(f) {
-        if (f.length===0) {
-          if (this.disabledMsgInfix) {
-            updateNoFeaturesMsg(this.noFeaturesPanels , "zoomout");
-            showEnabledDisabled(this.baseName, false);
-          }
-          return true;
-        }
-        showEnabledDisabled(this.baseName, true);
-        return false;
-      };
-*/
-
+      this.setDefaultDisabledMsg();
 
       this.processResults = function(results) {
         let features = results.features;
         this.features = features;
-        if (features.length === 0)
+        if (features.length === 0) {
+          updateNoFeaturesMsg(this.noFeaturesPanels, "zoomout");
           return;
+        }
         this.fields = results.fields;
         this.setDisplayLayers();
         updateNoFeaturesMsg(this.noFeaturesPanels, "");
@@ -363,10 +353,12 @@ define([
         classAddOn = "EP";     // Different class if under a horizontal ExpandoPane
 
       // Add "panel disabled" DIV.  (Visible when not zoomed in far enough to see features.)
+      this.disabledMsgDivName = "panelDisabled_" + name;
+      this.disabledMsgName = "disabledMsg_" + name;
       let S = '';
-      S = '<div id="panelDisabled_' + name + '" class="PanelDisabled" >\n';
-      S += '  <label id="disabledMsg_' + name + '" class="MsgDisabled" >Zoom in further to see ' + name + '</label>\n';
-      S += '</div>\n';
+      S = '<div id="' + this.disabledMsgDivName + '" class="PanelDisabled" >';
+      S += '<label id="' + this.disabledMsgName + '" class="MsgDisabled">Zoom in further to see ' + name + '</label>';
+      S += '</div>';
       panelDiv.innerHTML = S;
 
       // Make container for displaying feature info
@@ -680,7 +672,7 @@ define([
       if (this.customRestService)
         results = JSON.parse(results);
       if (results.features.length > maxSZFeatures) {
-        //updateNoFeaturesMsg(extentDependentWidgets, "toomany");
+        updateNoFeaturesMsg(extentDependentWidgets, "toomany");
       } else {
         this.processResults(results);
       }

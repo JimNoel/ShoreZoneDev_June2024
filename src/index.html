@@ -379,6 +379,7 @@
         siteTabs.promoteClass(className);
         let widgets = siteTabs[className].widgets;
         for (i in widgets) {
+          //widgets[i].setDefaultDisabledMsg();
           if (widgets[i].disabledMsgInfix)      // Hide panel if it uses a "disabled" message
             showEnabledDisabled(widgets[i].baseName, false);
           // For widgets with tabs (FA & SS tables), start at the first tab (Regions)

@@ -531,7 +531,7 @@ function setContent(elName, text, append) {
 }
 
 function setMessage(elName, text, /*visible,*/ fade) {
-  // Show message in "elName"
+  // Show message (including HTML) in "elName"
   let el = getEl(elName);
   if (!el)
     return;
@@ -544,7 +544,7 @@ function setMessage(elName, text, /*visible,*/ fade) {
     el.style.visibility = "hidden";
 */
   if (text)
-    el.innerHTML = text;
+    el.innerHTML = text;     //.innerHTML = text;
   if (image_message_timeout) clearTimeout(image_message_timeout);
   if (fade)
     image_message_timeout = setTimeout(function() {el.style.visibility = "hidden";}, fade);
@@ -632,7 +632,7 @@ function showEnabledDisabled(panelNames, show, disabledMsg) {
     setVisible("panelDisabled_" + names[i], !show);
     setVisible("panelEnabled_" + names[i], show);
     if (!show && disabledMsg)
-      getEl("disabledMsg_" + names[i]).innerText = disabledMsg;
+      getEl(disabledMsgName).innerHTML = disabledMsg;
   }
 }
 
@@ -841,7 +841,8 @@ function updateNoFeaturesMsg(widgets, status) {
   widgets.forEach(function(w, index, array) {
     if (w.disabledMsgDivName) {
       let msg = template.replace(/\{1\}/g, w.disabledMsgInfix);
-      getEl(w.disabledMsgDivName).innerHTML = msg;
+      //getEl(w.disabledMsgDivName).innerHTML = msg;     //.innerHTML = msg;
+      getEl("disabledMsg_" + w.baseName).innerHTML = msg;
       showEnabledDisabled(w.baseName, msg==="");
       //setMessage(w.disabledMsgDivName, msg);
     }
@@ -854,7 +855,6 @@ function refreshSzFeatures() {
   mapLoading = true;
   if (szFeatureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
     lastSZExtent = view.extent;
-    //updateNoFeaturesMsg(extentDependentWidgets, "querying");
     if (szVideoWidget) {
       szVideoWidget.noMarkers = szVideoWidget.preQueryMarkers;
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
@@ -862,7 +862,7 @@ function refreshSzFeatures() {
     if (szUnitsWidget && (view.extent.width/1000 < maxExtentWidth))
       szUnitsWidget.runQuery(view.extent);         // 3D: use extent3d?
   } else {
-    //updateNoFeaturesMsg(extentDependentWidgets, "zoomin");
+    updateNoFeaturesMsg(extentDependentWidgets, "zoomin");
   }
   setRefreshButtonVisibility(false);
 }
