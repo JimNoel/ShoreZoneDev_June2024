@@ -842,7 +842,7 @@ function updateNoFeaturesMsg(widgets, status) {
     if (w.disabledMsgDivName) {
       let msg = template.replace(/\{1\}/g, w.disabledMsgInfix);
       //getEl(w.disabledMsgDivName).innerHTML = msg;     //.innerHTML = msg;
-      getEl("disabledMsg_" + w.baseName).innerHTML = msg;
+      getEl(w.disabledMsgName).innerHTML = msg;
       showEnabledDisabled(w.baseName, msg==="");
       //setMessage(w.disabledMsgDivName, msg);
     }

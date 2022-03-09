@@ -365,7 +365,7 @@
           return;
         }
         if (tabID === "faTab" && !fa2020msgShown) {
-          alert("Thank you for visiting the Nearshore Fish Atlas website.  The site is currently undergoing extensive upgrades in data availability and functionality.  While still operational, only a limited number of features are enabled at this time.  Thanks for your patience as we work towards bringing new content to you in early 2022.");
+          alert("Thank you for visiting the Nearshore Fish Atlas website.  The site is currently undergoing extensive upgrades in data availability and functionality.  While still operational, only a limited number of features are enabled at this time.  Thanks for your patience as we work towards bringing new content to you in the spring of 2022.");
           fa2020msgShown = true;
         }
         let className = tabID.slice(0,2);
@@ -379,9 +379,13 @@
         siteTabs.promoteClass(className);
         let widgets = siteTabs[className].widgets;
         for (i in widgets) {
+          let disabledMsg = getEl(widgets[i].disabledMsgName).innerHTML;
+          showEnabledDisabled(widgets[i].baseName, disabledMsg==="");
+/*
           //widgets[i].setDefaultDisabledMsg();
           if (widgets[i].disabledMsgInfix)      // Hide panel if it uses a "disabled" message
             showEnabledDisabled(widgets[i].baseName, false);
+*/
           // For widgets with tabs (FA & SS tables), start at the first tab (Regions)
           if (widgets[i].tabInfo && !widgets[i].grid)
             widgets[i].setActiveTab(widgets[i].currTab);
