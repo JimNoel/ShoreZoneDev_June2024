@@ -728,37 +728,14 @@ define([
               },
               liveUpdate: true
             },
-/*
-            { ddName: "Habitat",
-              layerSubNames: "Habitats",
-              options: [
-                { label: "All", value: "All" },
-                { label: "Bedrock", value: "Bedrock" },
-                { label: "Eelgrass", value: "Eelgrass" },
-                { label: "Kelp", value: "Kelp" },
-                { label: "Sand-Gravel", value: "Sand-Gravel" }
-              ],
-              SelectedOption: "All",
-              whereField: "Habitat",
-              isAlpha: true
-            },
-*/
 
             // The next item may be removed in favor of 1 common habitat dropdown, if it is decided not to keep
             //    habitat selection independent between Region/Locale/Site tabs
             { ddName: "SiteHabitat",
               ddTitle: "Habitat",     // Title text if it is not ddName value
               layerSubNames: "Habitats",
-              /*
-                            options: [
-                              { label: "All", value: "All" },
-                              { label: "Bedrock", value: "Bedrock" },
-                              { label: "Eelgrass", value: "Eelgrass" },
-                              { label: "Kelp", value: "Kelp" },
-                              { label: "Sand-Gravel", value: "Sand-Gravel" }
-                            ],
-              */
               SelectedOption: "All",
+              columnField: "Habitat",
               groupField: "Habitat",
               whereField: "Habitat",
               isAlpha: true,
@@ -766,6 +743,7 @@ define([
                 serviceUrl: faRestServiceURL,
                 sqlTemplate: "SELECT Habitat FROM vw_FishCounts_flat {W} GROUP BY Habitat ORDER BY Habitat"
               },
+              showColumnOption: dfltShowColumnOption,
               ddOutFields: ["Habitat"],
               liveUpdate: true
             },
@@ -856,6 +834,7 @@ define([
               visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
               dropdownElements: ['faSiteHabitat_ddWrapper', 'faGear_ddWrapper'],
               featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
+              extraColumns: ["GearBasic", "Habitat"],
               downloadExcludeFields: ["RegionEnv", "RegionID", "SelRegionBtn"],
               calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
               orderByFields: ["Region"],
@@ -868,6 +847,7 @@ define([
                   html: zoomInTemplate.replace("{area}", "Region")
                 },
                 //Region: { colWidth: 10 },
+                Habitat: HabitatColumnFormat,
                 GearBasic: GearColumnFormat,    /* {
                   title: "Gear",
                   colWidth: 30
@@ -1043,7 +1023,7 @@ define([
           headerDivName:  "faSpTableHeaderDiv",
           footerDivName:  "faSpTableFooterDiv",
           visibleHeaderElements: ['faSpTableGear_ddWrapper', 'faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
-          dropdownElements: ['faSpTableGear_ddWrapper', 'faSpTableEvents_ddWrapper'],
+          dropdownElements: ['faSpTableGear_ddWrapper', 'faSpTableDates_ddWrapper'],
           //dynamicLayerName: true,
           //LayerNameAddOn: "",
           dropDownInfo: [
@@ -1074,6 +1054,7 @@ define([
               noSelOption: dfltNoSelOption_extraField,
               SelectedOption: "All",
               liveUpdate: true,
+              groupField: "DateStr",
               whereField: "DateStr",
               columnField: "DateStr",
               noInitialQuery: true,
@@ -1081,6 +1062,7 @@ define([
             }
           ],
           featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
+          extraColumns: ["GearBasic", "DateStr"],
           downloadExcludeFields: [],
           totalOutFields: ["Catch", "Count_measured"],
           summaryInfo: {

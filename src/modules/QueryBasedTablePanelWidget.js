@@ -253,7 +253,7 @@ define([
                 }
               }
 
-                let template = getIfExists(this,"specialFormatting." + a + ".html");
+              let template = getIfExists(this,"specialFormatting." + a + ".html");
               if (template) {     // If template exists, use this to replace attribute value with HTML code
                 let fmtInfo = this.specialFormatting[a];
                 if (fmtInfo.showWhen) {
@@ -269,6 +269,11 @@ define([
                   features[i].attributes[a] = template.replace("{args}", args);
                 }
               }
+
+              let nullDisplay = getIfExists(this,"specialFormatting." + a + ".nullDisplay");
+              if (nullDisplay && features[i].attributes[a]!=="")
+                features[i].attributes[a] = nullDisplay;
+
 
               if (features[i].attributes[a]) {
                 nonNullCount[a] += 1;

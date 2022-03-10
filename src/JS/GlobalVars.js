@@ -364,6 +364,10 @@ let dfltNoSelOption = { label: "[All]", value: "All", buttonLabel: "[All]" };
 let dfltNoSelOption_extraField = { label: "[Combined]", value: "All", buttonLabel: "[Combined]" };
 let dfltShowColumnOption =  { label: "[Show column]", value: "showCol", buttonLabel: "[Show column]" } ;
 
+let HabitatColumnFormat = {
+  colWidth: 20,
+  //nullDisplay: "[unspecified]"
+};
 let GearColumnFormat = {
   title: "Gear",
   colWidth: 20

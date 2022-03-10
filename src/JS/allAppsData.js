@@ -42,7 +42,7 @@ function queryServer(url, returnJson, responseHandler, postInfo) {
       if (R.slice(0,6) === "ERROR:") {
         alert(R);
         console.log(R);
-        return;
+        //return;
       }
       if (returnJson)
         R = JSON.parse(R);
