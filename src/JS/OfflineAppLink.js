@@ -131,11 +131,11 @@ function downloadData() {
     "Get_Photos": "0",
     "QueryShapeFileName": "0"
   };
-  if (cb_StillPhotos.checked)
+  if (getEl("cb_StillPhotos") && cb_StillPhotos.checked)
     params.Get_Photos = "1";
-  if (cb_LowResVidCap.checked)
+  if (getEl("cb_LowResVidCap") && cb_LowResVidCap.checked)
     params.Get_LowRes = "1";
-  if (cb_HighResVidCap.checked)
+  if (getEl("cb_HighResVidCap") && cb_HighResVidCap.checked)
     params.Get_HighRes = "1";
   outZipFileName = text_Description.value;
   setContent("dlDataContent", "Submitting query . .");

@@ -26,8 +26,7 @@ function getEl(id) {
   // If not a string, assume the argument is already an element, and return it
   if ((typeof id) === "object")
     return id;
-  else
-    return document.getElementById(id);
+  return document.getElementById(id);
 }
 
 function showSiteInfo() {
