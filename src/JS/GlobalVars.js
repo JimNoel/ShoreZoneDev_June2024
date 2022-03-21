@@ -138,6 +138,7 @@ let ssDisplayInfo = [
 ];
 
 let gearDDtemplate = "SELECT GearBasic, GearBasic AS GearBasic2 FROM vw_FishCounts_flat {W} GROUP BY GearBasic ORDER BY GearBasic";
+let pocDDtemplate = "SELECT POC_Name FROM vw_FishCounts_flat {W} GROUP BY POC_Name ORDER BY POC_Name";
 
 let lastSZExtent = null;
 let bhDiff = window.outerHeight - window.innerHeight;

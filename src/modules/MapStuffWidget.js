@@ -749,7 +749,6 @@ define([
             },
 
             { ddName: "Gear",
-              layerSubNames: "Gear",
               ddOutFields: ["GearBasic", "GearBasic2"],
               customRestService: {
                 serviceUrl: faRestServiceURL,
@@ -761,6 +760,22 @@ define([
               columnField: "GearBasic",
               groupField: "GearBasic",
               whereField: "GearBasic",
+              liveUpdate: true,
+              isAlpha: true
+            },
+
+            { ddName: "POC",
+              ddOutFields: ["POC_Name"],
+              customRestService: {
+                serviceUrl: faRestServiceURL,
+                sqlTemplate: pocDDtemplate
+              },
+              showColumnOption: dfltShowColumnOption,
+              noSelOption: dfltNoSelOption_extraField,
+              SelectedOption: "All",
+              columnField: "POC_Web",
+              groupField: "POC_Name",
+              whereField: "POC_Name",
               liveUpdate: true,
               isAlpha: true
             },
@@ -785,6 +800,8 @@ define([
               },
               noSelOption: dfltNoSelOption,
               SelectedOption: "All",
+              //columnField: "SpCode",
+              groupField: "SpCode",
               whereField: "SpCode",
               isAlpha: true,
               customRestService: {
@@ -922,11 +939,11 @@ define([
               },
 /*JN*/
               parentAreaType: 'Regions',
-              visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
-              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpecies_ddWrapper'],
+              visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faPOC_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
+              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faPOC_ddWrapper', 'faSpecies_ddWrapper'],
 //              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
               featureOutFields: ["Region", "Locale", "Site", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
-              extraColumns: ["GearBasic"],
+              extraColumns: ["GearBasic", "POC_Name"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],

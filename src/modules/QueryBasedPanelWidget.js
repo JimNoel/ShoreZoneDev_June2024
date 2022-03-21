@@ -60,7 +60,7 @@ define([
       this.processResults = function(results) {
         let features = results.features;
         this.features = features;
-        if (features.length === 0) {
+        if (features.length===0 && this.panelType!=="table") {
           updateNoFeaturesMsg(this.noFeaturesPanels, "zoomout");
           return;
         }
@@ -579,13 +579,17 @@ define([
       if (this.dropDownInfo) {
         let D = this.dropDownInfo;
         for (let d=0; d<D.length; d++) {
-          if (this.visibleHeaderElements.includes(D[d].wrapperId)) {
+//          if (this.visibleHeaderElements.includes(D[d].wrapperId)) {  TODO:  Make sure this change doesn't mess anything up
+          if (this.dropdownElements.includes(D[d].wrapperId)) {
             if (D[d].SelectedOption !== "All") {
               if (D[d].groupField)
                 groupDDFields += D[d].groupField + ",";
               if (D[d].SelectedOption === "showCol") {
-                if (D[d].columnField)
+                if (D[d].columnField) {
                   selDDFields += D[d].columnField + ",";
+                  if (D[d].columnField !== D[d].groupField)
+                    groupDDFields += D[d].columnField + ",";      // Adds columnField to the group/select list if it is different from groupField
+                }
               } else {      // i.e. if a specific value has been selected
 /*
                 if (theWhere)
@@ -611,13 +615,16 @@ define([
       sql = sql.replace("{W}", theWhere);
 
       // Spatial filter using current extent
-      // For non-Point features use centroid:  S.Shape.STCentroid()  ?
-      let spatialWhere = "(S.Shape.STX>" + Math.floor(view.extent.xmin);
-      spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(view.extent.xmax);
-      spatialWhere += ") AND (S.Shape.STY>" + Math.floor(view.extent.ymin);
-      spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(view.extent.ymax) + ")";
-      sql += " WHERE " + spatialWhere
-      //theWhere = addToWhere(theWhere, spatialWhere);
+      // For point features only    // TODO: Make it work for polygon, polyline & extent features?
+      if (this.clickableSymbolType === "point") {
+        let spatialWhere = "(S.Shape.STX>" + Math.floor(view.extent.xmin);
+        spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(view.extent.xmax);
+        spatialWhere += ") AND (S.Shape.STY>" + Math.floor(view.extent.ymin);
+        spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(view.extent.ymax) + ")";
+        sql += " WHERE " + spatialWhere
+      }
+//      if (["polygon", "extent"].includes(this.clickableSymbolType))
+//        spatialWhere = spatialWhere.replace(/.ST/g, ".STCentroid().ST");
 
       return {sql: sql, where: theWhere} ;
     },
@@ -677,7 +684,7 @@ define([
       let A = theWhere.split(" AND ");
       for (let i=0; i<A.length; i++) {
         if (A[i].indexOf(currDDinfo.whereField) !== -1)
-          A.splice(i);
+          A.splice(i,1);    // remove one item at position i
       }
       theWhere = A.join(" AND ");
       this.filterDropdown(currDDinfo, theWhere);
