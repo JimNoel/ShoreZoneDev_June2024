@@ -146,7 +146,7 @@ define([
         else if (this.popupTitle)
           dfltFileName = this.popupTitle + ".csv";
         //csv = csv.replace("#","No.")
-        download_csv(csv, dfltFileName);
+        download_csv(csv, dfltFileName, this.rawDownloadOption);
       }
 
       this.makeTable = function(fields, features) {     // Generate data table.  If no new features, then empty the DOM for the table

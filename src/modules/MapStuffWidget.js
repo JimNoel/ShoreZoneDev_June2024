@@ -709,6 +709,7 @@ define([
           displayDivName: "faContainer",
           mapServiceLayer: faMapServiceLayer,
           mapServiceSublayers: ["Regions", "Sites"],
+          rawDownloadOption: true,
           subLayerName: "vw_FishCounts_flat",             // for customRestService
           //dynamicLayerName: true,
           dropDownInfo: [
@@ -748,6 +749,12 @@ define([
               liveUpdate: true
             },
 
+            JSON.parse(JSON.stringify(gearDD)),
+            JSON.parse(JSON.stringify(pocDD)),
+
+
+            // Because these dropdowns are used in common between Region/Site and Species tables, the code below is replaced by the "parse" code above
+            /*
             { ddName: "Gear",
               ddOutFields: ["GearBasic", "GearBasic2"],
               customRestService: {
@@ -773,12 +780,13 @@ define([
               showColumnOption: dfltShowColumnOption,
               noSelOption: dfltNoSelOption_extraField,
               SelectedOption: "All",
-              columnField: "POC_Web",
+              columnField: "POC_Concat",
               groupField: "POC_Name",
               whereField: "POC_Name",
               liveUpdate: true,
               isAlpha: true
             },
+*/
 
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
@@ -834,7 +842,6 @@ define([
               popupTitle: "Fish Atlas Region",
               //maxLayerName: "vw_CatchStats_RegionsHabitatsGear",
 
-              /*JN*/
               customRestService: {
                 serviceUrl: faRestServiceURL,
                 groupVars: "Region",
@@ -844,12 +851,11 @@ define([
                   "INNER JOIN (SELECT RegionCode,Shape From REGIONS_FISHATLAS) AS S ON F.RegionCode = S.RegionCode",
                 baseWhere: ""
               },
-              /*JN*/
 
               parentAreaType: '',
               // TODO: Have 'faTableDownload' added in code, if downloadExcludeFields is present
-              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
-              dropdownElements: ['faSiteHabitat_ddWrapper', 'faGear_ddWrapper'],
+              visibleHeaderElements: ['faTableDownload', 'faTableHeaderTitle', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures', 'faIconSpeciesTable'],
+              dropdownElements: ['faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpecies_ddWrapper'],
               featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
               extraColumns: ["GearBasic", "Habitat"],
               downloadExcludeFields: ["RegionEnv", "RegionID", "SelRegionBtn"],
@@ -943,7 +949,7 @@ define([
               dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faPOC_ddWrapper', 'faSpecies_ddWrapper'],
 //              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
               featureOutFields: ["Region", "Locale", "Site", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
-              extraColumns: ["GearBasic", "POC_Name"],
+              extraColumns: ["GearBasic", "POC_Concat"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Locale", "Site"],
@@ -954,6 +960,10 @@ define([
                   plugInFields: ["x", "y"],
                   args: '"{0},{1},1000"',
                   html: zoomInTemplate.replace("{area}", "Site")
+                },
+                POC_Concat: {
+                  title: "Point of Contact"
+                  //colWidth: 150
                 },
                 Region: { colWidth: 30 },
                 Site: { colWidth: 15 },
@@ -1039,13 +1049,17 @@ define([
           baseName: "faSpTable",
           headerDivName:  "faSpTableHeaderDiv",
           footerDivName:  "faSpTableFooterDiv",
-          visibleHeaderElements: ['faSpTableGear_ddWrapper', 'faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
-          dropdownElements: ['faSpTableGear_ddWrapper', 'faSpTableDates_ddWrapper'],
+          visibleHeaderElements: ['faSpTableGear_ddWrapper', 'faSpTablePOC_ddWrapper', 'faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
+          dropdownElements: ['faSpTableGear_ddWrapper', 'faSpTablePOC_ddWrapper', 'faSpTableDates_ddWrapper'],
           //dynamicLayerName: true,
           //LayerNameAddOn: "",
           dropDownInfo: [
+
+            JSON.parse(JSON.stringify(gearDD)),
+            JSON.parse(JSON.stringify(pocDD)),
+
+/*
             { ddName: "Gear",
-              //layerSubNames: "Gear",    // Not needed here since the parent Species table is using a customRestService
               ddOutFields: ["GearBasic", "GearBasic2"],
               customRestService: {
                 serviceUrl: faRestServiceURL,
@@ -1060,6 +1074,8 @@ define([
               columnField: "GearBasic",
               isAlpha: true
             },
+*/
+
             { ddName: "Dates",
               ddOutFields: ["DateStr"],
               // TODO: After service is republished, just use "DateStr" instead of "format(..."

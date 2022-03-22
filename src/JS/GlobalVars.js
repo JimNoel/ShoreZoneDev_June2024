@@ -200,11 +200,15 @@ settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick
 settingsHtml += '<button id="rawSettingsButton" onclick="changeSetting()">Raw Settings</button>';
 
   let tableDownloadHtml = '<strong>Table download</strong><br><br>'
-  + '<label for="text_dlFileName">Download file name: </label><input type="text" id="text_dlFileName"><br><br>'
-  + '&emsp; <button onclick = "doTableDownload()">Download</button>&emsp;<button onclick="doTableDownload(true)">Cancel</button><br><br>'
-  + '<i>The current table will be downloaded as a comma-delimited (CSV) file.<br>'
-  + 'The associated geometry is not included.<br>'
-  + 'If you need geometry data, the entire geodatabase may be downloaded <a href="szapps.htm" target="_blank"><strong>here</strong></a>.</i>';
+    + '<div id="downloadTypeDiv" style="visibility: hidden">'
+    + '<input type="radio" id="radio_downloadTable" name="radio_download" value="table" checked>Download the table<br>'
+    + '<input type="radio" id="radio_downloadRaw" name="radio_download" value="raw">Download raw data associated with the table<br><br>'
+    + '</div>'
+    + '<label for="text_dlFileName">Download file name: </label><input type="text" id="text_dlFileName"><br><br>'
+    + '&emsp; <button onclick="doTableDownload()">Download</button>&emsp;<button onclick="doTableDownload(true)">Cancel</button><br><br>'
+    + '<i>The current table will be downloaded as a comma-delimited (CSV) file.<br>'
+    + 'The associated geometry is not included.<br>'
+    + 'If you need geometry data, the entire geodatabase may be downloaded <a href="szapps.htm" target="_blank"><strong>here</strong></a>.</i>';
 
 let ssSpeciesDropdownHtml = '{Group}<br><br>';
 ssSpeciesDropdownHtml += '{Subgroup}<br><br>';
@@ -365,7 +369,43 @@ let dfltNoSelOption = { label: "[All]", value: "All", buttonLabel: "[All]" };
 let dfltNoSelOption_extraField = { label: "[Combined]", value: "All", buttonLabel: "[Combined]" };
 let dfltShowColumnOption =  { label: "[Show column]", value: "showCol", buttonLabel: "[Show column]" } ;
 
-let HabitatColumnFormat = {
+
+let gearDD = {
+  ddName: "Gear",
+  ddOutFields: ["GearBasic", "GearBasic2"],
+  customRestService: {
+    serviceUrl: faRestServiceURL,
+    sqlTemplate: gearDDtemplate
+  },
+  showColumnOption: dfltShowColumnOption,
+  noSelOption: dfltNoSelOption_extraField,
+  SelectedOption: "All",
+  columnField: "GearBasic",
+  groupField: "GearBasic",
+  whereField: "GearBasic",
+  liveUpdate: true,
+  isAlpha: true
+};
+
+let pocDD = {
+  ddName: "POC",
+  ddOutFields: ["POC_Name"],
+  customRestService: {
+    serviceUrl: faRestServiceURL,
+    sqlTemplate: pocDDtemplate
+  },
+  showColumnOption: dfltShowColumnOption,
+  noSelOption: dfltNoSelOption_extraField,
+  SelectedOption: "All",
+  columnField: "POC_Concat",
+  groupField: "POC_Name",
+  whereField: "POC_Name",
+  liveUpdate: true,
+  isAlpha: true
+  };
+
+
+  let HabitatColumnFormat = {
   colWidth: 20,
   //nullDisplay: "[unspecified]"
 };
@@ -1264,12 +1304,13 @@ function makeDownloadPanel() {
 
 }
 
-function download_csv(csv, dfltFileName) {
+function download_csv(csv, dfltFileName, rawDownloadOption) {
   let fileNameEl = getEl("text_dlFileName");
   fileNameEl.value = dfltFileName;
   let fileName = dfltFileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
   let downloadPanel = getEl("downloadPanel");
   downloadPanel.value = dfltFileName;
+  setVisible("downloadTypeDiv", rawDownloadOption);
   setVisible(downloadPanel, true);
   let hiddenElement = getEl("hidden_downloadTable");
   // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
