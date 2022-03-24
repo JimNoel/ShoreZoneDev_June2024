@@ -89,6 +89,86 @@ define([
       this.selectedRow = null;
       this.origVisibleHeaderElements = this.visibleHeaderElements
 
+      this.showCsvDownloadDialog = function() {
+        csvDownloadWidget = this;
+        let dfltFileName = "TableData.csv";
+        if (this.draggablePanelId)
+          dfltFileName = getEl(this.draggablePanelId + "_headerText").innerText + ".csv";
+        else if (this.tabInfo)
+          dfltFileName = this.tabInfo[this.currTab].tabTitle + ".csv";
+        else if (this.popupTitle)
+          dfltFileName = this.popupTitle + ".csv";
+        let fileNameEl = getEl("text_dlFileName");
+        fileNameEl.value = dfltFileName;
+        let fileName = dfltFileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
+        let downloadPanel = getEl("downloadPanel");
+        downloadPanel.value = dfltFileName;
+        setVisible("downloadTypeDiv", this.rawDownloadOption);
+        setVisible(downloadPanel, true);
+      };
+
+      this.csvQueryResponseHandler = function(results) {
+        results = JSON.parse(results);
+        downloadCsv(results.csv);
+
+      }
+
+      this.queryCsvData = function() {
+        let theUrl = this.makeCustomRestQueryUrl("", this.customRestService.downloadSql, "csv");
+        queryServer(theUrl, false, this.csvQueryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
+      };
+
+      this.getCsvFromTable = function() {
+        if (!this.downloadExcludeFields) {
+          alert("ERROR: This table is not set up for downloading.");
+          return;
+        }
+        let data = this.store.data;
+        let columns = [];
+        var csv = '';
+        for (c in this.grid.columns) {
+          let column = this.grid.columns[c];
+          let fName = column.field;
+          if (!this.downloadExcludeFields.includes(fName) && !column.hidden) {
+            columns.push(fName);
+            let columnLabel = null;
+            let specialFormatting = this.specialFormatting[fName];
+            if (specialFormatting)
+              columnLabel = specialFormatting.title;
+            if (!columnLabel)
+              columnLabel = fName;
+            if (csv !== '')
+              csv += ',';
+            csv += '"' + columnLabel + '"';
+          }
+        }
+        csv += '\n';
+        for (let r=0; r<data.length; r++) {
+          let row = data[r];
+          let rowCsv = '';
+          //for (c in this.grid.columns) {
+          for (let c=0; c<columns.length; c++) {
+            let fName = columns[c];     // this.grid.columns[c].field;     //
+            //if (!this.downloadExcludeFields.includes(fName)) {
+            let value = row[fName];
+            if (!value)
+              value = "";
+            if (typeof value === "string")
+              value = '"' + stripHtml(value) + '"';     // value.split("<")[0];
+            let specialFormatting = this.specialFormatting[fName];
+            if (specialFormatting && specialFormatting.dateFormat)
+              value = '"' + formatNumber_Date(value) + '"';
+            if (rowCsv !== '')
+              rowCsv += ',';
+            rowCsv += value;
+            //}
+          }
+          csv += rowCsv + '\n';
+        }
+        return csv;
+      };
+
+/*
       this.downloadTableData = function() {
         if (!this.downloadExcludeFields) {
           alert("ERROR: This table is not set up for downloading.");
@@ -145,9 +225,12 @@ define([
           dfltFileName = this.tabInfo[this.currTab].tabTitle + ".csv";
         else if (this.popupTitle)
           dfltFileName = this.popupTitle + ".csv";
-        //csv = csv.replace("#","No.")
-        download_csv(csv, dfltFileName, this.rawDownloadOption);
+        let hiddenElement = getEl("hidden_downloadTable");
+        // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+        //download_csv(csv, dfltFileName, this.rawDownloadOption);
       }
+*/
 
       this.makeTable = function(fields, features) {     // Generate data table.  If no new features, then empty the DOM for the table
         // Create a dGrid table from returned data
@@ -744,7 +827,8 @@ define([
 
         headerContent.innerHTML = '';
 
-        let downloadFtnText = this.objName + ".downloadTableData()";
+//        let downloadFtnText = this.objName + ".downloadTableData()";
+        let downloadFtnText = this.objName + ".showCsvDownloadDialog()";
         headerContent.innerHTML += '<span id="' + this.baseName + 'TableDownload"><img src="assets/images/floppy16x16.png" title="Download table data" class="tableHeaderIcon" onclick="' + downloadFtnText + '"></span>';
 
         if (this.tableHeaderTitle)

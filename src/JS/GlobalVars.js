@@ -199,6 +199,8 @@ settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cb
 settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick="cbShowMediaHandler(szPhotoWidget,true)">Show photo markers</h4>';
 settingsHtml += '<button id="rawSettingsButton" onclick="changeSetting()">Raw Settings</button>';
 
+let csvDownloadWidget = null;
+
   let tableDownloadHtml = '<strong>Table download</strong><br><br>'
     + '<div id="downloadTypeDiv" style="visibility: hidden">'
     + '<input type="radio" id="radio_downloadTable" name="radio_download" value="table" checked>Download the table<br>'
@@ -1283,16 +1285,6 @@ function logPoperties(obj) {
     console.log(p + ":  " + (typeof obj[p]));
 }
 
-function doTableDownload(cancel) {
-  if (!cancel) {
-    let hiddenElement = getEl("hidden_downloadTable");
-    let fileName = getEl("text_dlFileName").value.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
-    hiddenElement.download = fileName;
-    hiddenElement.click();
-  }
-  setVisible("downloadPanel", false);
-}
-
 function makeDownloadPanel() {
   let downloadPanel = makeHtmlElement("div", "downloadPanel", "dropdown-content-visible", "top:200px;left:200px;", tableDownloadHtml);
   document.body.appendChild(downloadPanel);
@@ -1301,9 +1293,41 @@ function makeDownloadPanel() {
   hiddenElement.id = "hidden_downloadTable";
   hiddenElement.target = '_blank';
   document.body.appendChild(hiddenElement);
-
 }
 
+function downloadCsv(csv) {
+  let hiddenElement = getEl("hidden_downloadTable");
+  // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+
+  let fileName = getEl("text_dlFileName").value.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
+  hiddenElement.download = fileName;
+  hiddenElement.click();
+}
+
+function doTableDownload(cancel) {
+  setVisible("downloadPanel", false);
+  if (cancel)
+    return;
+
+  if (document.getElementById("radio_downloadRaw").checked) {
+    csvDownloadWidget.queryCsvData();
+    return;
+  }
+  let csv = csvDownloadWidget.getCsvFromTable();
+  downloadCsv(csv);
+/*
+  let hiddenElement = getEl("hidden_downloadTable");
+  // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+
+  let fileName = getEl("text_dlFileName").value.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
+  hiddenElement.download = fileName;
+  hiddenElement.click();
+*/
+}
+
+/*
 function download_csv(csv, dfltFileName, rawDownloadOption) {
   let fileNameEl = getEl("text_dlFileName");
   fileNameEl.value = dfltFileName;
@@ -1316,6 +1340,7 @@ function download_csv(csv, dfltFileName, rawDownloadOption) {
   // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
 }
+*/
 
 function addToWhere(where, newWhere) {
   if (newWhere === "")

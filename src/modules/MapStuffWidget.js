@@ -941,7 +941,8 @@ define([
                     "FROM dbo.vw_FishCounts_flat_noNULL {W} GROUP BY {G},SiteID",
                   outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,F.SiteID,PhotoCount,Shape FROM ({innerSQL}) AS F " +
                     "INNER JOIN (SELECT SiteID,Shape From SITES_POINTS) AS S ON F.SiteID = S.SiteID LEFT OUTER JOIN vw_SitePhotoCounts ON S.SiteID = vw_SitePhotoCounts.SiteID",
-                baseWhere: ""
+                baseWhere: "",
+                sqlTemplate_download: "SELECT R.* FROM (SELECT * FROM vw_rawDataForDownload) AS R INNER JOIN (SELECT SiteID,Shape from SITES_POINTS) AS S ON R.SiteID = S.SiteID"
               },
 /*JN*/
               parentAreaType: 'Regions',

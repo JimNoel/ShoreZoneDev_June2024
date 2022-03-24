@@ -621,12 +621,24 @@ define([
         spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(view.extent.xmax);
         spatialWhere += ") AND (S.Shape.STY>" + Math.floor(view.extent.ymin);
         spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(view.extent.ymax) + ")";
-        sql += " WHERE " + spatialWhere
+        let downloadWhere = theWhere;
+        if (downloadWhere === "")
+          downloadWhere = " WHERE ";
+        else
+          downloadWhere += " AND ";
+        downloadWhere += spatialWhere;
+        sql += " WHERE " + spatialWhere;
+        r.downloadSql = r.sqlTemplate_download + downloadWhere;     // For download of raw data
       }
 //      if (["polygon", "extent"].includes(this.clickableSymbolType))
 //        spatialWhere = spatialWhere.replace(/.ST/g, ".STCentroid().ST");
 
       return {sql: sql, where: theWhere} ;
+    },
+
+    makeCustomRestQueryUrl: function(geomType, sql, dataType) {
+      return this.customRestService.serviceUrl+ "?dataType=" + dataType + "&geomType=" + geomType + "&sql=" + sql;
+
     },
 
     runQuery: function(extent, queryPars, serviceName) {
@@ -667,7 +679,8 @@ define([
         let geomType = "";
         if (this.clickableSymbolType && this.clickableSymbolType!=="point")
           geomType = "polygon";
-        let theUrl = this.customRestService.serviceUrl+ "?geomType=" + geomType + "&sql=" + urlInfo.sql;      // + " " + urlInfo.where;
+        //let theUrl = this.customRestService.serviceUrl+ "?geomType=" + geomType + "&sql=" + urlInfo.sql;
+        let theUrl = this.makeCustomRestQueryUrl(geomType, urlInfo.sql);
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
         theWhere = urlInfo.where;
       }
