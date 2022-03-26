@@ -1747,6 +1747,8 @@ if (view.extent.width > 8000000)
     panZoomDiv.innerHTML = panZoomHtml;
     view.ui.add(panZoomDiv, "top-left");
 
+    makeRectActionPanel();
+
     let prevNextBtnsDiv = document.createElement("DIV");
     prevNextBtnsDiv.innerHTML = prevNextBtnsHtml;
     view.ui.add(prevNextBtnsDiv, "top-left");
