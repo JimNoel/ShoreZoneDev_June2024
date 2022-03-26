@@ -4,6 +4,9 @@
 
 let test = false;    // For trying out things before comitting to code
 
+//let rectangleExtent = null;
+let extentGraphic = null;
+
 let justAK = false;
 
 // TODO: Put this near top
@@ -200,6 +203,7 @@ settingsHtml += '<input type="checkbox" id="cb_showPhotoMarkers" checked onClick
 settingsHtml += '<button id="rawSettingsButton" onclick="changeSetting()">Raw Settings</button>';
 
 let csvDownloadWidget = null;
+
 
   let tableDownloadHtml = '<strong>Table download</strong><br><br>'
     + '<div id="downloadTypeDiv" style="visibility: hidden">'
@@ -1305,6 +1309,33 @@ function downloadCsv(csv) {
   hiddenElement.click();
 }
 
+
+let rectActionHtml = '<strong>Action:</strong><br><br>'
+  + '<input type="checkbox" id="cb_zoomToRect" value="table" checked>Zoom to drawn rectangle<br>'
+  + '<input type="checkbox" id="cb_selectInRect" value="raw">Select features within drawn rectangle<br><br>'
+  + '&emsp; <button onclick="doRectAction()">OK</button>&emsp;<button onclick="doRectAction(true)">Cancel</button><br><br>';
+
+function makeRectActionPanel() {
+  let rectActionPanel = makeHtmlElement("div", "rectActionPanel", "dropdown-content-visible", "top:200px;left:200px;", rectActionHtml);
+  document.body.appendChild(rectActionPanel);
+  setVisible("rectActionPanel", false);
+}
+
+function doRectAction(cancel) {
+  setVisible("rectActionPanel", false);
+  if (cancel) {
+    view.graphics.remove(extentGraphic);
+    return;
+  }
+  if (getEl("cb_zoomToRect").checked)
+    view.goTo(extentGraphic, {animate: false});
+  if (getEl("cb_selectInRect").checked)
+    faWidget.runQuery(extentGraphic.geometry.extent);
+  else
+    view.graphics.remove(extentGraphic);      // If not selecting, then remove the rectangle
+}
+
+
 function doTableDownload(cancel) {
   setVisible("downloadPanel", false);
   if (cancel)
@@ -1316,15 +1347,6 @@ function doTableDownload(cancel) {
   }
   let csv = csvDownloadWidget.getCsvFromTable();
   downloadCsv(csv);
-/*
-  let hiddenElement = getEl("hidden_downloadTable");
-  // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-
-  let fileName = getEl("text_dlFileName").value.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
-  hiddenElement.download = fileName;
-  hiddenElement.click();
-*/
 }
 
 /*

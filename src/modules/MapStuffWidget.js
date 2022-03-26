@@ -1279,7 +1279,7 @@ define([
       }
     } else if (siteTabs.currTab === "fa") {
       //updateNoFeaturesMsg([faWidget], "querying");
-      faWidget.runQuery(view.extent);
+      //faWidget.runQuery(view.extent);
     }
   }
 
@@ -1407,7 +1407,7 @@ OKAY NOW?
       }
     };
 
-    let extentGraphic = null;
+    extentGraphic = null;
     let origin = null;
     view.on('drag', [], function(e){
       if (panning)
@@ -1433,10 +1433,17 @@ OKAY NOW?
 
         view.graphics.add(extentGraphic)
       } else if (e.action === 'end'){
-        //extentIsBookmarked = true;
-        view.graphics.remove(extentGraphic);
+//        view.graphics.remove(extentGraphic);
         drawingZoomRectangle = false;
-        view.goTo(extentGraphic, {animate: false});
+
+        if (siteTabs.currTab === "fa") {
+          setVisible("rectActionPanel", true);
+          //faWidget.runQuery(extentGraphic.geometry.extent);
+        } else {
+          view.graphics.remove(extentGraphic);
+          view.goTo(extentGraphic, {animate: false});
+        }
+
       }
     });
 
@@ -2090,7 +2097,7 @@ if (view.extent.width > 8000000)
       width: 1,
       style: "short-dot"
     };
-    let extentGraphic = new Graphic({
+    extentGraphic = new Graphic({
       geometry: pLine,
       symbol: {
         type: "simple-line",  // autocasts as new SimpleLineSymbol()

@@ -571,7 +571,7 @@ define([
       return sql;
     },
 
-    customRestServiceSQL: function() {
+    customRestServiceSQL: function(extent) {
       let r = this.customRestService;
       let selDDFields = "";
       let groupDDFields = "";
@@ -616,11 +616,13 @@ define([
 
       // Spatial filter using current extent
       // For point features only    // TODO: Make it work for polygon, polyline & extent features?
+      if (!extent)
+        extent = view.extent;
       if (this.clickableSymbolType === "point") {
-        let spatialWhere = "(S.Shape.STX>" + Math.floor(view.extent.xmin);
-        spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(view.extent.xmax);
-        spatialWhere += ") AND (S.Shape.STY>" + Math.floor(view.extent.ymin);
-        spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(view.extent.ymax) + ")";
+        let spatialWhere = "(S.Shape.STX>" + Math.floor(extent.xmin);
+        spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(extent.xmax);
+        spatialWhere += ") AND (S.Shape.STY>" + Math.floor(extent.ymin);
+        spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(extent.ymax) + ")";
         let downloadWhere = theWhere;
         if (downloadWhere === "")
           downloadWhere = " WHERE ";
@@ -675,7 +677,7 @@ define([
           console.log(this.baseName + ":  QueryTask failed.");
         }.bind(this));
       } else {                                // using custom SQL Server REST service
-        let urlInfo = this.customRestServiceSQL();
+        let urlInfo = this.customRestServiceSQL(extent);
         let geomType = "";
         if (this.clickableSymbolType && this.clickableSymbolType!=="point")
           geomType = "polygon";
