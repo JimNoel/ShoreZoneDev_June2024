@@ -1096,7 +1096,7 @@ define([
             }
           ],
           featureOutFields: ["Sp_CommonName", "Catch", "AvgFL", "Count_measured"],
-          extraColumns: ["GearBasic", "DateStr"],
+          extraColumns: ["GearBasic", "POC_Concat", "DateStr"],
           downloadExcludeFields: [],
           totalOutFields: ["Catch", "Count_measured"],
           summaryInfo: {

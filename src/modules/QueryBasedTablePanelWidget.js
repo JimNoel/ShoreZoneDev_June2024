@@ -411,7 +411,7 @@ define([
           let colWidth = getIfExists(this,spclFmtChain + ".colWidth");
           if (!colWidth)
             colWidth = title.length * 15;
-          let bgColorCss = "";
+          let bgColorCss = "background-color: transparent;"     // This ensures that the column color reverts back to default on switching tabs
           if (this.extraColumns && this.extraColumns.includes(fields[i].name))
             bgColorCss = "background-color: cornsilk;"
           columnStyleCSS += ".dataTable .field-" + fields[i].name + " {width: " + colWidth + "px;" + bgColorCss + "} ";
@@ -451,6 +451,7 @@ define([
         }, this.displayDivName);
         //this.grid.startup();              // If using OnDemandGrid, include this
         this.grid.renderArray(tableData);   // If using Grid, include this
+        this.hideHiddenItems();
 
         this.grid.on('dgrid-error', function(event) {
           console.log('dgrid-error:  ' + event.error.message);
@@ -649,8 +650,12 @@ define([
       this.processDropdownQueryResults = function(results, ddItem, w) {
         ddItem.options = [];    // ddItem.noSelOption;
         let options = ddItem.options;
-        if (ddItem.showColumnOption)
+        if (ddItem.showColumnOption) {
           options.push(ddItem.showColumnOption);
+          ddItem.showColOption_Id = ddItem.ddId + "_optionShowCol";
+          if (this.extraColumns)
+            ddItem.showColOption_Visible = this.extraColumns.includes(ddItem.columnField);
+        }
         if (!ddItem.noSelOption)
           ddItem.noSelOption = dfltNoSelOption;
         options.push(ddItem.noSelOption);
@@ -759,13 +764,14 @@ define([
         if (!ddItem.SelectedOption)
           ddItem.SelectedOption = ddItem.initialSelectedOption;
         for (i in options) {
-          let extentStr = '';
-          if (options[i].extent)
-            extentStr = 'extent="' + options[i].extent + '" ';
-          let closeQuote = '"';
+          theHtml += '<option value="' + options[i].value + '"';
+          if (options[i].value==="showCol" && ddItem.showColOption_Id)
+            theHtml += ' id="' + ddItem.showColOption_Id + '"';
           if (options[i].value === ddItem.SelectedOption)
-            closeQuote += " selected";
-          theHtml += '<option ' + extentStr + 'value="' + options[i].value + closeQuote + '>' + options[i].label + '</option>';
+            theHtml += ' selected';
+          if (options[i].extent)
+            theHtml += ' extent="' + options[i].extent + '"';
+          theHtml += '>' + options[i].label + '</option>';
         }
         getEl(ddItem.ddId).innerHTML = theHtml;
       };

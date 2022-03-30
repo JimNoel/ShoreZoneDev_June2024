@@ -302,6 +302,13 @@ define([
       return true;
     },
 
+    hideHiddenItems: function() {
+      let ddInfo = this.dropDownInfo;
+        for (let d=0; d<ddInfo.length; d++) {
+          setDisplay(ddInfo[d].showColOption_Id, ddInfo[d].showColOption_Visible);
+        }
+    },
+
     setActiveTab: function(index) {
       this.prevTab = this.currTab;
       this.currTab = index;
@@ -579,10 +586,16 @@ define([
       if (this.dropDownInfo) {
         let D = this.dropDownInfo;
         for (let d=0; d<D.length; d++) {
-//          if (this.visibleHeaderElements.includes(D[d].wrapperId)) {  TODO:  Make sure this change doesn't mess anything up
           if (this.dropdownElements.includes(D[d].wrapperId)) {
+
+            // If "showCol" was selected and the tab has changed to one that doesn't allow this option,
+            //   then change SelectedOption to "All"
+            if (D[d].SelectedOption==="showCol" && !this.extraColumns.includes(D[d].columnField)) {
+              D[d].SelectedOption = "All";
+            }
+
             if (D[d].SelectedOption !== "All") {
-              if (D[d].groupField)
+              if (D[d].groupField  && this.extraColumns.includes(D[d].groupField))
                 groupDDFields += D[d].groupField + ",";
               if (D[d].SelectedOption === "showCol") {
                 if (D[d].columnField) {
@@ -591,12 +604,8 @@ define([
                     groupDDFields += D[d].columnField + ",";      // Adds columnField to the group/select list if it is different from groupField
                 }
               } else {      // i.e. if a specific value has been selected
-/*
-                if (theWhere)
-                  theWhere += " AND ";
-*/
                 let prefix = "";
-                if (r.prefix && r.groupVars.split(",").includes(D[d].whereField))
+                if (r.prefix && r.groupVars.split(",").includes(D[d].whereField))     // (Currently there are no widgets with "prefix" defined
                   prefix = r.prefix;
                 theWhere = addToWhere(theWhere, whereFromDDInfo(D[d], prefix));
                 //theWhere += whereFromDDInfo(D[d], prefix);
