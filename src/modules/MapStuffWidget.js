@@ -849,7 +849,9 @@ define([
                   "FROM dbo.vw_FishCounts_flat_noNULL {W} GROUP BY {G},RegionCode",
                 outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,Shape FROM ({innerSQL}) AS F " +
                   "INNER JOIN (SELECT RegionCode,Shape From REGIONS_FISHATLAS) AS S ON F.RegionCode = S.RegionCode",
-                baseWhere: ""
+                baseWhere: "",
+                sqlTemplate_download: "SELECT {F} FROM vw_rawDataForDownload AS R"
+
               },
 
               parentAreaType: '',
@@ -942,7 +944,7 @@ define([
                   outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,F.SiteID,PhotoCount,Shape FROM ({innerSQL}) AS F " +
                     "INNER JOIN (SELECT SiteID,Shape From SITES_POINTS) AS S ON F.SiteID = S.SiteID LEFT OUTER JOIN vw_SitePhotoCounts ON S.SiteID = vw_SitePhotoCounts.SiteID",
                 baseWhere: "",
-                sqlTemplate_download: "SELECT R.* FROM (SELECT * FROM vw_rawDataForDownload) AS R INNER JOIN (SELECT SiteID,Shape from SITES_POINTS) AS S ON R.SiteID = S.SiteID"
+                sqlTemplate_download: "SELECT {F} FROM (SELECT * FROM vw_rawDataForDownload) AS R INNER JOIN (SELECT SiteID,Shape from SITES_POINTS) AS S ON R.SiteID = S.SiteID"
               },
 /*JN*/
               parentAreaType: 'Regions',
@@ -1052,6 +1054,7 @@ define([
           footerDivName:  "faSpTableFooterDiv",
           visibleHeaderElements: ['faSpTableGear_ddWrapper', 'faSpTablePOC_ddWrapper', 'faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
           dropdownElements: ['faSpTableGear_ddWrapper', 'faSpTablePOC_ddWrapper', 'faSpTableDates_ddWrapper'],
+          rawDownloadOption: true,
           //dynamicLayerName: true,
           //LayerNameAddOn: "",
           dropDownInfo: [
@@ -1145,6 +1148,7 @@ define([
             serviceUrl: faRestServiceURL,
             innerSQL: "SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat {W} GROUP BY {G}",
             outerSQL: "SELECT {S},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
+            sqlTemplate_download: "SELECT {F} FROM vw_rawDataForDownload AS R"
           },
           layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.

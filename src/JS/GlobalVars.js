@@ -9,6 +9,8 @@ let extentGraphic = null;
 
 let justAK = false;
 
+let csvDownloadFields = "R.Region,R.SiteID,R.Location,R.Lat1,R.Long1,R.Habitat,R.EventID,R.DateStr,R.GearBasic,R.GearSpecific,R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Unmeasured,R.Length,R.LengthType,R.LifeStage,R.Temp,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider";
+
 // TODO: Put this near top
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let mainSzMediaServer = "https://maps.psmfc.org/shorezonedata/";
@@ -1299,7 +1301,9 @@ function makeDownloadPanel() {
   document.body.appendChild(hiddenElement);
 }
 
-function downloadCsv(csv) {
+function downloadCsv(csv, headerCsv) {
+  if (headerCsv)
+    csv = headerCsv + csv;
   let hiddenElement = getEl("hidden_downloadTable");
   // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
@@ -1335,7 +1339,6 @@ function doRectAction(cancel) {
     view.graphics.remove(extentGraphic);      // If not selecting, then remove the rectangle
 }
 
-
 function doTableDownload(cancel) {
   setVisible("downloadPanel", false);
   if (cancel)
@@ -1346,7 +1349,7 @@ function doTableDownload(cancel) {
     return;
   }
   let csv = csvDownloadWidget.getCsvFromTable();
-  downloadCsv(csv);
+  downloadCsv(csv, csvDownloadWidget.makeHeaderCsv());
 }
 
 /*

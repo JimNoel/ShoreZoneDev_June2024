@@ -109,13 +109,28 @@ define([
 
       this.csvQueryResponseHandler = function(results) {
         results = JSON.parse(results);
-        downloadCsv(results.csv);
-
+        downloadCsv(results.csv, this.makeHeaderCsv());
       }
 
       this.queryCsvData = function() {
         let theUrl = this.makeCustomRestQueryUrl("", this.customRestService.downloadSql, "csv");
         queryServer(theUrl, false, this.csvQueryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
+      };
+
+      this.makeHeaderCsv = function() {
+        let csv = "";
+        csv += "Selection Criteria:\n";
+        for (let d=0; d<this.dropDownInfo.length; d++) {
+          let ddInfo = this.dropDownInfo[d];
+          let v = ddInfo.SelectedOption;
+          if (!["showCol", "All"].includes(v)) {
+            let i = ddInfo.options.findIndex(obj => obj.value === v);
+            let L = ddInfo.options[i].label;
+            csv += ddInfo.whereField + "," + v + "\n";
+          }
+        }
+
+        return csv + "\n";
       };
 
       this.getCsvFromTable = function() {

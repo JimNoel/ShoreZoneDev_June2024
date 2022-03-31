@@ -617,32 +617,36 @@ define([
         //let groupVars = groupDDFields + groupVars;
       }
 
+      // set WHERE for subquery
       sql = this.customRestService_makeSql(selDDFields, groupDDFields);
       this.query.where = theWhere;      // Set query.where for ESRI Map Service display
+      let downloadWhere = theWhere;     // The WHERE clause for doqnloading raw data
       if (theWhere !== "")
         theWhere = " WHERE " + theWhere;
       sql = sql.replace("{W}", theWhere);
 
-      // Spatial filter using current extent
-      // For point features only    // TODO: Make it work for polygon, polyline & extent features?
-      if (!extent)
-        extent = view.extent;
+      // For point features, filter spatially using extent
+      // TODO: Make it work for non-point features?
+      let spatialWhere = "";
       if (this.clickableSymbolType === "point") {
-        let spatialWhere = "(S.Shape.STX>" + Math.floor(extent.xmin);
+        if (!extent)
+          extent = view.extent;
+        spatialWhere = "(S.Shape.STX>" + Math.floor(extent.xmin);
         spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(extent.xmax);
         spatialWhere += ") AND (S.Shape.STY>" + Math.floor(extent.ymin);
         spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(extent.ymax) + ")";
-        let downloadWhere = theWhere;
-        if (downloadWhere === "")
-          downloadWhere = " WHERE ";
-        else
-          downloadWhere += " AND ";
-        downloadWhere += spatialWhere;
         sql += " WHERE " + spatialWhere;
-        r.downloadSql = r.sqlTemplate_download + downloadWhere;     // For download of raw data
       }
 //      if (["polygon", "extent"].includes(this.clickableSymbolType))
 //        spatialWhere = spatialWhere.replace(/.ST/g, ".STCentroid().ST");
+
+      // Put together SQL for downloading associated raw data
+      if (r.sqlTemplate_download) {
+        downloadWhere = addToWhere(downloadWhere, spatialWhere);
+        if (downloadWhere !== "")
+          downloadWhere = " WHERE " + downloadWhere;
+        r.downloadSql = r.sqlTemplate_download.replace("{F}", csvDownloadFields) + downloadWhere;     // For download of raw data
+      }
 
       return {sql: sql, where: theWhere} ;
     },
