@@ -627,6 +627,7 @@ define([
 
       // For point features, filter spatially using extent
       // TODO: Make it work for non-point features?
+      r.extent = null;
       let spatialWhere = "";
       if (this.clickableSymbolType === "point") {
         if (!extent)
@@ -636,6 +637,7 @@ define([
         spatialWhere += ") AND (S.Shape.STY>" + Math.floor(extent.ymin);
         spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(extent.ymax) + ")";
         sql += " WHERE " + spatialWhere;
+        r.extent = extent;      // For raw download, used to get min & max lat/lon for header
       }
 //      if (["polygon", "extent"].includes(this.clickableSymbolType))
 //        spatialWhere = spatialWhere.replace(/.ST/g, ".STCentroid().ST");

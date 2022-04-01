@@ -57,11 +57,12 @@ define([
   "dgrid/extensions/ColumnResizer",
   "dgrid/Selector",
   "dgrid/Selection",
+  "esri/geometry/support/webMercatorUtils",
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
   "noaa/QueryBasedPanelWidget"
 ], function(declare, lang, on, Select, Memory, Trackable, Grid, ColumnHider, ColumnReorder, ColumnResizer, Selector, Selection,
-            Query, QueryTask, QueryBasedPanelWidget){
+            webMercatorUtils, Query, QueryTask, QueryBasedPanelWidget){
 
 
   return declare(QueryBasedPanelWidget, {
@@ -91,13 +92,14 @@ define([
 
       this.showCsvDownloadDialog = function() {
         csvDownloadWidget = this;
-        let dfltFileName = "TableData.csv";
+        let dfltFileName = "TableData";
         if (this.draggablePanelId)
-          dfltFileName = getEl(this.draggablePanelId + "_headerText").innerText + ".csv";
+          dfltFileName = getEl(this.draggablePanelId + "_headerText").innerText;
         else if (this.tabInfo)
-          dfltFileName = this.tabInfo[this.currTab].tabTitle + ".csv";
+          dfltFileName = this.tabInfo[this.currTab].tabTitle;
         else if (this.popupTitle)
-          dfltFileName = this.popupTitle + ".csv";
+          dfltFileName = this.popupTitle;
+        dfltFileName += ".csv";
         let fileNameEl = getEl("text_dlFileName");
         fileNameEl.value = dfltFileName;
         let fileName = dfltFileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
@@ -109,7 +111,7 @@ define([
 
       this.csvQueryResponseHandler = function(results) {
         results = JSON.parse(results);
-        downloadCsv(results.csv, this.makeHeaderCsv());
+        downloadCsv(results.csv, this.makeHeaderCsv(true));
       }
 
       this.queryCsvData = function() {
@@ -117,17 +119,32 @@ define([
         queryServer(theUrl, false, this.csvQueryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
       };
 
-      this.makeHeaderCsv = function() {
-        let csv = "";
+      this.makeHeaderCsv = function(forRawData) {
+        let csv = downloadPanel.value.split(".")[0] + " table\n\n";
+        if (forRawData)
+          csv = "Raw  Fish Atlas data\n\n"
         csv += "Selection Criteria:\n";
+        let baseWhere = this.customRestService.baseWhere;
+        if (baseWhere)
+          csv += baseWhere.replace("=",",") + "\n";
         for (let d=0; d<this.dropDownInfo.length; d++) {
           let ddInfo = this.dropDownInfo[d];
-          let v = ddInfo.SelectedOption;
-          if (!["showCol", "All"].includes(v)) {
-            let i = ddInfo.options.findIndex(obj => obj.value === v);
-            let L = ddInfo.options[i].label;
-            csv += ddInfo.whereField + "," + v + "\n";
+          if (this.dropdownElements.includes(ddInfo.wrapperId)) {
+            let v = ddInfo.SelectedOption;
+            if (!["showCol", "All"].includes(v)) {
+              let i = ddInfo.options.findIndex(obj => obj.value === v);
+              let L = ddInfo.options[i].label;
+              csv += ddInfo.whereField + "," + v + "\n";
+            }
           }
+        }
+
+        let extent = this.customRestService.extent;
+        if (extent) {
+          let swLonLat = webMercatorUtils.xyToLngLat(extent.xmin, extent.ymin);
+          let neLonLat = webMercatorUtils.xyToLngLat(extent.xmax, extent.ymax);
+          csv += "Longitude,Between " + swLonLat[0] + " and " + neLonLat[0] + " degrees\n";
+          csv += "Latitude,Between " + swLonLat[1] + " and " + neLonLat[1] + " degrees\n";
         }
 
         return csv + "\n";
