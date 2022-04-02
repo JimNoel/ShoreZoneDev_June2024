@@ -329,6 +329,10 @@ define([
         this.textOverlayPars = null;
       if (!tabInfo.calcFields)
         this.calcFields = null;
+/*
+      if (!tabInfo.selExtentGraphic)
+        this.selExtentGraphic = null;
+*/
 
       if (this.clickableSymbolInfo)
         this.changeFeatureHandling();
@@ -342,6 +346,10 @@ define([
         showPopups = false;
       }
       getEl("showPopupsCheckbox").checked = showPopups;
+
+      view.graphics.removeAll();
+      if (tabInfo.selExtentGraphic)
+        view.graphics.add(tabInfo.selExtentGraphic);
     },
 
     tabClickHandler: function(evt) {

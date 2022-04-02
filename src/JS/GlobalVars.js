@@ -1325,6 +1325,16 @@ function makeRectActionPanel() {
   setVisible("rectActionPanel", false);
 }
 
+// Symbol for selection rectangle
+let selRectSymbol = {
+  type: "simple-fill", // autocasts as new SimpleFillSymbol()
+  color: [0, 0, 227, 0.0],
+  outline: { // autocasts as new SimpleLineSymbol()
+    color: [255, 255, 0],
+    width: 2
+  }
+};
+
 function doRectAction(cancel) {
   setVisible("rectActionPanel", false);
   if (cancel) {
@@ -1333,10 +1343,16 @@ function doRectAction(cancel) {
   }
   if (getEl("cb_zoomToRect").checked)
     view.goTo(extentGraphic, {animate: false});
-  if (getEl("cb_selectInRect").checked)
+  if (getEl("cb_selectInRect").checked) {
     faWidget.runQuery(extentGraphic.geometry.extent);
-  else
-    view.graphics.remove(extentGraphic);      // If not selecting, then remove the rectangle
+    let selExtentGraphic = extentGraphic.clone();
+    selExtentGraphic.symbol = selRectSymbol;
+    faWidget.tabInfo[faWidget.currTab].selExtentGraphic = selExtentGraphic;
+    view.graphics.removeAll();
+    view.graphics.add(selExtentGraphic);
+
+  }
+  view.graphics.remove(extentGraphic);      // If not selecting, then remove the rectangle
 }
 
 function doTableDownload(cancel) {

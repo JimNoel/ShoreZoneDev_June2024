@@ -1020,6 +1020,7 @@ define([
                 },
                 "size":4
               },
+              selExtentGraphic: null
 
             },
           ],
