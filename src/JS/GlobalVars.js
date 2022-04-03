@@ -113,15 +113,17 @@ let szDisplayInfo = [
 */
 
 let faDisplayInfo = [
-  {title: "Regions"},
-  {title: "vw_CatchStats_RegionsGear", visible: false, listMode: "hide"},
+  {title: "Regions", visible: false, listMode: "show"},
   {title: "Sites_background", visible: false, listMode: "hide"},
   {title: "Sites", visible: false},
+/*
+  {title: "vw_CatchStats_RegionsGear", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_Sites", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesGear", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesHabitats", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesSpecies", visible: false, listMode: "hide"},
   {title: "vw_CatchStats_SitesHabitatsSpecies", visible: false, listMode: "hide"},
+*/
   {title: "vw_FishCounts_flat", visible: false, listMode: "hide"}
 ];
 

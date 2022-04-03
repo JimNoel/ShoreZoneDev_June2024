@@ -116,7 +116,7 @@ define([
 
       this.queryCsvData = function() {
         let theUrl = this.makeCustomRestQueryUrl("", this.customRestService.downloadSql, "csv");
-        queryServer(theUrl, false, this.csvQueryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
+        queryServer(theUrl, false, this.csvQueryResponseHandler.bind(this))
       };
 
       this.makeHeaderCsv = function(forRawData) {
@@ -636,6 +636,18 @@ define([
       this.queryDistinctCounts = function(f) {
         let countInfo = this.summaryInfo.counts[f];
 
+        // customRestService option
+        if (countInfo.serviceUrl) {
+          let theUrl = this.makeCustomRestQueryUrl("", countInfo.sqlTemplate, "count");
+          if (this.query.where !== "")
+            theUrl += " Where " + this.query.where;
+          queryServer(theUrl, false, function(results){
+            this.countQueryResponseHandler(results, f);
+          }.bind(this));
+          return;
+        }
+
+        // If not customRestService, then use ArcGIS query
         let queryTask = new QueryTask();
         queryTask.url = this.mapServiceQueryUrl(countInfo.tableName);      // this.mapServiceLayer.url + "/" + this.sublayerIDs[countInfo.tableName];
         let query = new Query();
@@ -644,12 +656,16 @@ define([
           query.returnDistinctValues = true;
 
         queryTask.executeForCount(query).then(function(results){
-          this.totalLabels[f].node.innerHTML = formatNumber(results, this.specialFormatting[f]);
+          this.countQueryResponseHandler(results, f);
+          //this.totalLabels[f].node.innerHTML = formatNumber(results, this.specialFormatting[f]);
         }.bind(this), function(error) {
           console.log(this.baseName + ":  QueryTask for distinct counts on " + f + " failed.");
         }.bind(this));
       }
 
+      this.countQueryResponseHandler = function(results, f) {
+        this.totalLabels[f].node.innerHTML = formatNumber(results, this.specialFormatting[f]);
+      }
 
       this.setTotals = function(features) {
         if (!this.totalOutFields)
@@ -940,7 +956,8 @@ define([
         let fCtHtml = '&emsp;<LABEL class="boldLabel" id="' + fCtID + '"></LABEL>&emsp;';
         let spanHtml = '<span id="' + fCtSpanId + '">' + fCtHtml + '</span>';
         this.featureCountElId = fCtID;
-        this.featureCountTemplate = "{0} {1}";
+        this.featureCountTemplate = "{0} items";
+//        this.featureCountTemplate = "{0} {1}";    // old code -- current code uses "items" for everything
 
         //let titleEl = getEl("tableQueryExpando_Title");
         //titleEl.innerHTML = spanHtml;

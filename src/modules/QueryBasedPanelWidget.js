@@ -96,6 +96,7 @@ define([
           this.makeClickableGraphics(this.features);
         if (this.featureCountTemplate)
           getEl(this.featureCountElId).innerHTML = this.featureCountTemplate.replace("{0}",features.length).replace("{1}", this.tabName);
+          //  NOTE: The second "replace" no longer happens, as the current featureCountTemplate is using "items" instead of "{1}"
         this.processFeatures_Widget(features);
       };
 

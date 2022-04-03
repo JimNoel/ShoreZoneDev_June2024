@@ -492,7 +492,7 @@ define([
 
           ],
 
-          layerBaseName: "",      // Blank for Shore Stations, since there are no group queries
+          //layerBaseName: "",      // Blank for Shore Stations, since there are no group queries
           // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
           //   using the current panel info and dropdown info for any dropdowns that have something selected.
 
@@ -602,7 +602,7 @@ define([
               colWidth: 80
             },
           },
-          layerBaseName: "vw_CatchStats_",
+          //layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.
           // The QueryBasedPanelWidget method runQuery generates the full name
           //   using the current panel info and dropdown info for any dropdowns that have something selected.
@@ -696,12 +696,16 @@ define([
             },
             counts: {
               Hauls: {
-                tableName: "vw_FishCounts_flat",      //"vw_Events_flat",
-                countField: "EventID"
+                serviceUrl: faRestServiceURL,
+                sqlTemplate: "SELECT COUNT(DISTINCT EventID) FROM vw_FishCounts_flat",
+                //tableName: "vw_FishCounts_flat",
+                //countField: "EventID"
               },
               NumSpecies: {
-                tableName: "vw_FishCounts_flat",
-                countField: "SpCode_noUN"
+                serviceUrl: faRestServiceURL,
+                sqlTemplate: "SELECT COUNT(DISTINCT SpCode_noUN) FROM vw_FishCounts_flat",
+                //tableName: "vw_FishCounts_flat",
+                //countField: "SpCode_noUN"
               }
             }
           },
@@ -791,7 +795,7 @@ define([
             { ddName: "Species",
               expandPanelId: "SpeciesPanel",
               layerSubNames: "Species",
-              subLayerName: "vw_CatchStats_Species",
+              //subLayerName: "vw_CatchStats_Species",
               ddOutFields: ["Sp_CommonName", "SpCode", "Sp_ScientificName"],
               labelTemplate: "*Sp_CommonName, - ,*Sp_ScientificName",
               orderByFields: ["Sp_CommonName"],
@@ -1024,7 +1028,7 @@ define([
 
             },
           ],
-          layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
+          //layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name
                                                 //   using the current panel info and dropdown info for any dropdowns that have something selected.
           spatialRelationship: "intersects",
           //spatialRelationship: null,      // Using null as a flag to not filter spatially
@@ -1151,7 +1155,7 @@ define([
             outerSQL: "SELECT {S},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
             sqlTemplate_download: "SELECT {F} FROM vw_rawDataForDownload AS R"
           },
-          layerBaseName: "vw_CatchStats_",
+          //layerBaseName: "vw_CatchStats_",
           // All layers queried for data tables will have names that start with this.
           // The QueryBasedPanelWidget method runQuery generates the full name
           //   using the current panel info and dropdown info for any dropdowns that have something selected.
