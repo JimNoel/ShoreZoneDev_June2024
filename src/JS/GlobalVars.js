@@ -9,7 +9,7 @@ let extentGraphic = null;
 
 let justAK = false;
 
-let csvDownloadFields = "R.Region,R.SiteID,R.Location,R.Lat1,R.Long1,R.Habitat,R.EventID,R.DateStr,R.GearBasic,R.GearSpecific,R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Unmeasured,R.Length,R.LengthType,R.LifeStage,R.Temp,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider";
+let csvDownloadFields = "R.Region,R.SiteID,R.Location,R.Lat,R.Long,R.Habitat,R.EventID,R.DateStr,R.GearBasic,R.GearSpecific,R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Unmeasured,R.Length,R.LengthType,R.LifeStage,R.Temperature,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider";
 
 // TODO: Put this near top
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
