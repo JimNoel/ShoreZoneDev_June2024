@@ -851,7 +851,7 @@ define([
                 serviceUrl: faRestServiceURL,
                 groupVars: "Region",
                 //innerSQL: "SELECT {G},RegionCode,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
-                innerSQL: "SELECT {G},RegionCode,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode) AS NumSpecies,SUM(Count_Fish) AS Catch " +
+                innerSQL: "SELECT {G},RegionCode,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode) AS NumSpecies,ISNULL(SUM(Count_Fish),0) AS Catch " +
                   "FROM dbo.vw_FishCounts_flat_noNULL {W} GROUP BY {G},RegionCode",
                 outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,Shape FROM ({innerSQL}) AS F " +
                   "INNER JOIN (SELECT RegionCode,Shape From REGIONS_FISHATLAS) AS S ON F.RegionCode = S.RegionCode",
@@ -943,11 +943,11 @@ define([
 /*JN*/
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                groupVars: "Region,Location,RawSite,Habitat",
+                groupVars: "Region,Location,Habitat",
                 //prefix: "F.",
 //                  innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
-                innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode) AS NumSpecies,SUM(Count_Fish) AS Catch " +
-                    "FROM dbo.vw_FishCounts_flat_noNULL {W} GROUP BY {G},SiteID",
+                innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode) AS NumSpecies,ISNULL(SUM(Count_Fish),0) AS Catch " +
+                    "FROM dbo.vw_FishCounts_flat {W} GROUP BY {G},SiteID",
                 outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,F.SiteID,PhotoCount,Shape FROM ({innerSQL}) AS F " +
                     "INNER JOIN (SELECT SiteID,Shape From SITES_POINTS) AS S ON F.SiteID = S.SiteID LEFT OUTER JOIN vw_SitePhotoCounts ON S.SiteID = vw_SitePhotoCounts.SiteID",
                 baseWhere: "",
@@ -958,25 +958,25 @@ define([
               visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faPOC_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faPOC_ddWrapper', 'faSpecies_ddWrapper'],
 //              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
-              featureOutFields: ["Region", "Location", "RawSite", "Habitat", "Hauls", "NumSpecies", "Catch", "SiteID", "PhotoCount"],
+              featureOutFields: ["Region", "Location", "SiteID", "Habitat", "Hauls", "NumSpecies", "Catch", "PhotoCount"],
               extraColumns: ["GearBasic", "POC_Concat"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
-              orderByFields: ["Region", "Location", "RawSite"],
+              orderByFields: ["Region", "Location", "SiteID"],
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {
                   title:  "",
                   colWidth:  5,
                   plugInFields: ["x", "y"],
                   args: '"{0},{1},1000"',
-                  html: zoomInTemplate.replace("{area}", "RawSite")
+                  html: zoomInTemplate.replace("{area}", "SiteID")
                 },
                 POC_Concat: {
                   title: "Point of Contact"
                   //colWidth: 150
                 },
                 Region: { colWidth: 30 },
-                RawSite: { colWidth: 15 },
+                SiteID: { colWidth: 15 },
                 GearBasic: GearColumnFormat,    /* {
                   title: "Gear",
                   colWidth: 30
@@ -998,9 +998,9 @@ define([
                 FishCatch: {
                   title:  "Fish Catch",
                   colWidth:  20,
-                  plugInFields: ["SiteID", "RawSite"],
+                  plugInFields: ["SiteID", "SiteID"],
                   //args: 'faSpTableWidget,null,null,"SiteID={0}","{1}",null,2,null,"SiteID,GearBasic,Sp_CommonName",["faSpTableDates_ddWrapper"]',
-                  args: 'faSpTableWidget,null,"SiteID={0}","{1}",null,2,null,"Sp_CommonName",["faSpTableDates_ddWrapper"]',
+                  args: 'faSpTableWidget,null,"SiteID={0}","SiteID={1}",null,2,null,"Sp_CommonName",["faSpTableDates_ddWrapper"]',
                   html:   spTableTemplate
                 },
 /*
@@ -1156,7 +1156,7 @@ define([
           },
           customRestService: {
             serviceUrl: faRestServiceURL,
-            innerSQL: "SELECT {G},SUM(Count_Fish) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat {W} GROUP BY {G}",
+            innerSQL: "SELECT {G},ISNULL(SUM(Count_Fish),0) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNull {W} GROUP BY {G}",
             outerSQL: "SELECT {S},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
             sqlTemplate_download: "SELECT {F} FROM vw_rawDataForDownload AS R"
           },

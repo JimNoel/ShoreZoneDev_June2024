@@ -145,7 +145,7 @@ let ssDisplayInfo = [
 ];
 
 let gearDDtemplate = "SELECT GearBasic, GearBasic AS GearBasic2 FROM vw_FishCounts_flat {W} GROUP BY GearBasic ORDER BY GearBasic";
-let pocDDtemplate = "SELECT POC_Name FROM vw_FishCounts_flat {W} GROUP BY POC_Name ORDER BY POC_Name";
+let pocDDtemplate = "SELECT POC_LastName FROM vw_FishCounts_flat {W} GROUP BY POC_LastName ORDER BY POC_LastName";
 
 let lastSZExtent = null;
 let bhDiff = window.outerHeight - window.innerHeight;
@@ -399,7 +399,7 @@ let gearDD = {
 
 let pocDD = {
   ddName: "POC",
-  ddOutFields: ["POC_Name"],
+  ddOutFields: ["POC_LastName"],
   customRestService: {
     serviceUrl: faRestServiceURL,
     sqlTemplate: pocDDtemplate
@@ -408,8 +408,8 @@ let pocDD = {
   noSelOption: dfltNoSelOption_extraField,
   SelectedOption: "All",
   columnField: "POC_Concat",
-  groupField: "POC_Name",
-  whereField: "POC_Name",
+  groupField: "POC_LastName",
+  whereField: "POC_LastName",
   liveUpdate: true,
   isAlpha: true
   };
