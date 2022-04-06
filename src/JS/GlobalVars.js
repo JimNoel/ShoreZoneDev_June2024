@@ -6,6 +6,7 @@ let test = false;    // For trying out things before comitting to code
 
 //let rectangleExtent = null;
 let extentGraphic = null;
+let selExtent = null;
 
 let justAK = false;
 
@@ -114,7 +115,7 @@ let szDisplayInfo = [
 
 let faDisplayInfo = [
   {title: "Regions", visible: false, listMode: "show"},
-  {title: "Sites_background", visible: false, listMode: "hide"},
+  {title: "Sites_background", visible: true},     //, listMode: "hide"},
   {title: "Sites", visible: false},
 /*
   {title: "vw_CatchStats_RegionsGear", visible: false, listMode: "hide"},
@@ -1319,7 +1320,7 @@ function downloadCsv(csv, headerCsv) {
 let rectActionHtml = '<strong>Action:</strong><br><br>'
   + '<input type="checkbox" id="cb_zoomToRect" value="table" checked>Zoom to drawn rectangle<br>'
   + '<input type="checkbox" id="cb_selectInRect" value="raw">Select features within drawn rectangle<br><br>'
-  + '&emsp; <button onclick="doRectAction()">OK</button>&emsp;<button onclick="doRectAction(true)">Cancel</button><br><br>';
+  + '&emsp; <button onclick="doRectAction()">OK</button>&emsp;<button onclick="doRectAction(true)">Cancel</button>&emsp;&emsp;<button onclick="doRectAction(null,true)">Clear Selection</button><br><br>';
 
 function makeRectActionPanel() {
   let rectActionPanel = makeHtmlElement("div", "rectActionPanel", "dropdown-content-visible", "top:200px;left:200px;", rectActionHtml);
@@ -1337,22 +1338,28 @@ let selRectSymbol = {
   }
 };
 
-function doRectAction(cancel) {
+function doRectAction(cancel, clear) {
   setVisible("rectActionPanel", false);
   if (cancel) {
     view.graphics.remove(extentGraphic);
     return;
   }
+  if (clear) {
+    view.graphics.removeAll();
+    selExtent = null;
+    faWidget.runQuery(/*extentGraphic.geometry.extent*/);
+    return;
+  }
   if (getEl("cb_zoomToRect").checked)
     view.goTo(extentGraphic, {animate: false});
   if (getEl("cb_selectInRect").checked) {
-    faWidget.runQuery(extentGraphic.geometry.extent);
     let selExtentGraphic = extentGraphic.clone();
+    selExtent = selExtentGraphic.geometry.extent;
+    faWidget.runQuery(/*extentGraphic.geometry.extent*/);
     selExtentGraphic.symbol = selRectSymbol;
     faWidget.tabInfo[faWidget.currTab].selExtentGraphic = selExtentGraphic;
     view.graphics.removeAll();
     view.graphics.add(selExtentGraphic);
-
   }
   view.graphics.remove(extentGraphic);      // If not selecting, then remove the rectangle
 }

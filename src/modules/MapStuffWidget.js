@@ -715,7 +715,7 @@ define([
           mapServiceLayer: faMapServiceLayer,
           mapServiceSublayers: ["Regions", "Sites"],
           rawDownloadOption: true,
-          subLayerName: "vw_FishCounts_flat",             // for customRestService
+          //subLayerName: "vw_FishCounts_flat",             // If using customRestService, this only sets MapService layer to filter & display (as alternative to visible clickableSymbols layer)
           //dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
@@ -913,8 +913,8 @@ define([
               },
               idField: 'Region',
               subTableDD: "Region",
-              backgroundLayers: ["Sites"],
-              filterBgLayer: "Regions",
+              //backgroundLayers: ["Sites"],
+              //filterBgLayer: "Regions",
               noPopups: true,
               clickableSymbolType: "extent",
               clickableSymbolInfo: {
@@ -1017,17 +1017,17 @@ define([
               },
               disabledMsgInfix: "sites",
               idField: 'SiteID',
-              backgroundLayers: [],     // ["Regions"],
-              filterBgLayer: "Sites_background",
+              //backgroundLayers: [],     // ["Regions"],
+              //filterBgLayer: "Sites_background",
               clickableSymbolType: "point",
               clickableSymbolInfo: {
                 "style":"circle",
-                "color":[255,255,255,0.0],
+                "color":[0,155,0,1.0],
                 outline: {  // autocasts as new SimpleLineSymbol()
-                  color: [ 0, 0, 0, 0.0 ],
+                  color: [ 0, 0, 0, 1.0 ],
                   width: "0.5px"
                 },
-                "size":4
+                "size":5
               },
               selExtentGraphic: null
 

@@ -75,8 +75,9 @@ define([
         if (!this.backgroundLayers)
           return;
         let displayLayers = this.backgroundLayers.slice();
-        displayLayers.push(this.subLayerName);
-        if (this.filterBgLayer  && (this.query.where !== ""))
+        if (this.subLayerName)
+          displayLayers.push(this.subLayerName);
+        //if (this.filterBgLayer  && (this.query.where !== ""))
           displayLayers.push(this.filterBgLayer);
         let layers = this.mapServiceLayer.sublayers.items;
         for (let i=0; i<layers.length; i++) {
@@ -636,17 +637,23 @@ define([
 
       // For point features, filter spatially using extent
       // TODO: Make it work for non-point features?
-      r.extent = null;
+      //r.extent = null;
+/*
+      if (!extent) {
+        if (r.extent)
+          extent = r.extent;
+        else
+          extent = view.extent;       // If no extent, then use view extent
+      }
+*/
       let spatialWhere = "";
-      if (this.clickableSymbolType === "point") {
-        if (!extent)
-          extent = view.extent;
+      if (extent && this.clickableSymbolType==="point") {
         spatialWhere = "(S.Shape.STX>" + Math.floor(extent.xmin);
         spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(extent.xmax);
         spatialWhere += ") AND (S.Shape.STY>" + Math.floor(extent.ymin);
         spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(extent.ymax) + ")";
         sql += " WHERE " + spatialWhere;
-        r.extent = extent;      // For raw download, used to get min & max lat/lon for header
+        //r.extent = extent;      // For raw download, used to get min & max lat/lon for header
       }
 //      if (["polygon", "extent"].includes(this.clickableSymbolType))
 //        spatialWhere = spatialWhere.replace(/.ST/g, ".STCentroid().ST");
@@ -701,6 +708,8 @@ define([
           console.log(this.baseName + ":  QueryTask failed.");
         }.bind(this));
       } else {                                // using custom SQL Server REST service
+        if (selExtent)
+          extent = selExtent;
         let urlInfo = this.customRestServiceSQL(extent);
         let geomType = "";
         if (this.clickableSymbolType && this.clickableSymbolType!=="point")
