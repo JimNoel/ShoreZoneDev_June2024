@@ -1064,7 +1064,7 @@ let showPopupsCheckbox = '<input id="' + popupsCb_Id  + '" type="checkbox" check
 /* For pan/zoom-to-rectangle toggle */
 let panning = true;      // If not panning, then zooms to drawn rectangle
 let panZoomHtml = "<div class='iconDiv'><img id='btn_pan' src='assets/images/i_pan.png' onclick='togglePanZoom(true)' height='24px' width='24px' title='Click to enable panning' class='icon_Active' /></div>";
-panZoomHtml += "<div class='iconDiv'><img id='btn_zoomRect' src='assets/images/i_zoomin.png' onclick='togglePanZoom(false)' height='24px' width='24px' title='Click to enable zoom-in to drawn rectangle' class='icon_Inactive' /></div>";
+panZoomHtml += "<div class='iconDiv'><img id='btn_zoomRect' src='assets/images/i_zoomin.png' onclick='togglePanZoom(false)' height='24px' width='24px' title='Click to enable selection/zoom tool' class='icon_Inactive' /></div>";
 
 function togglePanZoom(mode) {
   panning = mode;

@@ -682,6 +682,7 @@ define([
         faWidget = new QueryBasedTablePanelWidget({
           objName: "faWidget",
           title: "Fish Atlas",
+          noFilterOnViewExtent: true,
           sublayerIDs: faSublayerIDs,
           panelName: "faPanel",
           panelType: "table",
@@ -861,7 +862,7 @@ define([
               featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
               extraColumns: ["GearBasic", "Habitat"],
               downloadExcludeFields: ["RegionEnv", "RegionID", "SelRegionBtn"],
-              calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
+              //calcFields:  [{name: "SelRegionBtn", afterField: "RegionID"}],
               orderByFields: ["Region"],
               specialFormatting: {      // Special HTML formatting for field values
                 RegionEnv: {
@@ -2069,15 +2070,22 @@ if (view.extent.width > 8000000)
       //ground: "world-elevation",      // Used only with SceneView
       layers: serviceLayers     //  [sslMapServiceLayer, ssMapServiceLayer, faMapServiceLayer, szMapServiceLayer]
     });
+    const initExtent = new Extent({
+      xmin: -20000000,
+      xmax: -14000000,
+      ymin:   6500000,
+      ymax:  12000000,
+      spatialReference: { wkid: 102100 }
+    });
+
     view = new View({
       container: "mapDiv",
       map: map,
-      center: [-152, 62.5], // longitude, latitude
+      //center: [-152, 62.5], // longitude, latitude
       constraints: {maxScale: 4000},
-      zoom: 4
+      //zoom: 4
+      extent: initExtent
     });
-
-    //view.graphics.id = "viewGraphics";
 
     initViewPopup();
 

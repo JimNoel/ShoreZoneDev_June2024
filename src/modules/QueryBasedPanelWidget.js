@@ -677,6 +677,8 @@ define([
     runQuery: function(extent, queryPars, serviceName) {
       // run query, populate headerText panel if headerText is available
       queryComplete = false;
+      if (this.noFilterOnViewExtent)
+        extent = null;
       if (this.headerText)
         getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
       let theWhere = "";
