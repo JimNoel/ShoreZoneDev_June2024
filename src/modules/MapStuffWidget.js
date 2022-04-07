@@ -743,7 +743,7 @@ define([
               isAlpha: true,
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT Habitat FROM vw_FishCounts_flat {W} GROUP BY Habitat ORDER BY Habitat"
+                sqlTemplate: "SELECT Habitat FROM vw_FishCounts_flat {W} GROUP BY Habitat,HabitatCode ORDER BY HabitatCode"
               },
               showColumnOption: dfltShowColumnOption,
               ddOutFields: ["Habitat"],
@@ -874,10 +874,7 @@ define([
                 },
                 //Region: { colWidth: 10 },
                 Habitat: HabitatColumnFormat,
-                GearBasic: GearColumnFormat,    /* {
-                  title: "Gear",
-                  colWidth: 30
-                },  */
+                GearBasic: GearColumnFormat,
                 Hauls: {
                   colWidth: 10,
                   useCommas: true
@@ -967,16 +964,13 @@ define([
                   html: zoomInTemplate.replace("{area}", "SiteID")
                 },
                 POC_Concat: {
-                  title: "Point of Contact"
-                  //colWidth: 150
+                  title: "Point of Contact",
+                  colWidth: 100
                 },
-                Region: { colWidth: 30 },
+                Region: { colWidth: 50 },
                 SiteID: { colWidth: 15 },
-                GearBasic: GearColumnFormat,    /* {
-                  title: "Gear",
-                  colWidth: 30
-                },  */
-                Habitat: { colWidth: 20 },
+                GearBasic: GearColumnFormat,
+                Habitat: HabitatColumnFormat,     // { colWidth: 20 },
                 Hauls: {
                   colWidth: 15,
                   useCommas: true
@@ -993,9 +987,9 @@ define([
                 FishCatch: {
                   title:  "Fish Catch",
                   colWidth:  20,
-                  plugInFields: ["SiteID", "SiteID"],
+                  plugInFields: ["SiteID", "SiteID", "Location"],
                   //args: 'faSpTableWidget,null,null,"SiteID={0}","{1}",null,2,null,"SiteID,GearBasic,Sp_CommonName",["faSpTableDates_ddWrapper"]',
-                  args: 'faSpTableWidget,null,"SiteID={0}","SiteID={1}",null,2,null,"Sp_CommonName",["faSpTableDates_ddWrapper"]',
+                  args: 'faSpTableWidget,null,"SiteID={0}","SiteID={1}, {2}",null,2,null,"Sp_CommonName",["faSpTableDates_ddWrapper"]',
                   html:   spTableTemplate
                 },
 /*
@@ -1121,31 +1115,28 @@ define([
           tabName: 'Species',     // No tabs, actually, but this provides a name for feature counts
           orderByFields: ["Catch DESC"],
           specialFormatting: {      // Special HTML formatting for field values
-            GearBasic: GearColumnFormat,    /* {
-              title: "Gear",
-              colWidth: 100
-            },  */
+            GearBasic: GearColumnFormat,
             DateStr: {
               title: "Date",
               colWidth: 100
             },
             Sp_CommonName: {
               title: "Species",
-              colWidth: 200
+              colWidth: 80
             },
             Catch: {
               title: "Catch",
-              colWidth: 80,
+              colWidth: 60,
               useCommas: true
             },
             AvgFL: {
-              title: "Average Length",
-              colWidth: 120,
+              title: "Avg. Length",
+              colWidth: 60,
               numDecimals: 1
             },
             Count_measured: {
               title: "# Measured",
-              colWidth: 120,
+              colWidth: 60,
               useCommas: true
             },
           },

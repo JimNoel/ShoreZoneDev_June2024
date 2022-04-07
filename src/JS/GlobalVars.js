@@ -416,13 +416,13 @@ let pocDD = {
   };
 
 
-  let HabitatColumnFormat = {
-  colWidth: 20,
+let HabitatColumnFormat = {
+  colWidth: 100,
   //nullDisplay: "[unspecified]"
 };
 let GearColumnFormat = {
   title: "Gear",
-  colWidth: 20
+  colWidth: 80
 };
 
 

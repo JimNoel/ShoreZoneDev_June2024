@@ -679,8 +679,11 @@ define([
       queryComplete = false;
       if (this.noFilterOnViewExtent)
         extent = null;
-      if (this.headerText)
-        getEl(this.draggablePanelId + "_headerText").innerText = this.headerText;
+      if (this.headerText) {
+        let headerTextElement = getEl(this.draggablePanelId + "_headerText");
+        headerTextElement.innerText = this.headerText;
+        headerTextElement.setAttribute("title", this.headerText);
+      }
       let theWhere = "";
       updateNoFeaturesMsg(this.noFeaturesPanels, "querying");
       //this.setPanelVisibility([]);      // Hide table div, show message div  (empty array forces this)
