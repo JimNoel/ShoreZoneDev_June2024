@@ -698,15 +698,10 @@ define([
               Hauls: {
                 serviceUrl: faRestServiceURL,
                 sqlTemplate: "SELECT COUNT(DISTINCT EventID) FROM vw_FishCounts_flat",
-                //tableName: "vw_FishCounts_flat",
-                //countField: "EventID"
               },
               NumSpecies: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT COUNT(DISTINCT SpCode) FROM vw_FishCounts_flat",
-//                sqlTemplate: "SELECT COUNT(DISTINCT SpCode_noUN) FROM vw_FishCounts_flat",
-                //tableName: "vw_FishCounts_flat",
-                //countField: "SpCode_noUN"
+                sqlTemplate: "SELECT COUNT(DISTINCT SpCode_LevelSP) FROM vw_FishCounts_flat",
               }
             }
           },
@@ -850,9 +845,8 @@ define([
               customRestService: {
                 serviceUrl: faRestServiceURL,
                 groupVars: "Region",
-                //innerSQL: "SELECT {G},RegionCode,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
-                innerSQL: "SELECT {G},RegionCode,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode) AS NumSpecies,ISNULL(SUM(Count_Fish),0) AS Catch " +
-                  "FROM dbo.vw_FishCounts_flat_noNULL {W} GROUP BY {G},RegionCode",
+                innerSQL: "SELECT {G},RegionCode,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_LevelSP) AS NumSpecies,ISNULL(SUM(Count_Fish),0) AS Catch " +
+                  "FROM dbo.vw_FishCounts_flat {W} GROUP BY {G},RegionCode",
                 outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,Shape FROM ({innerSQL}) AS F " +
                   "INNER JOIN (SELECT RegionCode,Shape From REGIONS_FISHATLAS) AS S ON F.RegionCode = S.RegionCode",
                 baseWhere: "",
@@ -911,6 +905,7 @@ define([
                   html:  gotoSubareasTemplate.replace("{area}", "Sites for this region")
                 }
               },
+              disabledMsgInfix: "regions",
               idField: 'Region',
               subTableDD: "Region",
               //backgroundLayers: ["Sites"],
@@ -945,8 +940,7 @@ define([
                 serviceUrl: faRestServiceURL,
                 groupVars: "Region,Location,Habitat",
                 //prefix: "F.",
-//                  innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_noUN) AS NumSpecies,SUM(Count_Fish) AS Catch " +
-                innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode) AS NumSpecies,ISNULL(SUM(Count_Fish),0) AS Catch " +
+                innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_LevelSP) AS NumSpecies,ISNULL(SUM(Count_Fish),0) AS Catch " +
                     "FROM dbo.vw_FishCounts_flat {W} GROUP BY {G},SiteID",
                 outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,F.SiteID,PhotoCount,Shape FROM ({innerSQL}) AS F " +
                     "INNER JOIN (SELECT SiteID,Shape From SITES_POINTS) AS S ON F.SiteID = S.SiteID LEFT OUTER JOIN vw_SitePhotoCounts ON S.SiteID = vw_SitePhotoCounts.SiteID",
@@ -1095,7 +1089,7 @@ define([
               // TODO: After service is republished, just use "DateStr" instead of "format(..."
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT DateStr FROM vw_FishCounts_flat {W} GROUP BY DateStr ORDER BY DateStr"
+                sqlTemplate: "SELECT DateStr,Date_ FROM vw_FishCounts_flat {W} GROUP BY DateStr,Date_ ORDER BY Date_"
               },
               showColumnOption: dfltShowColumnOption,
               noSelOption: dfltNoSelOption_extraField,
@@ -1534,7 +1528,7 @@ if (view.extent.width > 8000000)
     }
 
     let i=0;      // Respond only to hits on "_Clickable" layers
-    while (i<response.results.length && response.results[i].graphic.layer.id.slice(-10)!=="_Clickable")
+    while (i<response.results.length && (!response.results[i].graphic.layer.id || response.results[i].graphic.layer.id.slice(-10)!=="_Clickable"))
       i++;
     if (i === response.results.length) {
       if (hoverTimeout)
@@ -2082,6 +2076,8 @@ if (view.extent.width > 8000000)
       constraints: {maxScale: 4000},
       zoom: 4
     });
+
+    //view.graphics.id = "viewGraphics";
 
     initViewPopup();
 
