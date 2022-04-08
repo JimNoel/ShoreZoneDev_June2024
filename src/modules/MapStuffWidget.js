@@ -968,6 +968,7 @@ define([
                   colWidth: 100
                 },
                 Region: { colWidth: 50 },
+                //Location:  { colWidth: -1},
                 SiteID: { colWidth: 15 },
                 GearBasic: GearColumnFormat,
                 Habitat: HabitatColumnFormat,     // { colWidth: 20 },

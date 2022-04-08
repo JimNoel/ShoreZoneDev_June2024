@@ -446,7 +446,12 @@ define([
           let bgColorCss = "background-color: transparent;"     // This ensures that the column color reverts back to default on switching tabs
           if (this.extraColumns && this.extraColumns.includes(fields[i].name))
             bgColorCss = "background-color: cornsilk;"
-          columnStyleCSS += ".dataTable .field-" + fields[i].name + " {width: " + colWidth + "px;" + bgColorCss + "} ";
+/*
+          if (colWidth === -1)
+            columnStyleCSS += ".dataTable .field-" + fields[i].name + " {width: auto;" + bgColorCss + "} ";
+          else
+*/
+            columnStyleCSS += ".dataTable .field-" + fields[i].name + " {width: " + colWidth + "px;" + bgColorCss + "} ";
 
 /*
           nonNullCount[fields[i].name] = 0;
