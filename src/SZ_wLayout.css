@@ -427,7 +427,7 @@ cursor: pointer;
     /*overflow-x: auto;     doesn't work at this level? */
 }
 
-.tableHeaderIcon  {padding-left: 5px;}
+.tableHeaderIcon  {padding-left: 15px; padding-top: 3px}
 
 .iconDiv  {height: 24px;}
 

@@ -10,7 +10,7 @@ let selExtent = null;
 
 let justAK = false;
 
-let csvDownloadFields = "R.Region,R.SiteID,R.Location,R.Lat,R.Long,R.Habitat,R.EventID,R.DateStr,R.GearBasic,R.GearSpecific,R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Unmeasured,R.Length,R.LengthType,R.LifeStage,R.Temperature,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider";
+let csvDownloadFields = "R.Region,R.SiteID,R.Location,R.Lat,R.Long,R.Habitat,R.EventID,R.DateStr,R.GearBasic,R.GearSpecific,R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Fam_ScientificName,R.Unmeasured,R.Length,R.LengthType,R.LifeStage,R.Temperature,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider";
 
 // TODO: Put this near top
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
@@ -219,7 +219,8 @@ let csvDownloadWidget = null;
     + '&emsp; <button onclick="doTableDownload()">Download</button>&emsp;<button onclick="doTableDownload(true)">Cancel</button><br><br>'
     + '<i>The current table will be downloaded as a comma-delimited (CSV) file.<br>'
     + 'The associated geometry is not included.<br>'
-    + 'If you need geometry data, the entire geodatabase may be downloaded <a href="szapps.htm" target="_blank"><strong>here</strong></a>.</i>';
+    + 'If you need geometry data, the entire geodatabase may be downloaded <a href="szapps.htm" target="_blank"><strong>here</strong></a>.</i>'
+    + '<h4 id="dlWaitMsg" style="color:red;display: none">Download is in progress.  Depending on how much data you are <br>downloading, this can take a few minutes.  Please wait...</h4>';
 
 let ssSpeciesDropdownHtml = '{Group}<br><br>';
 ssSpeciesDropdownHtml += '{Subgroup}<br><br>';
@@ -229,7 +230,7 @@ ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssComm
 ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'ssSpeciesPanel\', false, ssWidget)">Close</button>';
 
 let faSpeciesDropdownHtml = '{Species}<br><br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'FMP=1\')">FMP Species<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'FMP=1\')">federally managed species<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',\'\')">All Fish<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked onclick="faWidget.filterDropdown(\'Species\',null,\'com\')">Common Name<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
@@ -377,7 +378,7 @@ let ssProfileWidget = null;
 let faPhotoWidget = null;
 
 let dfltNoSelOption = { label: "[All]", value: "All", buttonLabel: "[All]" };
-let dfltNoSelOption_extraField = { label: "[Combined]", value: "All", buttonLabel: "[Combined]" };
+let dfltNoSelOption_extraField = { label: "[All]", value: "All", buttonLabel: "[Combined]" };
 let dfltShowColumnOption =  { label: "[Show column]", value: "showCol", buttonLabel: "[Show column]" } ;
 
 
@@ -397,6 +398,14 @@ let gearDD = {
   liveUpdate: true,
   isAlpha: true
 };
+
+/*
+let gearDD_showColSel = JSON.parse(JSON.stringify(gearDD));
+gearDD_showColSel.SelectedOption = "showCol"
+*/
+
+//  JSON.parse(JSON.stringify(pocDD)),
+
 
 let pocDD = {
   ddName: "POC",
@@ -1064,7 +1073,7 @@ let showPopupsCheckbox = '<input id="' + popupsCb_Id  + '" type="checkbox" check
 /* For pan/zoom-to-rectangle toggle */
 let panning = true;      // If not panning, then zooms to drawn rectangle
 let panZoomHtml = "<div class='iconDiv'><img id='btn_pan' src='assets/images/i_pan.png' onclick='togglePanZoom(true)' height='24px' width='24px' title='Click to enable panning' class='icon_Active' /></div>";
-panZoomHtml += "<div class='iconDiv'><img id='btn_zoomRect' src='assets/images/selRect2_24x24.png' onclick='togglePanZoom(false)' height='24px' width='24px' title='Click to enable selection/zoom tool' class='icon_Inactive' /></div>";
+panZoomHtml += "<div class='iconDiv'><img id='btn_zoomRect' src='assets/images/selRect_24x24.png' onclick='togglePanZoom(false)' height='24px' width='24px' title='Click to enable selection/zoom tool' class='icon_Inactive' /></div>";
 
 function togglePanZoom(mode) {
   panning = mode;
@@ -1365,14 +1374,17 @@ function doRectAction(cancel, clear) {
 }
 
 function doTableDownload(cancel) {
-  setVisible("downloadPanel", false);
-  if (cancel)
+  if (cancel) {
+    setVisible("downloadPanel", false);
     return;
+  }
 
   if (document.getElementById("radio_downloadRaw").checked) {
     csvDownloadWidget.queryCsvData();
+    setDisplay("dlWaitMsg", true);
     return;
   }
+  setVisible("downloadPanel", false);
   let csv = csvDownloadWidget.getCsvFromTable();
   downloadCsv(csv, csvDownloadWidget.makeHeaderCsv());
 }

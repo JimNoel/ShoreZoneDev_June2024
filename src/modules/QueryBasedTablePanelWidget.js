@@ -110,6 +110,8 @@ define([
       };
 
       this.csvQueryResponseHandler = function(results) {
+        setDisplay("dlWaitMsg", false);
+        setVisible("downloadPanel", false);
         results = JSON.parse(results);
         downloadCsv(results.csv, this.makeHeaderCsv(true));
       }
@@ -120,7 +122,13 @@ define([
       };
 
       this.makeHeaderCsv = function(forRawData) {
-        let csv = downloadPanel.value.split(".")[0] + " table\n\n";
+        let csv = '"Table ';
+        if (forRawData)
+          csv = '"Raw data ';
+        csv += ' download from NOAA Fisheries Nearshore Fish Atlas of Alaska, ';
+        let today = new Date();
+        csv += today.toDateString() + '"\n';
+        csv += '"' + downloadPanel.value.split('.')[0] + '"\n\n';
         if (forRawData)
           csv = "Raw  Fish Atlas data\n\n"
         csv += "Selection Criteria:\n";
@@ -444,8 +452,10 @@ define([
           if (!colWidth)
             colWidth = title.length * 15;
           let bgColorCss = "background-color: transparent;"     // This ensures that the column color reverts back to default on switching tabs
+/*
           if (this.extraColumns && this.extraColumns.includes(fields[i].name))
             bgColorCss = "background-color: cornsilk;"
+*/
 /*
           if (colWidth === -1)
             columnStyleCSS += ".dataTable .field-" + fields[i].name + " {width: auto;" + bgColorCss + "} ";

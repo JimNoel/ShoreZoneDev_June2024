@@ -936,7 +936,7 @@ define([
 /*JN*/
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                groupVars: "Region,Location,Habitat",
+                groupVars: "Region,Location,Habitat,GearBasic,POC_Concat",
                 //prefix: "F.",
                 innerSQL: "SELECT {G},SiteID,COUNT(DISTINCT EventID) AS Hauls,COUNT(DISTINCT SpCode_LevelSP) AS NumSpecies,ISNULL(SUM(Count_Fish),0) AS Catch " +
                     "FROM dbo.vw_FishCounts_flat {W} GROUP BY {G},SiteID",
@@ -951,7 +951,7 @@ define([
               dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faPOC_ddWrapper', 'faSpecies_ddWrapper'],
 //              dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faSpeciesPanel_ddWrapper'],
               featureOutFields: ["Region", "Location", "SiteID", "Habitat", "Hauls", "NumSpecies", "Catch", "PhotoCount"],
-              extraColumns: ["GearBasic", "POC_Concat"],
+              extraColumns: [],     // ["GearBasic", "POC_Concat"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
               calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
               orderByFields: ["Region", "Location", "SiteID"],
