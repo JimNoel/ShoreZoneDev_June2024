@@ -88,7 +88,22 @@ define([
       this.store = null;
       this.grid = null;
       this.selectedRow = null;
-      this.origVisibleHeaderElements = this.visibleHeaderElements
+      this.origVisibleHeaderElements = this.visibleHeaderElements;
+      this.columnsStyleSheet = document.createElement('style');
+      document.body.appendChild(this.columnsStyleSheet);
+
+/*
+      this.SetColumnWidths = function(columnWidths) {
+        let firstRowId = this.displayDivName + "-row-0";
+        let firstRow = getEl(firstRowId)
+        let rowWidth = $(firstRow).width();
+        let totalCellWidth = 0;
+        let cells = firstRow.getElementsByClassName("dgrid-cell");
+        for (let c=0; c<cells.length; c++) {
+          totalCellWidth += $(cells[c]).width();
+        }
+      };
+*/
 
       this.showCsvDownloadDialog = function() {
         csvDownloadWidget = this;
@@ -428,6 +443,8 @@ define([
           tableData.push(features[i].attributes);
         }
 
+        //let columnWidths = [];
+
         for (let i=0; i<fields.length; i++) {
           let spclFmtChain = "specialFormatting." + fields[i].name;
           // Use supplied title for column name
@@ -449,6 +466,7 @@ define([
           // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
           // TODO: Possibly, use maxChars to modify colWidth
           let colWidth = getIfExists(this,spclFmtChain + ".colWidth");
+          //columnWidths[i] = colWidth;
           if (!colWidth)
             colWidth = title.length * 15;
           let bgColorCss = "background-color: transparent;"     // This ensures that the column color reverts back to default on switching tabs
@@ -470,10 +488,13 @@ define([
 */
         }
 
+        this.columnsStyleSheet.innerHTML = columnStyleCSS;
+/*
         // Create style-sheet for columns
         let sheet = document.createElement('style');
         sheet.innerHTML = columnStyleCSS;
         document.body.appendChild(sheet);
+*/
 
         filterLegend(this.mapServiceLayer.title, nonNullList);
 
@@ -499,6 +520,8 @@ define([
         //this.grid.startup();              // If using OnDemandGrid, include this
         this.grid.renderArray(tableData);   // If using Grid, include this
         this.hideHiddenItems();
+
+        //this.SetColumnWidths(columnWidths);
 
         this.grid.on('dgrid-error', function(event) {
           console.log('dgrid-error:  ' + event.error.message);
