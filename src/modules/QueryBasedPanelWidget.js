@@ -585,6 +585,14 @@ define([
         selVars = r.groupVars;
       let sql = r.sqlTemplate.replace(/{S}/g, selDDFields + selVars);
       sql = sql.replace(/{G}/g, groupDDFields + r.groupVars);
+      if (r.columnReorder)
+        for (let c=0; c<r.columnReorder.length; c++) {
+          let item = r.columnReorder[c];
+          let S = sql.replace(item.fieldName + ",", "");
+          let p = S.search(item.before);
+          S = S.slice(0,p) + item.fieldName + "," + S.slice(p);
+          sql = S;
+        }
       return sql;
     },
 
@@ -646,6 +654,7 @@ define([
           extent = view.extent;       // If no extent, then use view extent
       }
 */
+/*
       let spatialWhere = "";
       if (extent && this.clickableSymbolType==="point") {
         spatialWhere = "(S.Shape.STX>" + Math.floor(extent.xmin);
@@ -653,8 +662,14 @@ define([
         spatialWhere += ") AND (S.Shape.STY>" + Math.floor(extent.ymin);
         spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(extent.ymax) + ")";
         sql += " WHERE " + spatialWhere;
-        //r.extent = extent;      // For raw download, used to get min & max lat/lon for header
       }
+*/
+      let spatialWhere = null;
+      if (this.tabInfo)
+        spatialWhere = this.tabInfo[this.currTab].spatialWhere;
+      if (spatialWhere)
+        sql += " WHERE " + spatialWhere;
+
 //      if (["polygon", "extent"].includes(this.clickableSymbolType))
 //        spatialWhere = spatialWhere.replace(/.ST/g, ".STCentroid().ST");
 

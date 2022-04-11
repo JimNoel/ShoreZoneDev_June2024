@@ -435,6 +435,8 @@ define([
 
           if (this.idField) {     // For idField, insert span for identifying original row number, so correct feature is identified regardless of current table order
             let idFieldValue = features[i].attributes[this.idField];
+            if (typeof idFieldValue === "number")
+              idFieldValue = padString(idFieldValue.toString(), padLength, "left", padChars);    // temporary HACK:  pad to the left, so numbers (as strings) sort correctly
             features[i].attributes[this.idField] = idFieldValue + "<span id='" + this.baseName + "@" + i + "@'></span>";
             // For identifying the equivalent row in the table, on feature click
             // "@" used for easy splitting out of values
@@ -480,6 +482,7 @@ define([
           else
 */
             columnStyleCSS += ".dataTable .field-" + fields[i].name + " {width: " + colWidth + "px;" + bgColorCss + "} ";
+//          columnStyleCSS += ".dataTable .field-" + fields[i].name + " {min-width: " + colWidth + "px;" + bgColorCss + "} ";
 
 /*
           nonNullCount[fields[i].name] = 0;
@@ -677,8 +680,13 @@ define([
         // customRestService option
         if (countInfo.serviceUrl) {
           let theUrl = this.makeCustomRestQueryUrl("", countInfo.sqlTemplate, "count");
-          if (this.query.where !== "")
-            theUrl += " Where " + this.query.where;
+          let theWhere = "";
+          theWhere = addToWhere(theWhere, this.query.where);
+          theWhere = addToWhere(theWhere, this.spatialWhere);
+          if (countInfo.sqlTemplate.indexOf("S.") === -1)
+            theWhere = theWhere.replace(/S\./g,"");       // Get rid of "S." in theWhere
+          if (theWhere !== "")
+            theUrl += " Where " + theWhere;
           queryServer(theUrl, false, function(results){
             this.countQueryResponseHandler(results, f);
           }.bind(this));

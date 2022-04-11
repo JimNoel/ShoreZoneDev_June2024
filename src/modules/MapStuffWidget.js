@@ -933,7 +933,7 @@ define([
               popupTitle: "Fish Atlas Site",
               popupExcludeCols: ["Photos"],
               //maxLayerName: "vw_CatchStats_SitesHabitatsGearSpecies",
-/*JN*/
+
               customRestService: {
                 serviceUrl: faRestServiceURL,
                 groupVars: "Region,Location,Habitat,GearBasic,POC_Concat",
@@ -942,10 +942,11 @@ define([
                     "FROM dbo.vw_FishCounts_flat {W} GROUP BY {G},SiteID",
                 outerSQL: "SELECT {S},Hauls,NumSpecies,Catch,F.SiteID,PhotoCount,Shape FROM ({innerSQL}) AS F " +
                     "INNER JOIN (SELECT SiteID,Shape From SITES_POINTS) AS S ON F.SiteID = S.SiteID LEFT OUTER JOIN vw_SitePhotoCounts ON S.SiteID = vw_SitePhotoCounts.SiteID",
+                columnReorder: [{fieldName: "POC_Concat", before: "PhotoCount"}],
                 baseWhere: "",
                 sqlTemplate_download: "SELECT {F} FROM (SELECT * FROM vw_rawDataForDownload) AS R INNER JOIN (SELECT SiteID,Shape from SITES_POINTS) AS S ON R.SiteID = S.SiteID"
               },
-/*JN*/
+
               parentAreaType: 'Regions',
               visibleHeaderElements: ['faTableDownload', 'faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faPOC_ddWrapper', 'faSpeciesPanel_ddWrapper', 'faLabelSpan_featureCount', 'faCheckboxSpan_showFeatures'],
               dropdownElements: ['faRegion_ddWrapper', 'faSiteHabitat_ddWrapper', 'faGear_ddWrapper', 'faPOC_ddWrapper', 'faSpecies_ddWrapper'],
@@ -953,7 +954,10 @@ define([
               featureOutFields: ["Region", "Location", "SiteID", "Habitat", "Hauls", "NumSpecies", "Catch", "PhotoCount"],
               extraColumns: [],     // ["GearBasic", "POC_Concat"],
               downloadExcludeFields: ["Envelope", "SiteID", "PhotoCount", "FishCatch"],
-              calcFields:  [{name: "Envelope", afterField: null}, {name: "FishCatch", afterField: "SiteID"}],
+              calcFields:  [
+                {name: "Envelope", afterField: null},
+                {name: "FishCatch", afterField: "SiteID"}
+              ],
               orderByFields: ["Region", "Location", "SiteID"],
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {
@@ -963,28 +967,24 @@ define([
                   args: '"{0},{1},1000"',
                   html: zoomInTemplate.replace("{area}", "SiteID")
                 },
-                POC_Concat: {
-                  title: "Point of Contact",
-                  colWidth: 100
-                },
-                Region: { colWidth: 50 },
+                Region: { colWidth: 40 },
                 //Location:  { colWidth: -1},
-                SiteID: { colWidth: 15 },
-                GearBasic: GearColumnFormat,
                 Habitat: HabitatColumnFormat,     // { colWidth: 20 },
+                GearBasic: GearColumnFormat,
                 Hauls: {
-                  colWidth: 15,
+                  colWidth: 30,
                   useCommas: true
                 },
                 NumSpecies: {
                   title: "Species",
-                  colWidth: 15,
+                  colWidth: 30,
                   useCommas: true
                 },
                 Catch: {
-                  colWidth: 15,
+                  colWidth: 30,
                   useCommas: true
                 },
+                SiteID: { colWidth: 20 },
                 FishCatch: {
                   title:  "Fish Catch",
                   colWidth:  20,
@@ -993,14 +993,13 @@ define([
                   args: 'faSpTableWidget,null,"SiteID={0}","SiteID={1}, {2}",null,2,null,"Sp_CommonName",["faSpTableDates_ddWrapper"]',
                   html:   spTableTemplate
                 },
-/*
-                SiteID: {
-                  hidden: true
+                POC_Concat: {
+                  title: "Point of Contact",
+                  //colWidth: 100
                 },
-*/
                 PhotoCount: {
                   title:  "Photos",
-                  colWidth:  12,
+                  colWidth:  20,
                   html:   "<img src='assets/images/Camera24X24.png' class='actionIcon' alt=''>",
                   showWhen: 1
                 }
@@ -1019,6 +1018,7 @@ define([
                 },
                 "size":5
               },
+              spatialWhere: null,
               selExtentGraphic: null
 
             },
