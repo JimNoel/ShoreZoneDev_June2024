@@ -1353,7 +1353,7 @@ function doRectAction(cancel, clear) {
     view.graphics.remove(extentGraphic);
     return;
   }
-  let T = faWidget;     //.tabInfo[faWidget.currTab];
+  let T = faWidget.tabInfo[faWidget.currTab];
   if (clear) {
     view.graphics.removeAll();
     selExtent = null;

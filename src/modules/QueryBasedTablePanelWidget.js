@@ -143,9 +143,15 @@ define([
         csv += ' download from NOAA Fisheries Nearshore Fish Atlas of Alaska, ';
         let today = new Date();
         csv += today.toDateString() + '"\n';
-        csv += '"' + downloadPanel.value.split('.')[0] + '"\n\n';
+
+        let line2 = downloadPanel.value.split('.')[0];
+        if (forRawData && line2.indexOf("SiteID=")===-1)
+          line2 = "Alaska data";
+        csv += '"' + line2 + '"\n\n';
+/*
         if (forRawData)
           csv = "Raw  Fish Atlas data\n\n"
+*/
         csv += "Selection Criteria:\n";
         let baseWhere = this.customRestService.baseWhere;
         if (baseWhere)
