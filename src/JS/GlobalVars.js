@@ -10,7 +10,7 @@ let selExtent = null;
 
 let justAK = false;
 
-let csvDownloadFields = "R.Region,R.SiteID,R.Location,R.Lat,R.Long,R.Habitat,R.EventID,R.DateStr,R.GearBasic,R.GearSpecific,R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Fam_ScientificName,R.Unmeasured,R.Length,R.LengthType,R.LifeStage,R.Temperature,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider";
+let csvDownloadFields = "R.SiteID,R.Region,R.WebSiteLocation,R.RawSite,R.Lat,R.Long,R.Habitat,R.EventID,R.Date,R.GearBasic,R.GearSpecific,R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Fam_ScientificName,R.Unmeasured,R.Length_mm,R.LengthType,R.LifeStage,R.Temp_C,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider,R.PI";
 
 // TODO: Put this near top
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
@@ -426,12 +426,12 @@ let pocDD = {
 
 
 let HabitatColumnFormat = {
-  colWidth: 100,
+  colWidth: 30,
   //nullDisplay: "[unspecified]"
 };
 let GearColumnFormat = {
   title: "Gear",
-  colWidth: 80
+  colWidth: 30
 };
 
 
@@ -1353,9 +1353,11 @@ function doRectAction(cancel, clear) {
     view.graphics.remove(extentGraphic);
     return;
   }
+  let T = faWidget;     //.tabInfo[faWidget.currTab];
   if (clear) {
     view.graphics.removeAll();
     selExtent = null;
+    T.spatialWhere = null;
     faWidget.runQuery(/*extentGraphic.geometry.extent*/);
     return;
   }
@@ -1364,9 +1366,16 @@ function doRectAction(cancel, clear) {
   if (getEl("cb_selectInRect").checked) {
     let selExtentGraphic = extentGraphic.clone();
     selExtent = selExtentGraphic.geometry.extent;
-    faWidget.runQuery(/*extentGraphic.geometry.extent*/);
     selExtentGraphic.symbol = selRectSymbol;
-    faWidget.tabInfo[faWidget.currTab].selExtentGraphic = selExtentGraphic;
+    T.selExtentGraphic = selExtentGraphic;
+    T.spatialWhere = null;
+    if (T.clickableSymbolType==="point") {
+      T.spatialWhere = "(S.Shape.STX>" + Math.floor(selExtent.xmin);
+      T.spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(selExtent.xmax);
+      T.spatialWhere += ") AND (S.Shape.STY>" + Math.floor(selExtent.ymin);
+      T.spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(selExtent.ymax) + ")";
+    }
+    faWidget.runQuery(/*extentGraphic.geometry.extent*/);
     view.graphics.removeAll();
     view.graphics.add(selExtentGraphic);
   }
@@ -1405,7 +1414,7 @@ function download_csv(csv, dfltFileName, rawDownloadOption) {
 */
 
 function addToWhere(where, newWhere) {
-  if (newWhere === "")
+  if (!newWhere || newWhere==="")
     return where;
   if (where !== "")
     where += " AND ";
