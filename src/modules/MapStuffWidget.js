@@ -876,6 +876,7 @@ define([
                 Habitat: HabitatColumnFormat,
                 GearBasic: GearColumnFormat,
                 Hauls: {
+                  title:  "Sets",
                   colWidth: 10,
                   useCommas: true
                 },
@@ -964,7 +965,7 @@ define([
                   title:  "",
                   colWidth:  5,
                   plugInFields: ["x", "y"],
-                  args: '"{0},{1},1000"',
+                  args: '"{0},{1},5000"',
                   html: zoomInTemplate.replace("{area}", "SiteID")
                 },
                 Region: { colWidth: 40 },
@@ -972,6 +973,7 @@ define([
                 Habitat: HabitatColumnFormat,     // { colWidth: 20 },
                 GearBasic: GearColumnFormat,
                 Hauls: {
+                  title:  "Sets",
                   colWidth: 30,
                   useCommas: true
                 },
@@ -988,9 +990,9 @@ define([
                 FishCatch: {
                   title:  "Fish Catch",
                   colWidth:  20,
-                  plugInFields: ["SiteID", "SiteID", "Location"],
+                  plugInFields: ["SiteID", "SiteID", "Location", "Region"],
                   //args: 'faSpTableWidget,null,null,"SiteID={0}","{1}",null,2,null,"SiteID,GearBasic,Sp_CommonName",["faSpTableDates_ddWrapper"]',
-                  args: 'faSpTableWidget,null,"SiteID={0}","SiteID={1}, {2}",null,2,null,"Sp_CommonName",["faSpTableDates_ddWrapper"]',
+                  args: 'faSpTableWidget,null,"SiteID={0}","SiteID={1}, {3}, {2}",null,2,null,"Sp_CommonName",["faSpTableDates_ddWrapper"]',
                   html:   spTableTemplate
                 },
                 POC_Concat: {

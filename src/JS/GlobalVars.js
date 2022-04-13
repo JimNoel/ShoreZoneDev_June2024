@@ -209,13 +209,23 @@ settingsHtml += '<button id="rawSettingsButton" onclick="changeSetting()">Raw Se
 
 let csvDownloadWidget = null;
 
+function setRawFilename(isRaw) {    // Adds/removes "Raw " to/from file name, depending on "radio_downloadTable" radio button selection
+  let textBox = getEl("text_dlFileName");
+  let v = textBox.value;
+  let startRaw = (v.slice(0,4) === "Raw ");
+  if (isRaw && !startRaw)
+    v = "Raw " + v;
+  else if (!isRaw && startRaw)
+    v = v.slice(4);
+  textBox.value = v;
+}
 
-  let tableDownloadHtml = '<strong>Table download</strong><br><br>'
+  let tableDownloadHtml = '<strong>Data download</strong><br><br>'
     + '<div id="downloadTypeDiv" style="visibility: hidden">'
-    + '<input type="radio" id="radio_downloadTable" name="radio_download" value="table" checked>Download the table<br>'
-    + '<input type="radio" id="radio_downloadRaw" name="radio_download" value="raw">Download raw data associated with the table<br><br>'
+    + '<input type="radio" id="radio_downloadTable" name="radio_download" value="table" onclick="setRawFilename(false)" checked>Download the table<br>'
+    + '<input type="radio" id="radio_downloadRaw" name="radio_download" value="raw" onclick="setRawFilename(true)">Download raw data associated with the table<br><br>'
     + '</div>'
-    + '<label for="text_dlFileName">Download file name: </label><input type="text" id="text_dlFileName"><br><br>'
+    + '<label for="text_dlFileName">Download file name: </label><input type="text" id="text_dlFileName" style="width: 310px"><br><br>'
     + '&emsp; <button onclick="doTableDownload()">Download</button>&emsp;<button onclick="doTableDownload(true)">Cancel</button><br><br>'
     + '<i>The current table will be downloaded as a comma-delimited (CSV) file.<br>'
     + 'The associated geometry is not included.<br>'
@@ -1180,7 +1190,7 @@ function resizeWidgets() {
 }
 
 function stripHtml(inStr) {
-  let s = inStr;
+  let s = inStr.replace(/&nbsp;/g,"");      // Remove any "&nbsp;" strings  (Used to make numeric columns [as strings] sortable)
   let p1 = s.indexOf("<");
   while (p1 !== -1) {
     let p2 = s.indexOf(">");

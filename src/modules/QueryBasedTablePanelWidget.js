@@ -145,8 +145,11 @@ define([
         csv += today.toDateString() + '"\n';
 
         let line2 = downloadPanel.value.split('.')[0];
-        if (forRawData && line2.indexOf("SiteID=")===-1)
-          line2 = "Alaska data";
+        if (forRawData) {
+          if (line2.indexOf("SiteID=")===-1)
+            line2 = "Alaska data";
+          line2 = "Raw " + line2;
+        }
         csv += '"' + line2 + '"\n\n';
 /*
         if (forRawData)
