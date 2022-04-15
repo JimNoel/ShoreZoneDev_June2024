@@ -24,7 +24,7 @@ let faRestServiceURL = "https://alaskafisheries.noaa.gov/mapping/faREST/sql";
 
 let showPopupsDefault = true;
 let showPopups = showPopupsDefault;
-let popupsDocked = false;
+//let popupsDocked = false;
 
 /* Initial basemap.  Can be one of:
       streets, satellite, hybrid, topo, gray, dark-gray, oceans, national-geographic, terrain, osm,
@@ -220,7 +220,40 @@ function setRawFilename(isRaw) {    // Adds/removes "Raw " to/from file name, de
   textBox.value = v;
 }
 
-  let tableDownloadHtml = '<strong>Data download</strong><br><br>'
+
+// The next 3 functions are in support of searchable dropdowns
+
+function searchableDD_expand(startId, showAll) {
+  let dd = document.getElementById(startId + "_Dropdown");
+  if (showAll) {
+    searchableDD_Filter(startId);
+    //dd.size = dd.length;
+  }
+  else
+    dd.size = 1;
+}
+
+function searchableDD_Filter(startId) {
+  let input = document.getElementById(startId + "_Text");
+  let filter = input.value.toUpperCase();
+  let dd = document.getElementById(startId + "_Dropdown");
+  let numOptions = 0;
+  for (let i = 0; i < dd.length; i++) {
+    txtValue = dd[i].textContent || dd[i].innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      dd[i].style.display = "";
+      numOptions += 1;
+    } else {
+      dd[i].style.display = "none";
+    }
+  }
+  dd.size = numOptions;
+}
+
+
+
+
+let tableDownloadHtml = '<strong>Data download</strong><br><br>'
     + '<div id="downloadTypeDiv" style="visibility: hidden">'
     + '<input type="radio" id="radio_downloadTable" name="radio_download" value="table" onclick="setRawFilename(false)" checked>Download the table<br>'
     + '<input type="radio" id="radio_downloadRaw" name="radio_download" value="raw" onclick="setRawFilename(true)">Download raw data associated with the table<br><br>'
@@ -230,7 +263,7 @@ function setRawFilename(isRaw) {    // Adds/removes "Raw " to/from file name, de
     + '<i>The current table will be downloaded as a comma-delimited (CSV) file.<br>'
     + 'The associated geometry is not included.<br>'
     + 'If you need geometry data, the entire geodatabase may be downloaded <a href="szapps.htm" target="_blank"><strong>here</strong></a>.</i>'
-    + '<h4 id="dlWaitMsg" style="color:red;display: none">Download is in progress.  Depending on how much data you are <br>downloading, this can take a few minutes.  Please wait...</h4>';
+    + '<h4 id="dlWaitMsg" style="color: currentcolor ;display: none">Download is in progress.  Depending on how much data you are <br>downloading, this can take a few minutes.  Please wait...</h4>';
 
 let ssSpeciesDropdownHtml = '{Group}<br><br>';
 ssSpeciesDropdownHtml += '{Subgroup}<br><br>';
@@ -239,12 +272,13 @@ ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssComFirst" name="ssComm
 ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
 ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'ssSpeciesPanel\', false, ssWidget)">Close</button>';
 
-let faSpeciesDropdownHtml = '{Species}<br><br>';
+let faSpeciesDropdownHtml = '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
+faSpeciesDropdownHtml +=  '{Species}<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'FMP=1\')">federally managed species<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',\'\')">All Fish<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked onclick="faWidget.filterDropdown(\'Species\',null,\'com\')">Common Name<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
-faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false)">Close</button>';
+faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false, faWidget,\'radio_fmp\')">Close</button>';
 
 let lastInnerHeight = window.innerHeight;
 let innerHeight_noFileDownloadBar = lastInnerHeight;
@@ -284,13 +318,20 @@ const legendFilters = [
 
 let nonNullList = null;
 
-function expandDropdownPanel(panelId, expand, w) {
+function expandDropdownPanel(panelId, expand, w, radioId) {
   let className = "dropdown-content";
   if (expand)
     className = "dropdown-content-visible";
   getEl(panelId + "_Content").setAttribute("class", className);
-  if (w)
+  if (w) {
+    if (radioId) {    // radioId holds the ID of a radio button with info on a "boolean" field to be filtered on where the field value is TRUE
+      w.radioWhere = null;
+      let radioEl = getEl(radioId);
+      if (radioEl.checked)
+        w.radioWhere = radioEl.value + "=1";      // radioEl.value will be the name of a "boolean" field, so this sets a WHERE clause with the field as TRUE
+    }
     w.runQuery(view.extent);
+  }
 }
 
 function filterLegend(serviceName, nonNullList) {
@@ -774,6 +815,7 @@ function dropdownSelectHandler(w, index) {
                                                                 // where labels are expressed as "[common name] - [scientific name]" or vice-versa
 
   let newExtent = ddInfo.options[ddElement.selectedIndex]["extent"];
+  ddElement.size =1;      // In case dropdown has been "expanded" to show search results, reset to default
   if (newExtent)
     mapStuff.gotoExtent(newExtent);
   ddInfo.excludedNames = "";

@@ -833,6 +833,7 @@ define([
             // w, [tableName], [theWhere], headerText, [extraFieldInfo], currTab, [maxLayerName], groupVars, [addlVisibleHeaders], selVars
             args: 'faSpTableWidget,null,null,"All Regions",null,0,null,"Sp_CommonName",null,"Sp_CommonName"'
           },
+          popupPosition: "top-right",
           currTab: 1,
           featureOutFields: ["RegionEnv", "Region", "Hauls", "NumSpecies", "Catch", "RegionID"],
           tabInfo: [
@@ -1014,11 +1015,21 @@ define([
               clickableSymbolInfo: {
                 "style":"circle",
                 "color":[0,155,0,1.0],
-                outline: {  // autocasts as new SimpleLineSymbol()
+                outline: {
                   color: [ 0, 0, 0, 1.0 ],
                   width: "0.5px"
                 },
                 "size":5
+              },
+              highlightSymbolType: "point",
+              highlightSymbolInfo: {
+                "style":"circle",
+                "color":[74,241,242,0.5],
+                outline: {
+                  color: [ 0, 0, 0, 1.0 ],
+                  width: "0.5px"
+                },
+                "size":28
               },
               spatialWhere: null,
               selExtentGraphic: null
@@ -1342,12 +1353,6 @@ OKAY NOW?
       map.basemap = startBasemap;   //HACK:  Because inital basemap setting of "oceans" messes up initial extent and zooming
       //let moveButtonAction = {title: "Move the camera", id: "move-camera"};
       let p = view.popup;     // new Popup();
-      if (popupsDocked) {
-        p.dockEnabled = true;
-        p.dockOptions = {position: "bottom-right" };
-      }
-      //p.actions.removeAll();
-      //p.actions.push(moveButtonAction);
       p.on("trigger-action", function(event){
         if (event.action.id === "move-camera") {
           if (currentWidgetController)

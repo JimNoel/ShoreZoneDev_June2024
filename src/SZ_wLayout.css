@@ -121,7 +121,7 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 .tablePanelDiv  {height: 100%; padding: 0;}
 
 .PanelDisabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4; visibility: hidden}
-  .MsgDisabled   {color:red; position: absolute; top:50%; left: 30%; width: 60%}
+  .MsgDisabled   {color: currentcolor; position: absolute; top:50%; left: 30%; width: 60%}
 
   .mediaPanelEnabled  {position:absolute; width:100%; height:100%; padding: 0; background-color: #d4d4d4; visibility: visible; }
     .mediaHeaderDiv  {position:absolute; width: auto; height:20px; left: 0px; overflow:hidden; padding-left: 5px; padding-right: 5px; z-index: 50; color: black; background-color: white; opacity: 0.7}
@@ -226,6 +226,9 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 {
     max-height: 80%;
 }
+
+.esri-popup--is-docked-top-right  {top: 10px; right: 20px;}
+.esri-popup--is-docked-top-left  {top: 10px; left: 50px;}
 
 .esri-widget  {opacity: 1.0; background-color: white; font-weight: bold}
 .esri-widget-transparent  {opacity: 1.0; background-color: transparent; color: black; font-weight: bold}

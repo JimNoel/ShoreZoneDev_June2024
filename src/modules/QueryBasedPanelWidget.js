@@ -133,9 +133,11 @@ define([
         if (!showPopups)
           return;
         let infoWin = view.popup;
-        if (popupsDocked) {
+        if (!this.popupPosition)
+          infoWin.dockEnabled = false;
+        else {
           infoWin.dockEnabled = true;
-          infoWin.dockOptions = {position: "bottom-right" };
+          infoWin.dockOptions = {position: this.popupPosition };
         }
 
         //infoWin.container.style.maxHeight = "300px";
@@ -634,6 +636,7 @@ define([
         //let selVars = selDDFields + groupVars;
         //let groupVars = groupDDFields + groupVars;
       }
+      //theWhere = addToWhere(theWhere,this.radioWhere);
 
       // set WHERE for subquery
       sql = this.customRestService_makeSql(selDDFields, groupDDFields);
