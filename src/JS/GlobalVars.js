@@ -10,7 +10,9 @@ let selExtent = null;
 
 let justAK = false;
 
-let csvDownloadFields = "R.SiteID,R.Region,R.WebSiteLocation,R.RawSite,R.Lat,R.Long,R.Habitat,R.EventID,R.Date,R.GearBasic,R.GearSpecific,R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Fam_ScientificName,R.Unmeasured,R.Length_mm,R.LengthType,R.LifeStage,R.Temp_C,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider,R.PI";
+let csvDownloadFields = "R.SiteID,R.RawSite,R.Region,R.Location,R.Lat,R.Long,R.Habitat,R.EventID,R.RawEvent,R.Date,R.GearBasic,R.GearSpecific," +
+  "R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Fam_ScientificName,R.Unmeasured,R.Length_mm,R.LengthType,R.LifeStage," +
+  "R.FMP,R.FMP_BSAI,R.FMP_GOA,R.FMP_Arctic,R.FMP_Salmon,R.Temp_C,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider,R.PI";
 
 // TODO: Put this near top
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
@@ -274,11 +276,11 @@ ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeBu
 
 let faSpeciesDropdownHtml = '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
 faSpeciesDropdownHtml +=  '{Species}<br><br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="fmp" onclick="faWidget.filterDropdown(\'Species\',\'FMP=1\')">federally managed species<br>';
-faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',\'\')">All Fish<br><br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="FMP" onclick="faWidget.filterDropdown(\'Species\',null,null,\'FMP=1\')">federally managed species<br>';
+faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',null,null,\'-FMP=1\')">All Fish<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked onclick="faWidget.filterDropdown(\'Species\',null,\'com\')">Common Name<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
-faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false, faWidget,\'radio_fmp\')">Close</button>';
+faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false, faWidget,\'SpeciesPanel\',\'radio_fmp\')">Close</button>';
 
 let lastInnerHeight = window.innerHeight;
 let innerHeight_noFileDownloadBar = lastInnerHeight;
@@ -318,20 +320,36 @@ const legendFilters = [
 
 let nonNullList = null;
 
-function expandDropdownPanel(panelId, expand, w, radioId) {
+function expandDropdownPanel(panelId, expand, w, ddName, radioId) {
   let className = "dropdown-content";
   if (expand)
     className = "dropdown-content-visible";
   getEl(panelId + "_Content").setAttribute("class", className);
   if (w) {
+    let ddInfo = w.getddItem(ddName);
+
+    ddInfo.radioWhere = "";
     if (radioId) {    // radioId holds the ID of a radio button with info on a "boolean" field to be filtered on where the field value is TRUE
-      w.radioWhere = null;
       let radioEl = getEl(radioId);
       if (radioEl.checked)
-        w.radioWhere = radioEl.value + "=1";      // radioEl.value will be the name of a "boolean" field, so this sets a WHERE clause with the field as TRUE
+        ddInfo.radioWhere = radioEl.value + "=1";      // radioEl.value will be the name of a "boolean" field, so this sets a WHERE clause with the field as TRUE
     }
-    w.runQuery(view.extent);
+    w.filterDropdown('Species');
+    if (!expand) {      // i.e. if closing the panel
+//      getEl(expandPanel.uniqueName + "_Button").innerHTML = selOption.buttonLabel;
+
+      w.runQuery(view.extent);      // DON'T NEED THIS ANYMORE?
+    }
   }
+}
+
+function removeFromWhereClause(theWhere, rmvStr) {
+  let A = theWhere.split(" AND ");
+  for (let i=0; i<A.length; i++) {
+    if (A[i].indexOf(rmvStr) !== -1)
+      A.splice(i,1);    // remove one item at position i
+  }
+  return A.join(" AND ");
 }
 
 function filterLegend(serviceName, nonNullList) {
@@ -835,7 +853,11 @@ function dropdownSelectHandler(w, index) {
         //expandPanel.LayerNameAddOn = "";
       }
     }
-    getEl(expandPanel.uniqueName + "_Button").innerHTML = selOption.buttonLabel;
+
+    let buttonLabel = selOption.buttonLabel;
+    if (ddInfo.radioWhere!=="" && ddInfo.SelectedOption==="All")
+      buttonLabel = ddInfo.radioWhereLabel;
+    getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonLabel;
 
     if (!ddInfo.dependentDropdowns)
       expandDropdownPanel(expandPanel.uniqueName, false);     // No widget specified, so query is not run

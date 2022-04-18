@@ -815,9 +815,29 @@ define([
         }
       };
 
-      this.filterDropdown = function(ddItem, where, comSci) {
+      this.filterDropdown = function(ddItem, where, comSci, radioWhere) {
         if (typeof ddItem === "string")     // ddItem argument can be either object or string.  If string, reset to appropriate object
           ddItem = this.getddItem(ddItem);
+
+        if (where == null)
+          where = ddItem.ddWhere;
+        else
+          ddItem.ddWhere = where;
+
+        if (ddItem.expandPanelId) {
+          let expandPanel = this.getddItem(ddItem.expandPanelId);
+          if (typeof radioWhere === "string")
+            expandPanel.radioWhere = radioWhere;
+          if (typeof expandPanel.radioWhere === "string") {
+            let S = expandPanel.radioWhere;
+            if (S.slice(0,1) !== "-")
+              where = addToWhere(where, expandPanel.radioWhere);
+            else {
+              S = S.slice(1);
+              where = removeFromWhereClause(where, S);
+            }
+          }
+        }
 
         if (ddItem.customRestService) {
           // This section handles queries using the new custom REST service
@@ -889,7 +909,8 @@ define([
 */
 
       this.insertDropdowns = function(ddItem) {
-        let html = ddItem.htmlTemplate;
+        let html = '&emsp;<LABEL class="boldLabel">' + ddItem.ddTitle + ': </LABEL>';
+        html += ddItem.htmlTemplate;
         let a = html.split("{");
         for (let i=1; i<a.length; i++) {
           let p = a[i].indexOf("}");
@@ -998,7 +1019,7 @@ define([
               ddItem.initialSelectedOption = ddItem.SelectedOption
               if (ddItem.subLayerName || ddItem.customRestService) {
                 if (!ddItem.noInitialQuery)
-                  this.filterDropdown(ddItem, null);
+                  this.filterDropdown(ddItem, "");
               } else {
                 this.makeDropdownOptionsHtml(ddItem);
               }

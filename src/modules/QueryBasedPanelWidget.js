@@ -632,6 +632,8 @@ define([
               }
             }
           }
+          if (D[d].radioWhere)
+            theWhere = addToWhere(theWhere, D[d].radioWhere);
         }
         //let selVars = selDDFields + groupVars;
         //let groupVars = groupDDFields + groupVars;
