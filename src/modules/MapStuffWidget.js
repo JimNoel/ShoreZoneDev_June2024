@@ -1424,10 +1424,12 @@ OKAY NOW?
       e.stopPropagation();
       if (e.action === 'start'){
         drawingZoomRectangle = true;
-        if (extentGraphic) view.graphics.remove(extentGraphic)
+        if (extentGraphic)
+          view.graphics.remove(extentGraphic);
         origin = view.toMap(e);
       } else if (e.action === 'update'){
-        if (extentGraphic) view.graphics.remove(extentGraphic)
+        if (extentGraphic)
+          view.graphics.remove(extentGraphic);
         let p = view.toMap(e);
         extentGraphic = new Graphic({
           geometry: new Extent({

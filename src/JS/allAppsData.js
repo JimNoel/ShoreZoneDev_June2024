@@ -14,9 +14,15 @@ noaaLinksContent +=
   '<a id="adminLinksLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/\')" >NOAA Fisheries</a>  &nbsp;&nbsp;' +
   '<a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.noaa.gov/disclaimer.html\')" >Disclaimer</a> &nbsp;&nbsp;\n' +
   '<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/privacy-policy\')" >Privacy Policy</a>  &nbsp;&nbsp;' +
-  '<a id="shoreZonePageLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/alaska-shorezone\')" >ShoreZone Page</a>  &nbsp;&nbsp;' +
-//  '<a id="metadataLabel" style="color:Black"  href="https://www.fisheries.noaa.gov/webdam/download/70834468" >Metadata</a>  &nbsp;&nbsp;' +
-  '<a id="dictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;' +
+  '<span>' +
+    '<span class="sz"><a id="shoreZonePageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/alaska-shorezone\')" >ShoreZone Page</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'UnderConstruction.html\')" >Fish Atlas Page</a>  &nbsp;&nbsp;</span>' +
+  '</span>' +
+  //  '<a id="metadataLabel" style="color:Black"  href="https://www.fisheries.noaa.gov/webdam/download/70834468" >Metadata</a>  &nbsp;&nbsp;' +
+  '<span>' +
+    '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
+  '</span>' +
   '<a id="testLabel" style="color:Black"  href="#" onclick="showSiteInfo()" >Site Info</a>  &nbsp;&nbsp;' +
   '<a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab(\'mailto:Steve.Lewis@noaa.gov\')" >Contact</a>';
 

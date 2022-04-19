@@ -1133,7 +1133,7 @@ function makeClassArrayVisibilityObject(obj) {  // On function call, "obj" shoul
     for (c in cNames) {
       s += "." + cNames[c] + " {display: ";
       if (cNames[c]===newClassName)
-        s += "block";
+        s += "inherit";
       else s += "none";
       s += "}  ";
     }
