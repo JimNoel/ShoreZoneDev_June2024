@@ -272,7 +272,7 @@ ssSpeciesDropdownHtml += '{Subgroup}<br><br>';
 ssSpeciesDropdownHtml += '{Species}<br><br>';
 ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssComFirst" name="ssCommSciOrder" value="common" checked onclick="ssWidget.filterDropdown(\'Species\',null,\'com\')">Common Name<br>';
 ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
-ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'ssSpeciesPanel\', false, ssWidget)">Close</button>';
+ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'ssSpeciesPanel\',false,ssWidget,\'SpeciesPanel\')">Close</button>';
 
 let faSpeciesDropdownHtml = '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
 faSpeciesDropdownHtml +=  '{Species}<br><br>';
@@ -328,19 +328,48 @@ function expandDropdownPanel(panelId, expand, w, ddName, radioId) {
   if (w) {
     let ddInfo = w.getddItem(ddName);
 
-    ddInfo.radioWhere = "";
+    ddInfo.booleanWhere = "";
     if (radioId) {    // radioId holds the ID of a radio button with info on a "boolean" field to be filtered on where the field value is TRUE
       let radioEl = getEl(radioId);
       if (radioEl.checked)
-        ddInfo.radioWhere = radioEl.value + "=1";      // radioEl.value will be the name of a "boolean" field, so this sets a WHERE clause with the field as TRUE
+        ddInfo.booleanWhere = radioEl.value + "=1";      // radioEl.value will be the name of a "boolean" field, so this sets a WHERE clause with the field as TRUE
     }
     w.filterDropdown('Species');
     if (!expand) {      // i.e. if closing the panel
-//      getEl(expandPanel.uniqueName + "_Button").innerHTML = selOption.buttonLabel;
+/*
+      let buttonLabel = "[All]";
+      for (let d=0; d<ddInfo.subDropDowns.length; d++) {
+        // buttonLabel defaults to "[All]" -- If any subDropdowns have a selection, then buttonLabel takes on the value of the last selected subDropdown
+        let subDdItem = w.getddItem(ddInfo.subDropDowns[d]);
+        let subDdElement = getEl(subDdItem.ddId);
+        let selOption = subDdElement.options[subDdElement.selectedIndex];
+        if (selOption.value !== "All")
+          buttonLabel = selOption.label;
+      }
+      if (ddInfo.booleanWhere!=="" && buttonLabel==="[All]")
+        buttonLabel = ddInfo.booleanWhereLabel;    // Value of buttonLabel if .booleanWhere is non-empty string and nothing selected from subDropdowns
+      getEl(ddInfo.uniqueName + "_Button").innerHTML = buttonLabel;
+*/
 
+      setDropdownPanelButtonLabel(w, ddInfo);
       w.runQuery(view.extent);      // DON'T NEED THIS ANYMORE?
     }
   }
+}
+
+function setDropdownPanelButtonLabel(w, ddInfo) {
+  let buttonLabel = "[All]";
+  for (let d=0; d<ddInfo.subDropDowns.length; d++) {
+    // buttonLabel defaults to "[All]" -- If any subDropdowns have a selection, then buttonLabel takes on the value of the last selected subDropdown
+    let subDdItem = w.getddItem(ddInfo.subDropDowns[d]);
+    let subDdElement = getEl(subDdItem.ddId);
+    let selOption = subDdElement.options[subDdElement.selectedIndex];
+    if (selOption.value !== "All")
+      buttonLabel = selOption.label;
+  }
+  if (ddInfo.booleanWhere!=="" && buttonLabel==="[All]")
+    buttonLabel = ddInfo.booleanWhereLabel;    // Value of buttonLabel if .booleanWhere is non-empty string and nothing selected from subDropdowns
+  getEl(ddInfo.uniqueName + "_Button").innerHTML = buttonLabel;
 }
 
 function removeFromWhereClause(theWhere, rmvStr) {
@@ -854,10 +883,13 @@ function dropdownSelectHandler(w, index) {
       }
     }
 
+/*
     let buttonLabel = selOption.buttonLabel;
-    if (ddInfo.radioWhere!=="" && ddInfo.SelectedOption==="All")
-      buttonLabel = ddInfo.radioWhereLabel;
+    if (ddInfo.booleanWhere!=="" && ddInfo.SelectedOption==="All")
+      buttonLabel = expandPanel.booleanWhereLabel;
     getEl(expandPanel.uniqueName + "_Button").innerHTML = buttonLabel;
+*/
+    setDropdownPanelButtonLabel(w, expandPanel);
 
     if (!ddInfo.dependentDropdowns)
       expandDropdownPanel(expandPanel.uniqueName, false);     // No widget specified, so query is not run

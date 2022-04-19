@@ -329,7 +329,7 @@ define([
             { ddName: "SpeciesPanel",
               inCombo: true,
               ddTitle: "Species Filter",
-              htmlTemplate: '<button id="ssSpeciesPanel_Button" onclick="expandDropdownPanel(\'ssSpeciesPanel\', true)">[All]]</button><div id="ssSpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
+              htmlTemplate: '<button id="ssSpeciesPanel_Button" onclick="expandDropdownPanel(\'ssSpeciesPanel\', true,ssWidget,\'SpeciesPanel\')">[All]]</button><div id="ssSpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
               subDropDowns: ["Group", "Subgroup", "Species"],
               layerSubNames: "SpeciesSpSubgroupsSpGroups",
@@ -817,7 +817,6 @@ define([
                 serviceUrl: faRestServiceURL,
                 sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName FROM vw_FishCounts_flat {W} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY Sp_CommonName"
               },
-              radioWhereLabel: "FMP Species",
               liveUpdate: true
             },
             { ddName: "SpeciesPanel",
@@ -827,6 +826,7 @@ define([
               SelectedOption: "All",
               subDropDowns: ["Species"],
               layerSubNames: "Species",
+              booleanWhereLabel: "FMP Species",
             }
           ],
           speciesTableInfo : {
@@ -1030,7 +1030,7 @@ define([
                   color: [ 0, 0, 0, 1.0 ],
                   width: "0.5px"
                 },
-                "size":28
+                "size":15
               },
               spatialWhere: null,
               selExtentGraphic: null

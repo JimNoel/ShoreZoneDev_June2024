@@ -632,13 +632,12 @@ define([
               }
             }
           }
-          if (D[d].radioWhere)
-            theWhere = addToWhere(theWhere, D[d].radioWhere);
+          if (D[d].booleanWhere)
+            theWhere = addToWhere(theWhere, D[d].booleanWhere);
         }
         //let selVars = selDDFields + groupVars;
         //let groupVars = groupDDFields + groupVars;
       }
-      //theWhere = addToWhere(theWhere,this.radioWhere);
 
       // set WHERE for subquery
       sql = this.customRestService_makeSql(selDDFields, groupDDFields);
@@ -830,7 +829,10 @@ define([
 
     highlightFeature: function(g) {
       this.highlightLayer.removeAll();
-      let newFeature = new Graphic(g, this.highlightSymbol);
+      let geom = g;
+      if (g.type==="point" && !g.spatialReference)    // This HACK is applied because some Point features returned on mouseover are missing spatial reference information!
+        geom = new Point({x: g.x, y: g.y, spatialReference: {wkid: 102113}});
+      let newFeature = new Graphic(geom, this.highlightSymbol);
       this.highlightLayer.add(newFeature);
     },
 

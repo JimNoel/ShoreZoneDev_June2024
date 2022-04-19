@@ -815,7 +815,7 @@ define([
         }
       };
 
-      this.filterDropdown = function(ddItem, where, comSci, radioWhere) {
+      this.filterDropdown = function(ddItem, where, comSci, booleanWhere) {
         if (typeof ddItem === "string")     // ddItem argument can be either object or string.  If string, reset to appropriate object
           ddItem = this.getddItem(ddItem);
 
@@ -826,12 +826,12 @@ define([
 
         if (ddItem.expandPanelId) {
           let expandPanel = this.getddItem(ddItem.expandPanelId);
-          if (typeof radioWhere === "string")
-            expandPanel.radioWhere = radioWhere;
-          if (typeof expandPanel.radioWhere === "string") {
-            let S = expandPanel.radioWhere;
+          if (typeof booleanWhere === "string")
+            expandPanel.booleanWhere = booleanWhere;
+          if (typeof expandPanel.booleanWhere === "string") {
+            let S = expandPanel.booleanWhere;
             if (S.slice(0,1) !== "-")
-              where = addToWhere(where, expandPanel.radioWhere);
+              where = addToWhere(where, expandPanel.booleanWhere);
             else {
               S = S.slice(1);
               where = removeFromWhereClause(where, S);
@@ -1043,7 +1043,7 @@ define([
           this.cbID = this.baseName + 'Checkbox_showFeatures';
           let cbSpanId = this.cbID.replace("_","Span_");
           let args = this.objName + ',' + this.cbID;
-          let cbHtml = '&emsp;<input id="' + this.cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show popups&emsp;';
+          let cbHtml = '&emsp;<input id="' + this.cbID + '" type="checkbox" checked onclick="checkbox_showFeatures_clickHandler(' + args + ')">Show layer&emsp;';
           //titleEl.innerHTML = '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           headerContent.innerHTML += '<span id="' + cbSpanId + '">' + cbHtml + '</span>';
           getEl(this.cbID).checked = this.clickableLayer.visible;
