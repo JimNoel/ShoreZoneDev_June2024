@@ -690,6 +690,8 @@ define([
           baseName: "fa",
           headerDivName:  "faHeaderDiv",
           footerDivName:  "faFooterDiv",
+          selExtent: null,
+          selExtentGraphic: null,
           totalOutFields: ["Hauls", "NumSpecies", "Catch"],
           summaryInfo: {
             totals: {
@@ -1032,9 +1034,7 @@ define([
                 },
                 "size":15
               },
-              spatialWhere: null,
-              selExtentGraphic: null
-
+              spatialWhere: null
             },
           ],
           //layerBaseName: "vw_CatchStats_",      // All layers queried for data tables will have names that start with this.  The QueryBasedPanelWidget method runQuery generates the full name

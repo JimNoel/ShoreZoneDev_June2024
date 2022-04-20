@@ -4,9 +4,8 @@
 
 let test = false;    // For trying out things before comitting to code
 
-//let rectangleExtent = null;
 let extentGraphic = null;
-let selExtent = null;
+//let selExtent = null;
 
 let justAK = false;
 
@@ -1454,34 +1453,34 @@ let selRectSymbol = {
 };
 
 function doRectAction(cancel, clear) {
+  let w = faWidget;
   setVisible("rectActionPanel", false);
   if (cancel) {
     view.graphics.remove(extentGraphic);
     return;
   }
-  let T = faWidget.tabInfo[faWidget.currTab];
+  let T = w.tabInfo[w.currTab];
   if (clear) {
     view.graphics.removeAll();
-    selExtent = null;
+    w.selExtent = null;
     T.spatialWhere = null;
-    faWidget.runQuery(/*extentGraphic.geometry.extent*/);
+    w.runQuery(/*extentGraphic.geometry.extent*/);
     return;
   }
   if (getEl("cb_zoomToRect").checked)
     view.goTo(extentGraphic, {animate: false});
   if (getEl("cb_selectInRect").checked) {
     let selExtentGraphic = extentGraphic.clone();
-    selExtent = selExtentGraphic.geometry.extent;
+    w.selExtent = selExtentGraphic.geometry.extent;
     selExtentGraphic.symbol = selRectSymbol;
-    T.selExtentGraphic = selExtentGraphic;
+    w.selExtentGraphic = selExtentGraphic;
     T.spatialWhere = null;
     if (T.clickableSymbolType==="point") {
-      T.spatialWhere = "(S.Shape.STX>" + Math.floor(selExtent.xmin);
-      T.spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(selExtent.xmax);
-      T.spatialWhere += ") AND (S.Shape.STY>" + Math.floor(selExtent.ymin);
-      T.spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(selExtent.ymax) + ")";
+      T.spatialWhere = "(S.Shape.STX>" + Math.floor(w.selExtent.xmin);
+      T.spatialWhere += ") AND (S.Shape.STX<" + Math.ceil(w.selExtent.xmax);
+      T.spatialWhere += ") AND (S.Shape.STY>" + Math.floor(w.selExtent.ymin);
+      T.spatialWhere += ") AND (S.Shape.STY<" + Math.ceil(w.selExtent.ymax) + ")";
     }
-    faWidget.runQuery(/*extentGraphic.geometry.extent*/);
     view.graphics.removeAll();
     view.graphics.add(selExtentGraphic);
   }

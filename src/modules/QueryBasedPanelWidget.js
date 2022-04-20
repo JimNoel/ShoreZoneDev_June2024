@@ -352,8 +352,8 @@ define([
       getEl("showPopupsCheckbox").checked = showPopups;
 
       view.graphics.removeAll();
-      if (tabInfo.selExtentGraphic)
-        view.graphics.add(tabInfo.selExtentGraphic);
+      if (this.selExtentGraphic && tabInfo.clickableSymbolType==="point")
+        view.graphics.add(this.selExtentGraphic);
     },
 
     tabClickHandler: function(evt) {
@@ -732,8 +732,8 @@ define([
           console.log(this.baseName + ":  QueryTask failed.");
         }.bind(this));
       } else {                                // using custom SQL Server REST service
-        if (selExtent)
-          extent = selExtent;
+        if (this.selExtent)
+          extent = this.selExtent;
         let urlInfo = this.customRestServiceSQL(extent);
         let geomType = "";
         if (this.clickableSymbolType && this.clickableSymbolType!=="point")
