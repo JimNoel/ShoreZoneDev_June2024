@@ -1434,7 +1434,7 @@ function downloadCsv(csv, headerCsv) {
 let rectActionHtml = '<strong>Action:</strong><br><br>'
   + '<input type="checkbox" id="cb_zoomToRect" value="table" checked>Zoom to drawn rectangle<br>'
   + '<input type="checkbox" id="cb_selectInRect" value="raw">Select features within drawn rectangle<br><br>'
-  + '&emsp; <button onclick="doRectAction()">OK</button>&emsp;<button onclick="doRectAction(true)">Cancel</button>&emsp;&emsp;<button onclick="doRectAction(null,true)">Clear Selection</button><br><br>';
+  + '&emsp; <button onclick="doRectAction(false,false)">OK</button>&emsp;<button onclick="doRectAction(true,false)">Cancel</button>&emsp;&emsp;<button onclick="doRectAction(false,true)">Clear Selection</button><br><br>';
 
 function makeRectActionPanel() {
   let rectActionPanel = makeHtmlElement("div", "rectActionPanel", "dropdown-content-visible", "top:200px;left:200px;", rectActionHtml);
@@ -1483,6 +1483,7 @@ function doRectAction(cancel, clear) {
     }
     view.graphics.removeAll();
     view.graphics.add(selExtentGraphic);
+    w.runQuery();
   }
   view.graphics.remove(extentGraphic);      // If not selecting, then remove the rectangle
 }
@@ -1518,9 +1519,11 @@ function download_csv(csv, dfltFileName, rawDownloadOption) {
 }
 */
 
-function addToWhere(where, newWhere) {
+function addToWhere(where, newWhere, rmvAlias) {
   if (!newWhere || newWhere==="")
     return where;
+  if (rmvAlias)
+    newWhere = newWhere.replace(/S\./g,"");       // Get rid of "S." in newWhere
   if (where !== "")
     where += " AND ";
   where += newWhere;

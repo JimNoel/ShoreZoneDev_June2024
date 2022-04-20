@@ -134,6 +134,7 @@ define([
       }
 
       this.queryCsvData = function() {
+        // TODO:  Add code to include spatial filtering?  (Might need to add Shape to vw_rawDataForDownload)
         let theUrl = this.makeCustomRestQueryUrl("", this.customRestService.downloadSql, "csv");
         queryServer(theUrl, false, this.csvQueryResponseHandler.bind(this))
       };
@@ -171,9 +172,15 @@ define([
               csv += ddInfo.whereField + "," + v + "\n";
             }
           }
+          if (ddInfo.booleanWhere)
+            csv += ddInfo.booleanWhere.split("=").join(",") + "\n";
         }
 
-        let extent = this.customRestService.extent;
+        let extent = null;
+        if (this.clickableSymbolType === "point")
+          extent = this.selExtent;
+        if (!extent)
+          extent = this.customRestService.extent;
         if (extent) {
           let swLonLat = webMercatorUtils.xyToLngLat(extent.xmin, extent.ymin);
           let neLonLat = webMercatorUtils.xyToLngLat(extent.xmax, extent.ymax);
@@ -693,9 +700,12 @@ define([
           let theUrl = this.makeCustomRestQueryUrl("", countInfo.sqlTemplate, "count");
           let theWhere = "";
           theWhere = addToWhere(theWhere, this.query.where);
-          theWhere = addToWhere(theWhere, this.spatialWhere);
+          if (this.tabInfo)
+            theWhere = addToWhere(theWhere, this.tabInfo[this.currTab].spatialWhere, true);
+/*
           if (countInfo.sqlTemplate.indexOf("S.") === -1)
             theWhere = theWhere.replace(/S\./g,"");       // Get rid of "S." in theWhere
+*/
           if (theWhere !== "")
             theUrl += " Where " + theWhere;
           queryServer(theUrl, false, function(results){
@@ -841,10 +851,18 @@ define([
           }
         }
 
+        if (comSci) {  // If comSci present, change ordering and label template
+          ddItem.comSci = comSci;
+          ddItem.orderByFields = ddItem.comSciSettings[comSci].orderByFields;
+          ddItem.labelTemplate = ddItem.comSciSettings[comSci].labelTemplate;
+        }
+
         if (ddItem.customRestService) {
           // This section handles queries using the new custom REST service
           let R = ddItem.customRestService;
           let theUrl = R.serviceUrl + "?sql=" + R.sqlTemplate;
+          if (this.tabInfo)
+            where = addToWhere(where, this.tabInfo[this.currTab].spatialWhere, true);
           if (where)
             where = " WHERE " + where;
           else
@@ -863,11 +881,13 @@ define([
         let queryTask = new QueryTask(subLayerURL);
         let query = new Query();
         query.outFields = ddItem.ddOutFields;
+/*
         if (comSci) {  // If comSci present, change ordering and label template
           ddItem.comSci = comSci;
           ddItem.orderByFields = ddItem.comSciSettings[comSci].orderByFields;
           ddItem.labelTemplate = ddItem.comSciSettings[comSci].labelTemplate;
         }
+*/
         query.orderByFields = ddItem.orderByFields;
         query.where = "";
         if (where !== null)
