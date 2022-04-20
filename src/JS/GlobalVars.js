@@ -213,24 +213,11 @@ let csvDownloadWidget = null;
 function setRawFilename(isRaw) {    // Adds/removes "Raw " to/from file name, depending on "radio_downloadTable" radio button selection
   let textBox = getEl("text_dlFileName");
   let v = textBox.value;
-/*
-  let p = v.search("SiteID=");
-  if (p === -1) {
-*/
-    let startRaw = (v.slice(0,4) === "Raw ");
-    if (isRaw && !startRaw)
-      v = "Raw " + v;
-    else if (!isRaw && startRaw)
-      v = v.slice(4);
-/*
-  } else {
-    v = v.slice(p);
-    if (isRaw)
-      v = "Raw data associated with " + v;
-    else
-      v = "Fish Catch for " + v;
-  }
-*/
+  let startRaw = (v.slice(0,4) === "Raw ");
+  if (isRaw && !startRaw)
+    v = "Raw " + v;
+  else if (!isRaw && startRaw)
+    v = v.slice(4);
   textBox.value = v;
 }
 

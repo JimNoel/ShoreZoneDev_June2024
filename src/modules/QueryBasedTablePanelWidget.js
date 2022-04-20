@@ -114,14 +114,12 @@ define([
           dfltFileName = this.tabInfo[this.currTab].tabTitle;
         else if (this.popupTitle)
           dfltFileName = this.popupTitle;
-        dfltFileName = dfltFileName.replace("All Regions","Alaska");
         dfltFileName += ".csv";
         let fileNameEl = getEl("text_dlFileName");
         fileNameEl.value = dfltFileName;
         let fileName = dfltFileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
         let downloadPanel = getEl("downloadPanel");
         downloadPanel.value = dfltFileName;
-          setRawFilename(getEl("radio_downloadRaw").checked);
         setVisible("downloadTypeDiv", this.rawDownloadOption);
         setVisible(downloadPanel, true);
       };
