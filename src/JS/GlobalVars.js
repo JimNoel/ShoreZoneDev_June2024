@@ -273,7 +273,7 @@ ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssComFirst" name="ssComm
 ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
 ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'ssSpeciesPanel\',false,ssWidget,\'SpeciesPanel\')">Close</button>';
 
-let faSpeciesDropdownHtml = '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
+let faSpeciesDropdownHtml = '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" autocomplete="off" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
 faSpeciesDropdownHtml +=  '{Species}<br><br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="FMP" onclick="faWidget.filterDropdown(\'Species\',null,null,\'FMP=1\')">federally managed species<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',null,null,\'-FMP=1\')">All Fish<br><br>';
