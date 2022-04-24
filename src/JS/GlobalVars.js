@@ -248,7 +248,11 @@ function searchableDD_Filter(startId) {
       dd[i].style.display = "none";
     }
   }
-  dd.size = numOptions;
+  dd.size = 5;      // numOptions;
+  if (numOptions === 0)
+    dd.size = 1;
+  else if (numOptions <= 5)
+    dd.size = numOptions;
 }
 
 
@@ -273,13 +277,18 @@ ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssComFirst" name="ssComm
 ssSpeciesDropdownHtml += '<input type="radio" id="radio_ssSciFirst" name="ssCommSciOrder" value="sci" onclick="ssWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
 ssSpeciesDropdownHtml += '<button id="ssSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'ssSpeciesPanel\',false,ssWidget,\'SpeciesPanel\')">Close</button>';
 
-let faSpeciesDropdownHtml = '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" autocomplete="off" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
-faSpeciesDropdownHtml +=  '{Species}<br><br>';
+let faSpeciesDropdownHtml = '<div>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_fmp" name="fishTypes" value="FMP" onclick="faWidget.filterDropdown(\'Species\',null,null,\'FMP=1\')">federally managed species<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_allFishTypes" name="fishTypes" value="all" checked  onclick="faWidget.filterDropdown(\'Species\',null,null,\'-FMP=1\')">All Fish<br><br>';
+faSpeciesDropdownHtml += '</div><div style="position:absolute; top:5px; left:250px">';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faComFirst" name="faCommSciOrder" value="common" checked onclick="faWidget.filterDropdown(\'Species\',null,\'com\')">Common Name<br>';
 faSpeciesDropdownHtml += '<input type="radio" id="radio_faSciFirst" name="faCommSciOrder" value="sci" onclick="faWidget.filterDropdown(\'Species\',null,\'sci\')">Scientific Name<br>';
-faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" class="closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false, faWidget,\'SpeciesPanel\',\'radio_fmp\')">Close</button>';
+faSpeciesDropdownHtml += '</div><div style="position:absolute; top:5px; right:10px">';
+faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false, faWidget,\'SpeciesPanel\',\'radio_fmp\')">Close</button>';
+faSpeciesDropdownHtml += '&emsp;<button onclick="expandDropdownPanel(\'faSpeciesPanel\', false)">Cancel</button>';
+faSpeciesDropdownHtml += '</div>';
+faSpeciesDropdownHtml += '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" autocomplete="off" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
+faSpeciesDropdownHtml +=  '{Species}<br><br>';
 
 let lastInnerHeight = window.innerHeight;
 let innerHeight_noFileDownloadBar = lastInnerHeight;

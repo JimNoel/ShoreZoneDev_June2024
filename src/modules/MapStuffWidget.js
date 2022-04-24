@@ -824,7 +824,7 @@ define([
             { ddName: "SpeciesPanel",
               ddTitle: "Species",
               inCombo: true,
-              htmlTemplate: '<button id="faSpeciesPanel_Button" onclick="expandDropdownPanel(\'faSpeciesPanel\', true, faWidget,\'SpeciesPanel\',\'radio_fmp\')">[All]</button><div id="faSpeciesPanel_Content" class="dropdown-content" >' + faSpeciesDropdownHtml + '</div>',
+              htmlTemplate: '<button id="faSpeciesPanel_Button" onclick="expandDropdownPanel(\'faSpeciesPanel\', true, faWidget,\'SpeciesPanel\',\'radio_fmp\')">[All]</button><div id="faSpeciesPanel_Content" class="dropdown-content" style="width: 550px" >' + faSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
               subDropDowns: ["Species"],
               layerSubNames: "Species",
