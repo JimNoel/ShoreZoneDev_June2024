@@ -24,7 +24,7 @@ noaaLinksContent +=
   '</span>' +
   '<span>' +
     '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;</span>' +
-    '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'NFAA_DataDictionaryForRawDataDownloads.pdf\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<a id="testLabel" style="color:Black"  href="#" onclick="showSiteInfo()" >Site Info</a>  &nbsp;&nbsp;' +
   '<a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab(\'mailto:Steve.Lewis@noaa.gov\')" >Contact</a>';
