@@ -828,6 +828,7 @@ define([
               SelectedOption: "All",
               subDropDowns: ["Species"],
               layerSubNames: "Species",
+              booleanWhereClause: "FMP=1",                // There WHERE clause to add if booleanWhere argument is 1
               booleanWhereLabel: "FMP Species",
             }
           ],

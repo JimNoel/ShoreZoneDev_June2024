@@ -827,7 +827,7 @@ define([
         }
       };
 
-      this.filterDropdown = function(ddItem, where, comSci, booleanWhere) {
+      this.filterDropdown = function(ddItem, where, comSci, booleanWhereUpdate=null) {
         if (typeof ddItem === "string")     // ddItem argument can be either object or string.  If string, reset to appropriate object
           ddItem = this.getddItem(ddItem);
 
@@ -838,18 +838,18 @@ define([
 
         if (ddItem.expandPanelId) {
           let expandPanel = this.getddItem(ddItem.expandPanelId);
-          if (typeof booleanWhere === "string")
-            expandPanel.booleanWhere = booleanWhere;
-          if (typeof expandPanel.booleanWhere === "string") {
-            let S = expandPanel.booleanWhere;
-            if (S.slice(0,1) !== "-")
+
+          if (booleanWhereUpdate) {
+            where = removeFromWhereClause(where, expandPanel.booleanWhereClause);
+            expandPanel.booleanWhere = "";
+            if (booleanWhereUpdate === 1) {
+              expandPanel.booleanWhere = expandPanel.booleanWhereClause;
               where = addToWhere(where, expandPanel.booleanWhere);
-            else {
-              S = S.slice(1);
-              where = removeFromWhereClause(where, S);
             }
+            ddItem.SelectedOption = ddItem.initialSelectedOption;     // If booleanWhere argument supplied, then reset .SelectedOption
           }
         }
+
 
         if (comSci) {  // If comSci present, change ordering and label template
           ddItem.comSci = comSci;
@@ -1054,7 +1054,7 @@ define([
         let fCtHtml = '&emsp;<LABEL class="boldLabel" id="' + fCtID + '"></LABEL>&emsp;';
         let spanHtml = '<span id="' + fCtSpanId + '">' + fCtHtml + '</span>';
         this.featureCountElId = fCtID;
-        this.featureCountTemplate = "{0} items";
+        this.featureCountTemplate = "{0} rows";
 //        this.featureCountTemplate = "{0} {1}";    // old code -- current code uses "items" for everything
 
         //let titleEl = getEl("tableQueryExpando_Title");

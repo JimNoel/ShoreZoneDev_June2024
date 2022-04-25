@@ -753,12 +753,7 @@ define([
         theWhere = where;
 
       // Remove current dropdown from WHERE clause
-      let A = theWhere.split(" AND ");
-      for (let i=0; i<A.length; i++) {
-        if (A[i].indexOf(currDDinfo.whereField) !== -1)
-          A.splice(i,1);    // remove one item at position i
-      }
-      theWhere = A.join(" AND ");
+      theWhere = removeFromWhereClause(theWhere, currDDinfo.whereField);
       this.filterDropdown(currDDinfo, theWhere);
     },
 
