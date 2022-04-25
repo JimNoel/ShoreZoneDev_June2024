@@ -20,7 +20,7 @@ noaaLinksContent +=
   '</span>' +
   '<span>' +
   //  '<a id="metadataLabel" style="color:Black"  href="https://www.fisheries.noaa.gov/webdam/download/70834468" >Metadata</a>  &nbsp;&nbsp;' +
-    '<span class="fa"><a id="faGuidesLabel" style="color:Black" href="#" onclick="openNewTab(\'NFAA-AppFeatures_Map&TablePanels.pdf\')" >FA User Guides</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="faGuidesLabel" style="color:Black" href="#" onclick="openNewTab(\'NFAA-AppFeatures_Map&TablePanels.tif\')" >FA User Guides</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<span>' +
     '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;</span>' +

@@ -11,7 +11,7 @@ let justAK = false;
 
 let csvDownloadFields = "R.SiteID,R.RawSite,R.Region,R.Location,R.Lat,R.Long,R.Habitat,R.EventID,R.RawEvent,R.Date,R.GearBasic,R.GearSpecific," +
   "R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Fam_ScientificName,R.Unmeasured,R.Length_mm,R.LengthType,R.LifeStage," +
-  "R.FMP,R.FMP_BSAI,R.FMP_GOA,R.FMP_Arctic,R.FMP_Salmon,R.Temp_C,R.Salinity,R.TidalStage,R.ProjectName,R.DataProvider,R.PI";
+  "R.FMP,R.FMP_BSAI,R.FMP_GOA,R.FMP_Arctic,R.FMP_Salmon,R.Temp_C,R.Salinity,R.TidalStage,R.ProjectName,R.PointOfContact,R.PI";
 
 // TODO: Put this near top
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
@@ -231,7 +231,7 @@ function searchableDD_expand(startId, showAll) {
     //dd.size = dd.length;
   }
   else
-    dd.size = 1;
+    dd.size = 0;
 }
 
 function searchableDD_Filter(startId) {
@@ -248,7 +248,10 @@ function searchableDD_Filter(startId) {
       dd[i].style.display = "none";
     }
   }
-  dd.size = 5;      // numOptions;
+  if (filter === "")
+    dd.size = 0;
+  else
+    dd.size = 5;      // numOptions;
 /*
   if (numOptions === 0)
     dd.size = 1;
@@ -334,8 +337,10 @@ function expandDropdownPanel(panelId, expand, w, ddName, radioId) {
   let className = "dropdown-content";
   if (expand)
     className = "dropdown-content-visible";
-  else
+  else {
     getEl(panelId.replace("Panel","") + "_Text").value = "";
+    getEl(panelId.replace("Panel","") + "_Dropdown").size = 0;
+  }
   getEl(panelId + "_Content").setAttribute("class", className);
   if (w) {
     let ddInfo = w.getddItem(ddName);
