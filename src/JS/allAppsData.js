@@ -16,9 +16,12 @@ noaaLinksContent +=
   '<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/privacy-policy\')" >Privacy Policy</a>  &nbsp;&nbsp;' +
   '<span>' +
     '<span class="sz"><a id="shoreZonePageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/alaska-shorezone\')" >ShoreZone Page</a>  &nbsp;&nbsp;</span>' +
-    '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'UnderConstruction.html\')" >Fish Atlas Page</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Overview</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
+  '<span>' +
   //  '<a id="metadataLabel" style="color:Black"  href="https://www.fisheries.noaa.gov/webdam/download/70834468" >Metadata</a>  &nbsp;&nbsp;' +
+    '<span class="fa"><a id="faGuidesLabel" style="color:Black" href="#" onclick="openNewTab(\'NFAA-AppFeatures_Map&TablePanels.pdf\')" >FA User Guides</a>  &nbsp;&nbsp;</span>' +
+  '</span>' +
   '<span>' +
     '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;</span>' +
     '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
