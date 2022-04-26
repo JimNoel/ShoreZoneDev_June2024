@@ -16,15 +16,15 @@ noaaLinksContent +=
   '<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/privacy-policy\')" >Privacy Policy</a>  &nbsp;&nbsp;' +
   '<span>' +
     '<span class="sz"><a id="shoreZonePageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/alaska-shorezone\')" >ShoreZone Page</a>  &nbsp;&nbsp;</span>' +
-    '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Overview</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Homepage</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<span>' +
   //  '<a id="metadataLabel" style="color:Black"  href="https://www.fisheries.noaa.gov/webdam/download/70834468" >Metadata</a>  &nbsp;&nbsp;' +
-    '<span class="fa"><a id="faGuidesLabel" style="color:Black" href="#" onclick="openNewTab(\'NFAA-AppFeatures_Map&TablePanels.tif\')" >FA User Guides</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="faGuidesLabel" style="color:Black" href="#" onclick="openNewTab(\'NFAA-QuickStartGuide.png\')" >FA Quick Start</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<span>' +
     '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;</span>' +
-    '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'NFAA_DataDictionaryForRawDataDownloads.pdf\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'NFAA-DataDictionary.pdf\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<a id="testLabel" style="color:Black"  href="#" onclick="showSiteInfo()" >Site Info</a>  &nbsp;&nbsp;' +
   '<a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab(\'mailto:Steve.Lewis@noaa.gov\')" >Contact</a>';
