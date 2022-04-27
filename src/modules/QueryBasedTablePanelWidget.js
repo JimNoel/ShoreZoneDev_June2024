@@ -868,6 +868,8 @@ define([
           else
             where = "";
           theUrl = theUrl.replace("{W}", where);
+          if (ddItem.orderByFields)
+            theUrl = theUrl.replace("{S}",ddItem.orderByFields.join(","));
           queryServer(theUrl, false, function(results) {
             results = JSON.parse(results);
             this.processDropdownQueryResults(results, ddItem, this);

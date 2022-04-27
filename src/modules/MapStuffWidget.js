@@ -817,7 +817,7 @@ define([
               isAlpha: true,
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName FROM vw_FishCounts_flat {W} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY Sp_CommonName"
+                sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName FROM vw_FishCounts_flat {W} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY {S}"
               },
               liveUpdate: true
             },
