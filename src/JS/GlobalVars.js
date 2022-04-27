@@ -11,7 +11,7 @@ let justAK = false;
 
 let csvDownloadFields = "R.SiteID,R.RawSite,R.Region,R.Location,R.Lat,R.Long,R.Habitat,R.EventID,R.RawEvent,R.Date,R.GearBasic,R.GearSpecific," +
   "R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Fam_ScientificName,R.Unmeasured,R.Length_mm,R.LengthType,R.LifeStage," +
-  "R.FMP,R.FMP_BSAI,R.FMP_GOA,R.FMP_Arctic,R.FMP_Salmon,R.Temp_C,R.Salinity,R.TidalStage,R.ProjectName,R.PointOfContact,R.PI";
+  "R.FMP,R.FMP_BSAI,R.FMP_GOA,R.FMP_Arctic,R.FMP_Salmon,R.Temp_C,R.Salinity,R.TidalStage,R.ProjectName,R.PointOfContact,R.PI,R.CiteID,R.doi";
 
 // TODO: Put this near top
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
