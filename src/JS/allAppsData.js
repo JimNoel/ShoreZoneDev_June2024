@@ -39,7 +39,8 @@ function getEl(id) {
 }
 
 function showSiteInfo() {
-  alert("Website last modified on  " + document.lastModified);
+  setVisible('siteInfoPanel', true);
+  //alert("Website last modified on  " + document.lastModified);
 }
 
 function queryServer(url, returnJson, responseHandler, postInfo) {

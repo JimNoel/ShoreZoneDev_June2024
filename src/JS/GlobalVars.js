@@ -13,7 +13,14 @@ let csvDownloadFields = "R.SiteID,R.RawSite,R.Region,R.Location,R.Lat,R.Long,R.H
   "R.SpCode,R.Sp_CommonName,R.Sp_ScientificName,R.Fam_CommonName,R.Fam_ScientificName,R.Unmeasured,R.Length_mm,R.LengthType,R.LifeStage," +
   "R.FMP,R.FMP_BSAI,R.FMP_GOA,R.FMP_Arctic,R.FMP_Salmon,R.Temp_C,R.Salinity,R.TidalStage,R.ProjectName,R.PointOfContact,R.PI,R.CiteID,R.doi";
 
-// TODO: Put this near top
+let closeCode = "setVisible('siteInfoPanel', false)";
+let siteInfoHtml = '<b class="bold1">Website Information</b><br><br><br>';
+siteInfoHtml += '<b class="bold2">Most recent website update:  </b>' + document.lastModified.split(" ")[0] + '<br><br>';
+siteInfoHtml += '<b class="bold2">Fish Atlas database updates:</b><br>';
+siteInfoHtml += 'April 2022:  Added data from 1572 sites throughout Alaska';
+siteInfoHtml += '<br><br><br><br><button style="position:absolute; right:5px; bottom: 5px" onclick="' + closeCode + '">Close</button>';
+
+
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let mainSzMediaServer = "https://maps.psmfc.org/shorezonedata/";
 let ssPhotoServer = "https://alaskafisheries.noaa.gov/mapping/shorestationdata/compress75/";
@@ -1446,6 +1453,12 @@ function downloadCsv(csv, headerCsv) {
   let fileName = getEl("text_dlFileName").value.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
   hiddenElement.download = fileName;
   hiddenElement.click();
+}
+
+function makeSiteInfoPanel() {
+  let siteInfoPanel = makeHtmlElement("div", "siteInfoPanel", "dropdown-content-visible", "top:200px;right:200px;padding:10px", siteInfoHtml);
+  document.body.appendChild(siteInfoPanel);
+  //setVisible("siteInfoPanel", false);
 }
 
 
