@@ -143,7 +143,10 @@ define([
         let csv = '"Table ';
         if (forRawData)
           csv = '"Raw data ';
-        csv += ' download from NOAA Fisheries Nearshore Fish Atlas of Alaska, ';
+        let downloadFromText = "NOAA Fisheries ShoreZone mapping website";
+        if (this.downloadFromText)
+          downloadFromText = this.downloadFromText;
+        csv += ' download from ' + downloadFromText + ', ';
         let today = new Date();
         csv += today.toDateString() + '"\n';
 
@@ -159,27 +162,30 @@ define([
           csv = "Raw  Fish Atlas data\n\n"
 */
         csv += "Selection Criteria:\n";
-        let baseWhere = this.customRestService.baseWhere;
+        let baseWhere = null;
+        if (this.customRestService)
+          baseWhere = this.customRestService.baseWhere;
         if (baseWhere)
           csv += baseWhere.replace("=",",") + "\n";
-        for (let d=0; d<this.dropDownInfo.length; d++) {
-          let ddInfo = this.dropDownInfo[d];
-          if (this.dropdownElements.includes(ddInfo.wrapperId)) {
-            let v = ddInfo.SelectedOption;
-            if (!["showCol", "All"].includes(v)) {
-              let i = ddInfo.options.findIndex(obj => obj.value === v);
-              let L = ddInfo.options[i].label;
-              csv += ddInfo.whereField + "," + v + "\n";
+        if (this.dropDownInfo)
+          for (let d=0; d<this.dropDownInfo.length; d++) {
+            let ddInfo = this.dropDownInfo[d];
+            if (this.dropdownElements.includes(ddInfo.wrapperId)) {
+              let v = ddInfo.SelectedOption;
+              if (!["showCol", "All"].includes(v)) {
+                let i = ddInfo.options.findIndex(obj => obj.value === v);
+                let L = ddInfo.options[i].label;
+                csv += ddInfo.whereField + "," + v + "\n";
+              }
             }
+            if (ddInfo.booleanWhere)
+              csv += ddInfo.booleanWhere.split("=").join(",") + "\n";
           }
-          if (ddInfo.booleanWhere)
-            csv += ddInfo.booleanWhere.split("=").join(",") + "\n";
-        }
 
         let extent = null;
         if (this.clickableSymbolType === "point")
           extent = this.selExtent;
-        if (!extent)
+        if (!extent && this.customRestService)
           extent = this.customRestService.extent;
         if (extent) {
           let swLonLat = webMercatorUtils.xyToLngLat(extent.xmin, extent.ymin);

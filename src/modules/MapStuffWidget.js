@@ -252,6 +252,7 @@ define([
           tableHeaderTitle: "All Regions",
           displayDivName: "ssContainer",
           mapServiceLayer: ssMapServiceLayer,
+          downloadFromText: "NOAA Fisheries Shore Station database",
           //dynamicLayerName: true,
           dropDownInfo: [
             { ddName: "Region",
@@ -526,6 +527,7 @@ define([
           visibleHeaderElements: ['ssSpTableTableDownload', 'ssSpTableRadioFilter', 'ssSpTableLabelSpan_featureCount'],
           dropdownElements: [],
           featureOutFields: ["SppNameHtml", "Common_name"],
+          downloadFromText: "NOAA Fisheries Shore Station database",
           downloadExcludeFields: [],
           tableHeaderTitle: "All Regions",
           displayDivName: "ssSpTableContainer",
@@ -712,6 +714,7 @@ define([
           displayDivName: "faContainer",
           mapServiceLayer: faMapServiceLayer,
           mapServiceSublayers: ["Regions", "Sites"],
+          downloadFromText: "NOAA Fisheries Nearshore Fish Atlas of Alaska",
           rawDownloadOption: true,
           //subLayerName: "vw_FishCounts_flat",             // If using customRestService, this only sets MapService layer to filter & display (as alternative to visible clickableSymbols layer)
           //dynamicLayerName: true,
@@ -1069,6 +1072,7 @@ define([
           footerDivName:  "faSpTableFooterDiv",
           visibleHeaderElements: ['faSpTableGear_ddWrapper', 'faSpTablePOC_ddWrapper', 'faSpTableTableDownload', 'faSpTableLabelSpan_featureCount'],
           dropdownElements: ['faSpTableGear_ddWrapper', 'faSpTablePOC_ddWrapper', 'faSpTableDates_ddWrapper'],
+          downloadFromText: "NOAA Fisheries Nearshore Fish Atlas of Alaska",
           rawDownloadOption: true,
           //dynamicLayerName: true,
           //LayerNameAddOn: "",

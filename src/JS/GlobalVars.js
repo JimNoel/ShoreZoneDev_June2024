@@ -342,10 +342,11 @@ let nonNullList = null;
 
 function expandDropdownPanel(panelId, expand, w, ddName, radioId) {
   let className = "dropdown-content";
+  let searchTextBox = getEl(panelId.replace("Panel","") + "_Text");
   if (expand)
     className = "dropdown-content-visible";
-  else {
-    getEl(panelId.replace("Panel","") + "_Text").value = "";
+  else if (searchTextBox) {
+    searchTextBox.value = "";
     getEl(panelId.replace("Panel","") + "_Dropdown").size = 0;
   }
   getEl(panelId + "_Content").setAttribute("class", className);
@@ -1458,7 +1459,7 @@ function downloadCsv(csv, headerCsv) {
 function makeSiteInfoPanel() {
   let siteInfoPanel = makeHtmlElement("div", "siteInfoPanel", "dropdown-content-visible", "top:200px;right:200px;padding:10px", siteInfoHtml);
   document.body.appendChild(siteInfoPanel);
-  //setVisible("siteInfoPanel", false);
+  setVisible("siteInfoPanel", false);
 }
 
 
