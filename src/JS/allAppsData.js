@@ -95,3 +95,10 @@ function makeSublayerIdTable(serviceUrl, idTable, onCompleteFunction) {
   });
 }
 
+// a HACK to determine if the browser is Safari
+//   This method is not generally recommended, but I haven't been able to find a suitable approach
+//   using feature detection.  Issue arises in trying to use display:none for select options
+function isApple() {
+  return navigator.vendor.slice(0,5) === "Apple";
+}
+

@@ -299,7 +299,7 @@ faSpeciesDropdownHtml += '</div><div style="position:absolute; top:5px; right:10
 faSpeciesDropdownHtml += '<button id="faSpeciesPanel_closeButton" onclick="expandDropdownPanel(\'faSpeciesPanel\', false, faWidget,\'SpeciesPanel\',\'radio_fmp\')">Go</button>';
 faSpeciesDropdownHtml += '&emsp;<button onclick="expandDropdownPanel(\'faSpeciesPanel\', false)">Close</button>';
 faSpeciesDropdownHtml += '</div>';
-faSpeciesDropdownHtml += '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" autocomplete="off" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
+faSpeciesDropdownHtml += '&emsp;&emsp;<b>Search dropdown:</b>  <input type="text" id="faSpecies_Text" size="35" autocomplete="off" onclick="searchableDD_expand(\'faSpecies\',true)" onkeyup="searchableDD_Filter(\'faSpecies\')"><br><br>';
 faSpeciesDropdownHtml +=  '{Species}<br><br>';
 
 let lastInnerHeight = window.innerHeight;
@@ -343,8 +343,16 @@ let nonNullList = null;
 function expandDropdownPanel(panelId, expand, w, ddName, radioId) {
   let className = "dropdown-content";
   let searchTextBox = getEl(panelId.replace("Panel","") + "_Text");
-  if (expand)
+  if (expand) {
+    if (searchTextBox) {
+      searchTextBox.placeholder = "Enter some text ...";
+      if (isApple()) {
+        searchTextBox.placeholder = "Sorry, this feature doesn't work in Safari!";
+        searchTextBox.disabled = true;
+      }
+    }
     className = "dropdown-content-visible";
+  }
   else if (searchTextBox) {
     searchTextBox.value = "";
     getEl(panelId.replace("Panel","") + "_Dropdown").size = 0;
