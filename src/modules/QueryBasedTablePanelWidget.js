@@ -173,6 +173,8 @@ define([
             if (this.dropdownElements.includes(ddInfo.wrapperId)) {
               let v = ddInfo.SelectedOption;
               if (!["showCol", "All"].includes(v)) {
+                if (!ddInfo.isAlpha)
+                  v = parseInt(v);      // option values are integers (not alpha), so convert string to integer
                 let i = ddInfo.options.findIndex(obj => obj.value === v);
                 let L = ddInfo.options[i].label;
                 csv += ddInfo.whereField + "," + v + "\n";

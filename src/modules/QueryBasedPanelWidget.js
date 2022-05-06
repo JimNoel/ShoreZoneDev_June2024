@@ -527,11 +527,6 @@ define([
             }
             if (itemWhere) {
               theWhere = addToWhere(theWhere, itemWhere)
-/*
-              if (theWhere !== "")
-                theWhere += " AND ";
-              theWhere += itemWhere;
-*/
               //theGroup += "," + item.whereField;    // Not doing if DD field is also displayed in table
             }
           }
