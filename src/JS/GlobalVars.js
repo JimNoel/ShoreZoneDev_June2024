@@ -1544,20 +1544,6 @@ function doTableDownload(cancel) {
   downloadCsv(csv, csvDownloadWidget.makeHeaderCsv());
 }
 
-/*
-function download_csv(csv, dfltFileName, rawDownloadOption) {
-  let fileNameEl = getEl("text_dlFileName");
-  fileNameEl.value = dfltFileName;
-  let fileName = dfltFileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
-  let downloadPanel = getEl("downloadPanel");
-  downloadPanel.value = dfltFileName;
-  setVisible("downloadTypeDiv", rawDownloadOption);
-  setVisible(downloadPanel, true);
-  let hiddenElement = getEl("hidden_downloadTable");
-  // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
-  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-}
-*/
 
 function addToWhere(where, newWhere, rmvAlias) {
   if (!newWhere || newWhere==="")

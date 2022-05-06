@@ -121,7 +121,10 @@ define([
         let fileName = dfltFileName.split(".")[0] + ".csv";     // ensure the name has ".csv" extension
         let downloadPanel = getEl("downloadPanel");
         downloadPanel.value = dfltFileName;
-        setRawFilename(getEl("radio_downloadRaw").checked);
+        let cb_downloadRaw = getEl("radio_downloadRaw");
+        if (!this.rawDownloadOption)
+          cb_downloadRaw.checked = false;
+        setRawFilename(cb_downloadRaw.checked);
         setVisible("downloadTypeDiv", this.rawDownloadOption);
         setVisible(downloadPanel, true);
       };
