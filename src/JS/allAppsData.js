@@ -15,20 +15,35 @@ noaaLinksContent +=
   '<a id="disclaimerLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.noaa.gov/disclaimer.html\')" >Disclaimer</a> &nbsp;&nbsp;\n' +
   '<a id="privacyPolicyLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/privacy-policy\')" >Privacy Policy</a>  &nbsp;&nbsp;' +
   '<span>' +
-    '<span class="sz"><a id="shoreZonePageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/alaska-shorezone\')" >ShoreZone Page</a>  &nbsp;&nbsp;</span>' +
-    '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Homepage</a>  &nbsp;&nbsp;</span>' +
+    '<span class="sz"><a id="shoreZonePageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/alaska-shorezone\')" >SZ Homepage</a>  &nbsp;&nbsp;</span>' +
+  //  '<a id="metadataLabel" style="color:Black"  href="https://www.fisheries.noaa.gov/webdam/download/70834468" >SZ Metadata</a>  &nbsp;&nbsp;' +
+    '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >SZ Data Dictionary</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<span>' +
-  //  '<a id="metadataLabel" style="color:Black"  href="https://www.fisheries.noaa.gov/webdam/download/70834468" >Metadata</a>  &nbsp;&nbsp;' +
+  '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Homepage</a>  &nbsp;&nbsp;</span>' +
     '<span class="fa"><a id="faGuidesLabel" style="color:Black" href="#" onclick="openNewTab(\'NFAA-QuickStartSheet.png\')" >FA Quick Start</a>  &nbsp;&nbsp;</span>' +
+    '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'NFAA-DataDictionary.pdf\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<span>' +
-    '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >Data Dictionary</a>  &nbsp;&nbsp;</span>' +
-    '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'NFAA-DataDictionary.pdf\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
+    '<span class="ss"><a id="ssPageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/alaska-shore-station-database\')" >SS Homepage</a>  &nbsp;&nbsp;</span>' +
+    '<span class="ss"><a id="ssMetadataLabel" style="color:Black" href="#" onclick="openNewTab(\'https://media.fisheries.noaa.gov/dam-migration/shorezone-ground-station-metadata.pdf\')" >SS Metadata</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<a id="testLabel" style="color:Black"  href="#" onclick="showSiteInfo()" >Site Info</a>  &nbsp;&nbsp;' +
   '<a id="contactLabel" style="color:Black"  href="#" onclick="openNewTab(\'mailto:Steve.Lewis@noaa.gov\')" >Contact</a>';
 
+
+function makeHtmlElement(tagName, theId, theClass, theStyle, theContent) {
+  let el = document.createElement(tagName);
+  if (theId)
+    el.setAttribute("id", theId);
+  if (theClass)
+    el.setAttribute("class", theClass);
+  if (theStyle)
+    el.setAttribute("style", theStyle);
+  if (theContent)
+    el.innerHTML = theContent;
+  return el;
+}
 
 function getEl(id) {
   // If the arguent is a string, returns the element whose id is equal to the argument
@@ -36,6 +51,30 @@ function getEl(id) {
   if ((typeof id) === "object")
     return id;
   return document.getElementById(id);
+}
+
+function setVisible(id, value) {
+  // Show/hide HTML element
+  el = getEl(id);
+  if (!el)
+    return;   // do nothing if el doesn't exist
+  let visibility = "hidden";
+  if (value)
+    visibility = "inherit";
+  el.style.visibility = visibility;
+}
+
+let closeCode = "setVisible('siteInfoPanel', false)";
+let siteInfoHtml = '<b class="bold1">Website Information</b><br><br><br>';
+siteInfoHtml += '<b class="bold2">Most recent website update:  </b>' + document.lastModified.split(" ")[0] + '<br><br>';
+siteInfoHtml += '<b class="bold2">Fish Atlas database updates:</b><br>';
+siteInfoHtml += 'April 2022:  Added data from 1572 sites throughout Alaska';
+siteInfoHtml += '<br><br><br><br><button style="position:absolute; right:5px; bottom: 5px" onclick="' + closeCode + '">Close</button>';
+
+function makeSiteInfoPanel() {
+  let siteInfoPanel = makeHtmlElement("div", "siteInfoPanel", "dropdown-content-visible", "top:200px;right:200px;padding:10px", siteInfoHtml);
+  document.body.appendChild(siteInfoPanel);
+  setVisible("siteInfoPanel", false);
 }
 
 function showSiteInfo() {
