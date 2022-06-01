@@ -17,7 +17,7 @@ let csvDownloadFields = "R.SiteID,R.RawSite,R.Region,R.Location,R.Lat,R.Long,R.H
 let altSzMediaServer = "https://alaskafisheries.noaa.gov/mapping/shorezonedata/";
 let mainSzMediaServer = "https://maps.psmfc.org/shorezonedata/";
 let ssPhotoServer = "https://alaskafisheries.noaa.gov/mapping/shorestationdata/compress75/";
-let faPhotoServer = "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos/";
+let faPhotoServer = "https://alaskafisheries.noaa.gov/mapping/FishAtlasData/SitePhotos_temp/";
 let szVideoServer = altSzMediaServer;
 let szPhotoServer = mainSzMediaServer;
 

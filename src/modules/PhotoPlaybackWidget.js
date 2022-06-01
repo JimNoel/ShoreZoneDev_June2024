@@ -167,6 +167,8 @@ define([
 
       this.on_image_load = function() {
         // Called on image load success   param object e Event object
+        setVisible(this, true);
+
 
         if (typeof photo_load_times[this.src] !== "undefined") {
 
@@ -198,6 +200,7 @@ define([
 
       this.load_Photo = function(new_img_src) {
         latest_img_src = new_img_src;
+        setVisible(this.photoImage[0], false);
         this.photoImage.attr("src", latest_img_src);
       }
 

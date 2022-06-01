@@ -20,7 +20,7 @@ noaaLinksContent +=
     '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >SZ Data Dictionary</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<span>' +
-  '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'UnderConstruction.html\')" >FA Homepage</a>  &nbsp;&nbsp;</span>' +
+  '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/nearshore-fish-atlas-alaska\')" >FA Homepage</a>  &nbsp;&nbsp;</span>' +
     '<span class="fa"><a id="faGuidesLabel" style="color:Black" href="#" onclick="openNewTab(\'NFAA-QuickStartSheet.png\')" >FA Quick Start</a>  &nbsp;&nbsp;</span>' +
     '<span class="fa"><a id="FAdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'NFAA-DataDictionary.pdf\')" >FA Data Dictionary</a>  &nbsp;&nbsp;</span>' +
   '</span>' +

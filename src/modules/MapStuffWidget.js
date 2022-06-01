@@ -1947,7 +1947,7 @@ if (view.extent.width > 8000000)
       unit: "metric"
     });
     // Add ESRI search widget to map
-    searchWidget = new Search({ view: view, maxSuggestions: 4 });
+    searchWidget = new Search({ view: view, maxSuggestions: 4, popupEnabled: false });
     view.ui.add(searchWidget, "bottom-right");
 
     view.ui.add(scaleBar, {
@@ -1976,13 +1976,19 @@ if (view.extent.width > 8000000)
     searchWidget.on("suggest-complete", function(event){
       console.log(event);
     });
-
+*/
     searchWidget.on("select-result", function(event){
-      if (event.result.extent.width > 4000000)
-        event.source.zoomScale = 5000;
+      searchWidget.resultGraphic.symbol.size = 20;
+      searchWidget.resultGraphic.symbol.color.a = 0;
+      searchWidget.resultGraphic.symbol.outline.width = 2;
+      searchWidget.resultGraphic.symbol.outline.color = [255, 255, 0, 255];
+      //if (event.result.extent.width > 4000000)
+      //  event.source.zoomScale = 500;
         //event.result.extent.expand(0.1);
-      console.log("The selected search result: ", event);
+      //console.log("The selected search result: ", event);
+      console.log(event.result.name + ",  " + event.result.extent.width.toFixed(0));
     });
+/*
 */
 
       /*    // This filters search suggestions to initial extent
