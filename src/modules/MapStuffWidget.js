@@ -676,7 +676,8 @@ define([
         console.log("Shore Station MapServiceLayer failed to load:  " + error);
       });
 
-      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[currServerNum],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
+      // TEMP -- new FA map service is not on the PSMFC server yet, so get from NOAA server
+      faMapServiceLayer = new MapImageLayer(faMapServiceLayerURLs[1],  {id: "faOpLayer", opacity: 1.0, listMode: "show"});
       faMapServiceLayer.when(function() {
         faMapServiceLayer.sublayers = updateSublayerArgs(faDisplayInfo, faSublayerIDs);
         faMapServiceLayer.visible = false;

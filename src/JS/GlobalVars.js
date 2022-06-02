@@ -94,7 +94,7 @@ let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
 //let szMapServiceLayerURLs = makeServiceUrls("service", "sz_dev");
 //let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone_w1000mVideo");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
-let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_v2020");
+let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas");
 //let faMapServiceLayerURLs = makeServiceUrls("service", "dev/FishAtlas_v2020_dev");
 //let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_wViews");
 let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
@@ -475,7 +475,8 @@ makeSublayerIdTable(szMapServiceLayerURLs[currServerNum], szSublayerIDs);
 let ssSublayerIDs = {};
 makeSublayerIdTable(ssMapServiceLayerURLs[currServerNum], ssSublayerIDs);
 let faSublayerIDs = {};
-makeSublayerIdTable(faMapServiceLayerURLs[currServerNum], faSublayerIDs);
+// TEMP -- new FA map service is not on the PSMFC server yet, so get from NOAA server
+makeSublayerIdTable(faMapServiceLayerURLs[1], faSublayerIDs);
 
 let VIDEO_FOLDER = "video/";
 let videoSnippetDownloadFolder = altSzMediaServer + VIDEO_FOLDER + "midres_mp4";
