@@ -5,7 +5,9 @@
 let test = false;    // For trying out things before comitting to code
 
 let extentGraphic = null;
-//let selExtent = null;
+
+let tooBigWidthKm = 4453;      // Maximum extent width in km for placename search result
+let dfltZoom = 9;
 
 let justAK = false;
 

@@ -1975,22 +1975,51 @@ if (view.extent.width > 8000000)
 
 /*
     searchWidget.on("suggest-complete", function(event){
-      console.log(event);
+//      if (event.numResults > 0)
+//        event.results[0].results.pop();
+      //searchWidget.maxResults = 50;
+      tooBigWidthKm = 3000;
+      //let r = 0;
+
+//      for (let r=0; r<event.numResults; r++) {
+      for (let r=event.numResults-1; r>=0; r--) {
+        searchWidget.search(event.results[0].results[r].key);
+//      searchWidget.search(event.searchTerm);
+        searchWidget.on("search-complete", function(e){
+          //let results = e.results[0].results[0];
+          let extentWidthKm = e.results[0].results[0].extent.width/1000;
+          if (extentWidthKm > tooBigWidthKm)
+            this.results = this.results.splice(r, 1);
+//                  let s = "Name@AddrType@Extent_km\n";
+//                  for (let r=0; r<results.length; r++) {
+//                    s += results[r].name + "@" + results[r].feature.attributes.Addr_type + "@" + extentWidthKm.toFixed(1) + "\n";
+//                  }
+//                  console.log(e);
+        }.bind({results: event.results[0].results, r: r}));
+      }
+
+      //console.log(event);
     });
 */
+
     searchWidget.on("select-result", function(event){
+      // Make result graphic more visible
       searchWidget.resultGraphic.symbol.size = 20;
       searchWidget.resultGraphic.symbol.color.a = 0;
       searchWidget.resultGraphic.symbol.outline.width = 2;
       searchWidget.resultGraphic.symbol.outline.color = [255, 255, 0, 255];
-      //if (event.result.extent.width > 4000000)
-      //  event.source.zoomScale = 500;
-        //event.result.extent.expand(0.1);
-      //console.log("The selected search result: ", event);
-      console.log(event.result.name + ",  " + event.result.extent.width.toFixed(0));
+
+      // If extent width of result equals tooBigWidthKm, then zoom to fixed zoom value
+      let widthKm = Math.round(searchWidget.selectedResult.extent.width/1000);
+      let placeCenter = searchWidget.resultGraphic.geometry;
+      if (widthKm !== tooBigWidthKm)
+        view.goTo(searchWidget.selectedResult);
+      else
+        view.goTo({
+          center: placeCenter,
+          zoom: dfltZoom
+        });
     });
-/*
-*/
 
       /*    // This filters search suggestions to initial extent
           searchWidget.watch("activeSource", function() {
@@ -2002,17 +2031,9 @@ if (view.extent.width > 8000000)
       */
 
           // Code to handle search results with improper extents
-/*
           searchWidget.goToOverride = function(view, goToParams) {
-            let type =  this.results[0].results[0].feature.geometry.type;
-            let tgt = goToParams.target.target;
-            let goToTarget = tgt;
-            return view.goTo({
-              center: tgt.center,
-              zoom: 8
-            }, goToParams.options);
+            // Do nothing -- goTo will be handled in the Search widget "select-result" handler
           };
-*/
 
     /*  Bottom widgets  */
 
