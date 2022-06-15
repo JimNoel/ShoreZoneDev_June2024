@@ -1908,9 +1908,10 @@ if (view.extent.width > 8000000)
         });
     */
 
-
-    let basemapSource = [nauticalBaseLayer];
+    // TODO: If service just temporarily down, then set back to "nauticalBaseLayer" when it's back
+    let basemapSource = [];     // [nauticalBaseLayer];
     //basemapSource.push(newBaseLayer);
+
     for (bId of basemapIds) {
       basemapSource.push(Basemap.fromId(bId));
     }
