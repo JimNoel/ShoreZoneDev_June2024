@@ -79,7 +79,7 @@ function makeSiteInfoPanel() {
 
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
-  //alert("Website last modified on  " + document.lastModified);
+  //faWidget.deSanitize();
 }
 
 function queryServer(url, returnJson, responseHandler, postInfo) {

@@ -34,11 +34,8 @@ let formatNumber = function(value, formatting) {
     newValue = value.toFixed(formatting.numDecimals);
   else if (formatting.dateFormat)
     newValue = formatNumber_Date(value);
+//  newValue = "<PRE><nobr>" + padString(newValue, padLength, "left", " ") + "</nobr></PRE>";   // pad to the left, so numbers (as strings) sort correctly
   newValue = padString(newValue, padLength, "left", padChars);    // pad to the left, so numbers (as strings) sort correctly
-/*
-  if (typeof value === "number")
-    newValue = '<div style="text-align: right">' + newValue + '</div>';     // right-align if numeric
-*/
   return newValue
 };
 
@@ -47,6 +44,7 @@ define([
   "dojo/_base/declare",
   "dojo/_base/lang",
   "dojo/on",
+  //"dojo/aspect",
   "dijit/form/Select",
   "dstore/Memory",
   "dstore/Trackable",
@@ -61,7 +59,7 @@ define([
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
   "noaa/QueryBasedPanelWidget"
-], function(declare, lang, on, Select, Memory, Trackable, Grid, ColumnHider, ColumnReorder, ColumnResizer, Selector, Selection,
+], function(declare, lang, on, /*aspect,*/ Select, Memory, Trackable, Grid, ColumnHider, ColumnReorder, ColumnResizer, Selector, Selection,
             webMercatorUtils, Query, QueryTask, QueryBasedPanelWidget){
 
 
@@ -460,7 +458,7 @@ define([
                   totals[a].value += features[i].attributes[a];
                 }
               }
-          }
+            }
 
           if (this.idField) {     // For idField, insert span for identifying original row number, so correct feature is identified regardless of current table order
             let idFieldValue = features[i].attributes[this.idField];
@@ -768,7 +766,21 @@ define([
       };
 
 
+      this.deSanitize = function() {
+        let cells = getEl(this.displayDivName).getElementsByClassName("dgrid-cell");
+        for (let c=0; c<1000; c++) {
+          if (cells[c].innerHTML !== cells[c].innerText)
+            cells[c].innerHTML = cells[c].innerText;
+        }
+      }
+
+
       this.processFeatures_Widget = function(features) {
+/*
+        aspect.after(this, "makeTable", function(deferred){
+          this.deSanitize();
+        });
+*/
         this.makeTable(this.fields, features);
         this.setTotals(features);
       };
