@@ -14,10 +14,13 @@
 define([
   "dojo/_base/declare",
   "dojo/_base/lang",
+  "esri/Graphic",
+  "esri/tasks/support/Query",
+  "esri/tasks/QueryTask",
   "esri/views/MapView",
   "noaa/QueryBasedPanelWidget",
   "noaa/PhotoPlaybackWidget"
-], function(declare, lang, View, QueryBasedPanelWidget, PhotoPlaybackWidget){
+], function(declare, lang, Graphic, Query, QueryTask, View, QueryBasedPanelWidget, PhotoPlaybackWidget){
 
   // private vars and functions here
 
@@ -295,6 +298,83 @@ console.log("Current video time:  " + currentTime);
           this.query.outStatistics = null;
           this.noMarkers = false;
           this.runQuery(extent, {theWhere: where});
+        }.bind(this), function(error) {
+          console.log("Nearest point query failed");
+        });
+      };
+
+      this.queryVideoStartPoint = function(geometry, mapPoint) {
+        let query = new Query();
+        query.geometry = geometry;     // extent;
+        query.outFields = "FrameID, VIDEOTAPE, MP4_Seconds";
+        query.spatialRelationship = "contains";
+        query.returnGeometry = true;
+        let queryTask = new QueryTask();
+        queryTask.url = this.mapServiceQueryUrl("1s");
+        queryTask.execute(query).then(function(response) {
+          let features = response.features;
+          if (features.length === 0)
+            return;
+          let minDist = Number.MAX_VALUE;
+          let minDist_f = null;
+          //let minDist_Videotape = null;
+          //let minDist_MP4_Seconds = null;
+          for (let f=0; f<features.length; f++) {
+            let dist = mapPoint.distance(features[f].geometry);
+            if (dist < minDist) {
+              minDist = dist;
+              minDist_f = f;
+              //minDist_Videotape = features[f].attributes.VIDEOTAPE;
+              //minDist_MP4_Seconds = features[f].attributes.MP4_Seconds;
+            }
+          }
+//  TODO: Make graphic from features[minDist_f]
+          let feature = features[minDist_f];
+          let graphic = {     // new Graphic({
+            geometry: feature.geometry,
+            //symbol: ,
+            highlightGeometry: feature.geometry,
+            attributes: feature.attributes
+          };
+          this.displayPlayButton(graphic, null);
+
+        }.bind(this));
+      }
+
+      this.videoPreQuery = function(extent, mapPoint, pass) {
+        //queryComplete = false;
+        let query = new Query();
+        query.geometry = mapPoint;     // extent;
+        query.outFields = "OBJECTID, Join_Count";
+        query.spatialRelationship = "within";
+        query.returnGeometry = true;
+        let queryTask = new QueryTask();
+        queryTask.url = this.mapServiceQueryUrl("VideoGrids_pass" + pass);     //this.mapServiceQueryUrl("VIDEOSAMPLES_250M");
+        queryTask.execute(query).then(function(response) {
+          let features = response.features;
+          if (features.length === 0)
+            return;
+          let f  = features[0];
+          if (pass === 1) {
+            if (f.attributes.Join_Count > 1000)
+              this.videoPreQuery(f.geometry, mapPoint, 2);
+            else
+              this.queryVideoStartPoint(f.geometry, mapPoint);
+          } else if (pass === 2) {
+            this.queryVideoStartPoint(f.geometry, mapPoint);
+          }
+
+
+/*
+          let minSecs = a.Start_MP4_Seconds;
+          let maxSecs = minSecs + 999;      // This ensures that the query will not attempt to return more than 1000 features
+          let where = "VIDEOTAPE='" + a.VIDEOTAPE + "' AND ";
+          where += "MP4_Seconds>=" + minSecs + " AND MP4_Seconds<=" + maxSecs;
+          this.query.groupByFieldsForStatistics = null;
+          this.query.outStatistics = null;
+          this.noMarkers = false;
+          this.runQuery(extent, {theWhere: where});
+*/
         }.bind(this), function(error) {
           console.log("Nearest point query failed");
         });

@@ -148,7 +148,8 @@ define([
           infoWin.content = this.rowHtmlToLines(row);
         else {
           attrs = e.attributes;
-          infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
+          if (attrs.Caption)
+            infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
         }
 
         infoWin.actions.removeAll();
@@ -685,7 +686,6 @@ define([
 
     makeCustomRestQueryUrl: function(geomType, sql, dataType) {
       return this.customRestService.serviceUrl+ "?dataType=" + dataType + "&geomType=" + geomType + "&sql=" + sql;
-
     },
 
     runQuery: function(extent, queryPars, serviceName) {

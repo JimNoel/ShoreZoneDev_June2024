@@ -1495,7 +1495,7 @@ OKAY NOW?
         posDisplay = Math.round(mapPoint.x) + ", " + Math.round(mapPoint.y);
       dom.byId("coordinates").innerHTML = posDisplay;
 
-      if (settings.allZoomLevels) {     //  && !lock_points
+      if (settings.allZoomLevels && view.extent.width>100000) {     //  && !lock_points
         if (mapHoverTimeout)
           clearTimeout(mapHoverTimeout);
         mapHoverTimeout = setTimeout(function(){
@@ -1508,25 +1508,11 @@ OKAY NOW?
     });
   }
 
-  function getMouseLocSZdata(screenPoint) {
-    let radius = view.extent.width/100;
-    let mapPoint = view.toMap(screenPoint);
-/*JN*/    let queryRadius = radius;    // 3800;
-    let queryExtent = mapStuff.makePointExtent(mapPoint, queryRadius);
-    mapStuff.showExtentBox(queryExtent);
-    szVideoWidget.updateMapMagnifier(mapStuff.makePointExtent(mapPoint, radius));
 
-/*JN*/
-if (view.extent.width > 8000000)
-  return;
-/*JN*/
-/*JN*/    queryExtent = view.extent;
-    if (radius === mapHoverRadius)
-      szVideoWidget.runQuery(queryExtent);
-    else
-      szVideoWidget.getEntryPoints(queryExtent, mapPoint);
-    console.log(screenPoint);
-  };
+  function getMouseLocSZdata(screenPoint) {
+    let mapPoint = view.toMap(screenPoint);
+    szVideoWidget.videoPreQuery(view.extent, mapPoint, 1);
+  }
 
   // If mouse if over a video/photo graphic, open popup allowing moving the "camera" to this point
   function handleGraphicHits(response) {
