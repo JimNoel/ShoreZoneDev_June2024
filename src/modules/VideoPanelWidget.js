@@ -14,13 +14,13 @@
 define([
   "dojo/_base/declare",
   "dojo/_base/lang",
-  "esri/Graphic",
+  "esri/geometry/support/webMercatorUtils",
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
   "esri/views/MapView",
   "noaa/QueryBasedPanelWidget",
   "noaa/PhotoPlaybackWidget"
-], function(declare, lang, Graphic, Query, QueryTask, View, QueryBasedPanelWidget, PhotoPlaybackWidget){
+], function(declare, lang, webMercatorUtils, Query, QueryTask, View, QueryBasedPanelWidget, PhotoPlaybackWidget){
 
   // private vars and functions here
 
@@ -304,9 +304,10 @@ console.log("Current video time:  " + currentTime);
       };
 
       this.queryVideoStartPoint = function(geometry, mapPoint) {
+        logTimeStamp("queryVideoStartPoint");
         let query = new Query();
         query.geometry = geometry;     // extent;
-        query.outFields = "FrameID, VIDEOTAPE, MP4_Seconds";
+        query.outFields = "FrameID, VIDEOTAPE, MP4_Seconds, VidCap_HighRes_subPath, VidCap_LowRes_subPath";
         query.spatialRelationship = "contains";
         query.returnGeometry = true;
         let queryTask = new QueryTask();
@@ -315,6 +316,7 @@ console.log("Current video time:  " + currentTime);
           let features = response.features;
           if (features.length === 0)
             return;
+          logTimeStamp("queryVideoStartPoint query results:  " + features.length + " features returned");
           let minDist = Number.MAX_VALUE;
           let minDist_f = null;
           //let minDist_Videotape = null;
@@ -324,24 +326,18 @@ console.log("Current video time:  " + currentTime);
             if (dist < minDist) {
               minDist = dist;
               minDist_f = f;
-              //minDist_Videotape = features[f].attributes.VIDEOTAPE;
-              //minDist_MP4_Seconds = features[f].attributes.MP4_Seconds;
             }
           }
-//  TODO: Make graphic from features[minDist_f]
           let feature = features[minDist_f];
-          let graphic = {     // new Graphic({
-            geometry: feature.geometry,
-            //symbol: ,
-            highlightGeometry: feature.geometry,
-            attributes: feature.attributes
-          };
-          this.displayPlayButton(graphic, null);
+          let imageUrl = szVideoServer + feature.attributes.VidCap_HighRes_subPath;
+          view.popup.content += '<img src="' + imageUrl + '" width="290px">';
+          console.log(feature);
 
         }.bind(this));
       }
 
       this.videoPreQuery = function(extent, mapPoint, pass) {
+        logTimeStamp("videoPreQuery, pass " + pass);
         //queryComplete = false;
         let query = new Query();
         query.geometry = mapPoint;     // extent;
@@ -356,6 +352,18 @@ console.log("Current video time:  " + currentTime);
             return;
           let f  = features[0];
           if (pass === 1) {
+            let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);
+            let graphic = {
+              geometry: mapPoint,
+              attributes: {
+                Caption: decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y)
+              }
+            }
+
+            this.displayPlayButton(graphic, null, true);
+            view.popup.container.onmouseover = function() { mouseOverPopup = true};
+            view.popup.container.onmouseout = function() { mouseOverPopup = false};
+
             if (f.attributes.Join_Count > 1000)
               this.videoPreQuery(f.geometry, mapPoint, 2);
             else

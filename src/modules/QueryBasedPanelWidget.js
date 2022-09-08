@@ -125,13 +125,16 @@ define([
         return a;
       };
 
-      this.displayPlayButton = function(e, row) {
+      this.displayPlayButton = function(e, row, hasImage) {
+        logTimeStamp("displayPlayButton");
         this.clearAllHighlights();
-        this.highlightFeature(e.highlightGeometry);
+        if (e.highlightGeometry)
+          this.highlightFeature(e.highlightGeometry);
 
         // TODO:  Make the popup moveable?  (Example for 3.x using Dojo is at http://jsfiddle.net/goldenlimit/gaz8ao8n)
         if (!showPopups)
           return;
+        mouseOverPopup = false;
         let infoWin = view.popup;
         if (!this.popupPosition)
           infoWin.dockEnabled = false;
@@ -146,12 +149,15 @@ define([
         infoWin.title = this.popupTitle;    // this.baseName + " point";
         if (row)
           infoWin.content = this.rowHtmlToLines(row);
-        else {
+        else if (e.attributes) {
           attrs = e.attributes;
           if (attrs.Caption)
-            infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
+            infoWin.content = '<div class="nowrap_ScrollX" id="mapPopup" ><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
         }
-
+/*
+        if (hasImage)
+          infoWin.content += '<div id="popupImage"></div>';
+*/
         infoWin.actions.removeAll();
         if (this.clickableMsg) {
           infoWin.actions.push({id: "move-camera", title: this.clickableMsg, image: this.trackingImageURL});

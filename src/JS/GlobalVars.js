@@ -4,6 +4,8 @@
 
 let test = false;    // For trying out things before comitting to code
 
+let mouseOverPopup = false;
+
 let extentGraphic = null;
 
 let tooBigWidthKm = 4453;      // Maximum extent width in km for placename search result
@@ -592,6 +594,13 @@ let lock_points = false;
 
 // width was 20, trying larger values for iPad Mini
 let playbackControlTemplate = '<img id="{0}" class="playbackControl" title="{1}" src="assets/images/{2} " width="24" onclick="mediaControl_clickHandler({w},\'{3}\')" />';
+
+function logTimeStamp(msg) {
+  return;
+  if (!msg)
+    msg = arguments.callee.caller.name;
+  console.log(Date() + ":  " + msg);
+}
 
 function autoRefreshInputHandler(isAutoRefresh) {
   settings.autoRefresh = isAutoRefresh;

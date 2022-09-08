@@ -1489,7 +1489,7 @@ OKAY NOW?
         console.log("3D point is outside globe");
         return;
       }
-      let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);    //szVideoWidget._webMercatorToGeographic(mapPoint);
+      let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);
       let posDisplay = decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y);
       if (settings.showMapCoords)
         posDisplay = Math.round(mapPoint.x) + ", " + Math.round(mapPoint.y);
@@ -1498,9 +1498,11 @@ OKAY NOW?
       if (settings.allZoomLevels && view.extent.width>100000) {     //  && !lock_points
         if (mapHoverTimeout)
           clearTimeout(mapHoverTimeout);
-        mapHoverTimeout = setTimeout(function(){
-          getMouseLocSZdata(screenPoint);
-        }, minMapHoverTime);      // delay popup
+        logTimeStamp("Start timeout for getMouseLocSZdata")
+          mapHoverTimeout = setTimeout(function(){
+          if (!mouseOverPopup)
+            getMouseLocSZdata(screenPoint);
+          }, minMapHoverTime);      // delay popup
         return;
       }
 
@@ -1510,6 +1512,7 @@ OKAY NOW?
 
 
   function getMouseLocSZdata(screenPoint) {
+    logTimeStamp();
     let mapPoint = view.toMap(screenPoint);
     szVideoWidget.videoPreQuery(view.extent, mapPoint, 1);
   }
