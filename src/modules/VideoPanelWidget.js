@@ -31,30 +31,34 @@ define([
   let nxt_vid_pt = null;
   let videos = false;
   let video_message_timeout = false;
+/*1*
+  let paused = false;
+  let videoPauseTO = null;
+/*1*/
 
 
-/*    // Currently unused
-  function measurePhotoDownloadTime() {
-    let pWidget = this.syncTo;
-    if (pWidget.last_photo_point["DATE_TIME"] = pWidget.beforeLast_photo_point["DATE_TIME"])
-      return;
-    let next_photo_percent = (pWidget.last_photo_point["MP4_Seconds"]-currentTime)/(pWidget.last_photo_point["DATE_TIME"]-pWidget.beforeLast_photo_point["DATE_TIME"])*1000;
+  /*    // Currently unused
+    function measurePhotoDownloadTime() {
+      let pWidget = this.syncTo;
+      if (pWidget.last_photo_point["DATE_TIME"] = pWidget.beforeLast_photo_point["DATE_TIME"])
+        return;
+      let next_photo_percent = (pWidget.last_photo_point["MP4_Seconds"]-currentTime)/(pWidget.last_photo_point["DATE_TIME"]-pWidget.beforeLast_photo_point["DATE_TIME"])*1000;
 
-    if (!pWidget.latest_photo_loaded() && next_photo_percent>0.3)
-      setPlaybackRate(next_photo_percent);
-    else
-      setPlaybackRate(1);
+      if (!pWidget.latest_photo_loaded() && next_photo_percent>0.3)
+        setPlaybackRate(next_photo_percent);
+      else
+        setPlaybackRate(1);
 
-	timeToNextPhoto = (pWidget.next_photo_point["DATE_TIME"] - pWidget.beforeLast_photo_point["DATE_TIME"])/1000;
+    timeToNextPhoto = (pWidget.next_photo_point["DATE_TIME"] - pWidget.beforeLast_photo_point["DATE_TIME"])/1000;
 
-    if (!pWidget.latest_photo_loaded()) {
-      console.log("onVideoProgress: last photo did not load in time. ");
-      //get_video()[0].playbackRate = 0.0;
-    } else {
-        get_video()[0].playbackRate = 1;
+      if (!pWidget.latest_photo_loaded()) {
+        console.log("onVideoProgress: last photo did not load in time. ");
+        //get_video()[0].playbackRate = 0.0;
+      } else {
+          get_video()[0].playbackRate = 1;
+      }
     }
-  }
-*/
+  */
 
   function onVideoProgress(e) {
 
@@ -235,11 +239,34 @@ console.log("Current video time:  " + currentTime);
 
   return declare(QueryBasedPanelWidget, {
 
+/*1*
+    loopVideo: function(pos, interval) {
+      //paused = true;
+      if (!paused)
+        return;
+      let DT = new Date();
+      console.log(DT + ":  1-second loop of video");
+      youtube_player.seekTo(pos, false);
+      videoPauseTO = setTimeout(this.loopVideo(pos, interval), interval);
+    },
+/*1*/
 
     setPlaybackOn: function(play) {
       // Toggle playback of video
       // param bool playback state
       if (youtube_ready()) {
+/*1*
+        paused = !play;
+        if (play) {
+          clearTimeout(videoPauseTO);
+          youtube_playback_memory = 1;
+          youtube_player.playVideo();
+          setMessage_Mario("videoNoImageMessage",{"visible": true, "text": "Loading video..."});
+        } else {
+          youtube_playback_memory = 2;
+          this.loopVideo(this.getVideoPosition(), 1000);
+        }
+/*1*/
         youtube_playback_memory = play ? 1 : 2;
         play ? youtube_player.playVideo() : youtube_player.pauseVideo();
         if (play) setMessage_Mario("videoNoImageMessage",{"visible": true, "text": "Loading video..."});
