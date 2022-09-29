@@ -4,7 +4,8 @@
 
 let test = false;    // For trying out things before comitting to code
 
-let mouseOverPopup = false;
+let startFeature = null;
+let startFeatureSearchPolygon = null;
 
 let extentGraphic = null;
 
@@ -167,7 +168,7 @@ let gotoSubareasTemplate = "<img src='assets/images/start.png' onclick='mapStuff
 let initialExtentThumbnail = null;
 
 let settings = {
-  autoRefresh: true,
+  autoRefresh: false,
   photoGap: 50,
   magViewWidth: 10,
 //  DEVELOPMENT OPTIONS
@@ -175,6 +176,26 @@ let settings = {
   showMapCoords: false,         // If true, show map coordinates in meters instead of Lat & Lon
   allZoomLevels: true    // If true, will query on smaller part of current extent when zoomed out
 };
+
+
+function mouseIsOverElement(elName, className) {
+  // If className is supplied, use this to set element's ID to elName
+  if (className) {
+    let containerEls = document.getElementsByClassName(className);
+    if (containerEls.length === 0)
+      return false;
+    containerEls[0].setAttribute("id", elName);
+  }
+
+  if ($("#" + elName + ":hover").length === 0) {
+    console.log("Mouse is NOT over " + elName);
+    return false;
+  }
+  else {
+    console.log("Mouse is over " + elName);
+    return true;
+  }
+}
 
 function changeSetting() {
   let S = "";

@@ -1364,6 +1364,10 @@ OKAY NOW?
         if (event.action.id === "move-camera") {
           if (currentWidgetController)
             currentWidgetController.moveButtonPressHandler(currentHoveredGraphic.attributes);
+          else {    // if currentWidgetController is null, then generate prequeried video ponts
+            console.log("Popup action for video prequery");
+            szVideoWidget.getPrequeriedVideoPoints(startFeature);
+          }
         }
       });
     });
@@ -1495,13 +1499,13 @@ OKAY NOW?
         posDisplay = Math.round(mapPoint.x) + ", " + Math.round(mapPoint.y);
       dom.byId("coordinates").innerHTML = posDisplay;
 
-      if (settings.allZoomLevels && view.extent.width>100000) {     //  && !lock_points
+      if (!settings.autoRefresh && view.extent.width>100000) {     //  && !lock_points
         if (mapHoverTimeout)
           clearTimeout(mapHoverTimeout);
         logTimeStamp("Start timeout for getMouseLocSZdata")
           mapHoverTimeout = setTimeout(function(){
-          if (!mouseOverPopup)
-            getMouseLocSZdata(screenPoint);
+            if (!mouseIsOverElement("mapPopup", "esri-popup__main-container"))
+              getMouseLocSZdata(screenPoint);
           }, minMapHoverTime);      // delay popup
         return;
       }

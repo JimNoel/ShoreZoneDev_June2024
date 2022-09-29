@@ -355,12 +355,23 @@ console.log("Current video time:  " + currentTime);
               minDist_f = f;
             }
           }
-          let feature = features[minDist_f];
-          let imageUrl = szVideoServer + feature.attributes.VidCap_HighRes_subPath;
+          startFeature = features[minDist_f];
+          startFeatureSearchPolygon = query.geometry;
+          let imageUrl = szVideoServer + startFeature.attributes.VidCap_HighRes_subPath;
           view.popup.content += '<img src="' + imageUrl + '" width="290px">';
-          console.log(feature);
+          console.log(startFeature);
 
         }.bind(this));
+      }
+
+      this.getPrequeriedVideoPoints = function(startFeature) {
+        console.log("getPrequeriedVideoPoints");
+        let videoTape = startFeature.attributes.VIDEOTAPE;
+        let startSeconds = startFeature.attributes.MP4_Seconds;
+        let queryPars = {
+          theWhere: "VIDEOTAPE='" + videoTape + "' AND MP4_Seconds>=" + startSeconds + " AND MP4_Seconds<" + (startSeconds + 1000)
+        }
+        this.runQuery(startFeatureSearchPolygon.extent, queryPars);
       }
 
       this.videoPreQuery = function(extent, mapPoint, pass) {
@@ -388,8 +399,6 @@ console.log("Current video time:  " + currentTime);
             }
 
             this.displayPlayButton(graphic, null, true);
-            view.popup.container.onmouseover = function() { mouseOverPopup = true};
-            view.popup.container.onmouseout = function() { mouseOverPopup = false};
 
             if (f.attributes.Join_Count > 1000)
               this.videoPreQuery(f.geometry, mapPoint, 2);

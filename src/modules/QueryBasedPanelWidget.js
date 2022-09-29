@@ -134,7 +134,6 @@ define([
         // TODO:  Make the popup moveable?  (Example for 3.x using Dojo is at http://jsfiddle.net/goldenlimit/gaz8ao8n)
         if (!showPopups)
           return;
-        mouseOverPopup = false;
         let infoWin = view.popup;
         if (!this.popupPosition)
           infoWin.dockEnabled = false;
@@ -152,7 +151,7 @@ define([
         else if (e.attributes) {
           attrs = e.attributes;
           if (attrs.Caption)
-            infoWin.content = '<div class="nowrap_ScrollX" id="mapPopup" ><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
+            infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
         }
 /*
         if (hasImage)
