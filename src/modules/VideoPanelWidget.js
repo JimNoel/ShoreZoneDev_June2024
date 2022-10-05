@@ -357,15 +357,19 @@ console.log("Current video time:  " + currentTime);
           }
           startFeature = features[minDist_f];
           startFeatureSearchPolygon = query.geometry;
-          let imageUrl = szVideoServer + startFeature.attributes.VidCap_HighRes_subPath;
-          view.popup.content += '<img src="' + imageUrl + '" width="290px">';
+          if (!startFeature.attributes.VidCap_HighRes_subPath)
+            view.popup.content = view.popup.content.replace("Locating preview image...", "Sorry, no preview image is available.");
+          else {
+            let imageUrl = szVideoServer + startFeature.attributes.VidCap_HighRes_subPath;
+            view.popup.content = replaceFromArray(view.popup.content, [imageUrl]);
+            view.popup.content = view.popup.content.replace("locImageText", "hide_rmvSpace");
+          }
           console.log(startFeature);
 
         }.bind(this));
       }
 
       this.getPrequeriedVideoPoints = function(startFeature) {
-        console.log("getPrequeriedVideoPoints");
         let videoTape = startFeature.attributes.VIDEOTAPE;
         let startSeconds = startFeature.attributes.MP4_Seconds;
         let queryPars = {

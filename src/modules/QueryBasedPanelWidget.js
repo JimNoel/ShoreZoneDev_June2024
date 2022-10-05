@@ -153,10 +153,14 @@ define([
           if (attrs.Caption)
             infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
         }
-/*
-        if (hasImage)
-          infoWin.content += '<div id="popupImage"></div>';
-*/
+
+        if (hasImage) {
+          let imageDivHtml = '<div><div id="locImageDiv" class="locImageText">Locating preview image...</div><div><img id="popupImage" src="{0}" width="290px"></div></div>';
+//          let imageDivHtml = '<div style="position: absolute">Locating preview image...<div><img id="popupImage" src="{0}" width="290px"></div></div>';
+
+          infoWin.content += imageDivHtml;    //'<div id="popupImage"></div>';
+        }
+
         infoWin.actions.removeAll();
         if (this.clickableMsg) {
           infoWin.actions.push({id: "move-camera", title: this.clickableMsg, image: this.trackingImageURL});
