@@ -93,7 +93,7 @@ define([
 
       // Initial processing of features, common to all inherited widgets
       this.processFeatures = function(features) {
-        if (!this.noGeometry && !this.noMarkers)
+        if (!this.noGeometry && !this.usingPreQuery)
           this.makeClickableGraphics(this.features);
         if (this.featureCountTemplate)
           getEl(this.featureCountElId).innerHTML = this.featureCountTemplate.replace("{0}",features.length).replace("{1}", this.tabName);
@@ -125,7 +125,7 @@ define([
         return a;
       };
 
-      this.displayPlayButton = function(e, row, hasImage) {
+      this.displayPlayButton = function(e, row, fromPreQuery) {
         logTimeStamp("displayPlayButton");
         this.clearAllHighlights();
         if (e.highlightGeometry)
@@ -154,7 +154,7 @@ define([
             infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
         }
 
-        if (hasImage) {
+        if (fromPreQuery) {
           let imageDivHtml = '<div><div id="locImageDiv" class="locImageText">Locating preview image...</div><div><img id="popupImage" src="{0}" width="290px"></div></div>';
 //          let imageDivHtml = '<div style="position: absolute">Locating preview image...<div><img id="popupImage" src="{0}" width="290px"></div></div>';
 
@@ -163,7 +163,7 @@ define([
 
         infoWin.actions.removeAll();
         if (this.clickableMsg) {
-          infoWin.actions.push({id: "move-camera", title: this.clickableMsg, image: this.trackingImageURL});
+          infoWin.actions.push({id: "move-camera", title: this.clickableMsg, image: this.trackingImageURL, fromPreQuery: fromPreQuery});
         }
 
         //    Positions the popup.  Disabled for now, as it can cause panning of display.
@@ -553,7 +553,7 @@ define([
         }
       }
 
-/*binaryFilter*/
+/*binaryFilter -- currently unused */
       if (this.useBinaryFilter) {
         let spacing_meters = view.toMap({x:videoFeatureSpacing,y:0}).x - view.toMap({x:0,y:0}).x;
         let skipValue = spacing_meters/avg1sDist;
@@ -762,10 +762,6 @@ define([
     },
 
     queryResponseHandler: function(results) {
-
-//      if (this.currTab === "0")
-//        results = '{"displayFieldName":"RegionCode","fieldAliases":{"RegionEnv":"RegionEnv","Region":"Region","Hauls":"Hauls","NumSpecies":"NumSpecies","Catch":"Catch","RegionID":"RegionID"},"geometryType":"esriGeometryPolygon","spatialReference":{"wkid":102100,"latestWkid":3857},"fields":[{"name":"RegionEnv","type":"esriFieldTypeString","alias":"RegionEnv","length":50},{"name":"Region","type":"esriFieldTypeString","alias":"Region","length":20},{"name":"Hauls","type":"esriFieldTypeInteger","alias":"Hauls"},{"name":"NumSpecies","type":"esriFieldTypeInteger","alias":"NumSpecies"},{"name":"Catch","type":"esriFieldTypeInteger","alias":"Catch"},{"name":"RegionID","type":"esriFieldTypeSmallInteger","alias":"RegionID"}],"features":[{"attributes":{"RegionEnv":"-20037508,6547174,-18356870,7282160","Region":"Aleutian Islands","Hauls":178,"NumSpecies":52,"Catch":97948,"RegionID":1},"geometry":{"rings":[[[-18357036.790899999,7259820.3264999986],[-18364682.421500001,6958869.5888999999],[-18885382.212400001,6752753.2346000001],[-19248056.438999999,6652471.4752999991],[-19896484.443700001,6565983.9717999995],[-19894700.519200001,6830488.9199000001],[-19335704.342999998,6943072.9547000006],[-18896522.478300001,7112315.4611999989],[-18362339.9098,7282160.9637999982],[-18362516.564300001,7281148.2529999986],[-18362394.2652,7279974.4931999967],[-18361504.198399998,7277893.3703999966],[-18360914.7839,7275333.9306999967],[-18360513.914299998,7271763.0979000032],[-18359645.929299999,7269685.6198000014],[-18357575.335099999,7267714.0254999995],[-18356984.222100001,7266914.5552999973],[-18356869.856899999,7266566.2003000006],[-18356984.610799998,7261928.3266000003],[-18357485.309300002,7260898.1079000011],[-18357419.0638,7259938.5648000017],[-18357036.790899999,7259820.3264999986]]]}},{"attributes":{"RegionEnv":"-17450927,9972913,-10393097,13407438","Region":"Beaufort Sea","Hauls":310,"NumSpecies":54,"Catch":38708,"RegionID":2},"geometry":{"rings":[[[-10060499.7312,10873432.796800002],[-10546684.6691,9788866.3967000023],[-11930441.8003,9739001.2748000026],[-14916114.899500001,10435913.470399998],[-17437942.712099999,11260027.750799999],[-17450519.983399998,11971393.275200002],[-17453004.044599999,13366688.888999999],[-10976522.666099999,13430638.030400001],[-10060499.7312,10873432.796800002]]]}},{"attributes":{"RegionEnv":"-20037508,6830488,-17452582,9991436","Region":"Bering Sea","Hauls":176,"NumSpecies":37,"Catch":47537,"RegionID":3},"geometry":{"rings":[[[-17833883.748100001,7509804.5373999998],[-17884724.205200002,7489926.6216999963],[-17979317.777899999,7506001.6084999964],[-18083529.084600002,7427387.2307000011],[-18110631.3345,7420006.9299999997],[-18129283.959399998,7393735.6273000017],[-18157919.679400001,7391896.6361000016],[-18170583.492199998,7388809.3549999967],[-18175941.315400001,7379681.2118000016],[-18167606.923700001,7351899.9061999992],[-18177348.214200001,7346816.0675000027],[-18191208.027400002,7338807.4127999991],[-18362339.9098,7282160.9637999982],[-18896522.478300001,7112315.4611999989],[-19335704.342999998,6943072.9547000006],[-19894700.519200001,6830488.9199000001],[-18971502.259,9856266.8584999964],[-18966270.5691,9858694.8225999996],[-18697188.449099999,9759837.318400003],[-17974971.894200001,9760225.7648999989],[-17738634.867600001,9540454.7773000002],[-17804796.3983,9245214.6520999968],[-18280194.165899999,8848113.4487000033],[-17438386.609299999,8222872.6286000013],[-17486842.842300002,7840147.329400003],[-17833883.748100001,7509804.5373999998]]]}},{"attributes":{"RegionEnv":"-17450927,9972913,-10393097,13407438","Region":"Chukchi Sea","Hauls":573,"NumSpecies":61,"Catch":101877,"RegionID":4},"geometry":{"rings":[[[-17450519.983399998,11971393.275200002],[-17437942.712099999,11260027.750799999],[-18340317.569800001,10565893.244900003],[-17687831.134199999,9989761.6049999967],[-17974971.894200001,9760225.7648999989],[-18697188.449099999,9759837.318400003],[-18708876.519900002,9762905.8277999982],[-18966270.5691,9858694.8225999996],[-19194103.0121,10149602.243500002],[-19194103.0121,11971421.753399998],[-17450519.983399998,11971393.275200002]]]}},{"attributes":{"RegionEnv":"-18364683,5344637,-13601695,8743554","Region":"Gulf of Alaska","Hauls":3906,"NumSpecies":157,"Catch":2516140,"RegionID":5},"geometry":{"rings":[[[-15028076.2224,8343326.627700001],[-14388546.934,7539984.3554000035],[-13531237.738499999,6244778.1952999979],[-13577980.742899999,5914390.1410000026],[-14706688.074200001,5344637.4122999981],[-14972724.6032,6336505.2906000018],[-15854379.862199999,7174539.2198999971],[-16331868.3891,7377064.8818000033],[-17251593.227600001,7347219.3492000028],[-18364682.421500001,6958869.5888999999],[-18355682.0823,7272985.4667999968],[-18362339.9098,7282160.9637999982],[-18191208.027400002,7338807.4127999991],[-18177348.214200001,7346816.0675000027],[-18167606.923700001,7351899.9061999992],[-18175941.315400001,7379681.2118000016],[-18170583.492199998,7388809.3549999967],[-18157919.679400001,7391896.6361000016],[-18129283.959399998,7393735.6273000017],[-18110631.3345,7420006.9299999997],[-18083529.084600002,7427387.2307000011],[-17979317.777899999,7506001.6084999964],[-17884724.205200002,7489926.6216999963],[-17833883.748100001,7509804.5373999998],[-17486842.842300002,7840147.329400003],[-17173792.595600002,8115985.6513999999],[-17237533.056299999,8234967.8445999995],[-16810471.969999999,8810756.6723000035],[-16252742.9394,8704522.5713],[-15028076.2224,8343326.627700001]]]}}]}';
-
       this.queryPending = false;
       if ((typeof results === "string") && (results.slice(0,6)==="ERROR:")) {
         // TODO:  Reset dropdown that caused the error

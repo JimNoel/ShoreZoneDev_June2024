@@ -14,13 +14,14 @@
 define([
   "dojo/_base/declare",
   "dojo/_base/lang",
+  "esri/geometry/Extent",
   "esri/geometry/support/webMercatorUtils",
   "esri/tasks/support/Query",
   "esri/tasks/QueryTask",
   "esri/views/MapView",
   "noaa/QueryBasedPanelWidget",
   "noaa/PhotoPlaybackWidget"
-], function(declare, lang, webMercatorUtils, Query, QueryTask, View, QueryBasedPanelWidget, PhotoPlaybackWidget){
+], function(declare, lang, Extent, webMercatorUtils, Query, QueryTask, View, QueryBasedPanelWidget, PhotoPlaybackWidget){
 
   // private vars and functions here
 
@@ -297,6 +298,7 @@ console.log("Current video time:  " + currentTime);
       this.playbackRate = 1.0;
       this.noFeaturesPanels.push(this.syncTo);
 
+/*
       this.getEntryPoints = function(extent, mapPoint) {
         queryComplete = false;
         this.query.geometry = extent;
@@ -329,8 +331,10 @@ console.log("Current video time:  " + currentTime);
           console.log("Nearest point query failed");
         });
       };
+*/
 
       this.queryVideoStartPoint = function(geometry, mapPoint) {
+        // Update popup with video preview image
         logTimeStamp("queryVideoStartPoint");
         let query = new Query();
         query.geometry = geometry;     // extent;
@@ -357,6 +361,18 @@ console.log("Current video time:  " + currentTime);
           }
           startFeature = features[minDist_f];
           startFeatureSearchPolygon = query.geometry;
+
+          let P = startFeature.geometry;
+          let r = settings.preQueryRadius;
+          startFeatureSearchPolygon = new Extent({
+            // autocasts as new Extent()
+            xmin: P.x - r,
+            ymin: P.y - r,
+            xmax: P.x + r,
+            ymax: P.y + r,
+            spatialReference: 102100
+          });
+
           if (!startFeature.attributes.VidCap_HighRes_subPath)
             view.popup.content = view.popup.content.replace("Locating preview image...", "Sorry, no preview image is available.");
           else {
@@ -375,7 +391,7 @@ console.log("Current video time:  " + currentTime);
         let queryPars = {
           theWhere: "VIDEOTAPE='" + videoTape + "' AND MP4_Seconds>=" + startSeconds + " AND MP4_Seconds<" + (startSeconds + 1000)
         }
-        this.runQuery(startFeatureSearchPolygon.extent, queryPars);
+        this.runQuery(startFeatureSearchPolygon.extent /*null*/, queryPars);
       }
 
       this.videoPreQuery = function(extent, mapPoint, pass) {
@@ -411,18 +427,6 @@ console.log("Current video time:  " + currentTime);
           } else if (pass === 2) {
             this.queryVideoStartPoint(f.geometry, mapPoint);
           }
-
-
-/*
-          let minSecs = a.Start_MP4_Seconds;
-          let maxSecs = minSecs + 999;      // This ensures that the query will not attempt to return more than 1000 features
-          let where = "VIDEOTAPE='" + a.VIDEOTAPE + "' AND ";
-          where += "MP4_Seconds>=" + minSecs + " AND MP4_Seconds<=" + maxSecs;
-          this.query.groupByFieldsForStatistics = null;
-          this.query.outStatistics = null;
-          this.noMarkers = false;
-          this.runQuery(extent, {theWhere: where});
-*/
         }.bind(this), function(error) {
           console.log("Nearest point query failed");
         });

@@ -115,6 +115,7 @@ define([
 
       szVideoWidget = new VideoPanelWidget({
         objName: "szVideoWidget",
+        //usingPreQuery: true,    // If true, will query on smaller part of current extent when zoomed out
         panelName: "szVideoPanel",
         sublayerIDs: szSublayerIDs,
         panelType: "media",
@@ -126,7 +127,6 @@ define([
         mapServiceLayer: szMapServiceLayer,
         subLayerName: "1s",
         layerPath: "Video Flightline/1s",
-        preQueryMarkers: settings.allZoomLevels,
 
         spatialRelationship: "contains",
         //useBinaryFilter: true,
@@ -1258,27 +1258,6 @@ define([
     //let extent3d = sceneViewExtent(view, 200);
     //let extent3d_geog = webMercatorUtils.webMercatorToGeographic(extent3d);
 
-/*  // Attempt at prequery for too many records
-    //JN  Works, times out at 60s (~1M records).
-      this.prequeryTask = new QueryTask(szMapServiceLayerURL + "/2");
-      let maxNum = 6000;
-      console.log(new Date() + ":  Getting count of video points...");
-      this.prequeryTask.executeForCount({
-        spatialRelationship: "contains",
-        geometry: view.extent,
-        num: maxNum
-      }).then(function(results){
-        console.log(new Date() + ":  Received response (video point count)");
-        if (results===maxNum) {
-          console.log(this.baseName + ":  max features (" + maxNum + ") returned.");
-        } else {
-          console.log(results + " features returned");
-        }
-      }.bind(this), function(error) {
-        console.log(new Date() + ":  QueryTask failed.");
-      }.bind(this));
-*/
-
     if (siteTabs.currTab === "sz") {
       if (szVideoWidget && szVideoWidget.useBinaryFilter)
         szFeatureRefreshDue = true;
@@ -1362,9 +1341,9 @@ OKAY NOW?
       let p = view.popup;     // new Popup();
       p.on("trigger-action", function(event){
         if (event.action.id === "move-camera") {
-          if (currentWidgetController)
+          if (!event.action.fromPreQuery)
             currentWidgetController.moveButtonPressHandler(currentHoveredGraphic.attributes);
-          else {    // if currentWidgetController is null, then generate prequeried video ponts
+          else {    // if event.action.fromPreQuery is true, then generate prequeried video ponts
             console.log("Popup action for video prequery");
             szVideoWidget.getPrequeriedVideoPoints(startFeature);
           }
@@ -1379,9 +1358,7 @@ OKAY NOW?
       if (!siteTabs.spatialFilterTabs.includes(siteTabs.currTab))
         return;
       if (view.stationary) {
-        let bypass = false;
-        if (!bypass)
-          handleExtentChange(view.extent);
+        handleExtentChange(view.extent);
       } else {
         if (!view.resizing)
           extentChanged = true;
@@ -1499,7 +1476,7 @@ OKAY NOW?
         posDisplay = Math.round(mapPoint.x) + ", " + Math.round(mapPoint.y);
       dom.byId("coordinates").innerHTML = posDisplay;
 
-      if (!settings.autoRefresh && view.extent.width>100000) {     //  && !lock_points
+      if ((siteTabs.currTab==="sz") && szVideoWidget.usingPreQuery) {
         if (mapHoverTimeout)
           clearTimeout(mapHoverTimeout);
         logTimeStamp("Start timeout for getMouseLocSZdata")

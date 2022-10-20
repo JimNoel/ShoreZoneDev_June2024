@@ -168,13 +168,17 @@ let gotoSubareasTemplate = "<img src='assets/images/start.png' onclick='mapStuff
 let initialExtentThumbnail = null;
 
 let settings = {
-  autoRefresh: false,
+  //  PRE-QUERY METHOD VARIABLES
+  preQueryRadius: 100000,    // If present, then using pre-query method: Will query on smaller part of current extent when zoomed out
+
+  //  ZOOMED-IN METHOD VARIABLES
+  autoRefresh: true,
   photoGap: 50,
-  magViewWidth: 10,
+
+  magViewWidth: 10,     // not currently used?
 //  DEVELOPMENT OPTIONS
   showingExtentBox: true,     // If true, show area being queried for video points
   showMapCoords: false,         // If true, show map coordinates in meters instead of Lat & Lon
-  allZoomLevels: true    // If true, will query on smaller part of current extent when zoomed out
 };
 
 
@@ -1072,10 +1076,9 @@ function updateNoFeaturesMsg(widgets, status) {
 function refreshSzFeatures() {
   resetCurrentFeatures();
   mapLoading = true;
-  if (szFeatureRefreshDue) {    // newExtent.width/1000 < maxExtentWidth
+  if (szFeatureRefreshDue) {
     lastSZExtent = view.extent;
     if (szVideoWidget) {
-      szVideoWidget.noMarkers = szVideoWidget.preQueryMarkers;
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
     }
     if (szUnitsWidget && (view.extent.width/1000 < maxExtentWidth))
