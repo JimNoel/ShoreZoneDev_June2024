@@ -115,7 +115,7 @@ define([
 
       szVideoWidget = new VideoPanelWidget({
         objName: "szVideoWidget",
-        //usingPreQuery: true,    // If true, will query on smaller part of current extent when zoomed out
+        usingPreQuery: true,    // If true, will query on smaller part of current extent when zoomed out
         panelName: "szVideoPanel",
         sublayerIDs: szSublayerIDs,
         panelType: "media",
@@ -1693,7 +1693,11 @@ OKAY NOW?
         listItem_10s_legendHtml = item.panel.content.innerHTML;
         modify_LayerListItem_VideoFlightline();
       }
+      if (item.layer.title === "Query Layers")
+        item.open = false;
       if (item.layer.title === "Unit Info")
+        item.open = false;
+      if (item.layer.title === "Video prequery")
         item.open = false;
       if (item.layer.title.startsWith("FishAtlas"))
         item.open = false;

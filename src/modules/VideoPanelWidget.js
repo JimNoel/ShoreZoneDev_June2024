@@ -132,6 +132,7 @@ console.log("Current video time:  " + currentTime);
         console.log("Moving to next video feature");
         szVideoWidget.counter += 1;
         if (szVideoWidget.counter < szVideoWidget.getFeatureCount())  {
+          //  TODO: Get feature (rather than just attributes), use this as argument for movetoFeature
           nxt_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
           //console.log("video widget counter = " + szVideoWidget.counter);
           szVideoWidget.moveToFeature(nxt_vid_pt);
@@ -359,9 +360,24 @@ console.log("Current video time:  " + currentTime);
               minDist_f = f;
             }
           }
-          startFeature = features[minDist_f];
-          startFeatureSearchPolygon = query.geometry;
 
+          startFeature = features[minDist_f];
+          //startFeatureSearchPolygon = query.geometry;
+
+          // If mouse position is close enough to startFeature, then display play button and place at startFeature location
+          // TODO: Make variable in GlobalVars to replace "0.01"
+          if (minDist/view.extent.width < maxViewExtentPct) {
+            let geogPoint = webMercatorUtils.webMercatorToGeographic(startFeature.geometry);
+            let graphic = {
+              geometry: startFeature.geometry,
+              attributes: {
+                Caption: decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y)
+              }
+            }
+            this.displayPlayButton(graphic, null, true);
+          }
+
+/*
           let P = startFeature.geometry;
           let r = settings.preQueryRadius;
           startFeatureSearchPolygon = new Extent({
@@ -372,6 +388,7 @@ console.log("Current video time:  " + currentTime);
             ymax: P.y + r,
             spatialReference: 102100
           });
+*/
 
           if (!startFeature.attributes.VidCap_HighRes_subPath)
             view.popup.content = view.popup.content.replace("Locating preview image...", "Sorry, no preview image is available.");
@@ -387,11 +404,21 @@ console.log("Current video time:  " + currentTime);
 
       this.getPrequeriedVideoPoints = function(startFeature) {
         let videoTape = startFeature.attributes.VIDEOTAPE;
-        let startSeconds = startFeature.attributes.MP4_Seconds;
-        let queryPars = {
-          theWhere: "VIDEOTAPE='" + videoTape + "' AND MP4_Seconds>=" + startSeconds + " AND MP4_Seconds<" + (startSeconds + 1000)
-        }
-        this.runQuery(startFeatureSearchPolygon.extent /*null*/, queryPars);
+
+        // Get VideoTape extent from "Videotape Coverage" layer
+        let query = new Query();
+        query.outFields = "VIDEOTAPE";
+        query.where = "VIDEOTAPE='" + videoTape + "'";
+        query.returnGeometry = true;
+        let queryTask = new QueryTask();
+        queryTask.url = this.mapServiceQueryUrl("Videotape Coverage");     //this.mapServiceQueryUrl("VIDEOSAMPLES_250M");
+        queryTask.execute(query).then(function(response) {
+          let startSeconds = startFeature.attributes.MP4_Seconds;
+          let queryPars = {
+            theWhere: "VIDEOTAPE='" + videoTape + "' AND MP4_Seconds>=" + startSeconds + " AND MP4_Seconds<" + (startSeconds + 1000)
+          }
+          this.runQuery(response.features[0].geometry.extent, queryPars);
+        }.bind(this));
       }
 
       this.videoPreQuery = function(extent, mapPoint, pass) {
@@ -410,6 +437,7 @@ console.log("Current video time:  " + currentTime);
             return;
           let f  = features[0];
           if (pass === 1) {
+/*
             let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);
             let graphic = {
               geometry: mapPoint,
@@ -417,8 +445,8 @@ console.log("Current video time:  " + currentTime);
                 Caption: decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y)
               }
             }
-
             this.displayPlayButton(graphic, null, true);
+*/
 
             if (f.attributes.Join_Count > 1000)
               this.videoPreQuery(f.geometry, mapPoint, 2);

@@ -5,7 +5,8 @@
 let test = false;    // For trying out things before comitting to code
 
 let startFeature = null;
-let startFeatureSearchPolygon = null;
+let maxViewExtentPct = 0.01;
+//let startFeatureSearchPolygon = null;
 
 let extentGraphic = null;
 
@@ -1361,7 +1362,18 @@ let mapStuff;
 
 function modify_LayerListItem_VideoFlightline() {
   // A hack to hide the 1s & 10s layers in the LayerList
+
+  // New display mode for video flightline:  Hide 1s points, show 1s lines
+  //  (Map service currently defaults to showing points and hiding lines)
   let subLayers = listItem_VideoFlightline.children.items;
+  for (let i=0; i<subLayers.length; i++) {
+    let L = subLayers[i];
+    if (L.title === "1s")
+      L.visible = false;
+    if (L.title === "1s - lines")
+      L.visible = true;
+  }
+
   listItem_VideoFlightline.children.removeAll();    //  This removes 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
   listItem_VideoFlightline.panel = {
     content: makeHtmlElement("DIV", "videoFlightlineDiv", null, null, listItem_10s_legendHtml),
