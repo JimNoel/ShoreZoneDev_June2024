@@ -162,8 +162,8 @@ define([
         }
 
         infoWin.actions.removeAll();
-        if (this.clickableMsg) {
-          infoWin.actions.push({id: "move-camera", title: this.clickableMsg, image: this.trackingImageURL, fromPreQuery: fromPreQuery});
+        if (this.popupActionMsg) {
+          infoWin.actions.push({id: "move-camera", title: this.popupActionMsg, image: this.trackingImageURL, fromPreQuery: fromPreQuery});
         }
 
         //    Positions the popup.  Disabled for now, as it can cause panning of display.
@@ -788,7 +788,17 @@ define([
       this.hideMootControls();
     },
 
-    moveToFeature: function (attrs) {
+    moveToFeature: function (feature) {
+      // Argument may be a feature, or attributes of a feature.
+      //   Set attrs accordingly.
+      let attrs = feature;
+      if (feature.attributes) {     // i.e. if argument is a feature
+        attrs = feature.attributes;
+        attrs.x = feature.geometry.x;
+        attrs.y = feature.geometry.y;
+      }
+
+//      let geom = feature.geometry;
       if (this.headerDivName) {
         let headerDiv = getEl(this.headerDivName);
         if (attrs.Caption) {

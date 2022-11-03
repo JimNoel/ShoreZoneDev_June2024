@@ -79,6 +79,7 @@ define([
     function makeSzWidgets() {
       szPhotoWidget = new PhotoPlaybackWidget({
         objName: "szPhotoWidget",
+        usingPreQuery: true,    // If true, will query on smaller part of current extent when zoomed out
         panelName: "szPhotosPanel",
         panelType: "media",
         contentPaneId: "photoDiv",
@@ -92,7 +93,7 @@ define([
         clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":6,     // invisible if 4th value in "color" is 0
           "outline": {color: [ 0, 0, 255, 0 ] }},
         popupTitle: "Photo Point",
-        clickableMsg: "Move camera to this location",
+        popupActionMsg: "Move camera to this location",
         sync_photos: true,
         photoServer: szPhotoServer,
         photoResInsert: "stillphotos_lowres/280_",
@@ -139,7 +140,7 @@ define([
 //        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,      //  invisible if 4th value in "color" is 0
 //          "outline": {color: [ 128, 128, 128, 0 ] }},
         popupTitle: "Video Point",
-        clickableMsg: "Move camera to this location",
+        popupActionMsg: "Move camera to this location",
         syncTo: szPhotoWidget,
         controlData: [
           ['video_resetBackwardButton', 'Reset to Beginning', 'w_expand.png', 'toStart'],
@@ -203,7 +204,7 @@ define([
           width: "4px"
         },
         popupTitle: "ShoreZone Unit",
-        clickableMsg: null,
+        popupActionMsg: null,
         map: map,
         view: view
       });
@@ -509,7 +510,7 @@ define([
           },
 
           hasTextOverlayLayer: true,
-          clickableMsg: null
+          popupActionMsg: null
         });
         /* end szWidget def*/
 
@@ -1057,7 +1058,7 @@ define([
           },
 
           hasTextOverlayLayer: true,
-          clickableMsg: null
+          popupActionMsg: null
         });
 
         faSpTableWidget = new QueryBasedTablePanelWidget({
@@ -1259,6 +1260,8 @@ define([
     //let extent3d_geog = webMercatorUtils.webMercatorToGeographic(extent3d);
 
     if (siteTabs.currTab === "sz") {
+//      if (szVideoWidget && szVideoWidget.usingPreQuery)
+//        return;
       if (szVideoWidget && szVideoWidget.useBinaryFilter)
         szFeatureRefreshDue = true;
       else

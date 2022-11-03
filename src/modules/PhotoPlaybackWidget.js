@@ -40,6 +40,7 @@ define([
     //console.log("photoLoadCompleteHandler");
   }
 
+/*
   function photoPlayer() {
     // Manage timed playback of photos
     let wait_for_current_photo = false;
@@ -63,16 +64,17 @@ define([
           this.counter = this.counter + photo_play_direction;
 //          if (this.counter < 0 || this.counter >= this.points_photos[last_photo_video_name].length) {
         if (this.counter < 0 || this.counter >= this.getFeatureCount()) {
-          clearTimeout(photo_play_timer);
-          photo_play_timer = false;
-            this.counter = this.counter - photo_play_direction;
+          //clearTimeout(photo_play_timer);
+          //photo_play_timer = false;
+          this.counter = this.counter - photo_play_direction;
         }
         update_photo(this.getFeatureAttributes(this.counter));
       }
-      if (photo_play_timer)
-        photo_play_timer = photoPlayer();
+//      if (photo_play_timer)
+//        photo_play_timer = photoPlayer();
     }, current_photo_load_delay);
   }
+*/
 
 
 
@@ -83,7 +85,7 @@ define([
     perInstanceNum: 3,      // not used -- for illustration of syntax
     commonArr: [1 ,2, 3],   // not used -- for illustration of syntax
 
-    photo_play_timer: false,
+    //photo_play_timer: false,
     curr_photo_point: null,
     next_photo_point: null,
     beforeLast_photo_point: null,     // used in measurement of image load time
@@ -96,7 +98,8 @@ define([
   },
 
   // Update photo from data point   param object next_photo_point Data point
-    update_photo: function(next_photo_point) {
+    update_photo: function(feature) {
+      let next_photo_point = feature;
       update_photo_latest_params = next_photo_point;
       if (!next_photo_point)
         return;

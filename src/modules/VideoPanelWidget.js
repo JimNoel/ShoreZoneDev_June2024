@@ -133,7 +133,8 @@ console.log("Current video time:  " + currentTime);
         szVideoWidget.counter += 1;
         if (szVideoWidget.counter < szVideoWidget.getFeatureCount())  {
           //  TODO: Get feature (rather than just attributes), use this as argument for movetoFeature
-          nxt_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
+//          nxt_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter);
+          nxt_vid_pt = szVideoWidget.features[szVideoWidget.counter];
           //console.log("video widget counter = " + szVideoWidget.counter);
           szVideoWidget.moveToFeature(nxt_vid_pt);
           if (nxt_vid_pt.VIDEOTAPE !== last_video_name) {
@@ -365,7 +366,6 @@ console.log("Current video time:  " + currentTime);
           //startFeatureSearchPolygon = query.geometry;
 
           // If mouse position is close enough to startFeature, then display play button and place at startFeature location
-          // TODO: Make variable in GlobalVars to replace "0.01"
           if (minDist/view.extent.width < maxViewExtentPct) {
             let geogPoint = webMercatorUtils.webMercatorToGeographic(startFeature.geometry);
             let graphic = {
@@ -419,6 +419,13 @@ console.log("Current video time:  " + currentTime);
           }
           this.runQuery(response.features[0].geometry.extent, queryPars);
         }.bind(this));
+
+        // Get overall extent of the features
+        queryTask.executeForExtent(query).then(function(response) {
+          sz_ExtentFromPreQuery = response.extent;
+          showHide("zoomQueryImage", true, false);
+        }.bind(this));
+
       }
 
       this.videoPreQuery = function(extent, mapPoint, pass) {
@@ -602,8 +609,8 @@ console.log("Current video time:  " + currentTime);
       this.setSyncPhotos = function(synced) {
         let pWidget = this.syncTo;
         pWidget.sync_photos = synced;
-        if (pWidget.sync_photos && pWidget.photo_play_timer)
-          clearTimeout(pWidget.photo_play_timer);
+//        if (pWidget.sync_photos && pWidget.photo_play_timer)
+//          clearTimeout(pWidget.photo_play_timer);
         //photoToolsDivStyle = getEl("photoToolsDiv").style;
         photoToolsStyle = getEl("photoTools").style;
         photoTools = getEl("photoTools");
@@ -658,9 +665,10 @@ console.log("Current video time:  " + currentTime);
       speedHTML += '</span>';
 
       let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()' title='Click to lock in or unlock current set of video points' />";
+      let zoomToQueryHTML = "&nbsp;&nbsp;<img id='zoomQueryImage' src='assets/images/MapMagnifier.png' style='visibility:hidden' width='24' height='24' onclick='zoomQuery_clickHandler()' title='Click to zoom to current set of video points' />";
       let dlClipHTML = "";      // "&nbsp;&nbsp;<img id='dlClipImage' src='assets/images/floppy16x16.png' width='24' height='24' onclick='dlClipImage_clickHandler()' title='Click to download video clip for current extent' />";
 // TODO: Video clip download from download icon
-      videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'videoTools', '', this.objName) + speedHTML + lockHTML + dlClipHTML;
+      videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'videoTools', '', this.objName) + speedHTML + lockHTML + zoomToQueryHTML + dlClipHTML;
 
 /*    // old Tristan code for speed slider
       $("#playback_speed_range").on("input", function(val){

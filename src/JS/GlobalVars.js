@@ -6,6 +6,7 @@ let test = false;    // For trying out things before comitting to code
 
 let startFeature = null;
 let maxViewExtentPct = 0.01;
+let sz_ExtentFromPreQuery = null;
 //let startFeatureSearchPolygon = null;
 
 let extentGraphic = null;
@@ -170,7 +171,7 @@ let initialExtentThumbnail = null;
 
 let settings = {
   //  PRE-QUERY METHOD VARIABLES
-  preQueryRadius: 100000,    // If present, then using pre-query method: Will query on smaller part of current extent when zoomed out
+  //preQueryRadius: 100000,    // obsolete
 
   //  ZOOMED-IN METHOD VARIABLES
   autoRefresh: true,
@@ -809,17 +810,6 @@ function setDisabled(id, value) {
     el.disabled = value;
 }
 
-function setDisplay(id, value) {
-  // Show/hide HTML element   NOTE: If other visible elements are in the parent element, these will shift to fill the missing space
-  let el = getEl(id);
-  if (!el)
-    return;   // do nothing if el doesn't exist
-  let display = "none";
-  if (value)
-    display = "block";
-  el.style.display = display;
-}
-
 function toggleVisibility(id) {
   // toggle visibility of HTML element
   setVisible(id,!isVisible(id));
@@ -861,6 +851,11 @@ function dlClipImage_clickHandler() {
 
 function lockImage_clickHandler() {
   szVideoWidget.setLockPoints(!lock_points);
+}
+
+function zoomQuery_clickHandler() {
+  if (sz_ExtentFromPreQuery)
+    view.extent = sz_ExtentFromPreQuery;
 }
 
 function linkImage_clickHandler() {
@@ -1065,7 +1060,8 @@ function updateNoFeaturesMsg(widgets, status) {
   widgets.forEach(function(w, index, array) {
     if (w.disabledMsgDivName) {
       let msg = template.replace(/\{1\}/g, w.disabledMsgInfix);
-      //getEl(w.disabledMsgDivName).innerHTML = msg;     //.innerHTML = msg;
+      if (w.usingPreQuery && w.features)
+        msg = "";
       getEl(w.disabledMsgName).innerHTML = msg;
       showEnabledDisabled(w.baseName, msg==="");
       //setMessage(w.disabledMsgDivName, msg);
@@ -1079,7 +1075,7 @@ function refreshSzFeatures() {
   mapLoading = true;
   if (szFeatureRefreshDue) {
     lastSZExtent = view.extent;
-    if (szVideoWidget) {
+    if (szVideoWidget && !szVideoWidget.usingPreQuery) {    // Do not run video points query if using video points pre-query
       szVideoWidget.runQuery(view.extent);         // 3D: use extent3d?
     }
     if (szUnitsWidget && (view.extent.width/1000 < maxExtentWidth))

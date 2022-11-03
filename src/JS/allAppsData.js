@@ -64,6 +64,25 @@ function setVisible(id, value) {
   el.style.visibility = visibility;
 }
 
+function setDisplay(id, value) {
+  // Show/hide HTML element   NOTE: If other visible elements are in the parent element, these will shift to fill the missing space
+  let el = getEl(id);
+  if (!el)
+    return;   // do nothing if el doesn't exist
+  let display = "none";
+  if (value)
+    display = "block";
+  el.style.display = display;
+}
+
+function showHide(id, value, removeSpace) {
+  // Show/hide HTML element.  If optional removeSpace parameter is true, then subsequent elements will shift to fill the missing space
+  if (removeSpace)
+    setDisplay(id, value);
+  else
+    setVisible(id, value);
+}
+
 let closeCode = "setVisible('siteInfoPanel', false)";
 let siteInfoHtml = '<b class="bold1">Website Information</b><br><br><br>';
 siteInfoHtml += '<b class="bold2">Most recent website update:  </b>' + document.lastModified.split(" ")[0] + '<br><br>';
@@ -79,6 +98,7 @@ function makeSiteInfoPanel() {
 
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
+  view.extent = sz_ExtentFromPreQuery;
   //faWidget.deSanitize();
 }
 
