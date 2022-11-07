@@ -854,8 +854,18 @@ function lockImage_clickHandler() {
 }
 
 function zoomQuery_clickHandler() {
-  if (sz_ExtentFromPreQuery)
-    view.extent = sz_ExtentFromPreQuery;
+  if (sz_ExtentFromPreQuery) {
+    let e = sz_ExtentFromPreQuery;
+//  TODO:  Code below is not working.  Maybe add something to recenter if one of the points is outside the view?
+/*
+    let center = {
+      x: (e.xmin + e.xmax)/2,
+      y: (e.ymin + e.ymax)/2
+    };
+    view.center = center;
+*/
+    view.extent = e;
+  }
 }
 
 function linkImage_clickHandler() {

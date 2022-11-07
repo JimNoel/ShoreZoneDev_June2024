@@ -135,6 +135,7 @@ define([
         orderByFields: ["Date_Time"],
         trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
+        clickableLayerMinScale: 5000000,      // for preQuery start and end points
         clickableSymbolInfo: {"style":"circle", "color":[255,0,0,1], "size":6,      //  invisible if 4th value in "color" is 0
           "outline": {color: [ 128, 128, 128, 0 ] }},
 //        clickableSymbolInfo: {"style":"circle", "color":[255,255,0,1], "size":3,      //  invisible if 4th value in "color" is 0

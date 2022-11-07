@@ -98,7 +98,6 @@ function makeSiteInfoPanel() {
 
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
-  view.extent = sz_ExtentFromPreQuery;
   //faWidget.deSanitize();
 }
 
