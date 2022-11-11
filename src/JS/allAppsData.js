@@ -98,6 +98,7 @@ function makeSiteInfoPanel() {
 
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
+  mapStuff.addQueryLayer();
   //faWidget.deSanitize();
 }
 

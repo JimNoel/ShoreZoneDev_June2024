@@ -26,6 +26,8 @@ let siteTabs = new Object({
 
 let mapLoading = false;
 
+
+
 define([
   "dojo/_base/declare",
   "esri/Basemap",
@@ -1635,6 +1637,8 @@ OKAY NOW?
       const serviceName = getSublayerServiceName(item);
       const layerId = item.layer.id;
       const svcLegendInfo = legendInfo[serviceName];
+      if (!svcLegendInfo)
+        return;
       let legendDivId = null;
       const l = svcLegendInfo.findIndex(obj => obj.layerId === layerId );
       if (l !== -1) {
@@ -2117,6 +2121,33 @@ OKAY NOW?
 
 
   return declare(null, {
+
+    addQueryLayer: function() {
+
+      let newDynamicLayer = {
+        id: 64,
+        title: "new Dynamic Layer",
+        definitionExpression: "HabClass='41'",      // WHERE expression to be provided as function parameter
+        renderer: {
+          type: "simple",  // autocasts as new SimpleRenderer()
+          symbol: {
+            type: "simple-line",  // autocasts as new SimpleLineSymbol()
+            color: "red",
+            width: "5px",
+            style: "solid"
+          }
+        },
+        source: {
+          type: "map-layer",
+          mapLayerId: 58
+        }
+      };
+      let queryGroupId = parseInt(szSublayerIDs["Query Layers"]);
+      let queryLayerGroup = szMapServiceLayer.findSublayerById(queryGroupId);
+      queryLayerGroup.sublayers.add(newDynamicLayer);
+    },
+
+
 
   showExtentBox: function(extent) {
   /*JN*/ if (!extent)
