@@ -1701,8 +1701,24 @@ OKAY NOW?
         listItem_10s_legendHtml = item.panel.content.innerHTML;
         modify_LayerListItem_VideoFlightline();
       }
-      if (item.layer.title === "Query Layers")
+
+      if (item.layer.title === "Query Layers") {
         item.open = false;
+        item.actionsSections = [[{
+              title: "Add a new query layer",
+              className: "esri-icon-add-attachment",      // alternative: "esri-icon-plus"
+              id: "addNewQueryLayer"
+            }]]
+      }
+
+      if (item.parent && item.parent.layer.title === "Query Layers") {
+        item.actionsSections = [[{
+          title: "Get WHERE clause",
+          className: "esri-icon-add-attachment",      // alternative: "esri-icon-plus"
+          id: "getWhere"
+        }]]
+
+      }
       if (item.layer.title === "Unit Info")
         item.open = false;
       if (item.layer.title === "Video prequery")
@@ -1712,6 +1728,13 @@ OKAY NOW?
       if (item.layer.title.startsWith("ShoreStation"))
         item.open = false;
     };
+
+    layerListWidget.on("trigger-action", (event) => {
+      const id = event.action.id;
+      if (id === "addNewQueryLayer") {
+        setDisplay("queryLayerDiv", true)
+      }
+    });
 
     llExpand.content = wrapperWithOpacitySlider(layerListWidget.domNode, "Layers");
   }
@@ -1746,8 +1769,11 @@ OKAY NOW?
     panZoomDiv.innerHTML = panZoomHtml;
     view.ui.add(panZoomDiv, "top-left");
 
+    // Make dialog boxes (hidden for now)
     makeRectActionPanel();
     makeSiteInfoPanel();
+    makeDownloadPanel();
+    makeAddQueryLayerDialog();
 
     let prevNextBtnsDiv = document.createElement("DIV");
     prevNextBtnsDiv.innerHTML = prevNextBtnsHtml;
@@ -2123,11 +2149,21 @@ OKAY NOW?
   return declare(null, {
 
     addQueryLayer: function() {
+      let title = getEl("queryLayer_name").value;
+      if (!title) {
+        alert("You must provide a name for the new layer!");
+        return;
+      }
+      let where = getEl("queryLayer_where").value;
+      if (!where) {
+        alert("You must provide a WHERE clause!");
+        return;
+      }
 
       let newDynamicLayer = {
         id: 64,
-        title: "new Dynamic Layer",
-        definitionExpression: "HabClass='41'",      // WHERE expression to be provided as function parameter
+        title: title,
+        definitionExpression: where,      // "HabClass='41'",
         renderer: {
           type: "simple",  // autocasts as new SimpleRenderer()
           symbol: {

@@ -96,9 +96,31 @@ function makeSiteInfoPanel() {
   setVisible("siteInfoPanel", false);
 }
 
+function makeAddQueryLayerDialog() {
+  let theStyle = "display:none";
+  let theContent = '<label for="queryLayer_name">Enter a name for the new layer: </label><input type="text" id="queryLayer_name" name="queryLayer_name"><br>';
+  theContent += '<label for="queryLayer_where">Enter WHERE clause for the new layer: </label><input type="text" id="queryLayer_where" name="queryLayer_where"><br><br>';
+  theContent += '<h4 id="layerAddedLabel">Your new layer has been added, under ShoreZone/Query Layers</h4>';
+  let buttonInfo = "Create layer:mapStuff.addQueryLayer();Cancel:setDisplay('queryLayerDiv',false)";
+  makeDialog("queryLayerDiv", "Add new query layer", true, null, theStyle, theContent, buttonInfo);
+}
+
+function makeDialog(divID, headerText, hasOpacitySlider, theClass, theStyle, theContent, buttonInfo) {
+  if (buttonInfo) {
+    theContent += '<br>';
+    let bArray = buttonInfo.split(";");
+    for (let b=0; b < bArray.length; b++) {
+      let button = bArray[b].split(":");
+      theContent += '<button onclick="' + button[1] + '">' + button[0] + '</button>'
+    }
+  }
+  theContent += "<br>";
+  let newDialog = makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theStyle, theContent);
+  return newDialog;     // unneccessary?
+}
+
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
-  mapStuff.addQueryLayer();
   //faWidget.deSanitize();
 }
 

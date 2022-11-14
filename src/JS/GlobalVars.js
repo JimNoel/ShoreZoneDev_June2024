@@ -1274,7 +1274,7 @@ function makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theSt
   let divClass = "draggableDiv";
   if (theClass)
     divClass = theClass;
-  let newDiv = makeHtmlElement("div", divID, divClass, theStyle, theContent);
+  let newDiv = makeHtmlElement("div", divID, divClass, theStyle, /*theContent*/);
   if (headerText || hasOpacitySlider) {
     let headerDiv = makeHtmlElement("div", divID + "_header", "draggableDivHeader");
     headerDiv.title = headerText;
