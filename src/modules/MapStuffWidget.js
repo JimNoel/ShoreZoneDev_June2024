@@ -66,6 +66,7 @@ define([
   "esri/geometry/Polygon",
   "esri/geometry/support/webMercatorUtils",
   "esri/layers/GraphicsLayer",
+//  "esri/layers/GroupLayer",
   "esri/renderers/SimpleRenderer",
   "esri/symbols/SimpleMarkerSymbol",
   "esri/Graphic",
@@ -76,7 +77,7 @@ define([
 ], function(declare, Basemap, watchUtils, Map, View, /*Magnifier,*/ MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
-            Extent, Point, Polyline, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
+            Extent, Point, Polyline, Polygon, webMercatorUtils, GraphicsLayer, /*GroupLayer,*/ SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
 
     function makeSzWidgets() {
       szPhotoWidget = new PhotoPlaybackWidget({
@@ -1641,7 +1642,23 @@ OKAY NOW?
         return;
       let legendDivId = null;
       const l = svcLegendInfo.findIndex(obj => obj.layerId === layerId );
-      if (l !== -1) {
+      let theContentHtml = '';
+      if (l===-1) {
+        if (item.layer.renderer) {
+          // TODO:  Do I need to make a custom swatch for the new layer?
+          let color = item.layer.renderer.symbol.color;
+          let colorHtml = '#' + color.r.toString(16) + color.g.toString(16) + color.b.toString(16);
+          let imgHtml = '<hr style="position:absolute;width:20px;height:3px;border-width:0;background-color:' + colorHtml + '">';
+          theContentHtml += '<div>' + imgHtml + '</div>';
+          let contentDiv = makeHtmlElement("DIV",legendDivId,null,null,theContentHtml);
+          item.panel = {
+            content: contentDiv,
+            open: (item.visible && item.visibleAtCurrentScale)
+          };
+          console.log(item.layer.title + " is not in service " + serviceName);
+
+      }
+      } else {
         item.openable = true;
         const lTitle = svcLegendInfo[l].layerName;
         if (item.title === "")
@@ -1655,7 +1672,6 @@ OKAY NOW?
         }
 
         const lInfo = svcLegendInfo[l].legend;
-        let theContentHtml = '';
         for (let row=0; row<lInfo.length; row++) {
           let rowInfo = lInfo[row];
           const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
@@ -1702,8 +1718,8 @@ OKAY NOW?
         modify_LayerListItem_VideoFlightline();
       }
 
-      if (item.layer.title === "Query Layers") {
-        item.open = false;
+      if (item.layer.title === "Sz dev") {      // TODO:  update this later
+        //item.open = false;
         item.actionsSections = [[{
               title: "Add a new query layer",
               className: "esri-icon-add-attachment",      // alternative: "esri-icon-plus"
@@ -1711,14 +1727,17 @@ OKAY NOW?
             }]]
       }
 
-      if (item.parent && item.parent.layer.title === "Query Layers") {
+/*
+      // For query layers, add button to show WHERE clause
+      if (item.parent && (item.parent.layer.title==="Query Layers") /!*&& item.layer.definitionExpression*!/) {
         item.actionsSections = [[{
           title: "Get WHERE clause",
           className: "esri-icon-add-attachment",      // alternative: "esri-icon-plus"
           id: "getWhere"
         }]]
-
       }
+*/
+
       if (item.layer.title === "Unit Info")
         item.open = false;
       if (item.layer.title === "Video prequery")
@@ -1732,7 +1751,15 @@ OKAY NOW?
     layerListWidget.on("trigger-action", (event) => {
       const id = event.action.id;
       if (id === "addNewQueryLayer") {
+//        let dfltName = "Query Layer " + (event.item.layer.sublayers.length+1);
+        let dfltName = "User Layer " + (userLayersCount + 1);
+        getEl("queryLayer_name").value =  dfltName;
+        getEl("queryLayer_where").value =  "";
+        if (getEl("layerAddedLabel").getAttribute("class") === "show_rmvSpace")
+          swapClasses("queryLayerDiv", "show_rmvSpace", "hide_rmvSpace");     // Reset initial visibility of dialog elements
         setDisplay("queryLayerDiv", true)
+      } else if (id === "getWhere") {
+        console.log("getWhere");
       }
     });
 
@@ -2160,15 +2187,18 @@ OKAY NOW?
         return;
       }
 
+      let randomColor = '#'+Math.floor(Math.random()*0xFFFFFF).toString(16);
+      let newLayerId = szMapServiceLayer.allSublayers.length;
+
       let newDynamicLayer = {
-        id: 64,
+        id: newLayerId,
         title: title,
         definitionExpression: where,      // "HabClass='41'",
         renderer: {
           type: "simple",  // autocasts as new SimpleRenderer()
           symbol: {
             type: "simple-line",  // autocasts as new SimpleLineSymbol()
-            color: "red",
+            color: randomColor,     // "red",
             width: "5px",
             style: "solid"
           }
@@ -2178,9 +2208,25 @@ OKAY NOW?
           mapLayerId: 58
         }
       };
-      let queryGroupId = parseInt(szSublayerIDs["Query Layers"]);
-      let queryLayerGroup = szMapServiceLayer.findSublayerById(queryGroupId);
-      queryLayerGroup.sublayers.add(newDynamicLayer);
+
+/*
+      let userGroupId = parseInt(szSublayerIDs["User Layers"]);
+      let userLayerGroup = szMapServiceLayer.findSublayerById(userGroupId);
+      if (!userLayerGroup.layers)
+        userLayerGroup.layers = new Collection("esri/layers/Layer");
+      let userLayersCount = userLayerGroup.layers.length;
+      if (szMapServiceLayer.sublayers.getItemAt(userLayersCount).title !== "User Layers") {
+        userLayersCount += 1;
+        let newGL = new GroupLayer({title: "User Layers",layers: []});
+        szMapServiceLayer.sublayers.add(newGL);
+      }
+      szMapServiceLayer.sublayers.getItemAt(userLayersCount).layers.add(newDynamicLayer);
+      userLayerGroup.layers.add(newDynamicLayer);
+*/
+
+      szMapServiceLayer.sublayers.add(newDynamicLayer);
+      userLayersCount += 1;
+      swapClasses("queryLayerDiv", "show_rmvSpace", "hide_rmvSpace");
     },
 
 

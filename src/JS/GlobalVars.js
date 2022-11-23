@@ -4,6 +4,8 @@
 
 let test = false;    // For trying out things before comitting to code
 
+let userLayersCount = 0;
+
 let startFeature = null;
 let maxViewExtentPct = 0.01;
 let sz_ExtentFromPreQuery = null;

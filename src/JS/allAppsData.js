@@ -98,20 +98,41 @@ function makeSiteInfoPanel() {
 
 function makeAddQueryLayerDialog() {
   let theStyle = "display:none";
-  let theContent = '<label for="queryLayer_name">Enter a name for the new layer: </label><input type="text" id="queryLayer_name" name="queryLayer_name"><br>';
+  let theContent = '<div class="show_rmvSpace">';
+  theContent += '<label for="queryLayer_name">Enter a name for the new layer: </label><input type="text" id="queryLayer_name" name="queryLayer_name"><br><br>';
   theContent += '<label for="queryLayer_where">Enter WHERE clause for the new layer: </label><input type="text" id="queryLayer_where" name="queryLayer_where"><br><br>';
-  theContent += '<h4 id="layerAddedLabel">Your new layer has been added, under ShoreZone/Query Layers</h4>';
-  let buttonInfo = "Create layer:mapStuff.addQueryLayer();Cancel:setDisplay('queryLayerDiv',false)";
+  theContent += '</div>';
+  theContent += '<h4 class="hide_rmvSpace" id="layerAddedLabel">Your new layer has been added, and will be visible on the map shortly!</h4><br>';
+  let buttonInfo = [
+    "Create layer:mapStuff.addQueryLayer():show_rmvSpace",
+    "Cancel:setDisplay('queryLayerDiv',false):show_rmvSpace",
+    "Close:setDisplay('queryLayerDiv',false):hide_rmvSpace"
+  ];
   makeDialog("queryLayerDiv", "Add new query layer", true, null, theStyle, theContent, buttonInfo);
+}
+
+function swapClasses(elName, class1, class2) {
+  // Find all elements under elName having class of either class1 or class2, and swap the classes.
+  //   Currently this is used to alternately show or hide elements, with class1/class2 being either "show_rmvSpace" or "hide_rmvSpace"
+  let theEl = getEl(elName);
+  let class1Els = theEl.querySelectorAll("." + class1);    // theEl.getElementsByClassName(class1);
+  let class2Els = theEl.querySelectorAll("." + class2);    // theEl.getElementsByClassName(class2);
+  for (let e=0; e<class1Els.length; e++)
+    class1Els.item(e).setAttribute("class",class2);
+  for (let e=0; e<class2Els.length; e++)
+    class2Els.item(e).setAttribute("class",class1);
 }
 
 function makeDialog(divID, headerText, hasOpacitySlider, theClass, theStyle, theContent, buttonInfo) {
   if (buttonInfo) {
     theContent += '<br>';
-    let bArray = buttonInfo.split(";");
-    for (let b=0; b < bArray.length; b++) {
-      let button = bArray[b].split(":");
-      theContent += '<button onclick="' + button[1] + '">' + button[0] + '</button>'
+    //let bArray = buttonInfo.split(";");
+    for (let b=0; b < buttonInfo.length; b++) {
+      let button = buttonInfo[b].split(":");
+      let classParam = '';
+      if (button[2])
+        classParam = 'class="' + button[2] + '" ';
+      theContent += '<button ' + classParam + 'onclick="' + button[1] + '">' + button[0] + '</button>&emsp;'
     }
   }
   theContent += "<br>";
@@ -119,8 +140,19 @@ function makeDialog(divID, headerText, hasOpacitySlider, theClass, theStyle, the
   return newDialog;     // unneccessary?
 }
 
+function changeColor() {
+  var x = document.createElement("INPUT");
+  x.setAttribute("type", "color");
+  document.body.appendChild(x);
+}
+
+function getListItemInfo() {
+  console.log("getListItemInfo");
+}
+
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
+  getListItemInfo()
   //faWidget.deSanitize();
 }
 
