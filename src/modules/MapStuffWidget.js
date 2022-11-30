@@ -31,6 +31,7 @@ let mapLoading = false;
 define([
   "dojo/_base/declare",
   "esri/Basemap",
+  "esri/Color",
   "esri/core/watchUtils",
   "esri/Map",
   "esri/views/MapView",
@@ -74,7 +75,7 @@ define([
   "esri/core/Collection",
   "esri/core/Accessor",
   "dojo/domReady!"
-], function(declare, Basemap, watchUtils, Map, View, /*Magnifier,*/ MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
+], function(declare, Basemap, Color, watchUtils, Map, View, /*Magnifier,*/ MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
             Extent, Point, Polyline, Polygon, webMercatorUtils, GraphicsLayer, /*GroupLayer,*/ SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
@@ -1645,19 +1646,26 @@ OKAY NOW?
       let theContentHtml = '';
       if (l===-1) {
         if (item.layer.renderer) {
-          // TODO:  Do I need to make a custom swatch for the new layer?
-          let color = item.layer.renderer.symbol.color;
-          let colorHtml = '#' + color.r.toString(16) + color.g.toString(16) + color.b.toString(16);
-          let imgHtml = '<hr style="position:absolute;width:20px;height:3px;border-width:0;background-color:' + colorHtml + '">';
+          let idHtml = 'id="listItemSwatch' + layerId + '" ';
+//          let color = item.layer.renderer.symbol.color;
+          let colorHtml = item.layer.renderer.symbol.color.toHex();
+          let imgHtml = '<hr ' + idHtml + 'style="position:absolute;width:20px;height:3px;border-width:0;background-color:' + colorHtml + '">';
           theContentHtml += '<div>' + imgHtml + '</div>';
           let contentDiv = makeHtmlElement("DIV",legendDivId,null,null,theContentHtml);
           item.panel = {
             content: contentDiv,
             open: (item.visible && item.visibleAtCurrentScale)
           };
-          console.log(item.layer.title + " is not in service " + serviceName);
 
-      }
+          // Add button to show WHERE clause
+          item.actionsSections = [[
+            {
+              title: "Edit layer",
+              className: "esri-icon-edit",      // alternative: "esri-icon-plus"
+              id: "editLayer"
+            }
+          ]];
+        }
       } else {
         item.openable = true;
         const lTitle = svcLegendInfo[l].layerName;
@@ -1727,17 +1735,6 @@ OKAY NOW?
             }]]
       }
 
-/*
-      // For query layers, add button to show WHERE clause
-      if (item.parent && (item.parent.layer.title==="Query Layers") /!*&& item.layer.definitionExpression*!/) {
-        item.actionsSections = [[{
-          title: "Get WHERE clause",
-          className: "esri-icon-add-attachment",      // alternative: "esri-icon-plus"
-          id: "getWhere"
-        }]]
-      }
-*/
-
       if (item.layer.title === "Unit Info")
         item.open = false;
       if (item.layer.title === "Video prequery")
@@ -1758,9 +1755,9 @@ OKAY NOW?
         if (getEl("layerAddedLabel").getAttribute("class") === "show_rmvSpace")
           swapClasses("queryLayerDiv", "show_rmvSpace", "hide_rmvSpace");     // Reset initial visibility of dialog elements
         setDisplay("queryLayerDiv", true)
-      } else if (id === "getWhere") {
-        console.log("getWhere");
-      }
+    } else if (id === "editLayer") {
+        showEditQueryLayerDialog(event.item);
+    }
     });
 
     llExpand.content = wrapperWithOpacitySlider(layerListWidget.domNode, "Layers");
@@ -2369,6 +2366,11 @@ OKAY NOW?
       setDisplay(w.draggablePanelId, true);
       w.updateAllDropdowns(theWhere);
       w.runQuery(null);
+    },
+
+    hexToColor: function(hexColor) {
+      let color = new Color(hexColor);
+      return color;
     },
 
     constructor: function (kwArgs) {

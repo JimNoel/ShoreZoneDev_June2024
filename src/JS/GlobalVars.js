@@ -1490,15 +1490,25 @@ function downloadCsv(csv, headerCsv) {
 }
 
 
+function makePanel(theId, theContent) {
+  let panel = makeHtmlElement("div", theId, "dropdown-content-visible", "top:200px;left:200px;", theContent);
+  document.body.appendChild(panel);
+  setVisible(theId, false);
+  return panel;
+}
+
 let rectActionHtml = '<strong>Action:</strong><br><br>'
   + '<input type="checkbox" id="cb_zoomToRect" value="table" checked>Zoom to drawn rectangle<br>'
   + '<input type="checkbox" id="cb_selectInRect" value="raw">Select features within drawn rectangle<br><br>'
   + '&emsp; <button onclick="doRectAction(false,false)">OK</button>&emsp;<button onclick="doRectAction(true,false)">Cancel</button>&emsp;&emsp;<button onclick="doRectAction(false,true)">Clear Selection</button><br><br>';
 
 function makeRectActionPanel() {
+  let rectActionPanel = makePanel("rectActionPanel", rectActionHtml);
+/*
   let rectActionPanel = makeHtmlElement("div", "rectActionPanel", "dropdown-content-visible", "top:200px;left:200px;", rectActionHtml);
   document.body.appendChild(rectActionPanel);
   setVisible("rectActionPanel", false);
+*/
 }
 
 // Symbol for selection rectangle

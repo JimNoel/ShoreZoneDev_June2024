@@ -97,10 +97,10 @@ function makeSiteInfoPanel() {
 }
 
 function makeAddQueryLayerDialog() {
-  let theStyle = "display:none";
+  let theStyle = "display:none; position:absolute; top:150px";
   let theContent = '<div class="show_rmvSpace">';
-  theContent += '<label for="queryLayer_name">Enter a name for the new layer: </label><input type="text" id="queryLayer_name" name="queryLayer_name"><br><br>';
-  theContent += '<label for="queryLayer_where">Enter WHERE clause for the new layer: </label><input type="text" id="queryLayer_where" name="queryLayer_where"><br><br>';
+  theContent += '<label for="queryLayer_name">Enter a name for the new layer: </label>&emsp;<input type="text" id="queryLayer_name" name="queryLayer_name"><br><br>';
+  theContent += '<label for="queryLayer_where">Enter WHERE clause for the new layer: </label>&emsp;<input type="text" id="queryLayer_where" name="queryLayer_where"><br><br>';
   theContent += '</div>';
   theContent += '<h4 class="hide_rmvSpace" id="layerAddedLabel">Your new layer has been added, and will be visible on the map shortly!</h4><br>';
   let buttonInfo = [
@@ -109,6 +109,38 @@ function makeAddQueryLayerDialog() {
     "Close:setDisplay('queryLayerDiv',false):hide_rmvSpace"
   ];
   makeDialog("queryLayerDiv", "Add new query layer", true, null, theStyle, theContent, buttonInfo);
+}
+
+function showEditQueryLayerDialog(item) {
+  let theStyle = "display:inherit; position:absolute; top:150px";
+  let theContent = '<h3>Edit layer settings for  ' + item.layer.title + '</h3>';
+  // Change layer name
+  theContent += '<label for="layerNameText"><b>Layer name: </b></label>&emsp;';
+  theContent += '<input type="text" id="layerNameText" value="' + item.layer.title + '"><br><br>';
+  // Change definition expression
+  theContent += '<label for="defExprText"><b>Definition expression: </b></label>&emsp;';
+  theContent += '<input type="text" id="defExprText" value="' + item.layer.definitionExpression + '"><br><br>';
+  // Change color
+  theContent += '<label><b>Click on the color swatch to select a new color: </b></label>&emsp;';
+//  let swatchHtml = item.panel.content.innerHTML.replace('listItemSwatch', 'dialogSwatch');
+  let colorHtml = 'value=' + item.layer.renderer.symbol.color.toHex();
+  theContent += /*swatchHtml +*/ '<input ' + colorHtml + ' id="colorPicker" type="color" onchange="changeDialogSwatchColor(' + item.layer.id + ')"><br>';
+  let buttonInfo = [
+    "Apply changes:applyChanges(" + item.layer.id + ")",
+    "Cancel:getEl('editQueryLayerDiv').remove()"
+    //"Close:setDisplay('queryLayerDiv',false):hide_rmvSpace"
+  ];
+  makeDialog("editQueryLayerDiv", "Edit query layer", true, null, theStyle, theContent, buttonInfo);
+}
+
+function changeDefinitionExpression(id) {
+  let newExpr = getEl('defExprText').value;
+  getEl('dialogSwatch' + id).style.backgroundColor = newExpr;
+}
+
+function changeDialogSwatchColor(id) {
+  let newColor = getEl('colorPicker').value;
+  getEl('dialogSwatch' + id).style.backgroundColor = newColor;
 }
 
 function swapClasses(elName, class1, class2) {
@@ -136,14 +168,25 @@ function makeDialog(divID, headerText, hasOpacitySlider, theClass, theStyle, the
     }
   }
   theContent += "<br>";
-  let newDialog = makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theStyle, theContent);
+//  let newDialog = makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theStyle, theContent);
+  let newDialog = makePanel(divID, theContent);
   return newDialog;     // unneccessary?
 }
 
-function changeColor() {
-  var x = document.createElement("INPUT");
-  x.setAttribute("type", "color");
-  document.body.appendChild(x);
+function applyChanges(layerId) {
+  let theLayer = szMapServiceLayer.allSublayers.find(function(layer){
+    return layer.id === layerId;
+  });
+  let hexColor = getEl('colorPicker').value;
+  theLayer.renderer.symbol.color = mapStuff.hexToColor(hexColor);     // change layer color
+  getEl('listItemSwatch'+layerId).style.backgroundColor = hexColor;     // change layerList swatch color
+  theLayer.title = getEl('layerNameText').value;
+  theLayer.definitionExpression = getEl('defExprText').value;
+  view.extent = view.extent;      // Refresh the map
+  let newHtml = '<h3>Your changes have been made, and should be visible in the map shortly!</h3><br><button onclick="';
+  let onclickAction = "getEl('editQueryLayerDiv').remove()";
+  newHtml += onclickAction + '">Close</button>';
+  getEl('editQueryLayerDiv_content').innerHTML = newHtml;
 }
 
 function getListItemInfo() {
