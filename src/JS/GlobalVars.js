@@ -1490,10 +1490,10 @@ function downloadCsv(csv, headerCsv) {
 }
 
 
-function makePanel(theId, theContent) {
-  let panel = makeHtmlElement("div", theId, "dropdown-content-visible", "top:200px;left:200px;", theContent);
+function makePanel(theId, theContent, theStyle, isVisibile) {
+  // Creates a popup panel.
+  let panel = makeHtmlElement("div", theId, "popup-panel", theStyle, theContent);
   document.body.appendChild(panel);
-  setVisible(theId, false);
   return panel;
 }
 
@@ -1503,12 +1503,7 @@ let rectActionHtml = '<strong>Action:</strong><br><br>'
   + '&emsp; <button onclick="doRectAction(false,false)">OK</button>&emsp;<button onclick="doRectAction(true,false)">Cancel</button>&emsp;&emsp;<button onclick="doRectAction(false,true)">Clear Selection</button><br><br>';
 
 function makeRectActionPanel() {
-  let rectActionPanel = makePanel("rectActionPanel", rectActionHtml);
-/*
-  let rectActionPanel = makeHtmlElement("div", "rectActionPanel", "dropdown-content-visible", "top:200px;left:200px;", rectActionHtml);
-  document.body.appendChild(rectActionPanel);
-  setVisible("rectActionPanel", false);
-*/
+  let rectActionPanel = makePanel("rectActionPanel", rectActionHtml, "position:absolute;top:150px;left:100px;visibility:hidden");
 }
 
 // Symbol for selection rectangle
@@ -1523,7 +1518,7 @@ let selRectSymbol = {
 
 function doRectAction(cancel, clear) {
   let w = faWidget;
-  setVisible("rectActionPanel", false);
+  showHide("rectActionPanel",false);
   if (cancel) {
     view.graphics.remove(extentGraphic);
     return;

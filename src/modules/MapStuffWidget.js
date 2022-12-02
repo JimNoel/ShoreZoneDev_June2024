@@ -1443,8 +1443,7 @@ OKAY NOW?
         drawingZoomRectangle = false;
 
         if (siteTabs.currTab === "fa") {
-          setVisible("rectActionPanel", true);
-          //faWidget.runQuery(extentGraphic.geometry.extent);
+          showHide("rectActionPanel",true);
         } else {
           view.graphics.remove(extentGraphic);
           view.goTo(extentGraphic, {animate: false});
@@ -1754,7 +1753,7 @@ OKAY NOW?
         getEl("queryLayer_where").value =  "";
         if (getEl("layerAddedLabel").getAttribute("class") === "show_rmvSpace")
           swapClasses("queryLayerDiv", "show_rmvSpace", "hide_rmvSpace");     // Reset initial visibility of dialog elements
-        setDisplay("queryLayerDiv", true)
+        showHide("queryLayerDiv", true)
     } else if (id === "editLayer") {
         showEditQueryLayerDialog(event.item);
     }

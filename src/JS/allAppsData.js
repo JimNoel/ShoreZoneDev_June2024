@@ -75,12 +75,25 @@ function setDisplay(id, value) {
   el.style.display = display;
 }
 
-function showHide(id, value, removeSpace) {
-  // Show/hide HTML element.  If optional removeSpace parameter is true, then subsequent elements will shift to fill the missing space
-  if (removeSpace)
+function showHide(id, value) {
+  // Show/hide HTML element.
+  // Uses setDisplay() if "display" parameter is present, uses setVisible() if "visibility" parameter is present, otherwise logs error in console
+  // Eventually replace setVisible() and setDisplay() with this?
+  let style = getEl(id).style;
+  let hasDisplay = false;
+  let hasVisibility = false;
+  for (let i=0; i<style.length; i++) {
+    if (style[i] === "display")
+      hasDisplay = true;
+    if (style[i] === "visibility")
+      hasVisibility = true;
+  }
+  if (hasDisplay)
     setDisplay(id, value);
-  else
+  else if (hasVisibility)
     setVisible(id, value);
+  else
+    console.log("ERROR:  Can't apply showHide() function to " + id + ", as the element has neither 'visibility' nor 'display' properties")
 }
 
 let closeCode = "setVisible('siteInfoPanel', false)";
@@ -97,7 +110,7 @@ function makeSiteInfoPanel() {
 }
 
 function makeAddQueryLayerDialog() {
-  let theStyle = "display:none; position:absolute; top:150px";
+  let theStyle = "position:absolute; top:150px; left:100px; visibility:hidden";
   let theContent = '<div class="show_rmvSpace">';
   theContent += '<label for="queryLayer_name">Enter a name for the new layer: </label>&emsp;<input type="text" id="queryLayer_name" name="queryLayer_name"><br><br>';
   theContent += '<label for="queryLayer_where">Enter WHERE clause for the new layer: </label>&emsp;<input type="text" id="queryLayer_where" name="queryLayer_where"><br><br>';
@@ -112,7 +125,7 @@ function makeAddQueryLayerDialog() {
 }
 
 function showEditQueryLayerDialog(item) {
-  let theStyle = "display:inherit; position:absolute; top:150px";
+  let theStyle = "position:absolute; top:150px; left:100px; visibility:inherit";
   let theContent = '<h3>Edit layer settings for  ' + item.layer.title + '</h3>';
   // Change layer name
   theContent += '<label for="layerNameText"><b>Layer name: </b></label>&emsp;';
@@ -124,7 +137,8 @@ function showEditQueryLayerDialog(item) {
   theContent += '<label><b>Click on the color swatch to select a new color: </b></label>&emsp;';
 //  let swatchHtml = item.panel.content.innerHTML.replace('listItemSwatch', 'dialogSwatch');
   let colorHtml = 'value=' + item.layer.renderer.symbol.color.toHex();
-  theContent += /*swatchHtml +*/ '<input ' + colorHtml + ' id="colorPicker" type="color" onchange="changeDialogSwatchColor(' + item.layer.id + ')"><br>';
+//  theContent += /*swatchHtml +*/ '<input ' + colorHtml + ' id="colorPicker" type="color" onchange="changeDialogSwatchColor(' + item.layer.id + ')"><br>';
+  theContent += '<input ' + colorHtml + ' id="colorPicker" type="color"><br>';
   let buttonInfo = [
     "Apply changes:applyChanges(" + item.layer.id + ")",
     "Cancel:getEl('editQueryLayerDiv').remove()"
@@ -138,10 +152,12 @@ function changeDefinitionExpression(id) {
   getEl('dialogSwatch' + id).style.backgroundColor = newExpr;
 }
 
+/*
 function changeDialogSwatchColor(id) {
   let newColor = getEl('colorPicker').value;
   getEl('dialogSwatch' + id).style.backgroundColor = newColor;
 }
+*/
 
 function swapClasses(elName, class1, class2) {
   // Find all elements under elName having class of either class1 or class2, and swap the classes.
@@ -169,7 +185,7 @@ function makeDialog(divID, headerText, hasOpacitySlider, theClass, theStyle, the
   }
   theContent += "<br>";
 //  let newDialog = makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theStyle, theContent);
-  let newDialog = makePanel(divID, theContent);
+  let newDialog = makePanel(divID, theContent, theStyle);
   return newDialog;     // unneccessary?
 }
 
@@ -186,7 +202,7 @@ function applyChanges(layerId) {
   let newHtml = '<h3>Your changes have been made, and should be visible in the map shortly!</h3><br><button onclick="';
   let onclickAction = "getEl('editQueryLayerDiv').remove()";
   newHtml += onclickAction + '">Close</button>';
-  getEl('editQueryLayerDiv_content').innerHTML = newHtml;
+  getEl('editQueryLayerDiv').innerHTML = newHtml;
 }
 
 function getListItemInfo() {
