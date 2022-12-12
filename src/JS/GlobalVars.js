@@ -155,8 +155,8 @@ let ssDisplayInfo = [
   {title: "vw_StationPoints_BiobandsSpecies", visible: false, listMode: "hide"}
 ];
 
-let gearDDtemplate = "SELECT GearBasic, GearBasic AS GearBasic2 FROM vw_FishCounts_flat {W} GROUP BY GearBasic ORDER BY GearBasic";
-let pocDDtemplate = "SELECT POC_LastName FROM vw_FishCounts_flat {W} GROUP BY POC_LastName ORDER BY POC_LastName";
+let gearDDtemplate = "SELECT GearBasic, GearBasic AS GearBasic2, COUNT(*) as Count FROM vw_FishCounts_flat {W} GROUP BY GearBasic ORDER BY GearBasic";
+let pocDDtemplate = "SELECT POC_LastName, COUNT(*) as Count FROM vw_FishCounts_flat {W} GROUP BY POC_LastName ORDER BY POC_LastName";
 
 let lastSZExtent = null;
 let bhDiff = window.outerHeight - window.innerHeight;

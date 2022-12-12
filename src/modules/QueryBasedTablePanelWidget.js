@@ -825,13 +825,16 @@ define([
                 theLabel += arr[j];
             }
           }
-          if (buttonLabel)      // If all fields used in generating the label are null, then don't include
+          if (buttonLabel) {     // If all fields used in generating the label are null, then don't include
+            if (a["Count"])
+              theLabel += " [" + a["Count"] + "]";
             options.push({
               label: theLabel,
               value: v,
               extent: extentStr,
               buttonLabel: buttonLabel
             });
+          }
         }
         w.makeDropdownOptionsHtml(ddItem)
       };
