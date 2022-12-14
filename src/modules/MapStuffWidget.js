@@ -738,7 +738,7 @@ define([
               isAlpha: true,
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT Region,RegionCode,RegionEnv,COUNT(*) AS Count FROM vw_FishCounts_flat {W} GROUP BY Region,RegionCode,RegionEnv ORDER BY Region"
+                sqlTemplate: "SELECT Region,RegionCode,RegionEnv,COUNT(DISTINCT {C}) AS Count FROM vw_FishCounts_flat {W} GROUP BY Region,RegionCode,RegionEnv ORDER BY Region"
               },
               liveUpdate: true
             },
@@ -755,7 +755,7 @@ define([
               isAlpha: true,
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT Habitat, COUNT(*) as Count FROM vw_FishCounts_flat {W} GROUP BY Habitat,HabitatCode ORDER BY HabitatCode"
+                sqlTemplate: "SELECT Habitat, COUNT(DISTINCT {C}) as Count FROM vw_FishCounts_flat {W} GROUP BY Habitat,HabitatCode ORDER BY HabitatCode"
               },
               showColumnOption: dfltShowColumnOption,
               ddOutFields: ["Habitat"],
@@ -827,7 +827,7 @@ define([
               isAlpha: true,
               customRestService: {
                 serviceUrl: faRestServiceURL,
-                sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName,COUNT(*) as Count FROM vw_FishCounts_flat {W} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY {S}"
+                sqlTemplate: "SELECT Sp_CommonName,SpCode,Sp_ScientificName,COUNT(DISTINCT {C}) as Count FROM vw_FishCounts_flat {W} GROUP BY Sp_CommonName,SpCode,Sp_ScientificName ORDER BY {S}"
               },
               liveUpdate: true
             },
@@ -1070,6 +1070,7 @@ define([
           objName: "faSpTableWidget",
           title: "Fish Catch",
           sublayerIDs: faSublayerIDs,
+          idField: "SPCODE",
           panelName: "faSpTablePanel",
           panelType: "table",
           draggablePanelId: "faSpTableDiv",

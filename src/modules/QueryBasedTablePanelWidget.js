@@ -826,8 +826,10 @@ define([
             }
           }
           if (buttonLabel) {     // If all fields used in generating the label are null, then don't include
-            if (a["Count"])
+            if (a["Count"]) {
               theLabel += " [" + a["Count"] + "]";
+//              theLabel += " [" + a["Count"] + " " + this.disabledMsgInfix + "]";    // adds "regions/sites/species"
+            }
             options.push({
               label: theLabel,
               value: v,
@@ -894,6 +896,10 @@ define([
           else
             where = "";
           theUrl = theUrl.replace("{W}", where);
+          let idField = this.idField;
+          if (!idField)
+            idField = this.tabInfo[this.currTab].idField;
+          theUrl = theUrl.replace("{C}", idField);
           if (ddItem.orderByFields)
             theUrl = theUrl.replace("{S}",ddItem.orderByFields.join(","));
           queryServer(theUrl, false, function(results) {
