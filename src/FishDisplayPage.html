@@ -26,11 +26,9 @@
 
       var fa = 1;
       var parts = [
-        "tableHTML",
         "commHTML",
         "sciHTML",
         "famHTML",
-        "endTableHTML",
         "P1",
         "P2",
         "P3",
@@ -44,7 +42,7 @@
 
       let serviceUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas/MapServer";
       //let serviceUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/dev/FishAtlas_v2020_dev/MapServer";
-      let subLayerName = "HTMLCODE_FISHPAGES";
+      let subLayerName = "vw_HtmlCode_FishPages";
       let layerNum = null;
       let idTable = {};
 
@@ -53,10 +51,12 @@
       function buildPage() {
         faQuery.submitQuery(layerNum, whereClause, function(results) {
           var attrs = results.features[0].attributes;
+          document.writeln("<table style='border: none' cols=2 rows=3>");
           for (p in parts) {
-            var s = attrs[parts[p]].replace("http://mapping.fakr.noaa.gov/","https://alaskafisheries.noaa.gov/mapping/");
+            var s = attrs[parts[p]];
             document.writeln(s);
           }
+          document.writeln("</table><br>");
         });
       }
 

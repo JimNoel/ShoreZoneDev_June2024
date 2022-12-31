@@ -211,7 +211,13 @@ function getListItemInfo() {
 
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
-  getListItemInfo()
+/*  // Replace dGrid "literal" HTML with actual HTML
+  let columnEls = document.getElementsByClassName("dgrid-column-0");      //[1];
+  for (let r=1; r<columnEls.length; r++)
+    columnEls[r].innerHTML = columnEls[r].innerText;
+  alert("Table modified");
+*/
+  //getListItemInfo()
   //faWidget.deSanitize();
 }
 
