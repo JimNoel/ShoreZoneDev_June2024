@@ -606,6 +606,8 @@ let searchLocal = false;
 
 let olExpand = null;
 
+let scrollTimeout = null;
+
 //  When a graphic is hovered over, these point to the graphic and the widget controlling the graphic
 let minHoverTime = 500;     // Minimum hover time (ms) over a graphic before a new popup opens up
 let currentHoveredGraphic = null;

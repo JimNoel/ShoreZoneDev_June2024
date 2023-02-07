@@ -978,7 +978,7 @@ define([
               specialFormatting: {      // Special HTML formatting for field values
                 Envelope: {
                   title:  "",
-                  colWidth:  5,
+                  colWidth:  100,     //  5,
                   plugInFields: ["x", "y"],
                   args: '"{0},{1},5000"',
                   html: zoomInTemplate.replace("{area}", "SiteID")

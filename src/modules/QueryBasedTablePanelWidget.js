@@ -553,6 +553,15 @@ define([
 
         //this.SetColumnWidths(columnWidths);
 
+        this.grid.bodyNode.onscroll = function() {
+          if (scrollTimeout)
+            clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(function() {
+            this.deSanitizeVisible();
+            clearTimeout(scrollTimeout);
+          }.bind(this), 1000);
+        }.bind(this);
+
         this.grid.on('dgrid-error', function(event) {
           console.log('dgrid-error:  ' + event.error.message);
         });
@@ -774,6 +783,34 @@ define([
         }
       }
 
+      this.deSanitizeVisible = function() {
+        // Replace dGrid "literal" HTML in visible cells with actual HTML
+        let theGrid = faWidget.grid;
+        let bodyNode = theGrid.bodyNode;
+        let columnCount = Object.keys(theGrid.columns).length;
+
+        let gridRect = bodyNode.getBoundingClientRect();
+        let topVisibleRowEl = document.elementFromPoint(window.scrollX+gridRect.left+1,window.scrollY+gridRect.top+1).parentElement.parentElement.parentElement;
+        let topVisibleRow = topVisibleRowEl.rowIndex;
+
+        let startTime = Date.now();
+
+        for (let c=0; c<columnCount; c++) {
+          if ([0,5,6,7,8,9,11].includes(c)) {
+
+            let columnEls = document.getElementsByClassName("dgrid-column-" + c);
+
+            for (let r=topVisibleRow; r<topVisibleRow+10; r++) {
+              columnEls[r].innerHTML = columnEls[r].innerText;
+            }
+
+          }
+        }
+
+        let endTime = Date.now();
+        let elapsedSeconds = (endTime-startTime)/(1000);
+        console.log("deSanitizeVisible:  row " + topVisibleRow + ", " + elapsedSeconds + "seconds");
+      }
 
       this.processFeatures_Widget = function(features) {
 /*
