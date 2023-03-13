@@ -553,6 +553,7 @@ define([
 
         //this.SetColumnWidths(columnWidths);
 
+/*
         this.grid.bodyNode.onscroll = function() {
           if (scrollTimeout)
             clearTimeout(scrollTimeout);
@@ -561,6 +562,7 @@ define([
             clearTimeout(scrollTimeout);
           }.bind(this), 1000);
         }.bind(this);
+*/
 
         this.grid.on('dgrid-error', function(event) {
           console.log('dgrid-error:  ' + event.error.message);

@@ -212,47 +212,7 @@ function getListItemInfo() {
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
 
-  faWidget.deSanitizeVisible();
-
-/*
-  // Replace dGrid "literal" HTML with actual HTML
-  let theGrid = faWidget.grid;
-  let bodyNode = theGrid.bodyNode;
-  let scrollPct = bodyNode.scrollTop/bodyNode.scrollHeight;
-  let columnCount = Object.keys(theGrid.columns).length;
-  let columnEls0 = document.getElementsByClassName("dgrid-column-0");
-
-  let gridRect = bodyNode.getBoundingClientRect();
-  let topVisibleRowEl = document.elementFromPoint(window.scrollX+gridRect.left+1,window.scrollY+gridRect.top+1).parentElement.parentElement.parentElement;
-  let topVisibleRow = topVisibleRowEl.rowIndex;
-//  let topVisibleRow = Math.max(Math.floor(columnEls0.length * scrollPct), 1);   // Estimate row # of topmost visible row.  (Has to be at least 1)
-
-  let docBottom = window.innerHeight || document.documentElement.clientHeight;
-  let el = columnEls0[topVisibleRow];
-  let elHeight = el.offsetHeight;
-  let bounding = el.getBoundingClientRect();
-  while ( bounding.top+elHeight >= 0
-//          && docBottom+elHeight-bounding.bottom >= 0
-          && topVisibleRow > 1) {
-//  while (!isInViewport(el, bodyNode)) {
-    topVisibleRow--;
-    el = columnEls0[topVisibleRow];
-    elHeight = el.offsetHeight;
-    bounding = el.getBoundingClientRect();
-  }
-
-  for (let c=0; c<columnCount; c++) {
-    if ([0,5,6,7,8,9,11].includes(c)) {
-
-      let columnEls = document.getElementsByClassName("dgrid-column-" + c);
-
-      for (let r=topVisibleRow; r<topVisibleRow+10; r++) {
-        columnEls[r].innerHTML = columnEls[r].innerText;
-      }
-
-    }
-  }
-*/
+  //faWidget.deSanitizeVisible();
 
 }
 
