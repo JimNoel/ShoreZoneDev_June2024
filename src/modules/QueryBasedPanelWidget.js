@@ -902,7 +902,7 @@ define([
       }
       for (let n = 0; n < features.length; n++) {
         let g = features[n];
-        if (g.geometry.rings) {   // If g.geometry.rings exists, then the data is for a Polygon
+        if (this.customRestService && g.geometry.rings) {   // For customRestService-derived data:  If g.geometry.rings exists, then the data is for a Polygon
           // Recast g.geometry as Polygon
           let P = new Polygon({
             hasZ: false,

@@ -1379,9 +1379,9 @@ function modify_LayerListItem_VideoFlightline() {
   for (let i=0; i<subLayers.length; i++) {
     let L = subLayers[i];
     if (L.title === "1s")
-      L.visible = false;
+      L.visible = false;    // usingPreQuery: set to false
     if (L.title === "1s - lines")
-      L.visible = true;
+      L.visible = true;     // usingPreQuery: set to true
   }
 
   listItem_VideoFlightline.children.removeAll();    //  This removes 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
