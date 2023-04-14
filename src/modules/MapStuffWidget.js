@@ -83,7 +83,7 @@ define([
     function makeSzWidgets() {
       szPhotoWidget = new PhotoPlaybackWidget({
         objName: "szPhotoWidget",
-        usingPreQuery: false,    // If true, will query on smaller part of current extent when zoomed out
+/*JN1 - usingPreQuery */        usingPreQuery: true,    // If true, will query on smaller part of current extent when zoomed out
         panelName: "szPhotosPanel",
         panelType: "media",
         contentPaneId: "photoDiv",
@@ -120,7 +120,7 @@ define([
 
       szVideoWidget = new VideoPanelWidget({
         objName: "szVideoWidget",
-        usingPreQuery: false,    // If true, will query on smaller part of current extent when zoomed out
+/*JN1 - usingPreQuery */        usingPreQuery: true,    // If true, will query on smaller part of current extent when zoomed out
         panelName: "szVideoPanel",
         sublayerIDs: szSublayerIDs,
         panelType: "media",
@@ -284,7 +284,7 @@ define([
             { ddName: "Group",
               expandPanelId: "SpeciesPanel",
               inCombo: true,
-              layerSubNames: "SpGroups",
+              layerSubNames: "SpeciesGroups",
               subLayerName: "vw_AlaskaSpeciesGroups",     // table for generating dropdown items
               ddOutFields: ["Group_", "GroupID"],
               orderByFields: ["Group_"],
@@ -297,7 +297,7 @@ define([
             { ddName: "Subgroup",
               expandPanelId: "SpeciesPanel",
               inCombo: true,
-              layerSubNames: "SpSubgroups",
+              layerSubNames: "SpeciesSubgroups",
               subLayerName: "vw_AlaskaSpeciesSubgroups",     // table for generating dropdown items
               ddOutFields: ["Subgroup", "SubgroupID"],
               orderByFields: ["Subgroup"],
@@ -339,7 +339,7 @@ define([
               htmlTemplate: '<button id="ssSpeciesPanel_Button" onclick="expandDropdownPanel(\'ssSpeciesPanel\', true,ssWidget,\'SpeciesPanel\')">[All]]</button><div id="ssSpeciesPanel_Content" class="dropdown-content" >' + ssSpeciesDropdownHtml + '</div>',
               SelectedOption: "All",
               subDropDowns: ["Group", "Subgroup", "Species"],
-              layerSubNames: "SpeciesSpSubgroupsSpGroups",
+              layerSubNames: "SpeciesSpeciesSubgroupsSpeciesGroups",
               panelWhere: ""
             }
           ],
@@ -1738,7 +1738,8 @@ OKAY NOW?
       if (item.layer.title === "Unit Info")
         item.open = false;
       if (item.layer.title === "Video prequery")
-        item.open = false;
+        item.parent.children.remove(item);          // Remove "Video prequery" from LayerList
+
       if (item.layer.title.startsWith("FishAtlas"))
         item.open = false;
       if (item.layer.title.startsWith("ShoreStation"))

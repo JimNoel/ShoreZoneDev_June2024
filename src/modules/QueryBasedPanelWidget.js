@@ -775,7 +775,8 @@ define([
             mapStuff.showExtentBox(this.query.geometry);
         }
         this.setDynamicQueryPars(theWhere, queryPars, serviceName);
-        //*JN*/  this.query.num = 1000;
+        if (this.usingPreQuery)
+          this.query.num = 1000;
         this.queryTask.execute(this.query).then(this.queryResponseHandler.bind(this), function(error) {
           this.queryPending = false;
           console.log(this.baseName + ":  QueryTask failed.");
@@ -902,7 +903,7 @@ define([
       }
       for (let n = 0; n < features.length; n++) {
         let g = features[n];
-        if (this.customRestService && g.geometry.rings) {   // For customRestService-derived data:  If g.geometry.rings exists, then the data is for a Polygon
+        if (g.geometry.rings) {   // If g.geometry.rings exists, then the data is for a Polygon
           // Recast g.geometry as Polygon
           let P = new Polygon({
             hasZ: false,

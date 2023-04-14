@@ -2,6 +2,9 @@
  * Global variables and functions
  */
 
+/* Locators for alternate coding */
+/*JN1 - usingPreQuery */
+
 let test = false;    // For trying out things before comitting to code
 
 let userLayersCount = 0;
@@ -99,13 +102,12 @@ function makeServiceUrls(type, name) {
 
 
 // Set server URLs (2-item arrays, containing NOAA and PS URLs)
-//let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
-let szMapServiceLayerURLs = makeServiceUrls("service", "sz_dev");
-//let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone_w1000mVideo");
-let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
+let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
+//let szMapServiceLayerURLs = makeServiceUrls("service", "sz_dev");
+let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStations");
+//let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStation_2019");
 let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas");
 //let faMapServiceLayerURLs = makeServiceUrls("service", "dev/FishAtlas_v2020_dev");
-//let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas_wViews");
 let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
 
 let szSublayerIDs = {};
@@ -116,12 +118,6 @@ let szSublayerIDs = {};
      "visible"  (default "true") determines whether the sublayer is currently visible in the map
 */
 
-/*
-let szDisplayInfo = [
-  {title: "AK_UNIT_LINES_WATTRS", visible: false, listMode: "hide"},
-  {title: "AK_UNIT_LINES_WATTRS_wXSHR", visible: false, listMode: "hide"},
-];
-*/
 
 let faDisplayInfo = [
   {title: "Regions", visible: false, listMode: "show"},
@@ -145,13 +141,9 @@ let ssDisplayInfo = [
   {title: "vw_StationPoints_Biobands", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_SpeciesGroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_SpeciesSubgroups", visible: false, listMode: "hide"},
-  {title: "vw_StationPoints_SpGroups", visible: false, listMode: "hide"},
-  {title: "vw_StationPoints_SpSubgroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_Species", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_BiobandsSpeciesGroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_BiobandsSpeciesSubgroups", visible: false, listMode: "hide"},
-  {title: "vw_StationPoints_BiobandsSpGroups", visible: false, listMode: "hide"},
-  {title: "vw_StationPoints_BiobandsSpSubgroups", visible: false, listMode: "hide"},
   {title: "vw_StationPoints_BiobandsSpecies", visible: false, listMode: "hide"}
 ];
 
@@ -172,9 +164,6 @@ let gotoSubareasTemplate = "<img src='assets/images/start.png' onclick='mapStuff
 let initialExtentThumbnail = null;
 
 let settings = {
-  //  PRE-QUERY METHOD VARIABLES
-  //preQueryRadius: 100000,    // obsolete
-
   //  ZOOMED-IN METHOD VARIABLES
   autoRefresh: true,
   photoGap: 50,
@@ -1379,9 +1368,9 @@ function modify_LayerListItem_VideoFlightline() {
   for (let i=0; i<subLayers.length; i++) {
     let L = subLayers[i];
     if (L.title === "1s")
-      L.visible = false;    // usingPreQuery: set to false
+      L.visible = false;
     if (L.title === "1s - lines")
-      L.visible = true;     // usingPreQuery: set to true
+      L.visible = true;
   }
 
   listItem_VideoFlightline.children.removeAll();    //  This removes 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
