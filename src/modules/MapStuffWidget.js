@@ -1726,7 +1726,8 @@ OKAY NOW?
         modify_LayerListItem_VideoFlightline();
       }
 
-      if (item.layer.title === "Sz dev") {      // TODO:  update this later
+/*JN2*/
+      if (item.layer.title === "ShoreZone") {      // TODO:  update this later
         //item.open = false;
         item.actionsSections = [[{
               title: "Add a new query layer",
@@ -2188,6 +2189,8 @@ OKAY NOW?
       let randomColor = '#'+Math.floor(Math.random()*0xFFFFFF).toString(16);
       let newLayerId = szMapServiceLayer.allSublayers.length;
 
+/*JN2*/      const f = legendInfo.ShoreZone.findIndex(obj => obj.layerName === "AK_UNIT_LINES_WATTRS");
+
       let newDynamicLayer = {
         id: newLayerId,
         title: title,
@@ -2203,7 +2206,7 @@ OKAY NOW?
         },
         source: {
           type: "map-layer",
-          mapLayerId: 58
+          mapLayerId: legendInfo.ShoreZone[f].layerId     // 58
         }
       };
 

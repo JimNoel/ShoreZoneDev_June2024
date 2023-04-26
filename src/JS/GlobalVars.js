@@ -4,6 +4,7 @@
 
 /* Locators for alternate coding */
 /*JN1 - usingPreQuery */
+/*JN2 - add query layer */
 
 let test = false;    // For trying out things before comitting to code
 
@@ -71,7 +72,7 @@ let currServerNum = dfltServerNum;
 
 let serverUrls = {
   noaa:  "alaskafisheries.noaa.gov",
-  ps: "maps.psmfc.org"
+  ps: "gis.psmfc.org"    // "maps.psmfc.org"
 }
 
 let svcPathTemplate = {
@@ -80,7 +81,8 @@ let svcPathTemplate = {
     media:  "/mapping/{name}/"
   },
   ps:  {
-    service:  "/server/rest/services/NOAA/{name}/MapServer",
+//    service:  "/server/rest/services/NOAA/{name}/MapServer",
+    service:  "/server/rest/services/ShoreZone/{name}/MapServer",
     media:  "/{name}/"
   }
 };
