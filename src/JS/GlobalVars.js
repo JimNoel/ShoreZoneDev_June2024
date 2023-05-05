@@ -72,7 +72,8 @@ let currServerNum = dfltServerNum;
 
 let serverUrls = {
   noaa:  "alaskafisheries.noaa.gov",
-  ps: "gis.psmfc.org"    // "maps.psmfc.org"
+  ps: "gis.psmfc.org"
+// ps: "geo.psmfc.org"    // Make this a backup endpoint, eventually
 }
 
 let svcPathTemplate = {
@@ -226,6 +227,7 @@ let settingsHtml = '<h3>Settings</h3>';
 settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
+settingsHtml += '<input type="radio" name="szMarkerGen" value="preQuery" onchange="setPreQueryLayers(true)">See video at any scale<br>';
 settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
 settingsHtml += '<h4>Map magnifier width in km: <input type="number" id="input_magViewWidth" style="width: 6ch" onchange="magViewWidthInputHandler()" value="' + settings.magViewWidth + '"></h4>';
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
@@ -628,6 +630,11 @@ function autoRefreshInputHandler(isAutoRefresh) {
   settings.autoRefresh = isAutoRefresh;
   if (isAutoRefresh)
     setRefreshButtonVisibility(false);
+}
+
+function setPreQueryLayers(usingPreQuery) {
+  szVideoWidget.usingPreQuery = usingPreQuery;
+  szPhotoWidget.usingPreQuery = usingPreQuery;
 }
 
 function setRefreshButtonVisibility(isVisible) {
