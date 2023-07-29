@@ -341,8 +341,10 @@ console.log("Current video time:  " + currentTime);
         let query = new Query();
         query.geometry = geometry;     // extent;
         query.outFields = "FrameID, VIDEOTAPE, DATE_TIME, MP4_Seconds, VidCap_HighRes_subPath, VidCap_LowRes_subPath";
+//        query.outFields = "FrameID, VIDEOTAPE, DATE_TIME, MP4_Seconds, MP4_Seconds_str, VidCap_HighRes_subPath, VidCap_LowRes_subPath";
         query.orderByFields = "DATE_TIME"
         query.where = "VidCap_HighRes_subPath IS NOT NULL";
+//        query.where = "MP4_Seconds_str LIKE '%0'"      //"VidCap_HighRes_subPath IS NOT NULL";
         query.spatialRelationship = "contains";
         query.returnGeometry = true;
         let queryTask = new QueryTask();
@@ -445,6 +447,7 @@ console.log("Current video time:  " + currentTime);
           if (features.length === 0)
             return;
           let f  = features[0];
+          //console.log("Video prequery, pass " + pass + ":  " + f.attributes.Join_Count + " video points");
           if (pass === 1) {
 /*
             let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);
@@ -457,7 +460,7 @@ console.log("Current video time:  " + currentTime);
             this.displayPlayButton(graphic, null, true);
 */
 
-            if (f.attributes.Join_Count > 1000)
+            if (f.attributes.Join_Count > 10000)     // Changed from 1000 to 10,000, since entry points will ve at 10-second intervals
               this.videoPreQuery(f.geometry, mapPoint, 2);
             else
               this.queryVideoStartPoint(f.geometry, mapPoint);

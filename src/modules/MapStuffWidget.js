@@ -83,7 +83,7 @@ define([
     function makeSzWidgets() {
       szPhotoWidget = new PhotoPlaybackWidget({
         objName: "szPhotoWidget",
-/*JN1 - usingPreQuery */        usingPreQuery: true,    // If true, will query on smaller part of current extent when zoomed out
+/*JN1 - usingPreQuery */        usingPreQuery: false,    // If true, will query on smaller part of current extent when zoomed out
         panelName: "szPhotosPanel",
         panelType: "media",
         contentPaneId: "photoDiv",
@@ -120,7 +120,7 @@ define([
 
       szVideoWidget = new VideoPanelWidget({
         objName: "szVideoWidget",
-/*JN1 - usingPreQuery */        usingPreQuery: true,    // If true, will query on smaller part of current extent when zoomed out
+/*JN1 - usingPreQuery */        usingPreQuery: false,    // If true, will query on smaller part of current extent when zoomed out
         panelName: "szVideoPanel",
         sublayerIDs: szSublayerIDs,
         panelType: "media",
