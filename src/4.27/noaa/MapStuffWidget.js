@@ -74,7 +74,7 @@ define([
   "dojo/dom",
   "esri/core/Collection",
   "esri/core/Accessor",
-  "dojo/domReady!"
+  "dojo/domReady!modules"
 ], function(declare, Basemap, Color, watchUtils, Map, View, /*Magnifier,*/ MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
@@ -464,7 +464,7 @@ define([
                 hasPhotos: {
                   title:  "Photos",
                   colWidth:  20,
-                  html:   "<img src='assets/images/Camera24X24.png' class='actionIcon' alt=''>",
+                  html:   "<img src='../../assets/images/Camera24X24.png' class='actionIcon' alt=''>",
                   showWhen: "1"
                 },
                 hasSpecies: {
@@ -478,7 +478,7 @@ define([
                 hasProfile: {
                   title:  "Profile",
                   colWidth:  20,
-                  html:   "<img src='assets/images/graph.png' class='actionIcon' alt=''>",
+                  html:   "<img src='../../assets/images/graph.png' class='actionIcon' alt=''>",
                   showWhen: "1"
                 },
               },
@@ -1017,7 +1017,7 @@ define([
                 PhotoCount: {
                   title:  "Photos",
                   colWidth:  20,
-                  html:   "<img src='assets/images/Camera24X24.png' class='actionIcon' alt=''>",
+                  html:   "<img src='../../assets/images/Camera24X24.png' class='actionIcon' alt=''>",
                   showWhen: 1
                 }
               },

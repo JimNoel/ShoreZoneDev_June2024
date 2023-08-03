@@ -143,7 +143,7 @@ define([
       photoCountHtml += "</span>";
       this.footerPanel.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'photoTools', 'position: relative; float: left', this.objName) + photoCountHtml;
       if (this.sync_photos) {
-        let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()' title='Click to link/unlink photos to video'/>";
+        let linkHTML = "&nbsp;&nbsp;<img id='linkImage' style='float: left' src='../../assets/images/link.png' width='24' height='24' onclick='linkImage_clickHandler()' title='Click to link/unlink photos to video'/>";
         this.footerPanel.innerHTML = linkHTML + this.footerPanel.innerHTML;
       }
 

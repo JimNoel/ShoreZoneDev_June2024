@@ -663,14 +663,14 @@ console.log("Current video time:  " + currentTime);
         this.setSyncPhotos(false);
 
       let speedHTML = '<span class="photoCount" style="position: absolute; right: 5px; bottom: 5px; width: 60px;">';
-      speedHTML += '<img id="speedDecrIcon" src="assets/images/minus_12x12_red.png" style="position: absolute; bottom: 1px; left: 0" title="Click to reduce playback speed." onclick="nudgePlaybackSpeed(-1)"/>';
+      speedHTML += '<img id="speedDecrIcon" src="../../assets/images/minus_12x12_red.png" style="position: absolute; bottom: 1px; left: 0" title="Click to reduce playback speed." onclick="nudgePlaybackSpeed(-1)"/>';
       speedHTML += '<span id="speedSpan" class="photoCount" style="position: absolute; bottom:0; left: 15px; width: 40px; text-align: center; font-weight: bold; padding-left: 0; padding-right: 0;" title="Current playback speed.  Click the +/- icons to increase or decrease.">';
       speedHTML += '1X</span>';
-      speedHTML += '<img id="speedIncrIcon" src="assets/images/plus_12x12_red.png" style="position: absolute; bottom: 1px; right: 0" title="Click to increase playback speed." onclick="nudgePlaybackSpeed(1)"/>';
+      speedHTML += '<img id="speedIncrIcon" src="../../assets/images/plus_12x12_red.png" style="position: absolute; bottom: 1px; right: 0" title="Click to increase playback speed." onclick="nudgePlaybackSpeed(1)"/>';
       speedHTML += '</span>';
 
-      let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()' title='Click to lock in or unlock current set of video points' />";
-      let zoomToQueryHTML = "&nbsp;&nbsp;<img id='zoomQueryImage' src='assets/images/MapMagnifier.png' style='visibility:hidden' width='24' height='24' onclick='zoomQuery_clickHandler()' title='Click to zoom to current set of video points' />";
+      let lockHTML = "&nbsp;&nbsp;<img id='lockImage' src='../../assets/images/unlock_24x24.png' width='24' height='24' onclick='lockImage_clickHandler()' title='Click to lock in or unlock current set of video points' />";
+      let zoomToQueryHTML = "&nbsp;&nbsp;<img id='zoomQueryImage' src='../../assets/images/MapMagnifier.png' style='visibility:hidden' width='24' height='24' onclick='zoomQuery_clickHandler()' title='Click to zoom to current set of video points' />";
       let dlClipHTML = "";      // "&nbsp;&nbsp;<img id='dlClipImage' src='assets/images/floppy16x16.png' width='24' height='24' onclick='dlClipImage_clickHandler()' title='Click to download video clip for current extent' />";
 // TODO: Video clip download from download icon
       videoToolsDiv.innerHTML = makeMediaPlaybackHtml(playbackControlTemplate, this.controlData, 'videoTools', '', this.objName) + speedHTML + lockHTML + zoomToQueryHTML + dlClipHTML;

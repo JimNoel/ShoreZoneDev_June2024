@@ -1054,7 +1054,7 @@ define([
 
 //        let downloadFtnText = this.objName + ".downloadTableData()";
         let downloadFtnText = this.objName + ".showCsvDownloadDialog()";
-        headerContent.innerHTML += '<span id="' + this.baseName + 'TableDownload"><img src="assets/images/floppy16x16.png" title="Download table data" class="tableHeaderIcon" onclick="' + downloadFtnText + '"></span>';
+        headerContent.innerHTML += '<span id="' + this.baseName + 'TableDownload"><img src="../../assets/images/floppy16x16.png" title="Download table data" class="tableHeaderIcon" onclick="' + downloadFtnText + '"></span>';
 
         if (this.tableHeaderTitle)
           headerContent.innerHTML += '&emsp;<label id="' + this.baseName + 'TableHeaderTitle" class="tableHeaderTitle">' + this.tableHeaderTitle + ' &emsp;</label>';
@@ -1148,7 +1148,7 @@ define([
         if (this.speciesTableInfo) {
           let spTableSpanId = this.baseName + 'IconSpeciesTable';
           let spTableHtml = '&emsp;<LABEL class="boldLabel">' + this.speciesTableInfo.iconLabel + '</LABEL>&ensp;';
-          spTableHtml += "<img src='assets/images/table.png' class='tableHeaderIcon' onclick='mapStuff.openSpeciesTable(" + this.speciesTableInfo.args + ")' height='15' width='15' alt='' title='Show species table for all of Alaska'>";
+          spTableHtml += "<img src='../../assets/images/table.png' class='tableHeaderIcon' onclick='mapStuff.openSpeciesTable(" + this.speciesTableInfo.args + ")' height='15' width='15' alt='' title='Show species table for all of Alaska'>";
           headerContent.innerHTML += '<span id="' + spTableSpanId + '">' + spTableHtml + '</span>';
         }
       };
