@@ -5,7 +5,7 @@
  */
 
 
-
+/*
 let map;
 let view;
 let magView;
@@ -24,7 +24,26 @@ let siteTabs = new Object({
   ss: {}
 });
 
-let mapLoading = false;
+let mapLoading = false;*/
+// window.map;
+// window.view;
+// window.magView;
+//
+// window.szMapServiceLayer;
+// window.faMapServiceLayer;
+// window.ssMapServiceLayer;
+// window.sslMapServiceLayer;
+//
+// window.siteTabs = new Object({
+//   tabs: ["sz", "fa", "ss"],
+//   spatialFilterTabs: ["sz", "fa"],
+//   currTab: "sz",
+//   sz: {},
+//   fa: {},
+//   ss: {}
+// });
+//
+// window.mapLoading = false;
 
 
 
@@ -32,7 +51,8 @@ define([
   "dojo/_base/declare",
   "esri/Basemap",
   "esri/Color",
-  "esri/core/watchUtils",
+  // "esri/core/watchUtils",// DEPRECATED
+  "esri/core/reactiveUtils",
   "esri/Map",
   "esri/views/MapView",
   //"esri/views/Magnifier",
@@ -52,9 +72,10 @@ define([
   "esri/widgets/Locate",
   "esri/widgets/Popup",
   "esri/widgets/ScaleBar",
-  "esri/tasks/Geoprocessor",
-  "esri/tasks/support/Query",
-  "esri/tasks/QueryTask",
+
+  "esri/rest/Geoprocessor",
+  "esri/rest/Query",
+  "esri/layers/graphics/sources/support/QueryTask",
 //  "esri/widgets/Print",
   "noaa/VideoPanelWidget",
   "noaa/PhotoPlaybackWidget",
@@ -74,7 +95,7 @@ define([
   "dojo/dom",
   "esri/core/Collection",
   "esri/core/Accessor",
-  "dojo/domReady!modules"
+  "dojo/domReady!"
 ], function(declare, Basemap, Color, watchUtils, Map, View, /*Magnifier,*/ MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
               //Print,
             VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
@@ -92,7 +113,7 @@ define([
         disabledMsgInfix: "photo points",
         mapServiceLayer: null,
         noQuery: true,
-        trackingSymbolInfo: "assets/images/Camera24X24.png:24:24",
+        trackingSymbolInfo: "../4.27/assets/images/Camera24X24.png:24:24",
         clickableSymbolType: "point",
         clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":6,     // invisible if 4th value in "color" is 0
           "outline": {color: [ 0, 0, 255, 0 ] }},
@@ -137,7 +158,7 @@ define([
         //useBinaryFilter: true,
         featureOutFields: ["*"],
         orderByFields: ["Date_Time"],
-        trackingSymbolInfo: "assets/images/video24X24.png:24:24",
+        trackingSymbolInfo: "../4.27/assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
         clickableLayerMinScale: 5000000,      // for preQuery start and end points
         clickableSymbolInfo: {"style":"circle", "color":[255,0,0,1], "size":6,      //  invisible if 4th value in "color" is 0
@@ -187,7 +208,8 @@ define([
           BC_CLASS: { colWidth: 100 },
 //          SHORETYPE: { colWidth: 100 },     // to eventually replace "BC_CLASS"
           EXP_BIO: { colWidth: 80 },
-          LENGTH_M: { colWidth: 80, numDecimals: 0 },   // TODO: Handle 0 value for numDecimals
+          LENGTH_M: { colWidth: 80},
+          // LENGTH_M: { colWidth: 80, numDecimals: 0 },   // TODO: Handle 0 value for numDecimals
           CMECS_1: { colWidth: 130 },
           CMECS_2: { colWidth: 130 },
           CMECS_3: { colWidth: 130 }
@@ -464,7 +486,7 @@ define([
                 hasPhotos: {
                   title:  "Photos",
                   colWidth:  20,
-                  html:   "<img src='../../assets/images/Camera24X24.png' class='actionIcon' alt=''>",
+                  html:   "<img src='assets/images/Camera24X24.png' class='actionIcon' alt=''>",
                   showWhen: "1"
                 },
                 hasSpecies: {
@@ -478,7 +500,7 @@ define([
                 hasProfile: {
                   title:  "Profile",
                   colWidth:  20,
-                  html:   "<img src='../../assets/images/graph.png' class='actionIcon' alt=''>",
+                  html:   "<img src='assets/images/graph.png' class='actionIcon' alt=''>",
                   showWhen: "1"
                 },
               },
@@ -1017,7 +1039,7 @@ define([
                 PhotoCount: {
                   title:  "Photos",
                   colWidth:  20,
-                  html:   "<img src='../../assets/images/Camera24X24.png' class='actionIcon' alt=''>",
+                  html:   "<img src='assets/images/Camera24X24.png' class='actionIcon' alt=''>",
                   showWhen: 1
                 }
               },
@@ -1347,6 +1369,8 @@ OKAY NOW?
       //homeExtent = view.extent;
       map.basemap = startBasemap;   //HACK:  Because inital basemap setting of "oceans" messes up initial extent and zooming
       //let moveButtonAction = {title: "Move the camera", id: "move-camera"};
+
+      view.popup = new Popup();//AEB - added to test idea
       let p = view.popup;     // new Popup();
       p.on("trigger-action", function(event){
         if (event.action.id === "move-camera") {
@@ -1358,6 +1382,7 @@ OKAY NOW?
           }
         }
       });
+
     });
 
     // TODO: use esri/core/watchUtils instead of the following "watch" calls?
@@ -1717,13 +1742,15 @@ OKAY NOW?
       if (item.layer.title === "Still Photos") {
         item.widget = szPhotoWidget;
       }
+      // console.log("item.layer.title: "+item.layer.title);//AEB - Added to help see what is happening.
       if (item.layer.title === "Video Flightline") {
         listItem_VideoFlightline = item;
         item.widget = szVideoWidget;
+        modify_LayerListItem_VideoFlightline();//AEB - Temporarily moved
       }
       if (item.layer.title === "10s") {
         listItem_10s_legendHtml = item.panel.content.innerHTML;
-        modify_LayerListItem_VideoFlightline();
+        // modify_LayerListItem_VideoFlightline();//AEB - Temporarily Commented out
       }
 
 /*JN2*/
@@ -2134,7 +2161,9 @@ OKAY NOW?
 
   function initMap() {
 //    getLegendHtml(0);     // Trying this here...  Move back to original spot if it goes wrong...
-    gp = new Geoprocessor(gpUrl_extract);
+//     gp = new Geoprocessor(gpUrl_extract);//AEB - Commented out for now to see other errors
+//     this.gp = new Geoprocessor({ url: gpUrl_extract });
+    gp = Geoprocessor;
     addServiceLayers();
     map = new Map({
       basemap: "hybrid",
@@ -2148,12 +2177,12 @@ OKAY NOW?
       ymax:  12000000,
       spatialReference: { wkid: 102100 }
     });
-
+    console.log("Creating View");
     view = new View({
       container: "mapDiv",
       map: map,
       //center: [-152, 62.5], // longitude, latitude
-      constraints: {maxScale: 4000},
+      // constraints: {maxScale: 4000},
       //zoom: 4
       extent: initExtent
     });

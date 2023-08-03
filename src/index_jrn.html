@@ -28,10 +28,9 @@
     Also for Geoprocessor.js and QueryTask.js
   -->
 
-  <link rel="stylesheet" href="./4.27/dijit/themes/claro/claro.css">
-  <link rel="stylesheet" href="./4.27/esri/css/main.css">
-  <link rel="stylesheet" href="./4.27/dojox/layout/resources/ExpandoPane.css"/>
-  <link rel="stylesheet" href="./shorezone_table_cell.css"/>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.17/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/css/main.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/4.17/dojox/layout/resources/ExpandoPane.css"/>
 <!--
   <link rel="stylesheet" href="https://js.arcgis.com/4.18/dijit/themes/claro/claro.css">
   <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/css/main.css">
@@ -45,23 +44,23 @@
   Need to replace with each new API version?
   TODO:  Decide whether to remove unneeded files in "dgrid/css" folder
 -->
-  <link rel="stylesheet" href="./4.27/dgrid/css/dgrid.css"/>
+  <link rel="stylesheet" href="dgrid/css/dgrid.css"/>
 <!--  <link rel="stylesheet" href="https://js.arcgis.com/4.14/dgrid/css/dgrid.css"/>-->
 
   <link rel="stylesheet" href="SZ_wLayout.css"/>
 
-<!--  <script type="text/javascript">-->
-<!--    dojoConfig = {-->
-<!--      has: { "esri-promise-compatibility": 1 },-->
-<!--      parseOnLoad: true,-->
-<!--      paths: { noaa: location.pathname.replace(/\/[^/]+$/, '') + '/modules' }     /*defines path "noaa" to "modules" folder*/-->
-<!--    }-->
-<!--  </script>-->
+  <script type="text/javascript">
+    dojoConfig = {
+      has: { "esri-promise-compatibility": 1 },
+      parseOnLoad: true,
+      paths: { noaa: location.pathname.replace(/\/[^/]+$/, '') + '/modules' }     /*defines path "noaa" to "modules" folder*/
+    }
+  </script>
 
   <!--  <script type="text/javascript" src="jquery.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-  <script src="./4.27/dojo/dojo.js"></script>
+  <script src="https://js.arcgis.com/4.17/"></script>
   <!--
     <script src="https://js.arcgis.com/4.18/"></script>
     <script src="arcgis_js_api/library/4.18/"></script>
@@ -374,8 +373,7 @@
 
       // Switch between ShoreZone/FishAtlas/ShoreStation states
       function changeState(tabID, oldTabID) {
-        // view.popup.close();//DEPRECATED
-        view.closePopup();
+        view.popup.close();
         // 3D units demo site
         if (tabID === "szUnitsTab") {
           if (confirm("Open the ShoreZone 3D Units demo site?"))

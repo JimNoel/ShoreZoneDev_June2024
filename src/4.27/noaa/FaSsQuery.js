@@ -9,8 +9,8 @@ define([
   "dojo/_base/declare",
   "dojo/_base/lang",
   "esri/layers/MapImageLayer",
-  "esri/tasks/support/Query",
-  "esri/tasks/QueryTask"
+  "esri/rest/Query",
+  "esri/layers/graphics/sources/support/QueryTask"
 ], function(declare, lang, MapImageLayer, Query, QueryTask) {
 
   return declare(null, {
@@ -21,6 +21,7 @@ define([
 
     submitQuery: function(tableID, whereClause, handler) {
       this.queryTask = new QueryTask(this.serviceUrl + "/" + tableID);
+      this.queryTask.url = this.serviceUrl + "/" + tableID;
       this.query = new Query();
       let q = this.query;
       q.outFields =  ["*"];

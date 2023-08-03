@@ -22,8 +22,9 @@ define([
   "dijit/layout/ContentPane",
   "dijit/layout/TabContainer",
 */
-  "esri/tasks/support/Query",
-  "esri/tasks/QueryTask",
+  "esri/rest/query",
+  "esri/rest/support/Query",
+  "esri/layers/graphics/sources/support/QueryTask",
   "esri/layers/GraphicsLayer",
   "esri/renderers/SimpleRenderer",
   "esri/renderers/UniqueValueRenderer",
@@ -37,7 +38,7 @@ define([
   "esri/geometry/Point",
   "esri/geometry/support/webMercatorUtils",
   "esri/Graphic"
-], function(declare, lang, on, dom, registry, /*BorderContainer, ContentPane, TabContainer, */Query, QueryTask, GraphicsLayer, SimpleRenderer, UniqueValueRenderer,
+], function(declare, lang, on, dom, registry, /*BorderContainer, ContentPane, TabContainer, */query, Query, QueryTask, GraphicsLayer, SimpleRenderer, UniqueValueRenderer,
               PictureMarkerSymbol, SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, TextSymbol, Extent, Polygon, Point, webMercatorUtils, Graphic){
 
   let queryComplete = true;
@@ -511,7 +512,8 @@ define([
         this.highlightLayer.removeAll();
       if (this.trackingLayer)
         this.trackingLayer.removeAll();
-      view.popup.close();
+      // view.popup.close();//DEPRECATED
+      view.closePopup();
     },
 
     // TODO:  queryPars currently consists of just queryPars.theWhere, so find a way to consolidate theWhere and queryPars
@@ -830,7 +832,7 @@ define([
       let attrs = this.getFeatureAttributes(this.counter);
       this.moveToFeature(attrs);
       this.updateMedia(attrs);
-      getEl(this.currNumber_SpanId).innerHTML = this.counter + 1;
+      // getEl(this.currNumber_SpanId).innerHTML = this.counter + 1; //In production this produces a 'QueryBasedPanelWidget.js:833 Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')'
       this.hideMootControls();
     },
 

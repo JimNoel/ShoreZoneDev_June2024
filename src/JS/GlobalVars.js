@@ -72,8 +72,7 @@ let currServerNum = dfltServerNum;
 
 let serverUrls = {
   noaa:  "alaskafisheries.noaa.gov",
-  ps: "gis.psmfc.org"
-// ps: "geo.psmfc.org"    // Make this a backup endpoint, eventually
+  ps: "gis.psmfc.org"    // "maps.psmfc.org"
 }
 
 let svcPathTemplate = {
@@ -164,6 +163,13 @@ let zoomInTemplate = "<img src='assets/images/i_zoomin.png' onclick='mapStuff.go
 let spTableTemplate = "<img src='assets/images/table.png' onclick='mapStuff.openSpeciesTable({args})' class='actionIcon' alt='' title='Show species table'>";
 let gotoSubareasTemplate = "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon'  alt='' title='Go to {area}'>";
 
+
+//https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
+function htmlDecode(input) {
+  let doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.documentElement.textContent;
+};
+
 let initialExtentThumbnail = null;
 
 let settings = {
@@ -227,7 +233,6 @@ let settingsHtml = '<h3>Settings</h3>';
 settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
-settingsHtml += '<input type="radio" name="szMarkerGen" value="preQuery" onchange="setPreQueryLayers(true)">See video at any scale<br>';
 settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
 settingsHtml += '<h4>Map magnifier width in km: <input type="number" id="input_magViewWidth" style="width: 6ch" onchange="magViewWidthInputHandler()" value="' + settings.magViewWidth + '"></h4>';
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
@@ -632,11 +637,6 @@ function autoRefreshInputHandler(isAutoRefresh) {
     setRefreshButtonVisibility(false);
 }
 
-function setPreQueryLayers(usingPreQuery) {
-  szVideoWidget.usingPreQuery = usingPreQuery;
-  szPhotoWidget.usingPreQuery = usingPreQuery;
-}
-
 function setRefreshButtonVisibility(isVisible) {
   let btnClass = "btn_refresh_inactive";
   if (isVisible)
@@ -990,7 +990,8 @@ function checkbox_showFeatures_clickHandler(w, cb) {
 function checkbox_showPopups_clickHandler() {
   showPopups = getEl("showPopupsCheckbox").checked;
   if (!showPopups) {
-    view.popup.close();
+    // view.popup.close();//DEPRECATED
+    view.closePopup();
   }
 }
 
@@ -1215,6 +1216,36 @@ let refreshFeaturesHtml = "<img id='btn_refresh' class='btn_refresh_inactive' sr
 
 let toggleMagnifierHtml = "<img id='toggleMagnifierDiv' src='assets/images/MapMagnifier.png' class='mapWidget_Hidden' onclick='toggleMapWidgetVisibility(\"MagnifierDiv\")' height='24px' width='24px' title='Click for detailed view at mouse position' />";
 
+function htmlWrapper(val){
+  let w = {
+    "html" : val
+  };
+  return w;
+};
+
+function centerInCellWrapper(val){
+  let w = '<div class="my_cell">'+val+'</div>';
+  return w;
+}
+//https://stackoverflow.com/questions/175739/how-can-i-check-if-a-string-is-a-valid-number
+function isNumeric(str) {
+  if (typeof str != "string") return false // we only process strings!
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+      !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+
+function getHtmlWrapperContent(val){
+  let result = val;
+  if (val.includes('<div class="my_cell">')) {//We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="my_cell">22</div>
+    let parts = val.split('<div class="my_cell">');
+    if (2 === parts.length) {
+      result = parts[1].split('</div>')[0];
+    }
+  }
+  return result;
+};
+
+
 let unitsCb2_Id = "unitsCheckbox2_showFeatures";
 let showUnitsCheckbox2 = '<input id="' + unitsCb2_Id  + '" type="checkbox" onclick="checkbox_showFeatures_clickHandler(szUnitsWidget,unitsCheckbox2_showFeatures)"><span style="background-color: #ff6060; opacity: 0.25">&emsp;&emsp;</span>'
 let showUnitsDiv = document.createElement("DIV");
@@ -1333,7 +1364,12 @@ function resizeWidgets() {
 }
 
 function stripHtml(inStr) {
-  let s = inStr.replace(/&nbsp;/g,"");      // Remove any "&nbsp;" strings  (Used to make numeric columns [as strings] sortable)
+  let s = '';
+  if(inStr && inStr.html){
+    s = inStr.html.replace(/&nbsp;/g,"");//Added by AEB
+  }else{
+    s = inStr.replace(/&nbsp;/g,"");      // Remove any "&nbsp;" strings  (Used to make numeric columns [as strings] sortable)
+  }
   let p1 = s.indexOf("<");
   while (p1 !== -1) {
     let p2 = s.indexOf(">");
@@ -1627,3 +1663,24 @@ function simulateMouseEvent(el, evType) {
 }
 
 */
+
+
+let map;
+let view;
+let magView;
+
+let szMapServiceLayer;
+let faMapServiceLayer;
+let ssMapServiceLayer;
+let sslMapServiceLayer;
+
+let siteTabs = new Object({
+  tabs: ["sz", "fa", "ss"],
+  spatialFilterTabs: ["sz", "fa"],
+  currTab: "sz",
+  sz: {},
+  fa: {},
+  ss: {}
+});
+
+let mapLoading = false;
