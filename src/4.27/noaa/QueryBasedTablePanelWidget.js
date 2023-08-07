@@ -18,6 +18,10 @@ let padLength = 10;     // left-pad numeric values to same string length (10), s
 let padChars = "&nbsp;";    // HTML space escape character
 
 let formatValue = function (value) {
+    // In "makeTable" this function gets assigned to the DGrid "formatter" variable
+    //   to enable DGrid to format the cell values
+    // JRN - TODO: Handle case where number is in "html" property.
+    //  (Or arrange that numbers do not come as "html" property.)
     if (value === null || (typeof value) !== "number")
         return value;
     let formatting = this.f[this.n];
@@ -34,8 +38,7 @@ let formatNumber = function (value, formatting) {
         newValue = value.toFixed(formatting.numDecimals);
     else if (formatting.dateFormat)
         newValue = formatNumber_Date(value);
-//  newValue = "<PRE><nobr>" + padString(newValue, padLength, "left", " ") + "</nobr></PRE>";   // pad to the left, so numbers (as strings) sort correctly
-    newValue = padString(newValue, padLength, "left", padChars);    // pad to the left, so numbers (as strings) sort correctly
+//    newValue = padString(newValue, padLength, "left", padChars);    // pad to the left, so numbers (as strings) sort correctly
     return newValue
 };
 
@@ -406,8 +409,8 @@ define([
 
                     if (this.idField) {     // For idField, insert span for identifying original row number, so correct feature is identified regardless of current table order
                         let idFieldValue = features[i].attributes[this.idField];
-                        if (typeof idFieldValue === "number")
-                            idFieldValue = padString(idFieldValue.toString(), padLength, "left", padChars);    // temporary HACK:  pad to the left, so numbers (as strings) sort correctly
+//                        if (typeof idFieldValue === "number")
+//                            idFieldValue = padString(idFieldValue.toString(), padLength, "left", padChars);    // temporary HACK:  pad to the left, so numbers (as strings) sort correctly
                         features[i].attributes[this.idField] = idFieldValue + "<span id='" + this.baseName + "@" + i + "@'></span>";
                         // features[i].attributes[this.idField] = htmlWrapper(features[i].attributes[this.idField]);
                         // For identifying the equivalent row in the table, on feature click
@@ -417,7 +420,7 @@ define([
                     for (a in features[i].attributes)
                         if (features[i].attributes[a] !== null) {
 
-                            let longValue = getIfExists(this, "specialFormatting_" + a + ".longValue");
+                            let longValue = getIfExists(this, "specialFormatting." + a + ".longValue");
                             if (longValue) {          // If longValue exists, use this to replace short value with long value
                                 if (longValue.lookupColName) {
                                     let widget = this;      // default:  look up values from a field in the current widget
@@ -446,7 +449,7 @@ define([
                                         features[i].attributes[a] = template;
                                     } else {
                                         features[i].attributes[a] = "";
-                                        featureAdded = true;
+                                        //featureAdded = true;      // JRN - local variable, not used anywhere?
                                     }
                                 }
                                 if ((features[i].attributes[a] !== "") && fmtInfo.plugInFields) {
@@ -488,7 +491,7 @@ define([
                                 }
                             }
                             if (isNumeric('' + features[i].attributes[a])) {
-                                features[i].attributes[a] = centerInCellWrapper(features[i].attributes[a]);
+                                features[i].attributes[a] = alignRightInCellWrapper(features[i].attributes[a]);
                             }
                             // if(a !== this.idField){
                             features[i].attributes[a] = htmlWrapper(features[i].attributes[a]);
@@ -517,7 +520,7 @@ define([
                     if (title === null)
                         title = fields[i].alias;
 
-                    let hidden = getIfExists(this, spclFmtChain + "_hidden");
+                    let hidden = getIfExists(this, spclFmtChain + ".hidden");
 
                     let formatter = formatValue.bind({f: this.specialFormatting, n: fields[i].name});
 
@@ -564,7 +567,7 @@ define([
 
                 filterLegend(this.mapServiceLayer.title, nonNullList);
 
-                this.aeb_query = function (store, sort) {
+                this.query_dgridSort = function (store, sort) {
                     let columnSort = function (a, b) {
                         let aValue,bValue;
                         if (a[sort.property]){
@@ -643,7 +646,7 @@ define([
                     console.log('In grid-sort on column: ' + event.sort[0].property);
                     var sort = event.sort[0];
                     event.preventDefault();
-                    this.store = this.aeb_query(this.store, sort);
+                    this.store = this.query_dgridSort(this.store, sort);
                     this.grid.refresh();
                     this.grid.renderArray(this.store.data);
                     this.grid.updateSortArrow(event.sort, true);
@@ -1313,11 +1316,11 @@ define([
                             if (value && cellHtml && colHeader === "" && cellHtml.includes("title=")) {
                                 let p = cellHtml.indexOf("title=");
                                 colHeader = cellHtml.slice(p).split("'")[1];
-                            } else if (cellHtml.includes('<div class="my_cell">')) {//We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="my_cell">22</div>
-                                let parts = cellHtml.split('<div class="my_cell">');
+                            } else if (cellHtml.includes('<div class="dgrid_cell">')) {//We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="dgrid_cell">22</div>
+                                let parts = cellHtml.split('<div class="dgrid_cell">');
                                 if (2 === parts.length) {
                                     cellHtml = parts[1].split('</div>')[0];
-                                    cellHtml = padString(cellHtml.toString(), padLength, "left", padChars);//Apply same padding as is used on the SiteId column in makeTable() - so 2 becomes '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2'
+//                                    cellHtml = padString(cellHtml.toString(), padLength, "left", padChars);//Apply same padding as is used on the SiteId column in makeTable() - so 2 becomes '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2'
                                 }
                             }
                             if (typeof cellHtml === "string")

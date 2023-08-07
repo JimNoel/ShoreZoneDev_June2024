@@ -340,7 +340,11 @@ console.log("Current video time:  " + currentTime);
         logTimeStamp("queryVideoStartPoint");
         let query = new Query();
         query.geometry = geometry;     // extent;
-        query.outFields = "FrameID, VIDEOTAPE, MP4_Seconds, VidCap_HighRes_subPath, VidCap_LowRes_subPath";
+        query.outFields = "FrameID, VIDEOTAPE, DATE_TIME, MP4_Seconds, VidCap_HighRes_subPath, VidCap_LowRes_subPath";
+//        query.outFields = "FrameID, VIDEOTAPE, DATE_TIME, MP4_Seconds, MP4_Seconds_str, VidCap_HighRes_subPath, VidCap_LowRes_subPath";
+        query.orderByFields = "DATE_TIME"
+        query.where = "VidCap_HighRes_subPath IS NOT NULL";
+//        query.where = "MP4_Seconds_str LIKE '%0'"      //"VidCap_HighRes_subPath IS NOT NULL";
         query.spatialRelationship = "contains";
         query.returnGeometry = true;
         let queryTask = new QueryTask();

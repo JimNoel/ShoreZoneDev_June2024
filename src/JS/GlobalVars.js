@@ -72,7 +72,8 @@ let currServerNum = dfltServerNum;
 
 let serverUrls = {
   noaa:  "alaskafisheries.noaa.gov",
-  ps: "gis.psmfc.org"    // "maps.psmfc.org"
+  ps: "gis.psmfc.org"
+// ps: "geo.psmfc.org"    // TODO: Make this a backup endpoint, eventually
 }
 
 let svcPathTemplate = {
@@ -165,10 +166,13 @@ let gotoSubareasTemplate = "<img src='assets/images/start.png' onclick='mapStuff
 
 
 //https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
+// JRN - commented out
+/*
 function htmlDecode(input) {
   let doc = new DOMParser().parseFromString(input, "text/html");
   return doc.documentElement.textContent;
 };
+*/
 
 let initialExtentThumbnail = null;
 
@@ -233,6 +237,7 @@ let settingsHtml = '<h3>Settings</h3>';
 settingsHtml += '<h4>ShoreZone video/photo/unit marker settings:</h4>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="automatic" onchange="autoRefreshInputHandler(true)" checked>Generate markers whenever the map extent changes<br>';
 settingsHtml += '<input type="radio" name="szMarkerGen" value="manual" onchange="autoRefreshInputHandler(false)">Manually generate markers<br>';
+settingsHtml += '<input type="radio" name="szMarkerGen" value="preQuery" onchange="setPreQueryLayers(true)">See video at any scale<br>';
 settingsHtml += '<h4>Minimum distance in pixels between photo markers: <input type="number" id="input_photoGap" style="width: 6ch" onchange="photoGapInputHandler()" value="' + settings.photoGap + '"></h4>';
 settingsHtml += '<h4>Map magnifier width in km: <input type="number" id="input_magViewWidth" style="width: 6ch" onchange="magViewWidthInputHandler()" value="' + settings.magViewWidth + '"></h4>';
 settingsHtml += '<h4><input type="checkbox" id="cb_showVideoMarkers" onClick="cbShowMediaHandler(szVideoWidget,false)">Show video markers<br>';
@@ -635,6 +640,11 @@ function autoRefreshInputHandler(isAutoRefresh) {
   settings.autoRefresh = isAutoRefresh;
   if (isAutoRefresh)
     setRefreshButtonVisibility(false);
+}
+
+function setPreQueryLayers(usingPreQuery) {
+  szVideoWidget.usingPreQuery = usingPreQuery;
+  szPhotoWidget.usingPreQuery = usingPreQuery;
 }
 
 function setRefreshButtonVisibility(isVisible) {
@@ -1223,8 +1233,13 @@ function htmlWrapper(val){
   return w;
 };
 
-function centerInCellWrapper(val){
-  let w = '<div class="my_cell">'+val+'</div>';
+function alignInCellWrapper(val, alignment){
+  let w = '<div class="dgrid_' + alignment + '">'+val+'</div>';
+  return w;
+}
+
+function alignRightInCellWrapper(val){
+  let w = '<div class="dgrid_cell">'+val+'</div>';
   return w;
 }
 //https://stackoverflow.com/questions/175739/how-can-i-check-if-a-string-is-a-valid-number
@@ -1236,8 +1251,8 @@ function isNumeric(str) {
 
 function getHtmlWrapperContent(val){
   let result = val;
-  if (val.includes('<div class="my_cell">')) {//We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="my_cell">22</div>
-    let parts = val.split('<div class="my_cell">');
+  if (val.includes('<div class="dgrid_cell">')) {//We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="dgrid_cell">22</div>
+    let parts = val.split('<div class="dgrid_cell">');
     if (2 === parts.length) {
       result = parts[1].split('</div>')[0];
     }
@@ -1448,6 +1463,9 @@ function ObjToCss(obj) {
   return s;
 }
 
+// JRN - function no longer used, but keeping it available in case it comes in handy down the line
+// NOTE: "padString" is already defined in the ESRI API
+/*
 function padString(str, len, mode, chars) {
   // "mode" can be "left", "right" or "both"
   if (!chars)
@@ -1466,6 +1484,7 @@ function padString(str, len, mode, chars) {
     outstr = str + padStr;
   return outstr;
 }
+*/
 
 function relOffset(el, tgtDiv) {
   el = getEl(el);

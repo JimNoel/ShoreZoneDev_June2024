@@ -113,7 +113,7 @@ define([
         disabledMsgInfix: "photo points",
         mapServiceLayer: null,
         noQuery: true,
-        trackingSymbolInfo: "../4.27/assets/images/Camera24X24.png:24:24",
+        trackingSymbolInfo: "assets/images/Camera24X24.png:24:24",
         clickableSymbolType: "point",
         clickableSymbolInfo: {"style":"square", "color":[0,0,255,1], "size":6,     // invisible if 4th value in "color" is 0
           "outline": {color: [ 0, 0, 255, 0 ] }},
@@ -158,7 +158,7 @@ define([
         //useBinaryFilter: true,
         featureOutFields: ["*"],
         orderByFields: ["Date_Time"],
-        trackingSymbolInfo: "../4.27/assets/images/video24X24.png:24:24",
+        trackingSymbolInfo: "assets/images/video24X24.png:24:24",
         clickableSymbolType: "point",
         clickableLayerMinScale: 5000000,      // for preQuery start and end points
         clickableSymbolInfo: {"style":"circle", "color":[255,0,0,1], "size":6,      //  invisible if 4th value in "color" is 0
@@ -394,6 +394,7 @@ define([
                 },
                 RegionNumID: {
                   title:  "Region Id",
+                  text_Align: "center",
                   colWidth:  20
                 },
                 RegionalID: {

@@ -17,7 +17,8 @@ noaaLinksContent +=
   '<span>' +
     '<span class="sz"><a id="shoreZonePageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/alaska-shorezone\')" >SZ Homepage</a>  &nbsp;&nbsp;</span>' +
   //  '<a id="metadataLabel" style="color:Black"  href="https://www.fisheries.noaa.gov/webdam/download/70834468" >SZ Metadata</a>  &nbsp;&nbsp;' +
-    '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >SZ Data Dictionary</a>  &nbsp;&nbsp;</span>' +
+  '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary/ShoreZone_Illustrated_DataDictionary_Final.pdf\')" >SZ Data Dictionary</a>  &nbsp;&nbsp;</span>' +
+//  (old DD)    '<span class="sz"><a id="SZdictonaryLabel" style="color:Black"  href="#" onclick="openNewTab(\'https://alaskafisheries.noaa.gov/mapping/DataDictionary\')" >SZ Data Dictionary</a>  &nbsp;&nbsp;</span>' +
   '</span>' +
   '<span>' +
   '<span class="fa"><a id="faPageLabel" style="color:Black" href="#" onclick="openNewTab(\'https://www.fisheries.noaa.gov/alaska/habitat-conservation/nearshore-fish-atlas-alaska\')" >FA Homepage</a>  &nbsp;&nbsp;</span>' +
