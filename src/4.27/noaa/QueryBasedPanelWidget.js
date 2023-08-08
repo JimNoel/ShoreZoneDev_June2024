@@ -832,7 +832,7 @@ define([
       let attrs = this.getFeatureAttributes(this.counter);
       this.moveToFeature(attrs);
       this.updateMedia(attrs);
-      // getEl(this.currNumber_SpanId).innerHTML = this.counter + 1; //In production this produces a 'QueryBasedPanelWidget.js:833 Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')'
+      getEl(this.currNumber_SpanId).innerHTML = this.counter + 1; //Set "Photo X/Y" (e.g. Photo 3/17)
       this.hideMootControls();
     },
 
