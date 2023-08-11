@@ -26,6 +26,8 @@ After checking out the code from GitHub, you will need to download and manually 
 * DOJO (dijit, dojo, dojox)
   * Version 1.17.3 
   * https://dojotoolkit.org/download/
+  * https://github.com/SitePen/dgrid
+  * https://github.com/sitepen/dgrid#readme (e.g. section: "Manual Download") for details on how it's files should be added to the project.
   * The contents of this library should be placed in:
     * ./src/4.27/dijit (e.g. ./src/4.27/digit/digit.js)
     * ./src/4.27/dojo (e.g. ./src/4.27/dojo/dojo.js)
