@@ -407,6 +407,8 @@ define([
       }
       getEl("showPopupsCheckbox").checked = showPopups;
 
+      // JRN - I'm not seeing this error.  I've commented out the new code.
+
       /* 20230809 - The ESRI JS Popup library class provides a button at the bottom of the popup called "Zoom to".
       This seems to be auto-linked by the ESRI Popup class to the featureLayer associated with the mapView.rowId and geometry.
 
@@ -459,12 +461,13 @@ define([
 
       For now, we will disable the "Zoom to" button when looking at the ShoreStation Region data (associated with gis polygons rather than points).
        */
+/*
       if('Regions' === this.subLayerName){
         view.popup.viewModel.includeDefaultActions = false;//AEB - we can hide the popup - "Zoom to" button at the bottom of the popup
       }else{
         view.popup.viewModel.includeDefaultActions = true;
       }
-
+*/
       view.graphics.removeAll();
       if (this.selExtentGraphic && tabInfo.clickableSymbolType==="point")
         view.graphics.add(this.selExtentGraphic);

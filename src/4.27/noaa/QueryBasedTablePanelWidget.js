@@ -15,7 +15,7 @@
 let selectColor = "#DCEEFF";
 let unselectColor = "";   // "white";
 let padLength = 10;     // left-pad numeric values to same string length (10), so they sort correctly
-let padChars = "&nbsp;";    // HTML space escape character
+//let padChars = "&nbsp;";    // HTML space escape character
 
 let formatValue = function (value) {
     // In "makeTable" this function gets assigned to the DGrid "formatter" variable
@@ -474,7 +474,6 @@ define([
                                 } else {
                                     v = features[i].attributes[a].toString();
                                 }
-                                // const v = features[i].attributes[a].toString();//AEB
                                 let l = stripHtml(v).length;
                                 if (l > maxChars[a])
                                     maxChars[a] = l;
@@ -727,7 +726,7 @@ define([
                     if (this.tabInfo && this.currTab && this.tabInfo[this.currTab].subWidgetInfo) {
                         subWidgetInfo = this.tabInfo[this.currTab].subWidgetInfo;
                     }
-                    // let subWidgetInfo = this.tabInfo[this.currTab].subWidgetInfo;
+                    // letsubWidgetInfo = this.tabInfo[this.currTab].subWidgetInfo;
                     if (subWidgetInfo) {
                         console.log("update row-associated widgets");
                         let row = this.grid.row(event);

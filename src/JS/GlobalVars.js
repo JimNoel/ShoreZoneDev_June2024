@@ -1233,6 +1233,13 @@ function htmlWrapper(val){
   return w;
 };
 
+function getFromHtmlWrapper(val) {
+  if (!val.html)
+    return val;
+  else
+    return val.html;
+};
+
 function alignInCellWrapper(val, alignment){
   let w = '<div class="dgrid_' + alignment + '">'+val+'</div>';
   return w;
@@ -1379,12 +1386,16 @@ function resizeWidgets() {
 }
 
 function stripHtml(inStr) {
+/*
   let s = '';
   if(inStr && inStr.html){
     s = inStr.html.replace(/&nbsp;/g,"");//Added by AEB
   }else{
     s = inStr.replace(/&nbsp;/g,"");      // Remove any "&nbsp;" strings  (Used to make numeric columns [as strings] sortable)
   }
+*/
+
+  let s = getFromHtmlWrapper(inStr)
   let p1 = s.indexOf("<");
   while (p1 !== -1) {
     let p2 = s.indexOf(">");

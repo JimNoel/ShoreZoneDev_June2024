@@ -117,7 +117,6 @@ function showZipLink() {
     }
     dlReadyContent += clipsHTML;
     setContent("dlDataContent", dlReadyContent);
-    // console.log(value);//AEB - temporarily commented out
 }
 
 

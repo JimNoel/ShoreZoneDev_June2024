@@ -185,40 +185,27 @@ define([
     makeBarChart: function(profile) {
       let lastLabel = '';
       let c = 0;
+      profile.plotError = false;
+      let sumWidths = 0;  //JRN - added this to check if there are any nonzero-width segments
       for (f=1; f<this.features.length; f++) {
         let attributes = this.features[f].attributes;
         let id = profile.labelField + f;
         let x = attributes[profile.xField];
         let width = attributes[profile.widthField];
+
+        /* JRN - Rather than setting width to 0, I've added a "plotError" property to the "profile" object,
+        initialized to "false".  If width is null,
+        this variable is set to "true", and the for loop is exited.  In the code following the for loop, if plotError
+        is true, no plot is displayed and instead a message indicating an error in the data is displayed.
+        I will also update the data so KB01 has a value for IntervalWidth_m, but it's good to have a check in the code!
+        NOTE:  There are also cases (esp. in Kotzebue) where all the widths are 0.  I'm handling this also in code,
+        and will update the DB
+        */
+
         /* AEB - the Shore Stations for Region = Kotzebue data has:
         profile.widthField = 'IntervalWidth_m'
         In the attributes.IntervalWidth_m = null
         As a result, the width = null.
-
-        '<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 58.59999847 100">
-            <rect id="Bioband1" x="0" y="0" 			width="null" height="100" style="fill:#0B610B"></rect>
-            <rect id="Bioband2" x="10" y="0" 			width="null" height="100" style="fill:#0B610B"></rect>
-            <rect id="Bioband3" x="19" y="0" 			width="null" height="100" style="fill:#428F61"></rect>
-            <rect id="Bioband4" x="26.29999924" y="0" 	width="null" height="100" style="fill:#428F61"></rect>
-            <rect id="Bioband5" x="28.60000038" y="0" 	width="null" height="100" style="fill:#428F61"></rect>
-            <rect id="Bioband6" x="29.10000038" y="0" 	width="null" height="100" style="fill:#428F61"></rect>
-            <rect id="Bioband7" x="34.79999924" y="0" 	width="null" height="100" style="fill:#40464E"></rect>
-            <rect id="Bioband8" x="41.59999847" y="0" 	width="null" height="100" style="fill:#40464E"></rect>
-            <rect id="Bioband9" x="50.5" y="0" 			width="null" height="100" style="fill:#40464E"></rect>
-            <rect id="Bioband10" x="54.59999847" y="0" 	width="null" height="100" style="fill:#40464E"></rect>
-            <rect id="Bioband11" x="55.40000153" y="0" 	width="null" height="100" style="fill:#40464E"></rect>
-        </svg>'
-
-        In other regions (e.g. Kodiak), the width is never null (e.g. width="1.79999995", width="5.4000001", etc.)
-        '<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 23.39999962 100">
-          <rect id="Bioband1" x="0" y="0" 			width="1.79999995" height="100" style="fill:#242220"></rect>
-          <rect id="Bioband2" x="1.79999995" y="0" 	width="2.79999995" height="100" style="fill:#40464E"></rect>
-          <rect id="Bioband3" x="4.5999999" y="0" 	width="2.9000001" height="100" style="fill:#40464E"></rect>
-          <rect id="Bioband4" x="7.5" y="0" 			width="3.79999995" height="100" style="fill:#40464E"></rect>
-          <rect id="Bioband5" x="11.30000019" y="0" 	width="4.5" height="100" style="fill:#9D6117"></rect>
-          <rect id="Bioband6" x="15.80000019" y="0" 	width="2.20000005" height="100" style="fill:#9D6117"></rect>
-          <rect id="Bioband7" x="18" y="0" 			width="5.4000001" height="100" style="fill:#6E1E13"></rect>
-      </svg>'
 
         The width = null in Kotzebue data results in multiple silent errors when showing the "Bioband on Profile" and "Substrate on Profile" bar charts:
         Error: <rect> attribute width: Expected length, "null".
@@ -229,8 +216,11 @@ define([
         A better solution would be to update the data, so that it is not null.
          */
         if(null == width){
-          width=0;
+          profile.plotError = true;
+          break;
+          //width=0;
         }
+        sumWidths += width;
         let color = null;
         if (profile.colorField)
           color = attributes[profile.colorField];
@@ -243,6 +233,12 @@ define([
           color = profile.colors[c];
         }
         profile.svgCode += '<rect id="' + id + '" x="' + x + '" y="0" width="' + width + '" height="100" style="fill:' + color + '"></rect>';
+      }
+      if (sumWidths === 0)     //JRN - If 0, then no actual segments have been added, so this is an error
+        profile.plotError = true;
+      if (profile.plotError) {
+        profile.div.innerHTML = "<b style='color: red; position: absolute; top:5px'>Error in plot data</b>";
+        return;
       }
       profile.svgCode += '</svg>';
       profile.div.innerHTML = profile.svgCode;
@@ -273,6 +269,8 @@ define([
     },
 
     moveBarLabels: function(profile) {
+      if (profile.plotError)    // If there no bar labels (due to plot error), do not attempt to move them!
+        return;
       for (f=1; f<this.features.length; f++) {
         let id = profile.labelField + f;
         let ofs = relOffset(id, profile.textContainer);
