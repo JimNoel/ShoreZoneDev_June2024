@@ -1000,7 +1000,6 @@ function checkbox_showFeatures_clickHandler(w, cb) {
 function checkbox_showPopups_clickHandler() {
   showPopups = getEl("showPopupsCheckbox").checked;
   if (!showPopups) {
-    // view.popup.close();//DEPRECATED
     view.closePopup();
   }
 }

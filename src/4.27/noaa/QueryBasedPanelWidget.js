@@ -203,7 +203,8 @@ define([
           infoWin.content += imageDivHtml;    //'<div id="popupImage"></div>';
         }
 
-        infoWin.actions.removeAll();
+        //infoWin.actions.removeAll();    //JRN - This is how the "Zoom to" button used to be removed.  Replaced by the following line:
+        infoWin.viewModel.includeDefaultActions = false;
         if (this.popupActionMsg) {
           infoWin.actions.push({id: "move-camera", title: this.popupActionMsg, image: this.trackingImageURL, fromPreQuery: fromPreQuery});
         }
