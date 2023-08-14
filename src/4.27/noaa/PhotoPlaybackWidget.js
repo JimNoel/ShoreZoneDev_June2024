@@ -231,20 +231,26 @@ define([
 //          this.sync_photos = false;
         if (this.captionFields)
           this.makeCaptions();
-        this.toStart();
+        // this.toStart();
+        this.changeCurrentFeature(0);
       }
 
+      this.photoNavigationMessage = 'Photos are linked to video and will cycle as video plays. Photo navigation currently disabled. To enable manual photo navigation, click the "Link/Unlink photos to video" chain icon to the left of the still image.';
 
       this.toStart = function() {
         //*jn*/ this.sync_photos = false;
-        if (this.sync_photos)
+        if (this.sync_photos){
+          alert(this.photoNavigationMessage);
           return;             // Not allowed if syncing with video
+        }
         this.changeCurrentFeature(0);
       };
 
       this.playBackward = function() {
-        if (this.sync_photos)
+        if (this.sync_photos){
+          alert(this.photoNavigationMessage);
           return;             // Not allowed if syncing with video
+        }
         this.playDir = -1;
         this.changeCurrentFeature(this.counter + this.playDir);
       };
@@ -254,15 +260,19 @@ define([
       };
 
       this.playForward = function() {
-        if (this.sync_photos)
+        if (this.sync_photos){
+          alert(this.photoNavigationMessage);
           return;             // Not allowed if syncing with video
+        }
         this.playDir = 1;
         this.changeCurrentFeature(this.counter + this.playDir);
       };
 
       this.toEnd = function() {
-        if (this.sync_photos)
+        if (this.sync_photos){
+          alert(this.photoNavigationMessage);
           return;             // Not allowed if syncing with video
+        }
         this.changeCurrentFeature(this.getFeatureCount()-1);
       };
 
