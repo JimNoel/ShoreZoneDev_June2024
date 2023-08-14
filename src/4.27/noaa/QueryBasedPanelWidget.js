@@ -893,7 +893,17 @@ define([
       let attrs = this.getFeatureAttributes(this.counter);
       this.moveToFeature(attrs);
       this.updateMedia(attrs);
-      getEl(this.currNumber_SpanId).innerHTML = this.counter + 1; //Set "Photo X/Y" (e.g. Photo 3/17)
+
+      if(typeof this.currNumber_SpanId === 'undefined' || null === this.currNumber_SpanId){
+        //what should happen to clear the old number or indicate that the page was not updated?
+        this.currNumber_SpanId = 'photo_currNumber'; //This should have been set in PhotoPlaybackWidget.js - constructor()
+      }
+      getEl(this.currNumber_SpanId).innerHTML = parseInt(this.counter + 1); //Set Current Number on "Photo X/Y" (e.g. Photo 3/17)
+      if(typeof this.featureCountElId === 'undefined' || null === this.featureCountElId){
+        this.featureCountElId = 'photo_photoCount';//This should have been set in PhotoPlaybackWidget.js - constructor()
+      }
+      getEl(this.featureCountElId).innerHTML = '/'+parseInt(this.getFeatureCount());//Set Total Number on "Photo X/Y" (e.g. Photo 3/17)
+
       this.hideMootControls();
     },
 
