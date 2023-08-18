@@ -203,7 +203,7 @@ define([
           infoWin.content += imageDivHtml;    //'<div id="popupImage"></div>';
         }
 
-        //infoWin.actions.removeAll();    //JRN - This is how the "Zoom to" button used to be removed.  Replaced by the following line:
+        infoWin.actions.removeAll();    //JRN - Turns out this needs to remain, to remove any previous actions.  (I had it commented out)  //old comment: This is how the "Zoom to" button used to be removed.  Replaced by the following line:
         infoWin.viewModel.includeDefaultActions = false;
         if (this.popupActionMsg) {
           infoWin.actions.push({id: "move-camera", title: this.popupActionMsg, image: this.trackingImageURL, fromPreQuery: fromPreQuery});
@@ -895,15 +895,8 @@ define([
       this.moveToFeature(attrs);
       this.updateMedia(attrs);
 
-      if(typeof this.currNumber_SpanId === 'undefined' || null === this.currNumber_SpanId){
-        //what should happen to clear the old number or indicate that the page was not updated?
-        this.currNumber_SpanId = 'photo_currNumber'; //This should have been set in PhotoPlaybackWidget.js - constructor()
-      }
-      getEl(this.currNumber_SpanId).innerHTML = parseInt(this.counter + 1); //Set Current Number on "Photo X/Y" (e.g. Photo 3/17)
-      if(typeof this.featureCountElId === 'undefined' || null === this.featureCountElId){
-        this.featureCountElId = 'photo_photoCount';//This should have been set in PhotoPlaybackWidget.js - constructor()
-      }
-      getEl(this.featureCountElId).innerHTML = '/'+parseInt(this.getFeatureCount());//Set Total Number on "Photo X/Y" (e.g. Photo 3/17)
+      if (this.currNumber_SpanId)     //JRN - If this.currNumber_SpanId is null (not a photo display widget), then do not do the following line
+        getEl(this.currNumber_SpanId).innerHTML = parseInt(this.counter + 1); //Set Current Number on "Photo X/Y" (e.g. Photo 3/17)
 
       this.hideMootControls();
     },

@@ -238,7 +238,6 @@ define([
       this.photoNavigationMessage = 'Photos are linked to video and will cycle as video plays. Photo navigation currently disabled. To enable manual photo navigation, click the "Link/Unlink photos to video" chain icon to the left of the still image.';
 
       this.toStart = function() {
-        //*jn*/ this.sync_photos = false;
         if (this.sync_photos){
           alert(this.photoNavigationMessage);
           return;             // Not allowed if syncing with video
