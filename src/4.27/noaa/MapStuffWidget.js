@@ -2067,10 +2067,7 @@ OKAY NOW?
 
     searchWidget.on("select-result", function(event){
       // Make result graphic more visible
-      searchWidget.resultGraphic.symbol.size = 20;
-      searchWidget.resultGraphic.symbol.color.a = 0;
-      searchWidget.resultGraphic.symbol.outline.width = 2;
-      searchWidget.resultGraphic.symbol.outline.color = [255, 255, 0, 255];
+      //JRN - Removed code setting resultGraphic symbol properties, as the symbol type in 4.27 is now PictureMarkerSymbol
 
       // If extent width of result equals tooBigWidthKm, then zoom to fixed zoom value
       let widthKm = Math.round(searchWidget.selectedResult.extent.width/1000);
