@@ -1332,8 +1332,8 @@ define([
     if (savedExtentsWidget.bookmarks.items.length === 0)
       km = "Initial Extent";
 
-    let bookmark = new Bookmark({name: km, extent: newExtent});
-    //let bookmark = new Bookmark({name: km, viewpoint: newViewpoint});
+    // let bookmark = new Bookmark({name: km, extent: newExtent});
+    let bookmark = new Bookmark({name: km, viewpoint: newViewpoint});
 /*
     TODO: Keep an eye on this.  Warning says:
       [esri.webmap.Bookmark] ������ DEPRECATED - Property: extent ������️ Replacement: viewpoint ⚙️ Version: 4.17
@@ -1541,7 +1541,8 @@ OKAY NOW?
     }
 
     let i=0;      // Respond only to hits on "_Clickable" layers
-    while (i<response.results.length && (!response.results[i].graphic.layer.id || response.results[i].graphic.layer.id.slice(-10)!=="_Clickable"))
+    while (i<response.results.length
+      && ((!response.results[i].graphic.layer || !response.results[i].graphic.layer.id) || response.results[i].graphic.layer.id.slice(-10)!=="_Clickable"))
       i++;
     if (i === response.results.length) {
       if (hoverTimeout)
