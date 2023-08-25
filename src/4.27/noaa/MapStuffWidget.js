@@ -1532,26 +1532,36 @@ OKAY NOW?
     szVideoWidget.videoPreQuery(view.extent, mapPoint, 1);
   }
 
+  // JRN - Return true if layer id ends in "_Clickable" layers
+  function isClickableLayer(layer) {
+    if (!layer || !layer.id)
+      return false;
+    if (layer.id.slice(-10) !== "_Clickable")
+      return false;
+    return true;
+  }
+
   // If mouse if over a video/photo graphic, open popup allowing moving the "camera" to this point
   function handleGraphicHits(response) {
-    if (response.results.length === 0) {
+    let results = response.results;
+    let L = results.length;
+    if (L === 0) {
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
       return;
     }
 
-    let i=0;      // Respond only to hits on "_Clickable" layers
-    while (i<response.results.length
-      && ((!response.results[i].graphic.layer || !response.results[i].graphic.layer.id) || response.results[i].graphic.layer.id.slice(-10)!=="_Clickable"))
+    let i=0;
+    while (i<L && !isClickableLayer(results[i].graphic.layer))     // JRN - Get first clickable layer
       i++;
-    if (i === response.results.length) {
+    if (i === L) {
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
       return;
     }
 
-    if (response.results[i].graphic !== currentHoveredGraphic) {
-      currentHoveredGraphic = response.results[i].graphic;
+    if (results[i].graphic !== currentHoveredGraphic) {
+      currentHoveredGraphic = results[i].graphic;
       currentWidgetController = currentHoveredGraphic.layer.widgetController;
       let dataRow = null;
       if (currentWidgetController.grid)
