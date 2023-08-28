@@ -1345,8 +1345,53 @@ OKAY NOW?
     bookmark.index = savedExtentsWidget.bookmarks.length;
     if (screenshot)
       bookmark.thumbnail.url = screenshot.dataUrl;
-    savedExtentsWidget.bookmarks.add(bookmark);
+
+    let index = findBookmarkIndex(newViewpoint);
+    if(-1 == index){
+      savedExtentsWidget.bookmarks.add(bookmark);
+      //Also see GlobalVars.js - gotoSavedExtent()
+      let nextButton = getEl("btn_nextExtent");
+      nextButton.style.opacity = '0.2';//If the array index is the last element in the list, then gray out the btn_nextExtent to make it look like it is disabled.
+    }else{
+      let length = savedExtentsWidget.bookmarks.length;
+      if(index == length-1){//If the array index is the last element in the list, then gray out the btn_nextExtent to make it look like it is disabled.
+        let nextButton = getEl("btn_nextExtent");
+        nextButton.style.opacity = '0.2';
+      }else{//If the array index is not the last element in the list, do not gray out the btn_nextExtent to make it look enabled.
+        let nextButton = getEl("btn_nextExtent");
+        nextButton.style.opacity = '1';
+      }
+    }
     currentBookmark = bookmark;
+  }
+
+  function findBookmarkIndex(newViewpoint) {
+    let index = -1;
+    //Do we already have this bookmark in the bookmark list?
+    let newScale = newViewpoint.scale;
+    let newRotation = newViewpoint.rotation;
+    let newLatitude = newViewpoint.targetGeometry.latitude;
+    let newLongitude = newViewpoint.targetGeometry.longitude;
+    let scale = '';
+    let rotation = '';
+    let latitude = '';
+    let longitude = '';
+    let bookmarkExists = false;
+    for(let i=0; i<savedExtentsWidget.bookmarks.length; i++){
+      scale = savedExtentsWidget.bookmarks._items[i].viewpoint.scale;
+      rotation = savedExtentsWidget.bookmarks._items[i].viewpoint.rotation;
+      latitude = savedExtentsWidget.bookmarks._items[i].viewpoint.targetGeometry.latitude;
+      longitude = savedExtentsWidget.bookmarks._items[i].viewpoint.targetGeometry.longitude;
+      if( scale == newScale
+          && rotation == newRotation
+          && latitude == newLatitude
+          && longitude == newLongitude){
+        bookmarkExists = true;
+        index = i;
+        break;
+      }
+    }
+    return index;
   }
 
   function addMapWatchers() {

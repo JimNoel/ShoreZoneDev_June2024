@@ -1306,12 +1306,23 @@ let extentChanged = true;
 function gotoSavedExtent(offset) {
   if (!currentBookmark)
     return;
-  let l = savedExtentsWidget.bookmarks.length;
-  let n = currentBookmark.index + offset;
+  let l = savedExtentsWidget.bookmarks.length;//This is 1 based (e.g. if there are 3 elements in the list, then the length is 3
+  let n = currentBookmark.index + offset;//This is 0 based (e.g. if there are 3 elements in the list, then the last element in the list has an index of 2
   if (n>=0 && n<l) {
     extentIsBookmarked = true;
+    if(n>-1 && n+1==l){//If the array index is the last element in the list, then gray out the btn_nextExtent to make it look like it is disabled.
+      //Also see MapStuffWidget.js - bookmarkCurrentExtent()
+      let nextButton = getEl("btn_nextExtent");
+      nextButton.style.opacity = '0.2';
+    }else{//If the array index is not the last element in the list, do not gray out the btn_nextExtent to make it look enabled.
+      let nextButton = getEl("btn_nextExtent");
+      nextButton.style.opacity = '1';
+    }
     currentBookmark = savedExtentsWidget.bookmarks.items[n];
     savedExtentsWidget.goTo(currentBookmark, {animate: false});
+  }else if(0 == l){//This condition may never occur.
+    let nextButton = getEl("btn_nextExtent");
+    nextButton.style.opacity = '0.2';
   }
 }
 
