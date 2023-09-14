@@ -1347,6 +1347,7 @@ OKAY NOW?
       bookmark.thumbnail.url = screenshot.dataUrl;
     savedExtentsWidget.bookmarks.add(bookmark);
     currentBookmark = bookmark;
+    updatePrevNextBtnsOpacity();
   }
 
   function addMapWatchers() {
@@ -1860,18 +1861,10 @@ OKAY NOW?
       position: "top-left"
     });
 
-    savedExtentsWidget.on("select-bookmark", function(event){
+    savedExtentsWidget.on("bookmark-select", function(event){
       extentIsBookmarked = true;
       currentBookmark = event.bookmark;      //parseInt(event.target.activeBookmark.name.split(":")[0]);
-      let prevButton = getEl("btn_prevExtent");
-      let nextButton = getEl("btn_nextExtent");
-      // TODO: Place IMG inside BUTTON tag, and use "dsiable" attribute
-      prevButton.style.opacity = 1;
-      nextButton.style.opacity = 1;
-      if (currentBookmark.index === 0)
-        prevButton.style.opacity = 0.2;
-      if (currentBookmark.index === (savedExtentsWidget.bookmarks.items.length-1))
-        nextButton.style.opacity = 0.2;
+      updatePrevNextBtnsOpacity();
     });
 
 /*  Upper-left widgets  */

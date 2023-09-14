@@ -1294,8 +1294,20 @@ function togglePanZoom(mode) {
 /* For pan/zoom-to-rectangle toggle */
 
 /* For extent history and prev/next extent navigation*/
-let prevNextBtnsHtml = "<div class='iconDiv'><img id='btn_prevExtent' src='assets/images/backward.png' onclick='gotoSavedExtent(-1)' title='Click to go to previous extent' height='24px' width='24px' /></div>";
+let prevNextBtnsHtml = "<div class='iconDiv'><img id='btn_prevExtent' src='assets/images/backward.png' onclick='gotoSavedExtent(-1)' title='Click to go to previous extent' height='24px' width='24px' style='opacity: 0.2' /></div>";
 prevNextBtnsHtml += "<div class='iconDiv'><img id='btn_nextExtent' src='assets/images/forward.png' onclick='gotoSavedExtent(1)' title='Click to go to next extent in history' height='24px' width='24px' style='opacity: 0.2' /></div>";
+
+function updatePrevNextBtnsOpacity() {
+  let prevButton = getEl("btn_prevExtent");
+  let nextButton = getEl("btn_nextExtent");
+  // TODO: Place IMG inside BUTTON tag, and use "dsiable" attribute
+  prevButton.style.opacity = 1;
+  nextButton.style.opacity = 1;
+  if (currentBookmark.index === 0)
+    prevButton.style.opacity = 0.2;
+  if (currentBookmark.index === (savedExtentsWidget.bookmarks.items.length-1))
+    nextButton.style.opacity = 0.2;
+}
 
 let savedExtentsWidget = null;
 let currentBookmark = null;
@@ -1312,6 +1324,11 @@ function gotoSavedExtent(offset) {
     extentIsBookmarked = true;
     currentBookmark = savedExtentsWidget.bookmarks.items[n];
     savedExtentsWidget.goTo(currentBookmark, {animate: false});
+  } else {
+    let s = "initial";
+    if (n === 1)
+      s = "most recent";
+    alert("Already at the " + s + " extent!");
   }
 }
 
