@@ -122,6 +122,14 @@ let szSublayerIDs = {};
 */
 
 
+/*
+let szDisplayInfo = [
+  {title: "Video prequery", visible: false, listMode: "hide"},
+  {title: "VideoGrids_pass1", visible: false, listMode: "hide"},
+  {title: "VideoGrids_pass2", visible: false, listMode: "hide"}
+];
+*/
+
 let faDisplayInfo = [
   {title: "Regions", visible: false, listMode: "show"},
   {title: "Sites_background", visible: true},     //, listMode: "hide"},
@@ -1466,15 +1474,6 @@ function modify_LayerListItem_VideoFlightline() {
     open: true    // (item.visible && item.visibleAtCurrentScale)
   };
 }
-  /*    // Code stub (for above function) for including legends for both 1s and 10s, and hiding one of them depending on current visibilities of these layers
-    let current1sVisibility = listItem_1s.visibleAtCurrentScale;
-    setDisplay(content_1s, current1sVisibility);
-    setDisplay(content_10s, !current1sVisibility);
-
-    listItem_1s.watch("visibleAtCurrentScale", function(newValue, oldValue, property, object) {
-      alert("1s visibility has changed!");
-    });
-  */
 
 function ObjToCss(obj) {
   let s = "";

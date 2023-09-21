@@ -1778,8 +1778,10 @@ OKAY NOW?
 
       if (item.layer.title === "Unit Info")
         item.open = false;
-      if (item.layer.title === "Video prequery")
-        item.parent.children.remove(item);          // Remove "Video prequery" from LayerList
+      if (item.layer.title === "Video prequery") {
+        item.children.removeAll();
+        //item.parent.children.remove(item);          // Remove "Video prequery" from LayerList
+      }
 
       if (item.layer.title.startsWith("FishAtlas"))
         item.open = false;
