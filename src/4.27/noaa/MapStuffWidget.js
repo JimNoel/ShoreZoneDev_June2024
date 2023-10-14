@@ -1767,8 +1767,13 @@ OKAY NOW?
       }
 
 /*JN2*/
-      if (item.layer.title === "ShoreZone") {      // TODO:  update this later
-        //item.open = false;
+      if (item.layer.title === "ShoreZone") {
+        // Remove "Video prequery" from LayerList
+        let prequeryLayer = item.children.find(function(item){
+          return item.title === "Video prequery";
+        });
+        item.children.remove(prequeryLayer);
+
         item.actionsSections = [[{
               title: "Add a new query layer",
               className: "esri-icon-add-attachment",      // alternative: "esri-icon-plus"
@@ -1778,9 +1783,10 @@ OKAY NOW?
 
       if (item.layer.title === "Unit Info")
         item.open = false;
+
       if (item.layer.title === "Video prequery") {
+        // Remove "pass1" and "pass2" sublayers of "Video prequery" from LayerList
         item.children.removeAll();
-        //item.parent.children.remove(item);          // Remove "Video prequery" from LayerList
       }
 
       if (item.layer.title.startsWith("FishAtlas"))
@@ -1892,7 +1898,7 @@ OKAY NOW?
       view: view,
       content: makeWidgetDiv("offlineAppPanel", "right")   ,
       expandIconClass: "esri-icon-download",
-      expandTooltip: "Click here to download data in the current extent and use with the offline app",
+      expandTooltip: "Click here to download data in the current extent",     // and use with the offline app",
       collapseTooltip: "Hide the offline app widget"
     });
     olExpand.content.innerHTML = download_notZoomedInEnoughContent;

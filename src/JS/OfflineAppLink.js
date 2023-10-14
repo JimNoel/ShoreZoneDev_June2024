@@ -7,12 +7,15 @@ let download_notZoomedInEnoughContent = "<h3>Download tool</h3>Hi!  This tool al
 
 let downloadSetVisibleHTML = 'setVisible("offlineAppContent",false); setVisible("dlDataContent",true);';
 let onlineSetVisibleHTML = 'setVisible("offlineAppContent",true); setVisible("dlDataContent",false);';
+
+/* Code for including the offline app.  This feature is currently disabled.
 let download_ZoomedInEnoughContent = "<h3>Download tool</h3>Do you want to download <b>files</b> for external use, or send the data to the <b>Offline App</b>?<br><br>";
 download_ZoomedInEnoughContent += "&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='" + downloadSetVisibleHTML + "'>Download files</button>";
 download_ZoomedInEnoughContent += "&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='" + onlineSetVisibleHTML + "'>Use Offline App</button>";
-
-
 let dlDataContent = "<div id='dlDataContent' style='visibility: hidden; position: absolute; top: 135px;'>Select which images to include<br>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='downloadData()'>Submit</button></div>";
+*/
+let download_ZoomedInEnoughContent = "<h3>Download tool</h3>";
+let dlDataContent = "<div id='dlDataContent' style='position: absolute; top: 50px;'>Select which images to include<br><br>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='downloadData()'>Submit</button></div>";
 
 let offlineAppContent = "<div id='offlineAppContent' style='visibility: hidden; position: absolute; top: 135px;'>Do you want to download data and open the offline app? Note that it will take some time to download the data, and your device may not have enough storage.<br>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick='openOfflineApp()'>Go offline!</button></div>";
 
@@ -32,7 +35,7 @@ function updateDownloadDialog(vidCapCount, photoCount) {
         dlDataDialog += '<input type="checkbox" id="cb_LowResVidCap">&nbsp;&nbsp;Low resolution video captures (' + vidCapCount + ' images targeted)<br>';
         dlDataDialog += '<input type="checkbox" id="cb_HighResVidCap">&nbsp;&nbsp;High resolution video captures (' + vidCapCount + ' images targeted)<br>';
     }
-    dlDataDialog += 'Description:&nbsp;&nbsp;<input type="text" id="text_Description" value="Spatial Data Extraction" size="30"><br><br>';
+    dlDataDialog += '<br>Description:&nbsp;&nbsp;<input type="text" id="text_Description" value="Spatial Data Extraction" size="30"><br><br>';
     dlDataDialog += '&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="downloadData();">Submit</button>';
     setContent("dlDataContent", dlDataDialog);
 }
@@ -60,12 +63,12 @@ function openOfflineApp() {
     }
 }
 
-function getZipFileData(jobId, zipName) {
-    gp.getResultData(jobId, "Output_Zip_File_zip").then(function (result) {
+function getZipFileData(jobInfo, zipName) {
+    jobInfo.fetchResultData("Output_Zip_File_zip").then(function (result) {
         console.log("Data extract:  Got ZIP file URL");
         let replString = "/scratch/" + extractGpName + "_output/";
         zipURL = result.value.url.replace("/scratch/", replString);     // HACK: add {extractGpName}_output subdirectory
-        gp.getResultData(jobId, "outJSON").then(function (result) {
+        jobInfo.fetchResultData("outJSON").then(function (result) {
             console.log("Data extract:  Got video clips info");
             let a = result.value.split(";");
             zipSizeText = a[0];
@@ -79,12 +82,12 @@ function getZipFileData(jobId, zipName) {
     });
 }
 
-function getResultData(result) {
+function getResultData(jobInfo) {
     let endTime = Date.now();
     let elapsedMinutes = (endTime - startTime) / (60 * 1000);
     console.log("GP request completed in " + elapsedMinutes.toFixed(2) + " minutes");
-    let jobId = result.jobId;
-    getZipFileData(jobId, "Output_Zip_File_zip");
+    //let jobId = jobInfo.jobId;
+    getZipFileData(jobInfo, "Output_Zip_File_zip");
 }
 
 function processError(error, context) {
@@ -140,14 +143,29 @@ function downloadData() {
     setContent("dlDataContent", "Submitting query . .");
 
     startTime = Date.now();
-    // gp.submitJob(gpUrl_extract, params).then(function (jobInfo) {
-    //   var options = {
-    //     statusCallback: logProgress
-    //   };
-    //   // gp.waitForJobCompletion(jobInfo.jobId, options).then(getResultData, processError);
-    // }, processError);
-    gp.submitJob(gpUrl_extract, params)
-        .then(function (jobInfo) {
+
+    gp.submitJob(gpUrl_extract, params).then(function (jobInfo) {
+      var options = {
+        statusCallback: logProgress
+      };
+      jobInfo.waitForJobCompletion(options).then(getResultData, processError);
+    }, processError);
+
+/*
+    gp.submitJob(gpUrl_extract, params).then(function (jobInfo) {
+        var options = {
+            statusCallback: logProgress
+        };
+        gp.waitForJobCompletion(jobInfo.jobId, options).then(getResultData, processError);
+    }, processError);
+*/
+
+    /*
+        gp.submitJob(gpUrl_extract, params)
+            .then(function (jobInfo) {
+                var options = {
+                  statusCallback: logProgress
+                };
                 jobInfo.waitForJobCompletion().then(() => {
                     jobInfo.fetchResultData("Output_Zip_File_zip")
                         .then(function (result) {
@@ -167,7 +185,6 @@ function downloadData() {
                             processError(error, "ZIP file");
                         });
                 });
-            }
-        )
-    ;
+            });
+    */
 }
