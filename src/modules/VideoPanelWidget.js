@@ -16,7 +16,7 @@ define([
   "dojo/_base/lang",
   "esri/geometry/Extent",
   "esri/geometry/support/webMercatorUtils",
-  "esri/rest/Query",
+  "esri/rest/query",
   "esri/layers/graphics/sources/support/QueryTask",
   "esri/views/MapView",
   "noaa/QueryBasedPanelWidget",

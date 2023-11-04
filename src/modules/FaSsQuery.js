@@ -9,7 +9,7 @@ define([
   "dojo/_base/declare",
   "dojo/_base/lang",
   "esri/layers/MapImageLayer",
-  "esri/rest/Query",
+  "esri/rest/query",
   "esri/layers/graphics/sources/support/QueryTask"
 ], function(declare, lang, MapImageLayer, Query, QueryTask) {
 

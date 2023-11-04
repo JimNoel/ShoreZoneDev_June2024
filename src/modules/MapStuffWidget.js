@@ -51,20 +51,16 @@ define([
   "dojo/_base/declare",
   "esri/Basemap",
   "esri/Color",
-  // "esri/core/watchUtils",// DEPRECATED
-  "esri/core/reactiveUtils",
   "esri/Map",
   "esri/views/MapView",
-  //"esri/views/Magnifier",
-  //"esri/views/SceneView",
-  // SceneView produces this error:  GET http://localhost:63342/FDFA6052-1C12-4655-B658-0DBF2414422D/253/aHR0cDovL2pzLmFyY2dpcy5jb20vNC4zL2Vzcmkvd29ya2Vycy9tdXRhYmxlV29ya2VyLmpz 404 (Not Found)
+
   "esri/layers/MapImageLayer",
   "esri/portal/PortalItem",
   "esri/webmap/Bookmark",
   "esri/widgets/Attribution",
   "esri/widgets/Bookmarks",
   "esri/widgets/Expand",
-   "esri/widgets/LayerList",
+  "esri/widgets/LayerList",
   "esri/widgets/Legend",
   "esri/widgets/Search",
   "esri/widgets/BasemapGallery",
@@ -72,34 +68,40 @@ define([
   "esri/widgets/Locate",
   "esri/widgets/Popup",
   "esri/widgets/ScaleBar",
-
-  "esri/rest/Geoprocessor",
-  "esri/rest/Query",
+  "esri/rest/geoprocessor",
+  "esri/rest/query",
   "esri/layers/graphics/sources/support/QueryTask",
-//  "esri/widgets/Print",
-  "noaa/VideoPanelWidget",
-  "noaa/PhotoPlaybackWidget",
-  "noaa/UnitsPanelWidget",
-  "noaa/QueryBasedTablePanelWidget",
-  "noaa/ChartPanelWidget",
-  "esri/geometry/Extent",
-  "esri/geometry/Point",
-  "esri/geometry/Polyline",
-  "esri/geometry/Polygon",
-  "esri/geometry/support/webMercatorUtils",
-  "esri/layers/GraphicsLayer",
-//  "esri/layers/GroupLayer",
-  "esri/renderers/SimpleRenderer",
-  "esri/symbols/SimpleMarkerSymbol",
-  "esri/Graphic",
-  "dojo/dom",
-  "esri/core/Collection",
-  "esri/core/Accessor",
+    "noaa/VideoPanelWidget",
+    "noaa/PhotoPlaybackWidget",
+    "noaa/UnitsPanelWidget",
+    "noaa/QueryBasedTablePanelWidget",
+    "noaa/ChartPanelWidget",
+    "esri/geometry/Extent",
+    "esri/geometry/Point",
+    "esri/geometry/Polyline",
+    "esri/geometry/Polygon",
+    "esri/geometry/support/webMercatorUtils",
+    "esri/layers/GraphicsLayer",
+    "esri/renderers/SimpleRenderer",
+    "esri/symbols/SimpleMarkerSymbol",
+    "esri/Graphic",
+    "dojo/dom",
+    "esri/core/Collection",
+    "esri/core/Accessor",
+
   "dojo/domReady!"
-], function(declare, Basemap, Color, watchUtils, Map, View, /*Magnifier,*/ MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks, Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask,
-              //Print,
-            VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget,
-            Extent, Point, Polyline, Polygon, webMercatorUtils, GraphicsLayer, /*GroupLayer,*/ SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor) {
+], function(declare
+            ,Basemap, Color, Map, View, MapImageLayer, PortalItem, Bookmark, Attribution, Bookmarks
+
+            ,Expand, LayerList, Legend, Search, BasemapGallery, Home, Locate, Popup, ScaleBar, Geoprocessor, Query, QueryTask
+              //,Print
+                        ,VideoPanelWidget, PhotoPlaybackWidget, UnitsPanelWidget, QueryBasedTablePanelWidget, ChartPanelWidget
+                        ,Extent, Point, Polyline, Polygon, webMercatorUtils, GraphicsLayer, SimpleRenderer, SimpleMarkerSymbol, Graphic, dom, Collection, Accessor
+
+) {
+
+// JN
+  console.log("here");
 
     function makeSzWidgets() {
       szPhotoWidget = new PhotoPlaybackWidget({
@@ -1386,8 +1388,6 @@ OKAY NOW?
       });
 
     });
-
-    // TODO: use esri/core/watchUtils instead of the following "watch" calls?
 
     // When "stationary" property changes to True, there is a new extent, so handle the extent change
     view.watch("stationary", function(newValue, oldValue, property, object) {
