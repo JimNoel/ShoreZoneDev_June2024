@@ -100,9 +100,6 @@ define([
 
 ) {
 
-// JN
-  console.log("here");
-
     function makeSzWidgets() {
       szPhotoWidget = new PhotoPlaybackWidget({
         objName: "szPhotoWidget",
@@ -1195,7 +1192,7 @@ define([
           },
           customRestService: {
             serviceUrl: faRestServiceURL,
-            innerSQL: "SELECT {G},ISNULL(SUM(Count_Fish),0) AS Catch,SUM(Count_measured) AS Count_measured,SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNull {W} GROUP BY {G}",
+            innerSQL: "SELECT {G},ISNULL(SUM(Count_Fish),0) AS Catch,SUM(Count_measured) AS Count_measured,1.0*SUM(AvgFL * Count_measured)/SUM(Count_measured) AS AvgFL FROM vw_FishCounts_flat_noNull {W} GROUP BY {G}",
             outerSQL: "SELECT {S},Catch,Count_measured,AvgFL From ({innerSQL}) as F",
             sqlTemplate_download: "SELECT {F} FROM vw_rawDataForDownload AS R"
           },
@@ -1415,7 +1412,6 @@ OKAY NOW?
 
     view.watch("resizing", function(isResizing, oldValue, property, object) {
       if (isResizing) {
-        console.log("resizeWidgets");
         resizeWidgets();
       }
     });
@@ -2187,7 +2183,6 @@ OKAY NOW?
       ymax:  12000000,
       spatialReference: { wkid: 102100 }
     });
-    console.log("Creating View");
     view = new View({
       container: "mapDiv",
       map: map,

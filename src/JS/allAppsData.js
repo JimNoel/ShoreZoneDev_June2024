@@ -212,9 +212,6 @@ function getListItemInfo() {
 
 function showSiteInfo() {
   setVisible('siteInfoPanel', true);
-
-  //faWidget.deSanitizeVisible();
-
 }
 
 function queryServer(url, returnJson, responseHandler, postInfo) {

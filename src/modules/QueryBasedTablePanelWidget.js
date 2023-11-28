@@ -17,28 +17,55 @@ let unselectColor = "";   // "white";
 let padLength = 10;     // left-pad numeric values to same string length (10), so they sort correctly
 //let padChars = "&nbsp;";    // HTML space escape character
 
-let formatValue = function (value) {
-    // In "makeTable" this function gets assigned to the DGrid "formatter" variable
-    //   to enable DGrid to format the cell values
-    // JRN - TODO: Handle case where number is in "html" property.
-    //  (Or arrange that numbers do not come as "html" property.)
-    if (value === null || (typeof value) !== "number")
-        return value;
-    let formatting = this.f[this.n];
-    return formatNumber(value, formatting);
+let fieldIsNumericFormat =  function(fmtInfo) {
+    if (!fmtInfo)
+        return false;
+    if (fmtInfo.useCommas || fmtInfo.numDecimals || fmtInfo.dateFormat)
+        return true;
+    return false;
 };
 
-let formatNumber = function (value, formatting) {
+let formatValue_NOAA = function (value) {
+    // In "makeTable" this function gets assigned to the DGrid "formatter" variable
+    //   to enable DGrid to format the cell values
+
+    if (!value || !value.html)      // If value is null, or does not have an html property, then exit with original value
+        return value;
+
+    let formatting = this.f[this.n];        // Get special formatting for field
+    if (!fieldIsNumericFormat(formatting))       // If field does not have numeric formatting, then exit with original value
+        return value;
+
+    let htmlEl = $.parseHTML(value.html)[0]     // Use jquery function to make an HTML element from the html text
+    let numValue = Number(htmlEl.innerText);         //, then get innerText of that
+    htmlEl.innerText = formatNumber_NOAA(numValue, formatting);
+    value.html = htmlEl.outerHTML;
+    return value;
+
+/*
+    if ((typeof value)==="object" && value.hasOwnProperty("html")) {
+        htmlInnerText = getHtmlWrapperContent(value.html);
+        let A = splitHtmlWrapper(value.html);
+        console.log(value.html);
+    }
+    // JRN - TODO: Handle case where number is in "html" property.
+    //  (Or arrange that numbers do not come as "html" property.)
+    if ((typeof value) !== "number")
+        return value;
+    return formatNumber_NOAA(value, formatting);
+*/
+};
+
+let formatNumber_NOAA = function (value, formatting) {
     if (!formatting)
         return value;
     let newValue = value;
-    if (formatting.useCommas)
+    /*if (formatting.useCommas)
         newValue = formatNumber_Commas(value);
-    else if (formatting.numDecimals >= 0)
+    else*/ if (formatting.numDecimals >= 0)
         newValue = value.toFixed(formatting.numDecimals);
     else if (formatting.dateFormat)
         newValue = formatNumber_Date(value);
-//    newValue = padString(newValue, padLength, "left", padChars);    // pad to the left, so numbers (as strings) sort correctly
     return newValue
 };
 
@@ -257,75 +284,6 @@ define([
                 return csv;
             };
 
-            /*
-                  this.downloadTableData = function() {
-                    if (!this.downloadExcludeFields) {
-                      alert("ERROR: This table is not set up for downloading.");
-                      return;
-                    }
-                    let data = this.store.data;
-
-                    let columns = [];
-                    var csv = '';
-                    for (c in this.grid.columns) {
-                      let column = this.grid.columns[c];
-                      let fName = column.field;
-                      if (!this.downloadExcludeFields.includes(fName) && !column.hidden) {
-                        columns.push(fName);
-                        let columnLabel = null;
-                        let specialFormatting = this.specialFormatting[fName];
-                        if (specialFormatting)
-                          columnLabel = specialFormatting.title;
-                        if (!columnLabel)
-                          columnLabel = fName;
-                        if (csv !== '')
-                          csv += ',';
-                        csv += '"' + columnLabel + '"';
-                      }
-                    }
-                    csv += '\n';
-
-                    for (let r=0; r<data.length; r++) {
-                      let row = data[r];
-                      let rowCsv = '';
-                      //for (c in this.grid.columns) {
-                      for (let c=0; c<columns.length; c++) {
-                        let fName = columns[c];     // this.grid.columns[c].field;     //
-                        //if (!this.downloadExcludeFields.includes(fName)) {
-                          let value = row[fName];
-                          if (!value)
-                            value = "";
-                          if (typeof value === "string")
-                            value = '"' + stripHtml(value) + '"';     // value.split("<")[0];
-                          let specialFormatting = this.specialFormatting[fName];
-                          if (specialFormatting && specialFormatting.dateFormat)
-                            value = '"' + formatNumber_Date(value) + '"';
-                          if (rowCsv !== '')
-                            rowCsv += ',';
-                          rowCsv += value;
-                        //}
-                      }
-                      csv += rowCsv + '\n';
-                    }
-                    let dfltFileName = "TableData.csv";
-                    if (this.draggablePanelId)
-                      dfltFileName = getEl(this.draggablePanelId + "_headerText").innerText + ".csv";
-                    else if (this.tabInfo)
-                      dfltFileName = this.tabInfo[this.currTab].tabTitle + ".csv";
-                    else if (this.popupTitle)
-                      dfltFileName = this.popupTitle + ".csv";
-                    let hiddenElement = getEl("hidden_downloadTable");
-                    // Using encodeURIComponent instead of encodeURI to ensure that # and other special characters are encoded
-                    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-                    //download_csv(csv, dfltFileName, this.rawDownloadOption);
-                  }
-            */
-
-            // this.my_hidden = function(value) {
-            //   console.log('In specialFormatting.PHY_IDENT');
-            //   console.log(value);
-            // };
-
             this.makeTable = function (fields, features) {     // Generate data table.  If no new features, then empty the DOM for the table
                 // Create a dGrid table from returned data
                 getEl(this.displayDivName).innerHTML = "";      // clear the DIV
@@ -357,31 +315,6 @@ define([
                     }
 
                 for (let i = 0; i < fields.length; i++) {
-                    /*
-                              // Use supplied title for column name
-                              let title = getIfExists(this,spclFmtChain + ".title");
-                              if (title === null)
-                                title = fields[i].alias;
-
-                              let hidden = getIfExists(this,spclFmtChain + ".hidden");
-
-                              let formatter = formatValue.bind({f: this.specialFormatting, n: fields[i].name});
-
-                              tableColumns.push({
-                                field: fields[i].name,
-                                label: title,
-                                hidden: hidden,
-                                formatter: formatter
-                              });
-
-                              // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
-                              let colWidth = getIfExists(this,spclFmtChain + ".colWidth");
-                              if (!colWidth)
-                                colWidth = (title.length) * 15;
-
-                              columnStyleCSS += ".dataTable .field-" + fields[i].name + " { width: " + colWidth + "px;} ";
-
-                    */
                     // Initialize lists, counts, totals
                     let fName = fields[i].name;
                     nonNullCount[fName] = 0;
@@ -521,13 +454,17 @@ define([
 
                     let hidden = getIfExists(this, spclFmtChain + ".hidden");
 
-                    let formatter = formatValue.bind({f: this.specialFormatting, n: fields[i].name});
+                    let formatter = formatValue_NOAA.bind({f: this.specialFormatting, n: fields[i].name});
 
+                    let isSortable = true;
+                    if (this.specialFormatting[fields[i].name].dateFormat)
+                        isSortable = false;
                     tableColumns.push({
                         field: fields[i].name,
                         label: title,
                         hidden: hidden,
-                        formatter: formatter
+                        formatter: formatter,
+                        sortable: isSortable
                     });
 
                     // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
@@ -567,11 +504,33 @@ define([
                 filterLegend(this.mapServiceLayer.title, nonNullList);
 
                 this.query_dgridSort = function (store, sort) {
+                    // TODO: Use this function in columnSort, instead of separate sections for a[sort.property] and b[sort.property]
+                    let getComparisonValue = function (v) {
+                        // Returns a sortable value:  If a parseable number, returns a number, else returns a string
+                        let cellValue = v[sort.property];
+                        if (cellValue) {
+                            if (cellValue.html)
+                                cellValue = getHtmlWrapperContent(cellValue.html);
+                            if (typeof cellValue == "string") {
+                                cellValue = cellValue.toLowerCase().replace(/,/g,"");
+                                let n = parseFloat(cellValue);
+                                if (n)
+                                    cellValue = n;
+                            }
+                        }
+                        return cellValue;
+                    };
+
                     let columnSort = function (a, b) {
                         let aValue,bValue;
+                        aValue = getComparisonValue(a);
+                        bValue = getComparisonValue(b);
+
+/*
                         if (a[sort.property]){
                             if(a[sort.property].html){
-                                aValue = getHtmlWrapperContent(a[sort.property].html);//Not sure why the Point of Contact Column is listed as a .html object when it isn't and is a string
+                                aValue = getHtmlWrapperContent(a[sort.property].html);      //Not sure why the Point of Contact Column is listed as a .html object when it isn't and is a string
+                                aValue = strToNumberOrDate(aValue);
                                 if(isNumeric(aValue)){
                                     aValue = Number(aValue);
                                 }else if(typeof aValue == "string"){
@@ -581,10 +540,9 @@ define([
                                 aValue = a[sort.property].toLowerCase();
                             }
                         }
-
                         if (b[sort.property]){
                             if(b[sort.property].html){
-                                bValue = getHtmlWrapperContent(b[sort.property].html);//Not sure why the Point of Contact Column is listed as a .html object when it isn't and is a string
+                                bValue = getHtmlWrapperContent(b[sort.property].html);      //Not sure why the Point of Contact Column is listed as a .html object when it isn't and is a string
                                 if(isNumeric(bValue)){
                                     bValue = Number(bValue);
                                 }else if(typeof bValue == "string"){
@@ -594,6 +552,8 @@ define([
                                 bValue = b[sort.property].toLowerCase();
                             }
                         }
+*/
+
                         let result = 0;
                         if(aValue != null && bValue == null){
                             result = 1;
@@ -645,8 +605,11 @@ define([
                     console.log('In grid-sort on column: ' + event.sort[0].property);
                     var sort = event.sort[0];
                     event.preventDefault();
+//*debug*/  let origStoreData = this.store.data;
                     this.store = this.query_dgridSort(this.store, sort);
                     this.grid.refresh();
+//*debug*/   this.store.data[0].Catch.html = this.store.data[0].Catch.html.replace(",","");
+                    // TODO:  The following line generates NaNs when store data includes commas.  Also grid get rendered multiple times...
                     this.grid.renderArray(this.store.data);
                     this.grid.updateSortArrow(event.sort, true);
                 }.bind(this));
@@ -852,14 +815,14 @@ define([
 
                 queryTask.executeForCount(query).then(function (results) {
                     this.countQueryResponseHandler(results, f);
-                    //this.totalLabels[f].node.innerHTML = formatNumber(results, this.specialFormatting[f]);
+                    //this.totalLabels[f].node.innerHTML = formatNumber_NOAA(results, this.specialFormatting[f]);
                 }.bind(this), function (error) {
                     console.log(this.baseName + ":  QueryTask for distinct counts on " + f + " failed.");
                 }.bind(this));
             }
 
             this.countQueryResponseHandler = function (results, f) {
-                this.totalLabels[f].node.innerHTML = formatNumber(results, this.specialFormatting[f]);
+                this.totalLabels[f].node.innerHTML = formatNumber_NOAA(results, this.specialFormatting[f]);
             }
 
             this.setTotals = function (features) {
@@ -873,7 +836,7 @@ define([
 
                 let totals = this.summaryInfo.totals;
                 for (f in totals) {
-                    this.totalLabels[f].node.innerHTML = formatNumber(totals[f].value, this.specialFormatting[f]);
+                    this.totalLabels[f].node.innerHTML = formatNumber_NOAA(totals[f].value, this.specialFormatting[f]);
                 }
 
                 let counts = this.summaryInfo.counts;
@@ -885,6 +848,7 @@ define([
             };
 
 
+/*
             this.deSanitize = function () {
                 let cells = getEl(this.displayDivName).getElementsByClassName("dgrid-cell");
                 for (let c = 0; c < cells.length; c++) {
@@ -921,6 +885,7 @@ define([
                 let elapsedSeconds = (endTime - startTime) / (1000);
                 console.log("deSanitizeVisible:  row " + topVisibleRow + ", " + elapsedSeconds + "seconds");
             }
+*/
 
             this.processFeatures_Widget = function (features) {
                 /*

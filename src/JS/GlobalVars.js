@@ -1259,14 +1259,49 @@ function alignRightInCellWrapper(val){
 //https://stackoverflow.com/questions/175739/how-can-i-check-if-a-string-is-a-valid-number
 function isNumeric(str) {
   if (typeof str != "string") return false // we only process strings!
+  str = str.replace(/,/g,"");     // Remove commas
   return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
       !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
 
+function strToNumberOrDate(str) {     // Convert str to number or date if possible, else return original string
+  let value = str;
+  if (typeof str != "string")
+     return str     // we only process strings!
+  str = str.replace(/,/g,"");     // Remove commas
+  if (isNaN(str))
+    value = Date.parse(str);
+  else
+    value = parseFloat(str);
+  if (isNan(value))
+    return str;
+  else
+    return value;
+
+}
+
+function splitHtmlWrapper(val){
+  let result = val;
+  let A = ['', val, ''];    // Default return array, in case it's not a DGrid cell
+  let dgridCellDivHtml = '<div class="dgrid_cell">';
+  if (val.includes(dgridCellDivHtml)) {
+    //We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="dgrid_cell">22</div>
+    let parts = val.split(dgridCellDivHtml);
+    if (2 === parts.length) {
+      A[0] = dgridCellDivHtml;
+      A[1] = parts[1].split('</div>')[0];
+      A[2] = '</div>';
+    }
+  }
+  return A;
+};
+
 function getHtmlWrapperContent(val){
   let result = val;
-  if (val.includes('<div class="dgrid_cell">')) {//We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="dgrid_cell">22</div>
-    let parts = val.split('<div class="dgrid_cell">');
+  let dgridCellDivHtml = '<div class="dgrid_cell">';
+  if (val.includes(dgridCellDivHtml)) {
+    //We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="dgrid_cell">22</div>
+    let parts = val.split(dgridCellDivHtml);
     if (2 === parts.length) {
       result = parts[1].split('</div>')[0];
     }
