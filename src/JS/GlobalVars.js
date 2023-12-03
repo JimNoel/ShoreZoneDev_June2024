@@ -6,6 +6,8 @@
 /*JN1 - usingPreQuery */
 /*JN2 - add query layer */
 
+let newData = false;
+
 let test = false;    // For trying out things before comitting to code
 
 let userLayersCount = 0;
@@ -1253,7 +1255,8 @@ function alignInCellWrapper(val, alignment){
 }
 
 function alignRightInCellWrapper(val){
-  let w = '<div class="dgrid_cell">'+val+'</div>';
+  // Forces value to be right-justified, using the style defined in "dgrid_cell"
+  let w = '<div class="dgrid_cell" origVal="' + val + '">'+val+'</div>';
   return w;
 }
 //https://stackoverflow.com/questions/175739/how-can-i-check-if-a-string-is-a-valid-number

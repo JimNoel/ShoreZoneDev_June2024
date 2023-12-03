@@ -37,9 +37,12 @@ let formatValue_NOAA = function (value) {
         return value;
 
     let htmlEl = $.parseHTML(value.html)[0]     // Use jquery function to make an HTML element from the html text
-    let numValue = Number(htmlEl.innerText);         //, then get innerText of that
-    htmlEl.innerText = formatNumber_NOAA(numValue, formatting);
-    value.html = htmlEl.outerHTML;
+
+    if (newData) {      // Do not do this if reordering (newData==false)
+        let numValue = Number(htmlEl.innerText);         //, then get innerText of that
+        htmlEl.innerText = formatNumber_NOAA(numValue, formatting);
+        value.html = htmlEl.outerHTML;
+    }
     return value;
 
 /*
@@ -60,9 +63,9 @@ let formatNumber_NOAA = function (value, formatting) {
     if (!formatting)
         return value;
     let newValue = value;
-    /*if (formatting.useCommas)
+    if (formatting.useCommas)
         newValue = formatNumber_Commas(value);
-    else*/ if (formatting.numDecimals >= 0)
+    else if (formatting.numDecimals >= 0)
         newValue = value.toFixed(formatting.numDecimals);
     else if (formatting.dateFormat)
         newValue = formatNumber_Date(value);
@@ -290,6 +293,7 @@ define([
                 if (features.length === 0)
                     return;
 
+                newData = true;
                 let tableColumns = [];
                 let nonNullCount = new Object();
                 nonNullList = new Object();       //Lists of unique values found
@@ -456,15 +460,11 @@ define([
 
                     let formatter = formatValue_NOAA.bind({f: this.specialFormatting, n: fields[i].name});
 
-                    let isSortable = true;
-                    if (this.specialFormatting[fields[i].name].dateFormat)
-                        isSortable = false;
                     tableColumns.push({
                         field: fields[i].name,
                         label: title,
                         hidden: hidden,
-                        formatter: formatter,
-                        sortable: isSortable
+                        formatter: formatter
                     });
 
                     // If field column width is specified in widget settings, use that.  Otherwise, default to fit title
@@ -504,14 +504,28 @@ define([
                 filterLegend(this.mapServiceLayer.title, nonNullList);
 
                 this.query_dgridSort = function (store, sort) {
-                    // TODO: Use this function in columnSort, instead of separate sections for a[sort.property] and b[sort.property]
+                    let getOrigVal = function(s) {
+                        try {
+                            // Get and return value of origVal attribute.
+                            // Generates an error if it doesn't exist, in which case the original input is returned
+                            let returnVal = $.parseHTML(s)[0].attributes.origVal.value;
+                            return returnVal;
+                        }
+                        catch(err) {
+                            return s;
+                        }
+                    }
                     let getComparisonValue = function (v) {
                         // Returns a sortable value:  If a parseable number, returns a number, else returns a string
+                        // TODO: Return original numeric value.  Get from dstore, or have value embedded in HTML as hidden element or DIV property?
                         let cellValue = v[sort.property];
                         if (cellValue) {
                             if (cellValue.html)
                                 cellValue = getHtmlWrapperContent(cellValue.html);
                             if (typeof cellValue == "string") {
+                                let origVal = getOrigVal(cellValue);
+                                if (origVal)
+                                    cellValue = origVal;
                                 cellValue = cellValue.toLowerCase().replace(/,/g,"");
                                 let n = parseFloat(cellValue);
                                 if (n)
@@ -525,34 +539,6 @@ define([
                         let aValue,bValue;
                         aValue = getComparisonValue(a);
                         bValue = getComparisonValue(b);
-
-/*
-                        if (a[sort.property]){
-                            if(a[sort.property].html){
-                                aValue = getHtmlWrapperContent(a[sort.property].html);      //Not sure why the Point of Contact Column is listed as a .html object when it isn't and is a string
-                                aValue = strToNumberOrDate(aValue);
-                                if(isNumeric(aValue)){
-                                    aValue = Number(aValue);
-                                }else if(typeof aValue == "string"){
-                                    aValue = aValue.toLowerCase();
-                                }
-                            }else if(typeof a[sort.property] == "string"){
-                                aValue = a[sort.property].toLowerCase();
-                            }
-                        }
-                        if (b[sort.property]){
-                            if(b[sort.property].html){
-                                bValue = getHtmlWrapperContent(b[sort.property].html);      //Not sure why the Point of Contact Column is listed as a .html object when it isn't and is a string
-                                if(isNumeric(bValue)){
-                                    bValue = Number(bValue);
-                                }else if(typeof bValue == "string"){
-                                    bValue = bValue.toLowerCase();
-                                }
-                            }else if(typeof b[sort.property] == "string"){
-                                bValue = b[sort.property].toLowerCase();
-                            }
-                        }
-*/
 
                         let result = 0;
                         if(aValue != null && bValue == null){
@@ -568,12 +554,16 @@ define([
                         return result * (sort.descending ? -1 : 1);
                     };
 
+//                    this.grid.columns[7].headerNode.contents.style.backgroundColor = "red";
+//                    this.grid.columns[7].headerNode.contents.className  = "inProgressRed";
+
                     if (sort != undefined) {
                         if (sort.descending) {
                             store.data = store.data.sort(columnSort);
                         } else {
                             store.data = store.data.sort(columnSort);
                         }
+//                        this.grid.columns[7].headerNode.contents.style.backgroundColor = "";
                         return store;
                     }
                     // return this.inherited(arguments);
@@ -605,11 +595,8 @@ define([
                     console.log('In grid-sort on column: ' + event.sort[0].property);
                     var sort = event.sort[0];
                     event.preventDefault();
-//*debug*/  let origStoreData = this.store.data;
                     this.store = this.query_dgridSort(this.store, sort);
                     this.grid.refresh();
-//*debug*/   this.store.data[0].Catch.html = this.store.data[0].Catch.html.replace(",","");
-                    // TODO:  The following line generates NaNs when store data includes commas.  Also grid get rendered multiple times...
                     this.grid.renderArray(this.store.data);
                     this.grid.updateSortArrow(event.sort, true);
                 }.bind(this));
@@ -618,18 +605,7 @@ define([
                 this.grid.renderArray(tableData);   // If using Grid, include this
                 this.hideHiddenItems();
 
-                //this.SetColumnWidths(columnWidths);
-
-                /*
-                        this.grid.bodyNode.onscroll = function() {
-                          if (scrollTimeout)
-                            clearTimeout(scrollTimeout);
-                          scrollTimeout = setTimeout(function() {
-                            this.deSanitizeVisible();
-                            clearTimeout(scrollTimeout);
-                          }.bind(this), 1000);
-                        }.bind(this);
-                */
+                newData = false;
 
                 this.grid.on('dgrid-error', function (event) {
                     console.log('dgrid-error:  ' + event.error.message);
@@ -721,12 +697,6 @@ define([
                         }
                     }
                 }.bind(this));
-
-                /*
-                        this.grid.watch("_rows", function() {
-                          alert("Hey!");
-                        });
-                */
 
                 this.repositionTotalLabels = function (columns) {
                     if (!this.totalOutFields)
