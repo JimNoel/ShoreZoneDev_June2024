@@ -15,30 +15,27 @@
       packages: [
         {
           name: "dojo",
-          location: "https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojo"  // "../../4.27/dojo"
+          location: "https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojo"
         },
         {
           name: "dijit",
-          location: "https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dijit"      // "../../4.27/dijit"
+          location: "https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dijit"
         },
         {
           name: "dojox",
-          location: "https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojox"    // "../../4.27/dojox"
+          location: "https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojox"
         },
         {
           name: "dgrid",
           location: "https://unpkg.com/dgrid@1.3.3/"      // latest version: 1.3.3 (November 2023)    // 1.1.0
-          //location:  "../../4.27/dgrid"    // anything there?
         },
         {
           name: "dstore",
           location: "https://unpkg.com/dojo-dstore@1.2.1/"      // latest version: 1.2.1 (November 2023)    // 1.1.1
-          //location:  "../../4.27/dstore"
         },
         {
           name: "esri",
           location: "https://js.arcgis.com/4.27/esri",
-          //location: "../../4.27/esri"
         },
         {
           name: "noaa",
@@ -48,24 +45,24 @@
       has: { "esri-promise-compatibility": 1 },
       parseOnLoad: true,
       tlmSiblingOfDojo: false,
-      baseUrl: "./"         //  "./src/"
+      baseUrl: "./"
     };
 
   </script>
 
-  <!--  API calls - CSS  -->
+<!--  API calls - CSS  -->
 
-<!--  <link rel="stylesheet" href="../../4.27/dijit/themes/claro/claro.css">-->
-          <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dijit/themes/claro/claro.css">
+  <!--  For locally-stored API, use (and modify) these links:
+      <link rel="stylesheet" href="../../4.27/dijit/themes/claro/claro.css">
+      <link rel="stylesheet" href="./4.27/esri/css/main.css">
+      <link rel="stylesheet" href="./4.27/dojox/layout/resources/ExpandoPane.css"/>
+      <link rel="stylesheet" href="./4.27/dgrid/css/dgrid.css"/>
+  -->
 
-  <!--        <link rel="stylesheet" href="./4.27/esri/css/main.css">-->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dijit/themes/claro/claro.css">
   <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/css/main.css">
-
-  <!--        <link rel="stylesheet" href="./4.27/dojox/layout/resources/ExpandoPane.css"/>-->
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojox/layout/resources/ExpandoPane.css"/>
-
-<!--  <link rel="stylesheet" href="./4.27/dgrid/css/dgrid.css"/>-->
-          <link rel="stylesheet" href="https://unpkg.com/dgrid@1.3.3/css/dgrid.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/dgrid@1.3.3/css/dgrid.css"/>
 
   <link rel="stylesheet" href="SZ_wLayout.css"/>
 
@@ -73,15 +70,8 @@
 
 
 <!--  API calls - JS  -->
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-  <!--  Neither of these are neccessary, as JS is automatically called with Dojo CSS calls?-->
-  <!--        <script src="./4.27/dojo/dojo.js"></script>-->
-  <!--          <script src="https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojo/dojo.js"></script>-->
-
   <script src="https://js.arcgis.com/4.27/"></script>
-
 <!--  API calls - JS  -->
 
 
