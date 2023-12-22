@@ -11,6 +11,8 @@
 
   <script>
 
+    //let esriVersion = "4.28";     // Attempt to keep ESRI version in one place -- doesn't work with the HTML statements
+
     window.dojoConfig = {
       packages: [
         {
@@ -35,7 +37,8 @@
         },
         {
           name: "esri",
-          location: "https://js.arcgis.com/4.27/esri",
+          location: "https://js.arcgis.com/4.28/esri",
+          //location: "https://js.arcgis.com/" + esriVersion + "/esri",
         },
         {
           name: "noaa",
@@ -60,7 +63,7 @@
   -->
 
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dijit/themes/claro/claro.css">
-  <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/css/main.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/css/main.css">
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojox/layout/resources/ExpandoPane.css"/>
   <link rel="stylesheet" href="https://unpkg.com/dgrid@1.3.3/css/dgrid.css"/>
 
@@ -71,7 +74,14 @@
 
 <!--  API calls - JS  -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://js.arcgis.com/4.27/"></script>
+
+  <script>
+    //  Try to load script dynamically, so SDK version number can be in just one place?
+    //    Results in "require" not being defined in time!
+    // jQuery.getScript("https://js.arcgis.com/" + esriVersion + "/");
+  </script>
+  <script src="https://js.arcgis.com/4.28/"></script>
+
 <!--  API calls - JS  -->
 
 
@@ -369,19 +379,17 @@
 
       mapStuff = new MapStuffWidget();
 
-      let FaSsMsg = "Sorry, @ has not been implemented yet on this site.  If you would like to open @ on the older Flex site, click 'OK'.";
       makeClassArrayVisibilityObject(siteTabs);
-      let flexSiteURL = "https://alaskafisheries.noaa.gov/mapping/szflex/index.html?L=B";
       let SZ3dUnitsSiteURL = "https://alaskafisheries.noaa.gov/mapping/jstest/szunits3d.html";
 
 //      makeDownloadPanel();
 
       stateNavigator.watch("selectedChildWidget", function(name, oval, nval){
-        changeState(nval.id, oval.id);
+        changeState(nval.id);
       });
 
       // Switch between ShoreZone/FishAtlas/ShoreStation states
-      function changeState(tabID, oldTabID) {
+      function changeState(tabID) {
         view.closePopup();
         // 3D units demo site
         if (tabID === "szUnitsTab") {
@@ -455,5 +463,5 @@
 
   </script>
 </head>
-<body class="claro" onload="siteLoadedHandler()"onresize="browserResizeHandler()"></body>
+<body class="claro" onload="siteLoadedHandler()" onresize="browserResizeHandler()"></body>
 </html>
