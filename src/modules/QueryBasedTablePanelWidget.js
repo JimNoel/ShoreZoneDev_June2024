@@ -1247,26 +1247,22 @@ define([
                         let cellHtml = null;
                         if (value && value.html) {
                             cellHtml = value.html;
-                            if (value && cellHtml && colHeader === "" && cellHtml.includes("title=")) {
+                            if (cellHtml.includes('class="dgrid_cell"'))            // Check if data is in a DGrid cell wrapper
+                                cellHtml = $.parseHTML(cellHtml)[0].innerText;      // If so, replace with inner text
+                            if (colHeader === "" && cellHtml.includes("title=")) {
+                                // If colHeader not already specified and HTML includes a "title" attribute,
+                                //      set colHeader (of popup) to "title" value
                                 let p = cellHtml.indexOf("title=");
                                 colHeader = cellHtml.slice(p).split("'")[1];
-                            } else if (cellHtml.includes('<div class="dgrid_cell">')) {//We are dealing with a number wrapped in string to apply style to center the text in the table cell - <div class="dgrid_cell">22</div>
-                                let parts = cellHtml.split('<div class="dgrid_cell">');
-                                if (2 === parts.length) {
-                                    cellHtml = parts[1].split('</div>')[0];
-//                                    cellHtml = padString(cellHtml.toString(), padLength, "left", padChars);//Apply same padding as is used on the SiteId column in makeTable() - so 2 becomes '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2'
-                                }
                             }
-                            if (typeof cellHtml === "string")
-                                cellHtml = cellHtml.replace("actionIcon", "actionIconPopup");    // If it's an icon with class "actionIcon", change to class for display in popup
+                            if (typeof cellHtml === "string")   // If it's an icon with class "actionIcon", change to class for display in popup
+                                cellHtml = cellHtml.replace("actionIcon", "actionIconPopup");
                             cellHtml = this.attrValDescription(th[i].field, cellHtml);      // Apply value description (SZ Units)
-                            let formatter = this.grid.columns[i].formatter;
-                            if (formatter && (typeof cellHtml) === "number")
-                                cellHtml = formatter(cellHtml);     // Apply numeric format, if numeric - AEB - I haven't seen case where this line can be reached now. - If called it should add padding like 2 becomes '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2'
-                            if (colHeader !== "") {
+                            if (colHeader !== "") {     // Add colon to colHeader
                                 colHeader += ":";
                             }
-                            h += "<div><b>" + colHeader + "</b>&nbsp;&nbsp;" + cellHtml + "</div>";
+                            h += "<div><label style='font-size:12px'>" + colHeader + "</label>&nbsp;&nbsp;" + cellHtml + "</div>";
+//                            h += "<div><b>" + colHeader + "</b>&nbsp;&nbsp;" + cellHtml + "</div>";
                         }
                     }
                 }

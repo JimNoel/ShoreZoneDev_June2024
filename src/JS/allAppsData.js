@@ -99,7 +99,8 @@ function showHide(id, value) {
 
 let closeCode = "setVisible('siteInfoPanel', false)";
 let siteInfoHtml = '<b class="bold1">Website Information</b><br><br><br>';
-siteInfoHtml += '<b class="bold2">Most recent website update:  </b>' + document.lastModified.split(" ")[0] + '<br><br>';
+siteInfoHtml += '<b class="bold2">Most recent website update:  </b>' + document.lastModified.split(" ")[0] + '<br>';
+siteInfoHtml += '<b class="bold2">&ensp;using ArcGIS SDK version number:  </b>' + esriVersion + '<br><br>';
 siteInfoHtml += '<b class="bold2">Fish Atlas database updates:</b><br>';
 siteInfoHtml += 'April 2022:  Added data from 1572 sites throughout Alaska';
 siteInfoHtml += '<br><br><br><br><button style="position:absolute; right:5px; bottom: 5px" onclick="' + closeCode + '">Close</button>';

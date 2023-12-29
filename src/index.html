@@ -11,7 +11,7 @@
 
   <script>
 
-    //let esriVersion = "4.28";     // Attempt to keep ESRI version in one place -- doesn't work with the HTML statements
+    let esriVersion = "4.28";     // Attempt to keep ESRI version in one place -- doesn't work with the HTML statements
 
     window.dojoConfig = {
       packages: [
@@ -37,8 +37,7 @@
         },
         {
           name: "esri",
-          location: "https://js.arcgis.com/4.28/esri",
-          //location: "https://js.arcgis.com/" + esriVersion + "/esri",
+          location: "https://js.arcgis.com/" + esriVersion + "/esri",
         },
         {
           name: "noaa",
