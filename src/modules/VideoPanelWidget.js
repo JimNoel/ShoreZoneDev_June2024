@@ -378,7 +378,7 @@ console.log("Current video time:  " + currentTime);
                 Caption: decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y)
               }
             }
-            this.displayPlayButton(graphic, null, true);
+            this.displayPopup(graphic, null, true);
           }
 
 /*
@@ -456,7 +456,7 @@ console.log("Current video time:  " + currentTime);
                 Caption: decDegCoords_to_DegMinSec(geogPoint.x, geogPoint.y)
               }
             }
-            this.displayPlayButton(graphic, null, true);
+            this.displayPopup(graphic, null, true);
 */
 
             if (f.attributes.Join_Count > 1000)

@@ -167,8 +167,7 @@ define([
         return a;
       };
 
-      this.displayPlayButton = function(e, row, fromPreQuery) {
-        logTimeStamp("displayPlayButton");
+      this.displayPopup = function(e, row, fromPreQuery) {
         this.clearAllHighlights();
         if (e.highlightGeometry)
           this.highlightFeature(e.highlightGeometry);
@@ -407,61 +406,6 @@ define([
         showPopups = false;
       }
       getEl("showPopupsCheckbox").checked = showPopups;
-
-      // JRN - I'm not seeing this error.  I've commented out the new code.
-
-      /* 20230809 - The ESRI JS Popup library class provides a button at the bottom of the popup called "Zoom to".
-      This seems to be auto-linked by the ESRI Popup class to the featureLayer associated with the mapView.rowId and geometry.
-
-      If the featureLayer is defined as a point (Latitude/Longitude) then the "Zoom to" works as advertised and will zoom
-      the mapView to that point on the map.
-
-      If the featureLayer is defined as a geometry, then the "Zoom to" button does not by default.
-      For example, if you load the page and click on the Shore Station tab, you will be looking at the ShoreStation Region information.
-      If you hover over one of the boxes on the map, a popup will appear with "Zoom to" button at the bottom.
-      If you click on the "Zoom to" button, you will get error:
-      Uncaught (in promise) ... "Cannot zoom to location without a target and view." ... "zoom-to:invalid-target-or-view"
-      This is because the associated row of data is defined as a gis geometry (polygon) rather than a point.
-      Note: if you click on the Popup "Stations" icon it will zoom to the region box.
-      You will then be looking at the table tab "ShoreStation Stations".
-      Now if you click on a map station, the popup will appear with the "Zoom to". If you click on the "Zoom to" button
-      while looking at the ShoreStation Stations, the "Zoom to" button works correctly and will zoom the map view to that station point.
-      This is because the associated row of data is defined as a gis point rather than a geometry (polygon).
-
-      The best write-up on this problem seems to be:
-      https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/4-12-scene-popup-zoom-to-not-working-for-features/td-p/530122
-      You may also want to look at but they aren’t very useful:
-      https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Popup.html#content
-      https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/override-popup-zoomto-event/td-p/474433
-      https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/popup-with-actions-zoom-in-to-selected-feature-of/m-p/1220676#M78953
-      https://codepen.io/nwp_nadja_bernhard/pen/YzLRoNv
-      https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/override-popup-zoomto-event/td-p/474433
-      https://community.esri.com/t5/arcgis-javascript-maps-sdk-questions/i-need-to-capture-the-information-of-a-popup-when/td-p/1155260
-
-      So what can we do about this?
-      I experimented with MapStuffWidget.js - initViewPopup() without success.
-      I also experimented with MapStuffWidget.js - addMapWatchers().when() without success because it
-      is called after the default call happens in ./esri/../Popup.js - J(w), which throws the error because G is null.
-        p.on("trigger-action", function(event){
-        if (event.action.id === "move-camera") {
-          if (!event.action.fromPreQuery)
-            currentWidgetController.moveButtonPressHandler(currentHoveredGraphic.attributes);
-          else {    // if event.action.fromPreQuery is true, then generate prequeried video ponts
-            console.log("Popup action for video prequery");
-            szVideoWidget.getPrequeriedVideoPoints(startFeature);
-          }
-        }
-        else if(event.action.id === "zoom-to-feature"){//AEB - experimenting
-          // this is called after the default function is called and we have already thrown an error.
-          console.log("In zoom-to-feature");
-          console.log(this);
-        }
-      });
-      Note: in MapStuffWidget.js - addMapWatchers().when(), we can disable the "Zoom to" button in all popups by adding:
-      p.viewModel.includeDefaultActions = false;//AEB - we can hide the popup - "Zoom to" button at the bottom of the popup
-
-      For now, we will disable the "Zoom to" button when looking at the ShoreStation Region data (associated with gis polygons rather than points).
-       */
 /*
       if('Regions' === this.subLayerName){
         view.popup.viewModel.includeDefaultActions = false;//AEB - we can hide the popup - "Zoom to" button at the bottom of the popup
@@ -574,7 +518,6 @@ define([
         this.highlightLayer.removeAll();
       if (this.trackingLayer)
         this.trackingLayer.removeAll();
-      // view.popup.close();//DEPRECATED
       view.closePopup();
     },
 

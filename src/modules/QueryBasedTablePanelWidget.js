@@ -645,7 +645,7 @@ define([
                     let associatedGraphic = this.clickableLayer.graphics.items[gObjIndex];
                     this.showGridTooltip(event, rowIndex, associatedGraphic);
                     if (this.clickableLayer.visible) {
-                        this.displayPlayButton(associatedGraphic, row);
+                        this.displayPopup(associatedGraphic, row);
                     }
                     // row.element === the element with the dgrid-row class
                     // row.id === the identity of the item represented by the row

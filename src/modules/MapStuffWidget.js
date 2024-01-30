@@ -5,48 +5,6 @@
  */
 
 
-/*
-let map;
-let view;
-let magView;
-
-let szMapServiceLayer;
-let faMapServiceLayer;
-let ssMapServiceLayer;
-let sslMapServiceLayer;
-
-let siteTabs = new Object({
-  tabs: ["sz", "fa", "ss"],
-  spatialFilterTabs: ["sz", "fa"],
-  currTab: "sz",
-  sz: {},
-  fa: {},
-  ss: {}
-});
-
-let mapLoading = false;*/
-// window.map;
-// window.view;
-// window.magView;
-//
-// window.szMapServiceLayer;
-// window.faMapServiceLayer;
-// window.ssMapServiceLayer;
-// window.sslMapServiceLayer;
-//
-// window.siteTabs = new Object({
-//   tabs: ["sz", "fa", "ss"],
-//   spatialFilterTabs: ["sz", "fa"],
-//   currTab: "sz",
-//   sz: {},
-//   fa: {},
-//   ss: {}
-// });
-//
-// window.mapLoading = false;
-
-
-
 define([
   "dojo/_base/declare",
   "esri/Basemap",
@@ -1565,7 +1523,7 @@ OKAY NOW?
         dataRow = currentWidgetController.highlightAssociatedRow(currentHoveredGraphic)
       if (hoverTimeout)
         clearTimeout(hoverTimeout);
-      hoverTimeout = setTimeout(currentWidgetController.displayPlayButton(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
+      hoverTimeout = setTimeout(currentWidgetController.displayPopup(currentHoveredGraphic, dataRow), minHoverTime);       // delay popup
     }
   }
 
