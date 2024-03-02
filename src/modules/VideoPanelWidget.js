@@ -26,7 +26,7 @@ define([
   // private vars and functions here
 
   let last_video_name = null;
-  let startPointData;
+//  let startPointData;
   let latest_startPointData;
   let cur_vid_pt = null;
   let nxt_vid_pt = null;
@@ -157,20 +157,30 @@ console.log("Current video time:  " + currentTime);
 
   }
 
-  function setVideoSource(startPointData) {
+  function setVideoSource(startPointData, useBUcode) {
     // Set video path
     // param object startPointData Video data point
     last_video_name = startPointData["VIDEOTAPE"];
 
-    if (startPointData["YouTubeID"]) {
+    // temporary fix for missing Axiom videos on YouTube.  Where present, using alternate mid-res videos on NOAA channel
+    if (startPointData["YouTubeID_midRes"])
+      currYouTube_ID = startPointData["YouTubeID_midRes"];
+    else
+      currYouTube_ID = startPointData["YouTubeID"];
+
+//    currYouTube_ID = startPointData["YouTubeID"];
+//    if (useBUcode)
+//      currYouTube_ID = startPointData["YouTubeID_midRes"];
+
+    if (currYouTube_ID) {
       if (!youtube_player && !youtube_id) {
         youtube_playback_memory = 2;
-        youtube_id = startPointData["YouTubeID"];
+        youtube_id = currYouTube_ID;
         asyncLoader("https://www.youtube.com/iframe_api");
       } else {
-        if (youtube_id && youtube_player && startPointData["YouTubeID"] !== youtube_id) {
+        if (youtube_id && youtube_player && currYouTube_ID!==youtube_id) {
           youtube_playback_memory = youtube_player.getPlayerState()
-          youtube_id = startPointData["YouTubeID"];
+          youtube_id = currYouTube_ID;
           //console.log("before YT.loadVideoById");
           try {
             youtube_player.loadVideoById({'videoId': youtube_id});
@@ -285,7 +295,11 @@ console.log("Current video time:  " + currentTime);
 
     update_track: function(currentTime, duration) {
     onVideoProgress({"target": {"currentTime": currentTime, "duration": duration}, w: this});
-  },
+    },
+
+    useBUVideoSource: function() {
+      setVideoSource(startPointData, true);
+    },
 
 
     //constructor: function(/*MapImageLayer*/ mapServiceLayer, /*String*/ subLayerName, /*String*/ symbolURL){

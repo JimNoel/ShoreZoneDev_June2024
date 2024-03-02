@@ -35,7 +35,14 @@ function onPlayerReady(event) {
 }
 
 function onPlayerError(event) {
+  alert("We're sorry, video for this area is currently unavailable.  We are working to fix the problem!");
+/*
+  if (event.data==="150" && currYouTube_ID===startPointData["YouTubeID"]) {
+    szVideoWidget.useBUVideoSource();
+    return;
+  }
   alert("YouTube error # " + event.data);
+*/
 }
 
 function onPlayerStateChange(event) {
