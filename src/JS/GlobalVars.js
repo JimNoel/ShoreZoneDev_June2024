@@ -6,6 +6,9 @@
 /*JN1 - usingPreQuery */
 /*JN2 - add query layer */
 
+let startPointData;
+let currYouTube_ID;
+
 let newData = false;
 
 let test = false;    // For trying out things before comitting to code
