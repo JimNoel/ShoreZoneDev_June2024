@@ -40,42 +40,6 @@ define([
     //console.log("photoLoadCompleteHandler");
   }
 
-/*
-  function photoPlayer() {
-    // Manage timed playback of photos
-    let wait_for_current_photo = false;
-    console.log(photo_load_times_sort[photo_load_times_sort.length-1]);
-    if (!latest_photo_loaded()) {
-      console.log("photoPlayer: last photo did not load in time. Waiting.");
-      wait_for_current_photo = true;
-    }
-    let current_photo_load_delay = photo_play_delay;
-    console.log("photoPlayer: photo_play_delay=" + photo_play_delay + ", photo_load_average=" + photo_load_average + ", current_photo_load_delay="+current_photo_load_delay);
-    return setTimeout(function() {
-      if (this.sync_photos) return;
-      if (this.counter === null) {
-        if (next_photo_point !== null) {
-            this.counter = next_photo_point["item"]
-        } else {
-            this.counter = 0;
-        }
-      }
-      if (!wait_for_current_photo) {
-          this.counter = this.counter + photo_play_direction;
-//          if (this.counter < 0 || this.counter >= this.points_photos[last_photo_video_name].length) {
-        if (this.counter < 0 || this.counter >= this.getFeatureCount()) {
-          //clearTimeout(photo_play_timer);
-          //photo_play_timer = false;
-          this.counter = this.counter - photo_play_direction;
-        }
-        update_photo(this.getFeatureAttributes(this.counter));
-      }
-//      if (photo_play_timer)
-//        photo_play_timer = photoPlayer();
-    }, current_photo_load_delay);
-  }
-*/
-
 
 
 

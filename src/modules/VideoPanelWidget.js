@@ -38,29 +38,6 @@ define([
 /*1*/
 
 
-  /*    // Currently unused
-    function measurePhotoDownloadTime() {
-      let pWidget = this.syncTo;
-      if (pWidget.last_photo_point["DATE_TIME"] = pWidget.beforeLast_photo_point["DATE_TIME"])
-        return;
-      let next_photo_percent = (pWidget.last_photo_point["MP4_Seconds"]-currentTime)/(pWidget.last_photo_point["DATE_TIME"]-pWidget.beforeLast_photo_point["DATE_TIME"])*1000;
-
-      if (!pWidget.latest_photo_loaded() && next_photo_percent>0.3)
-        setPlaybackRate(next_photo_percent);
-      else
-        setPlaybackRate(1);
-
-    timeToNextPhoto = (pWidget.next_photo_point["DATE_TIME"] - pWidget.beforeLast_photo_point["DATE_TIME"])/1000;
-
-      if (!pWidget.latest_photo_loaded()) {
-        console.log("onVideoProgress: last photo did not load in time. ");
-        //get_video()[0].playbackRate = 0.0;
-      } else {
-          get_video()[0].playbackRate = 1;
-      }
-    }
-  */
-
   function onVideoProgress(e) {
 
     try {

@@ -1211,34 +1211,6 @@ define([
     }
 
 
-/*
-//Might eventually use this function, if 3D option is added
-  function sceneViewExtent(view, m) {
-    // Calculate true extent of tilted 3D view
-    // view is the SceneView being used
-    // m is an optional margin, in pixels
-    // Query.geometry can be a Polygon, so doesn't have to be a right-angled rectangle like extent?
-    if (m === undefined)
-      m = 0;
-    //console.log(view.extent);
-    let maxX = view.container.offsetWidth;
-    let maxY = view.container.offsetHeight;
-    let screenPoints = [[m,m], [maxX-m,m], [maxX-m,maxY-m], [m,maxY-m]];
-    let mapPoints = [];
-    for (let p=0; p<screenPoints.length; p++) {
-      let screenPoint = new Point({x: screenPoints[p][0], y: screenPoints[p][1]});
-      let mapPoint = view.toMap(screenPoint);     // These are the points I want to use to get true extent
-      if (!mapPoint)
-        return null;
-      let geogPoint = webMercatorUtils.webMercatorToGeographic(mapPoint);
-      mapPoints.push([mapPoint.x, mapPoint.y, mapPoint.z]);
-    }
-    mapPoints.push(mapPoints[0]);
-    let newPolygon = new Polygon(mapPoints);
-    return newPolygon;
-  }
-*/
-
   function handleExtentChange(newExtent) {
     // For 3D, change newExtent to Polygon of tilted view extent
     // If using MapView (2D), comment out these lines
@@ -1309,12 +1281,6 @@ OKAY NOW?
 
   function addMapWatchers() {
 
-/*
-    view.on("layerview-create", function(event) {
-      console.log(event.layerView.layer.title);
-    });
-*/
-
     view.when(function() {
 /*    // ESRI Magnifier widget
       let M = view.magnifier;
@@ -1324,8 +1290,6 @@ OKAY NOW?
       M.offset = { x: offset, y: offset };
 */
 
-      //searchWidget.activeSource.filter = {geometry: view.extent};
-      //homeExtent = view.extent;
       map.basemap = startBasemap;   //HACK:  Because inital basemap setting of "oceans" messes up initial extent and zooming
       //let moveButtonAction = {title: "Move the camera", id: "move-camera"};
 
@@ -1950,12 +1914,6 @@ OKAY NOW?
       source: basemapSource,
       container: makeWidgetDiv("basemapDiv", "bottom")    // document.createElement("div")
     });
-    /*
-        basemapGallery.on("selection-change", function(event){
-          // event is the event handle returned after the event fires.
-          console.log(event.mapPoint);
-        });
-    */
     let bgExpand = new Expand({
       view: view,
       content: wrapperWithOpacitySlider(basemapGallery.domNode, "Basemaps"),
@@ -2002,35 +1960,6 @@ OKAY NOW?
       //this.activeSource.defaultZoomScale  = 10000;
     });
 
-/*
-    searchWidget.on("suggest-complete", function(event){
-//      if (event.numResults > 0)
-//        event.results[0].results.pop();
-      //searchWidget.maxResults = 50;
-      tooBigWidthKm = 3000;
-      //let r = 0;
-
-//      for (let r=0; r<event.numResults; r++) {
-      for (let r=event.numResults-1; r>=0; r--) {
-        searchWidget.search(event.results[0].results[r].key);
-//      searchWidget.search(event.searchTerm);
-        searchWidget.on("search-complete", function(e){
-          //let results = e.results[0].results[0];
-          let extentWidthKm = e.results[0].results[0].extent.width/1000;
-          if (extentWidthKm > tooBigWidthKm)
-            this.results = this.results.splice(r, 1);
-//                  let s = "Name@AddrType@Extent_km\n";
-//                  for (let r=0; r<results.length; r++) {
-//                    s += results[r].name + "@" + results[r].feature.attributes.Addr_type + "@" + extentWidthKm.toFixed(1) + "\n";
-//                  }
-//                  console.log(e);
-        }.bind({results: event.results[0].results, r: r}));
-      }
-
-      //console.log(event);
-    });
-*/
-
     searchWidget.on("select-result", function(event){
       // Make result graphic more visible
       //JRN - Removed code setting resultGraphic symbol properties, as the symbol type in 4.27 is now PictureMarkerSymbol
@@ -2046,15 +1975,6 @@ OKAY NOW?
           zoom: dfltZoom
         });
     });
-
-      /*    // This filters search suggestions to initial extent
-          searchWidget.watch("activeSource", function() {
-            this.activeSource.filter = {
-              geometry: view.extent
-              //where: "name like '*Alaska*'"
-            };
-          });
-      */
 
           // Code to handle search results with improper extents
           searchWidget.goToOverride = function(view, goToParams) {

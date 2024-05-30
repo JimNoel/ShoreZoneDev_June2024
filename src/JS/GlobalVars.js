@@ -178,15 +178,6 @@ let spTableTemplate = "<img src='assets/images/table.png' onclick='mapStuff.open
 let gotoSubareasTemplate = "<img src='assets/images/start.png' onclick='mapStuff.selectAndZoom({args})' class='actionIcon'  alt='' title='Go to {area}'>";
 
 
-//https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
-// JRN - commented out
-/*
-function htmlDecode(input) {
-  let doc = new DOMParser().parseFromString(input, "text/html");
-  return doc.documentElement.textContent;
-};
-*/
-
 let initialExtentThumbnail = null;
 
 let settings = {
@@ -1017,12 +1008,6 @@ function checkbox_showPopups_clickHandler() {
   }
 }
 
-/*    // old Tristan code for speed slider
-function findAndChangePlaybackSpeed() {
-  changePlaybackSpeed(document.getElementById('playback_speed_range').value);
-}
-*/
-
 function nudgePlaybackSpeed(incr) {
   if (!youtube_id)
     return;
@@ -1176,26 +1161,6 @@ function getDescendentLayer(layer, name) {
   }
   return null;
 }
-
-/*
-function makeSublayerIdTable(serviceUrls, idTable) {
-  queryServer(serviceUrls[currServerNum], true, function(R) {
-    if (R.error) {
-      console.log("Map service error:  " + R.error.message);
-      return;
-    }
-    console.log("Map service:  " + serviceUrls[currServerNum]);
-    for (let l in R.layers) {
-      let o = R.layers[l];
-      idTable[o.name] = o.id.toString();
-    }
-    for (let t in R.tables) {
-      let o = R.tables[t];
-      idTable[o.name] = o.id.toString();
-    }
-  });
-}
-*/
 
 function updateSublayerArgs(displayInfo, sublayerIDs) {    // Make arguments for specifying sublayers of map service layer
   for (let i=0; i<displayInfo.length; i++) {
@@ -1530,29 +1495,6 @@ function ObjToCss(obj) {
   return s;
 }
 
-// JRN - function no longer used, but keeping it available in case it comes in handy down the line
-// NOTE: "padString" is already defined in the ESRI API
-/*
-function padString(str, len, mode, chars) {
-  // "mode" can be "left", "right" or "both"
-  if (!chars)
-    chars = " "
-  let outstr = str;
-  let leftSide = false;
-  if (mode==="left")
-    leftSide = true;
-  let l = len - str.length;
-  let padStr = "";
-  if (l > 0)
-    padStr = chars.repeat(l);
-  if (leftSide)
-    outstr = padStr + str;
-  else
-    outstr = str + padStr;
-  return outstr;
-}
-*/
-
 function relOffset(el, tgtDiv) {
   el = getEl(el);
   tgtDiv = getEl(tgtDiv);
@@ -1715,40 +1657,6 @@ function toggleMapWidgetVisibility(widgetID) {
 }
 
 
-
-/* Unused functions
-
- function distinct(theArray) {
- let L = "/";
- for (let i=0; i<theArray.length; i++) {
- let S = theArray[i];
- if (L.indexOf("/" + S + "/") === -1)
- L += S + "/";
- }
- if (L === "/")
- L = "";
- else
- L = L.slice(1,L.length-1);
- return L.split("/");
- }
-
-function simulateMouseEvent(el, evType) {
-  let event = new MouseEvent(evType, {
-    view: window,
-    bubbles: true,
-    cancelable: true
-  });
-  let cancelled = !el.dispatchEvent(event);
-  if (cancelled) {
-    // A handler called preventDefault.
-    console.log("cancelled");
-  } else {
-    // None of the handlers called preventDefault.
-    console.log("not cancelled");
-  }
-}
-
-*/
 
 
 let map;

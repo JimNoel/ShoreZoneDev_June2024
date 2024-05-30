@@ -154,13 +154,6 @@ function changeDefinitionExpression(id) {
   getEl('dialogSwatch' + id).style.backgroundColor = newExpr;
 }
 
-/*
-function changeDialogSwatchColor(id) {
-  let newColor = getEl('colorPicker').value;
-  getEl('dialogSwatch' + id).style.backgroundColor = newColor;
-}
-*/
-
 function swapClasses(elName, class1, class2) {
   // Find all elements under elName having class of either class1 or class2, and swap the classes.
   //   Currently this is used to alternately show or hide elements, with class1/class2 being either "show_rmvSpace" or "hide_rmvSpace"

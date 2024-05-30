@@ -151,40 +151,4 @@ function downloadData() {
       jobInfo.waitForJobCompletion(options).then(getResultData, processError);
     }, processError);
 
-/*
-    gp.submitJob(gpUrl_extract, params).then(function (jobInfo) {
-        var options = {
-            statusCallback: logProgress
-        };
-        gp.waitForJobCompletion(jobInfo.jobId, options).then(getResultData, processError);
-    }, processError);
-*/
-
-    /*
-        gp.submitJob(gpUrl_extract, params)
-            .then(function (jobInfo) {
-                var options = {
-                  statusCallback: logProgress
-                };
-                jobInfo.waitForJobCompletion().then(() => {
-                    jobInfo.fetchResultData("Output_Zip_File_zip")
-                        .then(function (result) {
-                            console.log("Data extract:  Got ZIP file URL");
-                            let replString = "/scratch/" + extractGpName + "_output/";
-                            zipURL = result.value.url.replace("/scratch/",replString);     // HACK: add {extractGpName}_output subdirectory
-                            jobInfo.fetchResultData("outJSON").then(function(result) {
-                                console.log("Data extract:  Got video clips info");
-                                let a = result.value.split(";");
-                                zipSizeText = a[0];
-                                videoClipInfo = a[1].split("@");
-                                showZipLink();
-                            }, function(error) {
-                                processError(error, "video clip URLs");
-                            });
-                        }, function(error) {
-                            processError(error, "ZIP file");
-                        });
-                });
-            });
-    */
 }

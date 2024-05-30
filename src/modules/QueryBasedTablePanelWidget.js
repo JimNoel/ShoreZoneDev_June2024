@@ -99,17 +99,6 @@ define([
 
     return declare(QueryBasedPanelWidget, {
 
-        /*OBS
-            replaceNamesWithValues: function(template, attrs) {
-              let a = template.split("@");
-              for (let i=0; i<a.length; i++)
-                if (a[i] in attrs) {
-                  a[i] = attrs[a[i]];
-                }
-              return a.join("");
-            },
-        */
-
         constructor: function (/*Object*/ kwArgs) {
 
             lang.mixin(this, kwArgs);
@@ -123,19 +112,6 @@ define([
             this.origVisibleHeaderElements = this.visibleHeaderElements;
             this.columnsStyleSheet = document.createElement('style');
             document.body.appendChild(this.columnsStyleSheet);
-
-            /*
-                  this.SetColumnWidths = function(columnWidths) {
-                    let firstRowId = this.displayDivName + "-row-0";
-                    let firstRow = getEl(firstRowId)
-                    let rowWidth = $(firstRow).width();
-                    let totalCellWidth = 0;
-                    let cells = firstRow.getElementsByClassName("dgrid-cell");
-                    for (let c=0; c<cells.length; c++) {
-                      totalCellWidth += $(cells[c]).width();
-                    }
-                  };
-            */
 
             this.showCsvDownloadDialog = function () {
                 csvDownloadWidget = this;
@@ -346,8 +322,6 @@ define([
 
                     if (this.idField) {     // For idField, insert span for identifying original row number, so correct feature is identified regardless of current table order
                         let idFieldValue = features[i].attributes[this.idField];
-//                        if (typeof idFieldValue === "number")
-//                            idFieldValue = padString(idFieldValue.toString(), padLength, "left", padChars);    // temporary HACK:  pad to the left, so numbers (as strings) sort correctly
                         features[i].attributes[this.idField] = idFieldValue + "<span id='" + this.baseName + "@" + i + "@'></span>";
                         // features[i].attributes[this.idField] = htmlWrapper(features[i].attributes[this.idField]);
                         // For identifying the equivalent row in the table, on feature click
@@ -433,16 +407,6 @@ define([
                             features[i].attributes[a] = htmlWrapper(features[i].attributes[a]);
                             // }
                         }
-
-                    // if (this.idField) {     // For idField, insert span for identifying original row number, so correct feature is identified regardless of current table order
-                    //   let idFieldValue = features[i].attributes[this.idField];
-                    //   if (typeof idFieldValue === "number")
-                    //     idFieldValue = padString(idFieldValue.toString(), padLength, "left", padChars);    // temporary HACK:  pad to the left, so numbers (as strings) sort correctly
-                    //     features[i].attributes[this.idField] = idFieldValue + "<span id='" + this.baseName + "@" + i + "@'></span>";
-                    //     features[i].attributes[this.idField] = htmlWrapper(features[i].attributes[this.idField]);
-                    //   // For identifying the equivalent row in the table, on feature click
-                    //   // "@" used for easy splitting out of values
-                    // }
 
                     tableData.push(features[i].attributes);
                 }
@@ -818,51 +782,7 @@ define([
             };
 
 
-/*
-            this.deSanitize = function () {
-                let cells = getEl(this.displayDivName).getElementsByClassName("dgrid-cell");
-                for (let c = 0; c < cells.length; c++) {
-                    if (cells[c].innerHTML !== cells[c].innerText)
-                        cells[c].innerHTML = cells[c].innerText;
-                }
-            }
-
-            this.deSanitizeVisible = function () {
-                // Replace dGrid "literal" HTML in visible cells with actual HTML
-                let theGrid = faWidget.grid;
-                let bodyNode = theGrid.bodyNode;
-                let columnCount = Object.keys(theGrid.columns).length;
-
-                let gridRect = bodyNode.getBoundingClientRect();
-                let topVisibleRowEl = document.elementFromPoint(window.scrollX + gridRect.left + 1, window.scrollY + gridRect.top + 1).parentElement.parentElement.parentElement;
-                let topVisibleRow = topVisibleRowEl.rowIndex;
-
-                let startTime = Date.now();
-
-                for (let c = 0; c < columnCount; c++) {
-                    if ([0, 5, 6, 7, 8, 9, 11].includes(c)) {
-
-                        let columnEls = document.getElementsByClassName("dgrid-column-" + c);
-
-                        for (let r = topVisibleRow; r < topVisibleRow + 10; r++) {
-                            columnEls[r].innerHTML = columnEls[r].innerText;
-                        }
-
-                    }
-                }
-
-                let endTime = Date.now();
-                let elapsedSeconds = (endTime - startTime) / (1000);
-                console.log("deSanitizeVisible:  row " + topVisibleRow + ", " + elapsedSeconds + "seconds");
-            }
-*/
-
             this.processFeatures_Widget = function (features) {
-                /*
-                        aspect.after(this, "makeTable", function(deferred){
-                          this.deSanitize();
-                        });
-                */
                 this.makeTable(this.fields, features);
                 this.setTotals(features);
             };
@@ -1039,14 +959,6 @@ define([
             };
 
 
-            /*
-                  this.makeTableFooterHtml = function() {
-                    let footerDivNode = getEl(this.footerDivName);
-                    this.footerWrapper = makeHtmlElement("SPAN", null, null, "position: relative; top: 0; left: 0");
-                    footerDivNode.appendChild(this.footerWrapper);
-                  };
-            */
-
             this.insertDropdowns = function (ddItem) {
                 let html = '&emsp;<LABEL class="boldLabel">' + ddItem.ddTitle + ': </LABEL>';
                 html += ddItem.htmlTemplate;
@@ -1069,12 +981,6 @@ define([
                 return this.dropDownInfo[ddIndex];
 
             };
-
-            /*
-                  this.filterDropdown = function(ddName, where, comSci) {
-                    this.queryDropDownOptions(this.getddItem(ddName), where, comSci);
-                  };
-            */
 
             this.handleDependentDropdowns = function (ddInfo) {
                 console.log("handleDependentDropdowns");
