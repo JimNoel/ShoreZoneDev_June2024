@@ -1263,13 +1263,6 @@ define([
 
     // let bookmark = new Bookmark({name: km, extent: newExtent});
     let bookmark = new Bookmark({name: km, viewpoint: newViewpoint});
-/*
-    TODO: Keep an eye on this.  Warning says:
-      [esri.webmap.Bookmark] ������ DEPRECATED - Property: extent ������️ Replacement: viewpoint ⚙️ Version: 4.17
-    However, when I use "viewpoint", jump to previous extent fails, and this message comes up:
-      [esri.webmap.Bookmark]  e {name: "invalid-viewpoint", details: Object, message: "'viewpoint.targetGeometry' should be an extent"}
-OKAY NOW?
-*/
 
     bookmark.index = savedExtentsWidget.bookmarks.length;
     if (screenshot)

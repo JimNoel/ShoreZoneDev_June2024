@@ -42,7 +42,7 @@ define([
 
     try {
       let currentTime = e.target.currentTime
-console.log("Current video time:  " + currentTime);
+//console.log("Current video time:  " + currentTime);
       let duration = e.target.duration
       let current_progress = currentTime/duration
 
@@ -76,7 +76,7 @@ console.log("Current video time:  " + currentTime);
       if (szVideoWidget.counter < szVideoWidget.getFeatureCount()) {
         nxt_vid_pt = szVideoWidget.getFeatureAttributes(szVideoWidget.counter + 1);
         nextTime = nxt_vid_pt.MP4_Seconds;
-        console.log("nextTime:  " + nextTime);
+        //console.log("nextTime:  " + nextTime);
       }
 
       /*  INTERPOLATION  (not currently used)
@@ -106,7 +106,7 @@ console.log("Current video time:  " + currentTime);
       //console.log("onVideoProgress:  VIDEOS:  " + currentTime + ", " + cur_vid_pt.MP4_Seconds);
 //      if (currentTime - cur_vid_pt.MP4_Seconds >= 1) {      // Check if enough time has passed to go to the next point
       if (currentTime >= nextTime) {      // Check if enough time has passed to go to the next point
-        console.log("Moving to next video feature");
+        //console.log("Moving to next video feature");
         szVideoWidget.counter += 1;
         if (szVideoWidget.counter < szVideoWidget.getFeatureCount())  {
           //  TODO: Get feature (rather than just attributes), use this as argument for movetoFeature
