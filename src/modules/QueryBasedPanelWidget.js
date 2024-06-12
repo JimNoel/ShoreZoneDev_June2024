@@ -225,6 +225,7 @@ define([
 
 //    METHOD DEFINITIONS
 
+    // Initial setting of object properties
     initFeatureHandling: function() {
       this.noFeaturesPanels = [this];     //  For messaging when query returns no features.  Normally this array just includes the current object (this).
                                           //  An exception is VideoPanelWidget, which adds an instance of PhotoPlaybackWidget, since query results for
@@ -304,17 +305,21 @@ define([
       }
     },
 
+    // Builds the URL for the map service query
     mapServiceQueryUrl: function(tableName) {
       if (!tableName)
         tableName = this.subLayerName;
       return (this.mapServiceLayer.url + "/" + this.sublayerIDs[tableName]);
     },
 
+    // TODO: Change name, maybe to "setClick&Highlight"?
+    // Used to set Clickable and Highlight rendering
     changeFeatureHandling: function() {
       this.setClickableRendering();
       this.setHighlightRendering();
     },
 
+  // TODO: Move this, so it's separate from the method definitions
   makeSymbol(symbolInfo, symbolType) {
     let symbol = null;
     if (symbolType === "text")
@@ -328,12 +333,13 @@ define([
     return symbol;
   },
 
+    // Set rendering for clickable objects
     setClickableRendering: function() {
       this.clickableSymbol = this.makeSymbol(this.clickableSymbolInfo, this.clickableSymbolType);
       this.clickableLayer.renderer = new SimpleRenderer(this.clickableSymbol);
     },
 
-
+    // Set rendering for highlighted objects
     setHighlightRendering: function() {
       if (this.highlightSymbolInfo) {
         this.highlightSymbol = this.makeSymbol(this.highlightSymbolInfo, this.highlightSymbolType);
@@ -349,7 +355,7 @@ define([
     this.highlightLayer.renderer = new SimpleRenderer(this.highlightSymbol);
     },
 
-
+    // If this.footerPanel is defined, then add footer to panel
     makeFooterElements: function() {
       if (!this.footerPanel)
         return false;
@@ -360,6 +366,7 @@ define([
       return true;
     },
 
+    // Hide any dropdown items having the property "showColOption_Visible"
     hideHiddenItems: function() {
       if (!this.dropDownInfo)
         return;

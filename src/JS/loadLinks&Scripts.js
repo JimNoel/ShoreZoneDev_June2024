@@ -12,10 +12,10 @@ function loadCSS(path) {
 //  if(filesAdded.indexOf('styles.css') !== -1)
 //    return
 
-  var head = document.getElementsByTagName('head')[0]
+  let head = document.getElementsByTagName('head')[0]
 
   // Creating link element
-  var style = document.createElement('link')
+  let style = document.createElement('link')
   style.href = path
   style.type = 'text/css'
   style.rel = 'stylesheet'
