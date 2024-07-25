@@ -167,6 +167,70 @@ define([
         return a;
       };
 
+      //https://stackoverflow.com/questions/10607935/convert-returned-string-yyyymmdd-to-date
+      //dateString = 20040605173531
+      this.dateStringToDate = function(dateString) {
+        try {
+          const year = dateString.substring(0, 4);
+          const month = dateString.substring(4, 6);
+          const day = dateString.substring(6, 8);
+          const hour = dateString.substring(8,10);
+          const minute = dateString.substring(10,12);
+          const second = dateString.substring(12,14);
+          let date = new Date(year, month - 1, day, hour, minute, second);
+          const offset = date.getTimezoneOffset()
+          date = new Date(date.getTime() - (offset * 60 * 1000));
+          return date;
+        } catch (error) {
+          return null;
+        }
+      };
+
+      /* 20240725 - AEB
+      GOAL: Display the DateTime_str e.g. 'Sat Jun 05 2004 09:34:49 GMT-0800 (Alaska Daylight Time)'
+      It looks like the e.attributes contain data from the "1s" sublayer, including DateTime (Date) and DateTime_str (String).
+      If the e.attributes did not contain the required fields, we would have had to query the layer by doing something like:
+      console.log(e.attributes.OBJECTID);
+      this.getOneSecRowById(e.attributes.OBJECTID);
+
+      Also see:
+      https://developers.arcgis.com/javascript/latest/api-reference/
+      https://developers.arcgis.com/javascript/latest/api-reference/esri-layers-support-Sublayer.html
+      https://developers.arcgis.com/javascript/latest/api-reference/esri-rest-support-Query.html
+
+      https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZone/MapServer
+      https://alaskafisheries.noaa.gov/arcgis/rest/services/ShoreZone/MapServer/2
+       */
+      this.getOneSecRowById = async function(OBJECTID){
+        if(null === OBJECTID){
+          return null;
+        }
+        let videoFlightlineLyr = szMapServiceLayer.sublayers.find(function(sublayer){
+          return sublayer.title === "Video Flightline";
+        });
+        if(null === videoFlightlineLyr){
+          return null;
+        }
+        let oneSecLyr = videoFlightlineLyr.sublayers.find(function(sublayer){
+          return sublayer.title === "1s";
+        });
+        if(null === oneSecLyr){
+          return null;
+        }
+        let query = oneSecLyr.createQuery();
+        query.where = "OBJECTID = " + OBJECTID;
+        query.outFields = ["OBJECTID", "DateTime_str"];
+        query.returnDistinctValues = true;
+        query.returnGeometry = false;
+        let dateTime_str = null;
+        await oneSecLyr.queryFeatures(query)
+            .then(function(response){
+              console.log(response.features[0].attributes.DateTime_str);
+              dateTime_str = response.features[0].attributes.DateTime_str;
+            });
+        return dateTime_str;
+      };
+
       this.displayPopup = function(e, row, fromPreQuery) {
         this.clearAllHighlights();
         if (e.highlightGeometry)
@@ -191,8 +255,23 @@ define([
           infoWin.content = this.rowHtmlToLines(row);
         else if (e.attributes) {
           attrs = e.attributes;
-          if (attrs.Caption)
-            infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>') + '</div><br>';
+          if (attrs.Caption){
+            /* 20240725 - AEB
+            GOAL: Display the DateTime_str e.g. 'Sat Jun 05 2004 09:34:49 GMT-0800 (Alaska Daylight Time)'
+            It looks like the e.attributes contain data from the "1s" sublayer, including DateTime (Date) and DateTime_str (String).
+            If the e.attributes did not contain the required fields, we would have had to query the layer by doing something like:
+            console.log(e.attributes.OBJECTID);
+            this.getOneSecRowById(e.attributes.OBJECTID);
+             */
+            if(e.attributes.DateTime_str && null !== e.attributes.DateTime_str){
+              infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>')
+                  + '<br><b>'+ this.dateStringToDate( e.attributes.DateTime_str) +'</b>'
+                  + '</div><br>';
+            }else{
+              infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>')
+                  + '</div><br>';
+            }
+          }
         }
 
         if (fromPreQuery) {
