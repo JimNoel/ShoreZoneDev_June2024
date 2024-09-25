@@ -216,19 +216,23 @@ define([
           infoWin.content = this.rowHtmlToLines(row);
         else if (e.attributes) {
           attrs = e.attributes;
-          if (attrs.Caption){
-            /* 20240725 - AEB
-            GOAL: Display the DateTime_str e.g. '06/05/2004 09:38 AM (ADT)'
-            https://akr-internal.alaskafisheries.noaa.gov/confluence/display/HSDA/20240130+-+Jim+Noel+on+PSMFC+External+Hard+Drive+and+Possible+ShoreZone+Projects 
-             */
+          if (attrs.Caption) {
+            infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>');
             if(e.attributes.DateTime_str && null !== e.attributes.DateTime_str){
-              infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>')
-                  + '<br><b>'+ this.dateStringToFormatedDateStr( e.attributes.DateTime_str) +'</b>'
-                  + '</div>';
-            }else{
-              infoWin.content = '<div class="nowrap_ScrollX"><b>' + attrs.Caption.replace(':',':</b>')
-                  + '</div>';
+              infoWin.content += '<br><b>'+ this.dateStringToFormatedDateStr( e.attributes.DateTime_str) +'</b>'
             }
+            if (attrs.VIDEOTAPE && attrs.MP4_Seconds) {    // Add MP4 file name and position
+              let s = parseInt(attrs.MP4_Seconds);
+              let m = Math.trunc(s/60);
+              s = s % 60;
+              let timeStr = s.toString();
+              if (timeStr.length == 1)
+                timeStr = "0" + timeStr;
+              timeStr = m + ':' + timeStr;
+              let mp4Info = '<br><b>' + attrs.VIDEOTAPE + ".mp4, " + timeStr + '</b>';
+              infoWin.content += mp4Info;
+            }
+            infoWin.content += '</div>';
           }
         }
 

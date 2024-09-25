@@ -31,9 +31,6 @@ define([
 
       lang.mixin(this, kwArgs);
       
-      //console.log("ChartPanelWidget created");
-
-//      this.contentPane = getEl(this.contentPaneId);
       this.contentPane = getEl(this.displayDivName);
       let chartWidth = $(this.contentPane).width() - rightPad - leftEdge;
       let chartWidthPx = chartWidth + "px";

@@ -48,6 +48,7 @@ function onPlayerError(event) {
 function onPlayerStateChange(event) {
 
   let state = youtube_player.getPlayerState();
+  console.log("YouTube State: " + state);
 
   if (state === 1 && !youtube_timer) {
 
