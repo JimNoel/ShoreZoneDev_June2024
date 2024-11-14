@@ -139,13 +139,15 @@ define([
     // param object startPointData Video data point
     last_video_name = startPointData["VIDEOTAPE"];
 
+/*
     // temporary fix for missing Axiom videos on YouTube.  Where present, using alternate mid-res videos on NOAA channel
     if (startPointData["YouTubeID_midRes"])
       currYouTube_ID = startPointData["YouTubeID_midRes"];
     else
       currYouTube_ID = startPointData["YouTubeID"];
+*/
 
-//    currYouTube_ID = startPointData["YouTubeID"];
+    currYouTube_ID = startPointData["YouTubeID"];
 //    if (useBUcode)
 //      currYouTube_ID = startPointData["YouTubeID_midRes"];
 
