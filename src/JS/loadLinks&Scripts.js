@@ -6,7 +6,7 @@
  */
 
 
-let esriVersion = "4.28";     // Attempt to keep ESRI version in one place -- doesn't work with the HTML statements
+let esriVersion = "4.28";     // Latest version is 4.31, 11/2024
 
 function loadCSS(path) {
 //  if(filesAdded.indexOf('styles.css') !== -1)

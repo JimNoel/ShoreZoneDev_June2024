@@ -71,7 +71,7 @@ let dlDataDialog = "";
 //Map service URLs
 
 let serverNames = ["ps", "noaa"];
-let dfltServerNum = 1;      // Default value, usually set to 0 for the PSMFC server.
+let dfltServerNum = 0;      // Default value, usually set to 0 for the PSMFC server.
                             // When services on the NOAA server are updated but PSMFC hasn't been updated yet, this should be set to 1 for the NOAA server.
 let currServerNum = dfltServerNum;
                       // TODO: If server fails, change this value and rebuild service URLs
