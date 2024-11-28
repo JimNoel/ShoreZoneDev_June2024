@@ -1506,7 +1506,7 @@ define([
     }.bind(serviceLayer));
   }
 
-  function makeWidgetDiv(divID, placement, maxHeight, theClass) {
+  function makeWidgetDiv(divID, placement, maxHeight, theClass, width) {
     if (placement === undefined)
       placement = "";
     let newDiv = document.createElement("div");
@@ -1521,6 +1521,8 @@ define([
     newDiv.draggable = true;
     newDiv.ondragstart = drag_start;
     newDiv.style.maxHeight = maxHeight;
+    if (width)
+      newDiv.style.width = width;
     return newDiv;
   }
 
@@ -1567,7 +1569,7 @@ define([
     // NOTE:  To prevent a layer from appearing in the LayerList, set the layer's "listMode" property to "hide"
     layerListWidget = new LayerList({
       //    container: "layerListDom",
-      container: makeWidgetDiv("layerListDiv","right",(mapDiv.offsetHeight - 100) + "px", "nowrap_ScrollX"),     // Set max height of LayerListWidget to mapDiv height - 100
+      container: makeWidgetDiv("layerListDiv","right",(mapDiv.offsetHeight - 100) + "px", "nowrap_ScrollX", "350px"),     // Set max height of LayerListWidget to mapDiv height - 100
       view: view
     });
 
@@ -1767,8 +1769,8 @@ define([
     savedExtentsWidget = new Bookmarks({
       view: view,
       bookmarks: new Collection(),      // In 4.12, needed to get past bug
-      editingEnabled: true,
-      visibleElements: {addBookmark: false}
+      editingEnabled: true,     /* TODO:  Deprecated v4.29, replace with editBookmarkButton (this doesn't work currently) */
+      visibleElements: {addBookmarkButton: false}   /* TODO:  Not working currently, even though I changed from addBookmark to addBookmarkButton vor v4.29 */
     });
     let savedExtentsExpand = new Expand({
       expandIconClass: "esri-icon-collection",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/

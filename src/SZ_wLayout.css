@@ -239,11 +239,20 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 .esri-popup--is-docked-top-right  {top: 10px; right: 20px;}
 .esri-popup--is-docked-top-left  {top: 10px; left: 50px;}
 
-.esri-widget  {opacity: 1.0; background-color: white; font-weight: bold}
+/*  TODO: Find where this goes, set to 3px
+--calcite-button-padding-x-internal
+*/
+
+.esri-widget  {
+    opacity: 1.0;
+    background-color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
 .esri-widget-transparent  {opacity: 1.0; background-color: transparent; color: black; font-weight: bold}
 .esri-widget-top  {position: absolute; left: 0px; bottom: 5px; z-index: 10; width: 580px; height: 15px; opacity: 0.5; }
 
-.esri-widget--button  {width: 24px; height: 24px}
+.esri-widget--button  {width: 32px; height: 24px}
 
 .esri-ui-top-right .esri-component, .esri-ui-top-left .esri-component  {margin-bottom: 5px}
 
@@ -280,6 +289,19 @@ html, body, #outerBC { width: 100%; height: 100%; border: 0; padding: 0; margin:
 
 /*.esri-layer-list-panel__content--legend {visibility: hidden; display: none}*/
 .esri-layer-list-panel   { margin-top: 0}
+
+
+.esri-layer-list__item-content {
+    -webkit-user-select: none;
+    user-select: none;
+    word-break: break-word;
+    word-wrap: break-word;
+    font-weight: bold;
+    font-size: 14px;
+    /*font-size: var(--calcite-font-size-2)*/
+}
+
+
 
 /*
 .esri-icon-visible:before{content:"\e68d";color:inherit}
