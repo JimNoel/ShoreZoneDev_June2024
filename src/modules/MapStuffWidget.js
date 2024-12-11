@@ -1577,6 +1577,8 @@ define([
     layerListWidget.listItemCreatedFunction = function(event) {
       const item = event.item;
 
+      //item.declaredClass = ".esri-layer-list__item-content_level2";
+
       // This option collapses groups when nothing under them is visible at the current extent
       item.open = item.visibleAtCurrentScale;
       item.watch("visibleAtCurrentScale", function() {
@@ -1723,6 +1725,14 @@ define([
     }
     });
 
+    layerListWidget.when(function() {
+      // TODO:  Modify layerListWidget.domNode.innerHTML,
+      //    replacing "esri-layer-list__item-content" with "esri-layer-list__item-content_level2", etc.,
+      //    according to item level in heirarchy  (see "new 3" in Notepad++)
+      //  Also, add "esri-layer-list__item-content_level2", "esri-layer-list__item-content_level3", etc. to CSS file
+      console.log("layerListWidget instantiated")
+    });
+
     llExpand.content = wrapperWithOpacitySlider(layerListWidget.domNode, "Layers");
   }
 
@@ -1769,8 +1779,10 @@ define([
     savedExtentsWidget = new Bookmarks({
       view: view,
       bookmarks: new Collection(),      // In 4.12, needed to get past bug
-      editingEnabled: true,     /* TODO:  Deprecated v4.29, replace with editBookmarkButton (this doesn't work currently) */
-      visibleElements: {addBookmarkButton: false}   /* TODO:  Not working currently, even though I changed from addBookmark to addBookmarkButton vor v4.29 */
+      visibleElements: {
+        addBookmarkButton: true,
+        editBookmarkButton: true
+      }
     });
     let savedExtentsExpand = new Expand({
       expandIconClass: "esri-icon-collection",  // see https://developers.arcgis.com/javascript/latest/guide/esri-icon-font/
