@@ -1436,6 +1436,7 @@ function stripHtml(inStr) {
 }
 
 function siteLoadedHandler() {
+  console.log("siteLoadedHandler");
 }
 
 function browserResizeHandler(e) {

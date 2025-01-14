@@ -1570,14 +1570,13 @@ define([
     layerListWidget = new LayerList({
       //    container: "layerListDom",
       container: makeWidgetDiv("layerListDiv","right",(mapDiv.offsetHeight - 100) + "px", "nowrap_ScrollX", "350px"),     // Set max height of LayerListWidget to mapDiv height - 100
-      view: view
+      view: view,
+      visibilityAppearance: "checkbox"
     });
 
 
     layerListWidget.listItemCreatedFunction = function(event) {
       const item = event.item;
-
-      //item.declaredClass = ".esri-layer-list__item-content_level2";
 
       // This option collapses groups when nothing under them is visible at the current extent
       item.open = item.visibleAtCurrentScale;
@@ -1596,6 +1595,7 @@ define([
         return;
       let legendDivId = null;
       const l = svcLegendInfo.findIndex(obj => obj.layerId === layerId );
+
       let theContentHtml = '';
       if (l===-1) {
         if (item.layer.renderer) {
@@ -1638,7 +1638,6 @@ define([
           const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
           const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
           let idInsert = '';
-
           if (fInfo) {
             let value = rowInfo.values[0];      // label;
             if (fInfo.delimiter)
@@ -1648,12 +1647,12 @@ define([
               idInsert = ' id="' + swatchId + '"';
             }
           }
-
           theContentHtml += '<div' + idInsert + '>' + imgHtml + rowInfo.label + '</div>';     // + '<br>';
         }
         let contentDiv = makeHtmlElement("DIV",legendDivId,null,null,theContentHtml);
         if (fInfo)
           fInfo.contentDiv = contentDiv;
+
         item.panel = {
           content: contentDiv,
           open: (item.visible && item.visibleAtCurrentScale)
@@ -1676,6 +1675,7 @@ define([
         item.widget = szVideoWidget;
         modify_LayerListItem_VideoFlightline();//AEB - Temporarily moved
       }
+
       if (item.layer.title === "10s") {
         listItem_10s_legendHtml = item.panel.content.innerHTML;
         // modify_LayerListItem_VideoFlightline();//AEB - Temporarily Commented out
@@ -1723,14 +1723,6 @@ define([
     } else if (id === "editLayer") {
         showEditQueryLayerDialog(event.item);
     }
-    });
-
-    layerListWidget.when(function() {
-      // TODO:  Modify layerListWidget.domNode.innerHTML,
-      //    replacing "esri-layer-list__item-content" with "esri-layer-list__item-content_level2", etc.,
-      //    according to item level in heirarchy  (see "new 3" in Notepad++)
-      //  Also, add "esri-layer-list__item-content_level2", "esri-layer-list__item-content_level3", etc. to CSS file
-      console.log("layerListWidget instantiated")
     });
 
     llExpand.content = wrapperWithOpacitySlider(layerListWidget.domNode, "Layers");
