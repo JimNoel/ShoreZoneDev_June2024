@@ -1568,12 +1568,10 @@ define([
     // Add ESRI LayerList widget.  This goes in the "layerListDom" DIV, rather than the map
     // NOTE:  To prevent a layer from appearing in the LayerList, set the layer's "listMode" property to "hide"
     layerListWidget = new LayerList({
-      //    container: "layerListDom",
       container: makeWidgetDiv("layerListDiv","right",(mapDiv.offsetHeight - 100) + "px", "nowrap_ScrollX", "350px"),     // Set max height of LayerListWidget to mapDiv height - 100
       view: view,
       visibilityAppearance: "checkbox"
     });
-
 
     layerListWidget.listItemCreatedFunction = function(event) {
       const item = event.item;
@@ -1588,16 +1586,18 @@ define([
           item.panel.open = (item.visible && item.visibleAtCurrentScale);
       });
 
+      //<editor-fold desc="{...}  // variables, etc.">
       const serviceName = getSublayerServiceName(item);
-      const layerId = item.layer.id;
       const svcLegendInfo = legendInfo[serviceName];
       if (!svcLegendInfo)
         return;
       let legendDivId = null;
-      const l = svcLegendInfo.findIndex(obj => obj.layerId === layerId );
-
+      const layerId = item.layer.id;
       let theContentHtml = '';
-      if (l===-1) {
+      //</editor-fold>
+
+      const l = svcLegendInfo.findIndex(obj => obj.layerId === layerId );
+      if (l===-1) {   // For new query layers: Test if layer is NOT in any of the map services.  If so, set renderer and add "edit layer" button.
         if (item.layer.renderer) {
           let idHtml = 'id="listItemSwatch' + layerId + '" ';
 //          let color = item.layer.renderer.symbol.color;
@@ -1666,10 +1666,11 @@ define([
           item.panel.open = (item.visible && item.visibleAtCurrentScale);
       });
 
+      //<editor-fold desc="{...}  // Individual item modifications">
       if (item.layer.title === "Still Photos") {
         item.widget = szPhotoWidget;
       }
-      // console.log("item.layer.title: "+item.layer.title);//AEB - Added to help see what is happening.
+
       if (item.layer.title === "Video Flightline") {
         listItem_VideoFlightline = item;
         item.widget = szVideoWidget;
@@ -1678,10 +1679,8 @@ define([
 
       if (item.layer.title === "10s") {
         listItem_10s_legendHtml = item.panel.content.innerHTML;
-        // modify_LayerListItem_VideoFlightline();//AEB - Temporarily Commented out
       }
 
-/*JN2*/
       if (item.layer.title === "ShoreZone") {
         // Remove "Video prequery" from LayerList
         let prequeryLayer = item.children.find(function(item){
@@ -1696,18 +1695,24 @@ define([
             }]]
       }
 
-      if (item.layer.title === "Unit Info")
+      if (item.layer.title === "Unit Info") {
         item.open = false;
+      }
 
       if (item.layer.title === "Video prequery") {
         // Remove "pass1" and "pass2" sublayers of "Video prequery" from LayerList
         item.children.removeAll();
       }
 
-      if (item.layer.title.startsWith("FishAtlas"))
+      if (item.layer.title.startsWith("FishAtlas")) {
         item.open = false;
-      if (item.layer.title.startsWith("ShoreStation"))
+      }
+
+      if (item.layer.title.startsWith("ShoreStation")) {
         item.open = false;
+      }
+      //</editor-fold>
+
     };
 
     layerListWidget.on("trigger-action", (event) => {
