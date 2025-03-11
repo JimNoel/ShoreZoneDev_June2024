@@ -1606,6 +1606,7 @@ define([
           theContentHtml += '<div>' + imgHtml + '</div>';
           let contentDiv = makeHtmlElement("DIV",legendDivId,null,null,theContentHtml);
           item.panel = {
+            icon: "legend",
             content: contentDiv,
             open: (item.visible && item.visibleAtCurrentScale)
           };
@@ -1654,6 +1655,7 @@ define([
           fInfo.contentDiv = contentDiv;
 
         item.panel = {
+          icon: "legend",
           content: contentDiv,
           open: (item.visible && item.visibleAtCurrentScale)
         };

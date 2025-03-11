@@ -1469,6 +1469,7 @@ function modify_LayerListItem_VideoFlightline() {
 
   listItem_VideoFlightline.children.removeAll();    //  This removes 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
   listItem_VideoFlightline.panel = {
+    icon: "legend",
     content: makeHtmlElement("DIV", "videoFlightlineDiv", null, null, listItem_10s_legendHtml),
     open: true    // (item.visible && item.visibleAtCurrentScale)
   };
