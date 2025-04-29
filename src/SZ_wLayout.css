@@ -613,3 +613,12 @@ TODO: Make left-justified and centered versions of dgrid_cell.  Set default as l
  */
 
 calcite-list {padding-left: 15px}
+
+/*  Attempts to modify LayerList font sizes *
+.esri-list-item-panel {font-size: 14px}
+.esri-layer-list__item-content {font-size: 16px}
+ /* */
+
+/*
+.test {overflow-clip: }
+*/

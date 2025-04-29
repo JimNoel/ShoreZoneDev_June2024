@@ -1492,17 +1492,20 @@ define([
       makeLayerListWidget();
       return;
     };
-    const serviceLayer = llServiceLayers[n];
 
-    let legendQueryTimeout = setTimeout(function() {    // In case service is not running, this bypasses
+    const serviceLayer = llServiceLayers[n];
+    // JN: If a "_dev" service, revert to public version for legend
+    //serviceLayer.url = serviceLayer.url.replace("_dev", "");
+
+    // In case service is not running, this bypasses
+    let legendQueryTimeout = setTimeout(function() {
       if (!legendInfo[this.title])
         getLegendHtml(n+1);
     }.bind({title: serviceLayer.title, n: n}), 5000);
 
-    //serviceLayer.url = serviceLayer.url.replace("_dev", "");    // JN: If a "_dev" service, revert to public version for legend
     queryServer(serviceLayer.url + "/legend", true, function(R) {
       legendInfo[this.title] = R.layers;
-      getLegendHtml(n+1);
+      getLegendHtml(n+1);   // Call getLegendHtml again, on the next map service
     }.bind(serviceLayer));
   }
 
@@ -1615,7 +1618,7 @@ define([
           item.actionsSections = [[
             {
               title: "Edit layer",
-              className: "esri-icon-edit",      // alternative: "esri-icon-plus"
+              className: "esri-icon-edit",
               id: "editLayer"
             }
           ]];
@@ -1636,6 +1639,7 @@ define([
         const lInfo = svcLegendInfo[l].legend;
         for (let row=0; row<lInfo.length; row++) {
           let rowInfo = lInfo[row];
+          rowInfo.shortLabel = rowInfo.label.slice(0,40);
           const imgSrc = 'data:image/png;base64,' + rowInfo.imageData;
           const imgHtml = '<img src="' + imgSrc + '" border="0" width="' + rowInfo.width + '" height="' + rowInfo.height + '">';
           let idInsert = '';
@@ -1648,9 +1652,10 @@ define([
               idInsert = ' id="' + swatchId + '"';
             }
           }
-          theContentHtml += '<div' + idInsert + '>' + imgHtml + rowInfo.label + '</div>';     // + '<br>';
+//          theContentHtml += '<div' + idInsert + ' title="' + rowInfo.label + '">' + imgHtml + rowInfo.label + '</div>';     // + '<br>';
+          theContentHtml += '<div' + idInsert + ' title="' + rowInfo.label + '">' + imgHtml + rowInfo.shortLabel + '</div>';     // + '<br>';
         }
-        let contentDiv = makeHtmlElement("DIV",legendDivId,null,null,theContentHtml);
+        let contentDiv = makeHtmlElement("DIV",legendDivId,null,"overflow-x:hidden",theContentHtml);
         if (fInfo)
           fInfo.contentDiv = contentDiv;
 
@@ -1692,7 +1697,7 @@ define([
 
         item.actionsSections = [[{
               title: "Add a new query layer",
-              className: "esri-icon-add-attachment",      // alternative: "esri-icon-plus"
+              className: "esri-icon-add-attachment",
               id: "addNewQueryLayer"
             }]]
       }
@@ -2050,9 +2055,6 @@ define([
 
 
   function initMap() {
-//    getLegendHtml(0);     // Trying this here...  Move back to original spot if it goes wrong...
-//     gp = new Geoprocessor(gpUrl_extract);//AEB - Commented out for now to see other errors
-//     this.gp = new Geoprocessor({ url: gpUrl_extract });
     gp = Geoprocessor;
     addServiceLayers();
     map = new Map({

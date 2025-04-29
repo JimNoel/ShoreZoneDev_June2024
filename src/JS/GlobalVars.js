@@ -1454,9 +1454,12 @@ function panelResizeHandler() {
 let mapStuff;
 
 function modify_LayerListItem_VideoFlightline() {
-  // A hack to hide the 1s & 10s layers in the LayerList
+  // A hack to hide the sublayers of VideoFlightline in the LayerList
+  // These sublayers are "1s", "1s - lines" and "10s"
+  // Only one of these is displayed on the map at any particular time - dependent on current extent - and the user doesn't need to know
+  //   which is currently showing, as they are all just different-resolution versions of the same original set of 1-second points.
 
-  // New display mode for video flightline:  Hide 1s points, show 1s lines
+  // Show "1s - lines" in the map,  hide "1s" points
   //  (Map service currently defaults to showing points and hiding lines)
   let subLayers = listItem_VideoFlightline.children.items;
   for (let i=0; i<subLayers.length; i++) {
@@ -1467,11 +1470,14 @@ function modify_LayerListItem_VideoFlightline() {
       L.visible = true;
   }
 
-  listItem_VideoFlightline.children.removeAll();    //  This removes 1s and 10s from Video Flightline, but also passes the selector checkbox to Video Flightline!
+  // Remove all sublayers of "Video Flightline" from the LayerList
+  listItem_VideoFlightline.children.removeAll();
+
+  // Attach the legend from "10s" to "VideoFlightline", and expand by default
   listItem_VideoFlightline.panel = {
     icon: "legend",
     content: makeHtmlElement("DIV", "videoFlightlineDiv", null, null, listItem_10s_legendHtml),
-    open: true    // (item.visible && item.visibleAtCurrentScale)
+    open: true
   };
 }
 
