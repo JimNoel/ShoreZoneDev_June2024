@@ -1272,21 +1272,28 @@ define([
     updatePrevNextBtnsOpacity();
   }
 
+  // Add handlers for various View events, including extent change and mouse actions
   function addMapWatchers() {
+    //<editor-fold desc="{...}  // Variable definitions">
+    let zoomRectFillSymbol = {
+      // Create a symbol for rendering the zoom-to rectangle
+      type: "simple-fill", // autocasts as new SimpleFillSymbol()
+      color: [227, 0, 0, 0.2],
+      outline: { // autocasts as new SimpleLineSymbol()
+        color: [255, 0, 0],
+        width: 1
+      }
+    };
+    extentGraphic = null;
+    let origin = null;
+    //</editor-fold>
 
+    // This function kicks in when the "view" object is instantiated
     view.when(function() {
-/*    // ESRI Magnifier widget
-      let M = view.magnifier;
-      M.factor = 10;
-      M.visible = true;
-      const offset = M.size / 2;
-      M.offset = { x: offset, y: offset };
-*/
 
       map.basemap = startBasemap;   //HACK:  Because inital basemap setting of "oceans" messes up initial extent and zooming
-      //let moveButtonAction = {title: "Move the camera", id: "move-camera"};
 
-      view.popup = new Popup();//AEB - added to test idea
+      view.popup = new Popup();  //AEB - added to test idea
       let p = view.popup;     // new Popup();
       p.on("trigger-action", function(event){
         if (event.action.id === "move-camera") {
@@ -1299,10 +1306,19 @@ define([
         }
       });
 
+      /* // NOT CURRENTLY USED: ESRI Magnifier widget
+      let M = view.magnifier;
+      M.factor = 10;
+      M.visible = true;
+      const offset = M.size / 2;
+      M.offset = { x: offset, y: offset };
+      */
+
     });
 
-    // When "stationary" property changes to True, there is a new extent, so handle the extent change
+    // Kicks in when "stationary" property changes.  If True, there is a new extent, so handle the extent change
     view.watch("stationary", function(newValue, oldValue, property, object) {
+      console.log("stationary = " + view.stationary)
       if (!siteTabs.spatialFilterTabs.includes(siteTabs.currTab))
         return;
       if (view.stationary) {
@@ -1313,10 +1329,14 @@ define([
       }
     });
 
-    // When "updating" property changes to False, if extent is not changing and not drawing a zoom rectangle, then make a new bookmark (unless bookmark already exists)
+    // Kicks in when "updating" property changes.  When False, adds a new bookmark if other criteria are met.
     view.watch("updating", function() {
+      console.log("updating = " + view.updating)
+      // Exit the function if still updating, or if extent is unchanged, view is still changing, or the zoom-in rectangle is still being drawn
       if (view.updating || !extentChanged || !view.stationary || drawingZoomRectangle)
         return;
+
+      // if current extent is not already bookmarked, then create a new one.
       if (extentIsBookmarked) {
         extentIsBookmarked = false;
       } else {
@@ -1325,33 +1345,15 @@ define([
       }
     });
 
+    // Kicks in when the user resizes the browser window or moves a panel boundary within the window.
     view.watch("resizing", function(isResizing, oldValue, property, object) {
+      console.log("resizing = " + view.resizing)
       if (isResizing) {
         resizeWidgets();
       }
     });
 
-    /* Suggestion for repositioning map popup
-    view.popup.watch("visible", function() {
-      setTimeout(function(){
-        view.popup.reposition();
-      }, 500);
-    });
-    */
-
-    // Handle click events:  Check for mouse over graphic features
-    // Create a symbol for rendering the graphic
-    let zoomRectFillSymbol = {
-      type: "simple-fill", // autocasts as new SimpleFillSymbol()
-      color: [227, 0, 0, 0.2],
-      outline: { // autocasts as new SimpleLineSymbol()
-        color: [255, 0, 0],
-        width: 1
-      }
-    };
-
-    extentGraphic = null;
-    let origin = null;
+    // If not in panning mode, kicks in when the user clicks and starts dragging the mouse over the map.  Initiates rectangle drawing for zoom in.
     view.on('drag', [], function(e){
       if (panning)
         return;
@@ -1391,17 +1393,15 @@ define([
       }
     });
 
-      // Handle click events:  Check for mouse over graphic features
+    //Kicks in when the user clicks the mouse over the map.  If the mouse is over a clickable graphic object, handles that.
     view.on('click', [], function(e){
+    // Handle click events:  Check for mouse over graphic features
       let screenPoint = {x: e.x, y: e.y};
       view.hitTest(screenPoint).then(handleGraphicHits);
     });
 
-
-    // Handle mouse-move events:  Update map coordinate display, and check for mouse over graphic features
+    // Kicks in whenever the mouse moves over the map.  Updates map coordinate display, and checks for mouse over graphic features
     view.on('pointer-move', [], function(e){
-      //view.magnifier.position = { x: e.x, y: e.y };     // ESRI Magnifier widget
-
       let screenPoint = {x: e.x, y: e.y};
 
       if (isVisible("MagnifierDiv") && !magView.updating) {
@@ -1435,6 +1435,14 @@ define([
 
       view.hitTest(screenPoint).then(handleGraphicHits);
     });
+
+    /* NOT CURRENTLY USED: Map popup repositioning suggestion
+    view.popup.watch("visible", function() {
+      setTimeout(function(){
+        view.popup.reposition();
+      }, 500);
+    });
+    */
   }
 
 
