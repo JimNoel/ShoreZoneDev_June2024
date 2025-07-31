@@ -809,7 +809,6 @@ define([
       }
       let theWhere = "";
       updateNoFeaturesMsg(this.noFeaturesPanels, "querying");
-      //this.setPanelVisibility([]);      // Hide table div, show message div  (empty array forces this)
       if (!this.customRestService) {          // using ArcGIS map service
         // If extent argument is supplied, set parameters for spatial query
         if (extent) {
@@ -847,7 +846,7 @@ define([
         let theUrl = this.makeCustomRestQueryUrl(geomType, urlInfo.sql);
         queryServer(theUrl, false, this.queryResponseHandler.bind(this))     // returnJson=false -- service already returns JSON
         theWhere = urlInfo.where;
-      }
+      }     // using custom SQL Server REST service
       if (this.dropDownInfo)
         this.updateAllDropdowns(theWhere);
     },

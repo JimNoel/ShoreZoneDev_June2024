@@ -1238,9 +1238,6 @@ define([
       } else {
         setRefreshButtonVisibility(szFeatureRefreshDue);
       }
-    } else if (siteTabs.currTab === "fa") {
-      //updateNoFeaturesMsg([faWidget], "querying");
-      //faWidget.runQuery(view.extent);
     }
   }
 
@@ -2080,9 +2077,6 @@ define([
     view = new View({
       container: "mapDiv",
       map: map,
-      //center: [-152, 62.5], // longitude, latitude
-      // constraints: {maxScale: 4000},
-      //zoom: 4
       extent: initExtent
     });
 
