@@ -8,75 +8,69 @@
     html, body {      padding: 0;      margin: 0;      height: 100%;      width: 100%;    }
   </style>
 
-<!--
-  <script type="text/javascript">
-    var dojoConfig = {
-      parseOnLoad: false,
-      paths: { noaa: location.pathname.replace(/\/[^/]+$/, '') + '/modules', }
-    };
-  </script>
--->
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-  <script src="JS/loadLinks&Scripts.js" ></script>
-
-<!--
-  <script src="https://js.arcgis.com/4.17/"></script>
--->
-
-  <script src="JS/allAppsData.js" ></script>
 
   <script>
-    require([
-      "noaa/FaSsQuery"
-    ], function(FaSsQuery){
 
-      var fa = 1;
-      var parts = [
-        "commHTML",
-        "sciHTML",
-        "famHTML",
-        "P1",
-        "P2",
-        "P3",
-        "P4",
-        "P5"
-      ];
+    let serviceUrl = "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=SELECT * FROM vw_HtmlCode_FishPages WHERE SpCode='CODARC'";
 
-      var parsJson = '{ "' + location.search.slice(1).toUpperCase().replace(/&/g,'", "').replace(/=/g,'":"') + '" }';
-      var pars = JSON.parse(parsJson);
-      var whereClause = "SPCODE='" + pars["SPCODE"] + "'";
+    let parts = [
+      "commHTML",
+      "sciHTML",
+      "famHTML",
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5"
+    ];
 
-      let serviceUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/FishAtlas/MapServer";
-      //let serviceUrl = "https://alaskafisheries.noaa.gov/arcgis/rest/services/dev/FishAtlas_v2020_dev/MapServer";
-      let subLayerName = "vw_HtmlCode_FishPages";
-      let layerNum = null;
-      let idTable = {};
-
-      var faQuery = new FaSsQuery(serviceUrl);
-
-      function buildPage() {
-        faQuery.submitQuery(layerNum, whereClause, function(results) {
-          var attrs = results.features[0].attributes;
-          document.writeln("<table style='border: none' cols=2 rows=3>");
-          for (p in parts) {
-            var s = attrs[parts[p]];
-            document.writeln(s);
+    function queryServer(url, returnJson, responseHandler, postInfo) {
+      let xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+          let R = this.responseText;
+          if (R.slice(0,6) === "ERROR:") {
+            alert(R);
+            console.log(R);
+            //return;
           }
-          document.writeln("</table><br>");
-        });
+          if (returnJson)
+            R = JSON.parse(R);
+          responseHandler(R);
+        } else {
+          //console.log("readyState: " + this.readyState + "     status: " + this.status);
+        }
+      };
+      let completeUrl = url;
+      if (returnJson)
+        completeUrl += "?f=pjson";
+      if (postInfo) {
+        xmlhttp.open("POST", completeUrl, true);
+        xmlhttp.send(postInfo);
+      } else {
+        xmlhttp.open("GET", completeUrl, true);
+        xmlhttp.send();
       }
+    }
 
-      makeSublayerIdTable(serviceUrl, idTable, function() {
-        layerNum = idTable[subLayerName];
-        buildPage();
-      })
+    function buildPage(results) {
+        var attrs = results.features[0].attributes;
+        document.writeln("<table style='border: none' cols=2 rows=3>");
+        for (p in parts) {
+          var s = attrs[parts[p]];
+          if (s)
+            document.writeln(s);
+        }
+        document.writeln("</table><br>");
+    }
 
-
-
+    queryServer(serviceUrl, false, function(R) {
+      buildPage(JSON.parse(R));
     });
+
   </script>
+
+
 </head>
 <body>
 </body>
