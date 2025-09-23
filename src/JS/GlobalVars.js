@@ -116,6 +116,7 @@ let szMapServiceLayerURLs = makeServiceUrls("service", "ShoreZone");
 let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStations");
 //let ssMapServiceLayerURLs = makeServiceUrls("service", "ShoreStations_pro");
 let faMapServiceLayerURLs = makeServiceUrls("service", "FishAtlas");
+//let faMapServiceLayerURLs = makeServiceUrls("service", "aTest_FA");
 let sslMapServiceLayerURLs = makeServiceUrls("service", "Ports_SSL");
 
 let szSublayerIDs = {};
@@ -1425,10 +1426,6 @@ function stripHtml(inStr) {
     p1 = s.indexOf("<");
   }
   return s;
-}
-
-function siteLoadedHandler() {
-  console.log("siteLoadedHandler");
 }
 
 function browserResizeHandler(e) {

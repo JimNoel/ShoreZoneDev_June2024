@@ -1315,7 +1315,7 @@ define([
 
     // Kicks in when "stationary" property changes.  If True, there is a new extent, so handle the extent change
     view.watch("stationary", function(newValue, oldValue, property, object) {
-      console.log("stationary = " + view.stationary)
+//      console.log("stationary = " + view.stationary)
       if (!siteTabs.spatialFilterTabs.includes(siteTabs.currTab))
         return;
       if (view.stationary) {
@@ -1328,7 +1328,7 @@ define([
 
     // Kicks in when "updating" property changes.  When False, adds a new bookmark if other criteria are met.
     view.watch("updating", function() {
-      console.log("updating = " + view.updating)
+//      console.log("updating = " + view.updating)
       // Exit the function if still updating, or if extent is unchanged, view is still changing, or the zoom-in rectangle is still being drawn
       if (view.updating || !extentChanged || !view.stationary || drawingZoomRectangle)
         return;

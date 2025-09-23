@@ -6,25 +6,31 @@
  */
 
 
-let esriVersion = "4.31";     // Latest version is 4.31, 11/2024
+let esriVersion = "4.31";     // Latest version is 4.33, 6/2025
+/*
+current devel version of site uses 4.31
+4.32 adds more vertical spacing to the LayerList
+4.33 (https://developers.arcgis.com/javascript/latest/release-notes):
+  New CDN endpoints
+  No longer using "require", now using "$arcgis.import()"
+ */
 
+// Function to load style sheet specified by path
 function loadCSS(path) {
-//  if(filesAdded.indexOf('styles.css') !== -1)
-//    return
-
+  // Get document <head> section
   let head = document.getElementsByTagName('head')[0]
 
-  // Creating link element
+  // Create link element for style sheet
   let style = document.createElement('link')
   style.href = path
   style.type = 'text/css'
   style.rel = 'stylesheet'
-  head.append(style);
 
-  // Adding the name of the file to keep record
-//  filesAdded += ' styles.css'
+  // Append to the document
+  head.append(style);
 }
 
+// Defines namespaces for Dojo, ESRI and NOAA packages
 window.dojoConfig = {
   packages: [
     {
@@ -62,6 +68,7 @@ window.dojoConfig = {
   baseUrl: "./"
 };
 
+// Call loadCSS several times, to load specified style sheets
 loadCSS("https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dijit/themes/claro/claro.css");
 loadCSS("https://js.arcgis.com/" + esriVersion + "/esri/css/main.css");
 loadCSS("https://ajax.googleapis.com/ajax/libs/dojo/1.14.1/dojox/layout/resources/ExpandoPane.css");
@@ -69,6 +76,7 @@ loadCSS("https://unpkg.com/dgrid@1.3.3/css/dgrid.css");
 loadCSS("SZ_wLayout.css");
 
 // Load ArcGIS JS API, using esriVersion
+// On loading this, a handler function loads various Dojo modules, as well as the NOAA MapStuffWidget and layout widgets
 jQuery.getScript("https://js.arcgis.com/" + esriVersion + "/", function() {
 
   // "require" statement runs after the ESRI SDK has finished loading
