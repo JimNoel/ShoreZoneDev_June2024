@@ -11,7 +11,8 @@
 
   <script>
 
-    let serviceUrl = "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=SELECT * FROM vw_HtmlCode_FishPages WHERE SpCode='CODARC'";
+    let serviceUrl = "https://alaskafisheries.noaa.gov/mapping/faREST/sql?sql=SELECT * FROM vw_HtmlCode_FishPages WHERE SpCode='@'";
+    serviceUrl = serviceUrl.replace("@", location.search.split("=")[1]);
 
     let parts = [
       "commHTML",
