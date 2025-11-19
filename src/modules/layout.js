@@ -203,10 +203,6 @@ define([
         currLayout = buildLayout(layouts[layoutCode]);
         outerBC.addChild(currLayout);
 
-/*
-        makeDraggablePanel("mapLayerListDiv", "Layer List");
-        setDisplay("mapLayerListDiv", true);
-*/
         makeDraggablePanel("faSpTableDiv", "Fish Catch");
         makeDraggablePanel("ssSpTableDiv", "Species Data");
 

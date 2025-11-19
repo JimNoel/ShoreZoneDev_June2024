@@ -1390,12 +1390,14 @@ define([
       }
     });
 
+/* JRN (11/17/25):  I think this is obsolete, so commenting it out
     //Kicks in when the user clicks the mouse over the map.  If the mouse is over a clickable graphic object, handles that.
     view.on('click', [], function(e){
     // Handle click events:  Check for mouse over graphic features
       let screenPoint = {x: e.x, y: e.y};
       view.hitTest(screenPoint).then(handleGraphicHits);
     });
+*/
 
     // Kicks in whenever the mouse moves over the map.  Updates map coordinate display, and checks for mouse over graphic features
     view.on('pointer-move', [], function(e){
@@ -1730,7 +1732,6 @@ define([
     layerListWidget.on("trigger-action", (event) => {
       const id = event.action.id;
       if (id === "addNewQueryLayer") {
-//        let dfltName = "Query Layer " + (event.item.layer.sublayers.length+1);
         let dfltName = "User Layer " + (userLayersCount + 1);
         getEl("queryLayer_name").value =  dfltName;
         getEl("queryLayer_where").value =  "";

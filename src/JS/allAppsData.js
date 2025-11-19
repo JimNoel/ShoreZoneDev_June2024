@@ -137,14 +137,11 @@ function showEditQueryLayerDialog(item) {
   theContent += '<input type="text" id="defExprText" value="' + item.layer.definitionExpression + '"><br><br>';
   // Change color
   theContent += '<label><b>Click on the color swatch to select a new color: </b></label>&emsp;';
-//  let swatchHtml = item.panel.content.innerHTML.replace('listItemSwatch', 'dialogSwatch');
   let colorHtml = 'value=' + item.layer.renderer.symbol.color.toHex();
-//  theContent += /*swatchHtml +*/ '<input ' + colorHtml + ' id="colorPicker" type="color" onchange="changeDialogSwatchColor(' + item.layer.id + ')"><br>';
   theContent += '<input ' + colorHtml + ' id="colorPicker" type="color"><br>';
   let buttonInfo = [
     "Apply changes:applyChanges(" + item.layer.id + ")",
     "Cancel:getEl('editQueryLayerDiv').remove()"
-    //"Close:setDisplay('queryLayerDiv',false):hide_rmvSpace"
   ];
   makeDialog("editQueryLayerDiv", "Edit query layer", true, null, theStyle, theContent, buttonInfo);
 }
@@ -179,7 +176,6 @@ function makeDialog(divID, headerText, hasOpacitySlider, theClass, theStyle, the
     }
   }
   theContent += "<br>";
-//  let newDialog = makeDraggablePanel(divID, headerText, hasOpacitySlider, theClass, theStyle, theContent);
   let newDialog = makePanel(divID, theContent, theStyle);
   return newDialog;     // unneccessary?
 }
